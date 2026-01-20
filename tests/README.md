@@ -37,7 +37,7 @@ pytest
 
 1. The tests for functions in `<filename>.py` should go in `tests/test_<filename>.py`
 
-   e.g., the tests for [python_package/mockup.py](../src/python_package/mockup.py) are in [tests/test_mockup.py](test_mockup.py)
+   e.g., the tests for [mgnipy/mockup.py](../mgnipy/mockup.py) are in [tests/test_mockup.py](test_mockup.py)
 
 2. The test names should start with `def test_<corresponding_function_name> ...`
 
