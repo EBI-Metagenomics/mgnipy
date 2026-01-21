@@ -54,3 +54,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+
+
+auto-client1/*
+auto-client2/*

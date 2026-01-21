@@ -1,5 +1,4 @@
 
-# following the R package pipeline
 import requests
 import pandas as pd
 import os
@@ -8,33 +7,75 @@ import json
 import time
 import anndata as ad
 
-
-
-class MgnifyClient():
+class MgnifyClient:
     """
     TODO Class to interact with the Mgnify API.
     """
 
     def __init__(
             self, 
-            base_url='https://www.ebi.ac.uk/metagenomics/api/v1',
-            cache_dir='tmp/mgnify_cache'
+            base_url='https://www.ebi.ac.uk/metagenomics/api/',
+            cache_dir='tmp/mgnify_cache',
+            api_version='v1',
         ):
 
         self.base_url = base_url
         self.cache_dir = cache_dir
+        self.api_version = api_version
+        self.checkpoint = None
 
-    # def get_studies(self, page=1, size=100):
-    #     """
-    #     Get a list of studies from the Mgnify API.
-    #     """
-    #     url = f"{self.base_url}/studies?page={page}&size={size}"
-    #     response = requests.get(url)
-    #     response.raise_for_status()
-    #     return response.json()
+    
+    # basically get the path/method and matching datamodel
+    # pass along params 
+    # run
+    # transform
+    # cache as df? 
+
+    def get_study_metadata(
+        self,
+    ) -> pd.DataFrame:
+        pass
+
+    def get_sample_metadata(
+        self,
+        study_accession:str,
+    ) -> pd.DataFrame:
+        pass
+
+    def get_analysis_metadata(
+        self,
+        study_accession:str,
+    ) -> pd.DataFrame:
+        pass
+
+    def _run(
+        self, 
+        params,
+
+    ):
+        pass
+
+    def _find_download_url(
+        self,
+    ): 
+        pass
+
+    def _download_file(
+        self,
+    ):
+        pass
+
+    def open_taxa_file(
+        self,
+    ):
+        pass
+
+    
 
 
 
+
+# other data transformation things
 # current mgnifapi
 def split_taxa_cols_at(
     at:str='g',
