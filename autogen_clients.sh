@@ -1,0 +1,41 @@
+# Usage: sh autogen_clients.sh [FOLDER_PATH] [PROJECT_NAME_ONE] [PROJECT_NAME_TWO]
+# requires uv, poetry, openapi-python-client installed
+# should have "MGnify API (emgapi_v1).yaml", config-v1.yaml, config-v2.yaml in FOLDER_PATH"
+
+FOLDER_PATH=${1:-"openapi"}
+PROJECT_NAME_ONE=${2:-"auto-client1"}
+PROJECT_NAME_TWO=${3:-"auto-client2"}
+
+# for v1
+# file downloaded from https://www.ebi.ac.uk/metagenomics/api/schema
+openapi-python-client generate \
+    --path "$FOLDER_PATH/MGnify API (emgapi_v1).yaml" \
+    --output-path "$FOLDER_PATH/$PROJECT_NAME_ONE" \
+    --config "$FOLDER_PATH/config-v1.yaml" \
+    --overwrite
+
+
+# for v2
+openapi-python-client generate \
+    --url https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json \
+    --output-path "$FOLDER_PATH/$PROJECT_NAME_TWO" \
+    --config "$FOLDER_PATH/config-v2.yaml" \
+    --overwrite
+
+## or make changes to the generated code before building the whl files
+
+# build whls 
+cd "$FOLDER_PATH/$PROJECT_NAME_ONE"
+poetry build -f wheel -o ../dist/
+cd -
+
+cd "$FOLDER_PATH/$PROJECT_NAME_TWO"
+poetry build -f wheel -o ../dist/
+cd -
+
+# install
+for whl in "$FOLDER_PATH"/dist/*.whl; do
+  uv add "$whl"
+done
+uv lock 
+uv sync

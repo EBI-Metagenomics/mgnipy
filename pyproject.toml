@@ -23,6 +23,8 @@ license = "GPL-3.0-or-later" # https://choosealicense.com/licenses/gpl-3.0/
 dependencies = [
     "anndata>=0.10.9",
     "auto-client1",
+    "auto-client2",
+    "m-gnify-api-client",
     "numpy>=2.0.2",
     "pandas>=2.3.3",
     "pydantic>=2.12.5",
@@ -75,7 +77,9 @@ include = ["mgnipy*"]
 [tool.setuptools_scm]
 
 [tool.uv.sources]
-auto-client1 = { path = "dist/auto_client1-1.0.0-py3-none-any.whl" }
+auto-client1 = { path = "openapi/dist/auto_client1-1.0.0-py3-none-any.whl" }
+auto-client2 = { path = "openapi/dist/auto_client2-2.0.0-py3-none-any.whl" }
+m-gnify-api-client = { path = "openapi/dist/m_gnify_api_client-2.0.0-py3-none-any.whl" }
 
 
 

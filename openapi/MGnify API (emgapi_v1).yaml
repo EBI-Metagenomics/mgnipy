@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: MGnify API
-  version: v1 (emgapi_v1)
+  version: 1.0.0 # manually changed from v1 (emgapi_v1)
   description: |
     General MGnify documentation is available on Read the Docs: https://emg-docs.readthedocs.io/
 paths:

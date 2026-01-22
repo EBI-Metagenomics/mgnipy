@@ -56,5 +56,5 @@ coverage.xml
 cover/
 
 
-auto-client1/*
-auto-client2/*
+openapi/auto-client1/*
+openapi/auto-client2/*
