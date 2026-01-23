@@ -56,5 +56,5 @@ coverage.xml
 cover/
 
 
-openapi/auto-client1/*
-openapi/auto-client2/*
+openapi/mgni-py-v1/*
+openapi/mgni-py-v2/*

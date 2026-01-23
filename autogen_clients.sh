@@ -3,8 +3,8 @@
 # should have "MGnify API (emgapi_v1).yaml", config-v1.yaml, config-v2.yaml in FOLDER_PATH"
 
 FOLDER_PATH=${1:-"openapi"}
-PROJECT_NAME_ONE=${2:-"auto-client1"}
-PROJECT_NAME_TWO=${3:-"auto-client2"}
+PROJECT_NAME_ONE=${2:-"mgni-py-v1"}
+PROJECT_NAME_TWO=${3:-"mgni-py-v2"}
 
 # for v1
 # file downloaded from https://www.ebi.ac.uk/metagenomics/api/schema
