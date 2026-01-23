@@ -1,4 +1,4 @@
-# MGni.py
+# MGnipy
 
 MGni.py is a Python client library (SDK/wrapper) for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/), supporting both version 1 and version 2. This library is auto-generated using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client), providing convenient access to MGnify's programmatic interface.
 

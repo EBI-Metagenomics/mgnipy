@@ -3,7 +3,7 @@
 Install the code with development dependencies:
 
 ```bash
-pip install -e '.[dev]'
+uv sync --all-groups
 ```
 
 ## Format code and sort imports
