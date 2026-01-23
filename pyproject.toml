@@ -22,9 +22,8 @@ classifiers = [
 license = "GPL-3.0-or-later" # https://choosealicense.com/licenses/gpl-3.0/
 dependencies = [
     "anndata>=0.10.9",
-    "auto-client1",
-    "auto-client2",
-    "m-gnify-api-client",
+    "mgni-py-v1",
+    "mgni-py-v2",
     "numpy>=2.0.2",
     "pandas>=2.3.3",
     "pydantic>=2.12.5",
@@ -37,7 +36,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "auto-client1",
     "black[jupyter]>=25.11.0",
     "isort>=6.1.0",
     "openapi-python-client>=0.17.3",
@@ -77,9 +75,8 @@ include = ["mgnipy*"]
 [tool.setuptools_scm]
 
 [tool.uv.sources]
-auto-client1 = { path = "openapi/dist/auto_client1-1.0.0-py3-none-any.whl" }
-auto-client2 = { path = "openapi/dist/auto_client2-2.0.0-py3-none-any.whl" }
-m-gnify-api-client = { path = "openapi/dist/m_gnify_api_client-2.0.0-py3-none-any.whl" }
+mgni-py-v1 = { path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" }
+mgni-py-v2 = { path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" }
 
 
 

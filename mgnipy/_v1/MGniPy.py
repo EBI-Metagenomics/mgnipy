@@ -103,7 +103,7 @@ def prep_taxa_file(
 
     # preconditions
     # check file exists
-    assert_path(file)
+    #assert_path(file)
     # check pipe_ver is numeric
     if not isinstance(pipe_ver, (int, float)):
         try:
@@ -344,68 +344,68 @@ def add_analysis_metadata(
     )
 
 
-def find_missing_geolocation(
-    df:pd.DataFrame,
-    longitude_col:str = 'longitude',
-    latitude_col:str = 'latitude',
-    geolocation_col:str = 'geolocation',
-    geolocation_type:str = 'country',
-    cache_dir:str = 'tmp/mgnify_cache/find_missing_geoloc.csv',
-):
-    # check cache first
-    if os.path.exists(cache_dir):
-        print(f"Cache found at {cache_dir}, loading...")
-        find_missing_geoloc = pd.read_csv(cache_dir)
+# def find_missing_geolocation(
+#     df:pd.DataFrame,
+#     longitude_col:str = 'longitude',
+#     latitude_col:str = 'latitude',
+#     geolocation_col:str = 'geolocation',
+#     geolocation_type:str = 'country',
+#     cache_dir:str = 'tmp/mgnify_cache/find_missing_geoloc.csv',
+# ):
+#     # check cache first
+#     if os.path.exists(cache_dir):
+#         print(f"Cache found at {cache_dir}, loading...")
+#         find_missing_geoloc = pd.read_csv(cache_dir)
 
-    else:
-        # fill in missing geolocation data using geopy
-        # init
-        geolocator = Nominatim(user_agent="gis_assignment")
-        # how many missing geolocation data?
-        print(df[geolocation_col].isna().sum(), " missing geolocation data")
+#     else:
+#         # fill in missing geolocation data using geopy
+#         # init
+#         geolocator = Nominatim(user_agent="gis_assignment")
+#         # how many missing geolocation data?
+#         print(df[geolocation_col].isna().sum(), " missing geolocation data")
 
-        find_missing_geoloc = df[
-            df[geolocation_col].isna()
-        ][[latitude_col, longitude_col]].drop_duplicates().reset_index(drop=True)
-        # init col
-        find_missing_geoloc[cache_dir+geolocation_type] = ""
+#         find_missing_geoloc = df[
+#             df[geolocation_col].isna()
+#         ][[latitude_col, longitude_col]].drop_duplicates().reset_index(drop=True)
+#         # init col
+#         find_missing_geoloc[cache_dir+geolocation_type] = ""
 
-        # o kfor now
-        for i in find_missing_geoloc.index:
+#         # o kfor now
+#         for i in find_missing_geoloc.index:
 
-            lat = find_missing_geoloc.loc[i, latitude_col]
-            lon = find_missing_geoloc.loc[i, longitude_col]
-            # search
-            location = geolocator.reverse((lat, lon), language='en')
+#             lat = find_missing_geoloc.loc[i, latitude_col]
+#             lon = find_missing_geoloc.loc[i, longitude_col]
+#             # search
+#             location = geolocator.reverse((lat, lon), language='en')
 
-            if location is not None:
-                located = location.raw['address'].get(geolocation_type)
-                find_missing_geoloc.loc[i, cache_dir+geolocation_type] = located
+#             if location is not None:
+#                 located = location.raw['address'].get(geolocation_type)
+#                 find_missing_geoloc.loc[i, cache_dir+geolocation_type] = located
 
-            # verbose
-            if i % 10 == 0:
-                print(f"Processing index {i}: {located}")
+#             # verbose
+#             if i % 10 == 0:
+#                 print(f"Processing index {i}: {located}")
 
-            time.sleep(1)
+#             time.sleep(1)
 
-        # save the results to cache 
-        find_missing_geoloc.to_csv(cache_dir, index=False)
+#         # save the results to cache 
+#         find_missing_geoloc.to_csv(cache_dir, index=False)
 
-    # add back to original df
-    # temp column for geolocation
-    df_new = pd.merge(
-        df, find_missing_geoloc,
-        on = [latitude_col, longitude_col],
-        how='left',
-    ) 
-    # replace with located geolocation if na
-    df_new[geolocation_col] = np.where(
-        df_new[geolocation_col].isna(), 
-        df_new[cache_dir+geolocation_type], 
-        df_new[geolocation_col]
-    )
-    # drop temp column
-    return df_new.drop(columns=[cache_dir+geolocation_type]) 
+#     # add back to original df
+#     # temp column for geolocation
+#     df_new = pd.merge(
+#         df, find_missing_geoloc,
+#         on = [latitude_col, longitude_col],
+#         how='left',
+#     ) 
+#     # replace with located geolocation if na
+#     df_new[geolocation_col] = np.where(
+#         df_new[geolocation_col].isna(), 
+#         df_new[cache_dir+geolocation_type], 
+#         df_new[geolocation_col]
+#     )
+#     # drop temp column
+#     return df_new.drop(columns=[cache_dir+geolocation_type]) 
 
 
 def combine_abund_meta(

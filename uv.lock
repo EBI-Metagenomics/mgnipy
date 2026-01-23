@@ -134,46 +134,6 @@ wheels = [
 ]
 
 [[package]]
-name = "auto-client1"
-version = "1.0.0"
-source = { path = "openapi/dist/auto_client1-1.0.0-py3-none-any.whl" }
-dependencies = [
-    { name = "attrs" },
-    { name = "httpx" },
-    { name = "python-dateutil" },
-]
-wheels = [
-    { filename = "auto_client1-1.0.0-py3-none-any.whl", hash = "sha256:1ed1fb2ec2a0f5f4e8c47f1942e0517a836f6cab6c9bd8622f61018cce8d6c03" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "attrs", specifier = ">=22.2.0" },
-    { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
-    { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
-]
-
-[[package]]
-name = "auto-client2"
-version = "2.0.0"
-source = { path = "openapi/dist/auto_client2-2.0.0-py3-none-any.whl" }
-dependencies = [
-    { name = "attrs" },
-    { name = "httpx" },
-    { name = "python-dateutil" },
-]
-wheels = [
-    { filename = "auto_client2-2.0.0-py3-none-any.whl", hash = "sha256:13be5669bda497a2ad90288e27f71ddd9f86be6050b2438474246c4a05c104a2" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "attrs", specifier = ">=22.2.0" },
-    { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
-    { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
-]
-
-[[package]]
 name = "babel"
 version = "2.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1022,26 +982,6 @@ wheels = [
 ]
 
 [[package]]
-name = "m-gnify-api-client"
-version = "2.0.0"
-source = { path = "openapi/dist/m_gnify_api_client-2.0.0-py3-none-any.whl" }
-dependencies = [
-    { name = "attrs" },
-    { name = "httpx" },
-    { name = "python-dateutil" },
-]
-wheels = [
-    { filename = "m_gnify_api_client-2.0.0-py3-none-any.whl", hash = "sha256:9e50190a768fe807ef6a205b8750a1f791a988ab347d32893bb320feb13baa42" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "attrs", specifier = ">=22.2.0" },
-    { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
-    { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
-]
-
-[[package]]
 name = "markdown-it-py"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1192,14 +1132,53 @@ wheels = [
 ]
 
 [[package]]
+name = "mgni-py-v1"
+version = "1.0.0"
+source = { path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" }
+dependencies = [
+    { name = "attrs" },
+    { name = "httpx" },
+    { name = "python-dateutil" },
+]
+wheels = [
+    { filename = "mgni_py_v1-1.0.0-py3-none-any.whl", hash = "sha256:cfada99048cbbde2e466da384777e61e94f74da228627235f488cd8a5c0db3ab" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "attrs", specifier = ">=22.2.0" },
+    { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
+    { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
+]
+
+[[package]]
+name = "mgni-py-v2"
+version = "2.0.0"
+source = { path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" }
+dependencies = [
+    { name = "attrs" },
+    { name = "httpx" },
+    { name = "python-dateutil" },
+]
+wheels = [
+    { filename = "mgni_py_v2-2.0.0-py3-none-any.whl", hash = "sha256:c6fadf67e96e0b8a28e51f2256881862197e527d4e1b021782fef315457efe4c" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "attrs", specifier = ">=22.2.0" },
+    { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
+    { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
+]
+
+[[package]]
 name = "mgnipy"
 source = { editable = "." }
 dependencies = [
     { name = "anndata", version = "0.11.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "anndata", version = "0.12.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "auto-client1" },
-    { name = "auto-client2" },
-    { name = "m-gnify-api-client" },
+    { name = "mgni-py-v1" },
+    { name = "mgni-py-v2" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pandas" },
@@ -1212,7 +1191,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "auto-client1" },
     { name = "black", extra = ["jupyter"] },
     { name = "isort" },
     { name = "openapi-python-client" },
@@ -1235,9 +1213,8 @@ docs = [
 [package.metadata]
 requires-dist = [
     { name = "anndata", specifier = ">=0.10.9" },
-    { name = "auto-client1", path = "openapi/dist/auto_client1-1.0.0-py3-none-any.whl" },
-    { name = "auto-client2", path = "openapi/dist/auto_client2-2.0.0-py3-none-any.whl" },
-    { name = "m-gnify-api-client", path = "openapi/dist/m_gnify_api_client-2.0.0-py3-none-any.whl" },
+    { name = "mgni-py-v1", path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" },
+    { name = "mgni-py-v2", path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" },
     { name = "numpy", specifier = ">=2.0.2" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "pydantic", specifier = ">=2.12.5" },
@@ -1248,7 +1225,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "auto-client1", path = "openapi/dist/auto_client1-1.0.0-py3-none-any.whl" },
     { name = "black", extras = ["jupyter"], specifier = ">=25.11.0" },
     { name = "isort", specifier = ">=6.1.0" },
     { name = "openapi-python-client", specifier = ">=0.17.3" },

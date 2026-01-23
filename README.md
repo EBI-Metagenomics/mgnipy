@@ -1,50 +1,37 @@
-# Example Python package
+# MGni.py
 
-All design principles are explained in the [developing.md](developing.md) file.
-The Python package template was created by Jakob Nybo Nissen and Henry Webel.
+MGni.py is a Python client library (SDK/wrapper) for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/), supporting both version 1 and version 2. This library is auto-generated using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client), providing convenient access to MGnify's programmatic interface.
 
-## How to use
+## Features
 
-Can be used as GitHub template repository,
-see [GitHub documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+- Supports MGnify API v1 and v2 endpoints
+- Typed Python models and methods for API resources
+- Easy integration into Python projects
+- Auto-generated and up-to-date with MGnify OpenAPI specs
 
-You will need to find and replace occurences of
+## Installation
 
-- `mgnipy` -> `your_package_name`
-  - also the folder `mgnipy`
-- `angelphanth` -> `GitHub_user_name` (or `organization`)
-  with the name of your package and GitHub user name (or organization).
-
-- look for `First Last` to see where to replace with your name
-- choose a license, see [GitHub documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/licensing-a-repository)
-  and [Creative Commons](https://creativecommons.org/chooser/).
-  Replace [`LICENSE`](LICENSE) file with the license you choose.
-- Update the `CITATION.cff` file with your information.
-
-## Development environment
-
-Install package so that new code is picked up in a restared python interpreter:
-
-```
-pip install -e ".[dev]"
+```bash
+pip install mgnipy
 ```
 
-## Basic usage
-
-> works using this template
+## Usage
 
 ```python
-from mgnipy import hello_world
-print (mgnipy.__version__)
-print(hello_world(4))
+TODO
 ```
 
-## Readthedocs
+## Documentation
 
-The documentation can be build using readthedocs automatically. See
-[project on Readthedocs](https://readthedocs.org/projects/angelphanth-python-package/)
-for the project based on this template. A new project needs
-to [be registered on ReadTheDocs](https://docs.readthedocs.com/platform/stable/intro/add-project.html).
+- [MGnify API Docs](https://www.ebi.ac.uk/metagenomics/api/docs/)
+- [openapi-python-client](https://github.com/openapi-generators/openapi-python-client)
 
-- make sure to enable build from PRs in the settings (advanded settings)
-- checkout configuration file: [`.readthedocs.yaml`](.readthedocs.yaml)
+## Development
+
+TODO
+
+## License
+
+TODO
+
+

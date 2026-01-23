@@ -39,11 +39,6 @@ extensions = [
     "sphinx_copybutton",  # add copy button to code blocks
 ]
 
-#  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
-nb_execution_mode = "auto"
-
-myst_enable_extensions = ["dollarmath", "amsmath"]
-
 # Plotly support through require javascript library
 # https://myst-nb.readthedocs.io/en/latest/render/interactive.html#plotly
 html_js_files = [
@@ -53,15 +48,14 @@ os.environ["PLOTLY_RENDERER"] = "notebook"  # compatibility with plotly6
 
 # https://myst-nb.readthedocs.io/en/latest/configuration.html
 # Execution
+#  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
+nb_execution_mode = "auto"
+nb_execution_timeout = -1  # -1 means no timeout
 nb_execution_raise_on_error = True
 # Rendering
 nb_merge_streams = True
 
-# https://myst-nb.readthedocs.io/en/latest/authoring/custom-formats.html#write-custom-formats
-# ! if you use it, then you cannot directly execute the notebook in the browser in colab
-# (the file needs to be fetched from the repository)
-# just keep both syncing it using papermill
-# nb_custom_formats = {".py": ["jupytext.reads", {"fmt": "py:percent"}]}
+myst_enable_extensions = ["dollarmath", "amsmath"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -81,7 +75,9 @@ exclude_patterns = [
 # Intersphinx options
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    # "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "anndata": ("https://anndata.readthedocs.io/en/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
     # "scikit-learn": ("https://scikit-learn.org/stable/", None),
     # "matplotlib": ("https://matplotlib.org/stable/", None),
 }
@@ -94,8 +90,8 @@ intersphinx_mapping = {
 # https://github.com/executablebooks/MyST-NB/blob/master/docs/conf.py
 # html_title = ""
 html_theme = "sphinx_book_theme"
-# html_logo = "_static/logo-wide.svg"
-# html_favicon = "_static/logo-square.svg"
+html_logo = "assets/mgnipy.svg"
+html_favicon = "assets/mgnipy.svg"
 html_theme_options = {
     "github_url": "https://github.com/angelphanth/mgnipy",
     "repository_url": "https://github.com/angelphanth/mgnipy",
