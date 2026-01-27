@@ -1,6 +1,8 @@
 <!-- https://github.com/mozilla/releases-comm-central/blob/master/AUTHORS
 https://github.com/OpenTTD/OpenTTD/blob/master/CREDITS.md -->
 
+# Thank you
+
 A list of people who have contributed to this repository. You may add your name and github or email if you'd like. 
 
 ### From the Microbiome Informatics team @ The European Bioinformatics Institute (EMBL-EBI):

@@ -126,7 +126,10 @@ if os.environ.get("READTHEDOCS") == "True":
     from pathlib import Path
 
     PROJECT_ROOT = Path(__file__).parent.parent
+    print(f"PROJECT_ROOT: {PROJECT_ROOT}")
     PACKAGE_ROOT = PROJECT_ROOT / "mgnipy"
+    CLIENT_ROOT_V1 = PROJECT_ROOT / "openapi" / "mgni-py-v1" / "mgni_py_v1"
+    CLIENT_ROOT_V2 = PROJECT_ROOT / "openapi" / "mgni-py-v2" / "mgni_py_v2"
 
     def run_apidoc(_):
         from sphinx.ext import apidoc
@@ -138,12 +141,34 @@ if os.environ.get("READTHEDOCS") == "True":
                 "--module-first",
                 "--separate",
                 "-o",
-                str(PROJECT_ROOT / "docs" / "reference"),
+                str(PROJECT_ROOT / "docs" / "reference" / "mgnipy"),
                 str(PACKAGE_ROOT),
                 str(PACKAGE_ROOT / "*.c"),
                 str(PACKAGE_ROOT / "*.so"),
             ]
         )
+
+        apidoc.main([
+            "--force",
+            "--implicit-namespaces",
+            "--module-first",
+            "--separate",
+            "-o", str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v1"),
+            str(CLIENT_ROOT_V1),
+            str(CLIENT_ROOT_V1 / "*.c"),
+            str(CLIENT_ROOT_V1 / "*.so"),
+        ])
+
+        apidoc.main([
+            "--force",
+            "--implicit-namespaces",
+            "--module-first",
+            "--separate",
+            "-o", str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v2"),
+            str(CLIENT_ROOT_V2),
+            str(CLIENT_ROOT_V2 / "*.c"),
+            str(CLIENT_ROOT_V2 / "*.so"),
+        ])
 
     def setup(app):
         app.connect("builder-inited", run_apidoc)

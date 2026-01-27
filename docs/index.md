@@ -30,7 +30,9 @@ openapi-py-client/intro-openapi-python-client
 :caption: "Reference"
 :hidden: false
 
-reference/mgnipy
+reference/mgnipy/mgnipy
+reference/mgni-py-v1/mgni_py_v1
+reference/mgni-py-v2/mgni_py_v2
 ```
 <!-- 
 ```{toctree}
@@ -47,3 +49,7 @@ developing
 - [Index](genindex)
 - [Module Index](modindex)
 - [Search](search)
+
+```{include} ../CREDITS.md
+:start-line: 0
+```
