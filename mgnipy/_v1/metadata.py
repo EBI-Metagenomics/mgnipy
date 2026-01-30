@@ -21,6 +21,7 @@ from typing import Optional, Any
 from mgni_py_v1.types import Response
 
 from urllib.parse import urlencode
+from mgnipy._internal_functions.utils import create_folder
 
 
 metadata_modules = {
@@ -32,8 +33,6 @@ metadata_modules = {
 
 CONCURRENCY = 5
 semaphore = asyncio.Semaphore(CONCURRENCY)
-CHECKPOINT_EVERY_N_PAGES = 3
-
 
 # init for each model
 class Mgnifier:
@@ -49,14 +48,26 @@ class Mgnifier:
         db: SE | None = None,
         params: dict | None = None,
         base_url: HttpUrl = 'https://www.ebi.ac.uk/metagenomics/api/',
-        cache_dir: Path = Path('tmp/mgnify_cache'),
+        checkpoint_dir: Optional[Path] = None,
+        checkpoint_freq: Optional[int] = None,
         **kwargs,
     ):
         # url
         self._api_version = "v1"
         self._base_url = base_url
         self._db = db
-        self._cache_dir = cache_dir
+        self._mpy_module = metadata_modules[db]
+
+        # prep checkpoint if
+        self._checkpoint_dir = checkpoint_dir
+        self._checkpoint_freq = checkpoint_freq or 3
+        # create checkpoint dir 
+        if self._checkpoint_dir is not None:
+            create_folder(self._cache_dir)
+            self._checkpoint_fpath = os.path.join(
+                self._cache_dir,
+                f"{self._mpy_module.__name__}.csv"
+            )
 
         # params
         self._params = params or {}
@@ -67,15 +78,11 @@ class Mgnifier:
 
         self._url = self._build_url()
 
-        # getting things started using the autoclient
-        self._mpy_module = metadata_modules[db]
-
         # cache
         self._total_pages = None
         self._cached_first_page = None
-        self._checkpoint = None
         self._cached_the_rest = None
-
+        self._page_checkpoint = 0
 
     def __getattr__(self, name: str):
         if name == "mgni_py_client":
@@ -99,6 +106,7 @@ class Mgnifier:
         self._current_page = resp_dict['meta']['pagination']['page']
         self._count = resp_dict['meta']['pagination']['count']
         self._cached_first_page = resp_dict['data']
+        self._page_checkpoint = 1
 
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
@@ -180,7 +188,10 @@ class Mgnifier:
 
         if pages is None: 
             print(f"No pages specified, collecting all...")
-            pages = list(range(1, self._total_pages + 1))
+            pages = list(range(self._page_checkpoint+1, self._total_pages+1))
+
+            # init TODO: dict?
+            results = [self.response_df(self._cached_first_page)] if self._cached_first_page else []
         
 
         elif isinstance(pages, list):
@@ -189,6 +200,8 @@ class Mgnifier:
                     f"One or more specified pages exceed total pages {self._total_pages}."
                     f"Specified pages: {pages}"
                 )
+            
+            results = [] 
             print(f"Collecting specified pages: {pages}...")
 
         else:
@@ -203,12 +216,17 @@ class Mgnifier:
             async_tasks.append(task)
 
         # gathering results as completed
-        results = {}
         for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
             result = await task
-            page_num = getattr(task, "page", None) #FIXME why all none 
-            results[page_num] = result
-        
+            #page_num = getattr(task, "page", None) #FIXME why all none 
+            results.append(self.response_df(result))
+            # checkpointing
+            self._page_checkpoint += 1
+
+            if self._checkpoint_dir is not None and self._page_checkpoint % self._checkpoint_freq == 0:
+                print(f"Checkpointing at page {self._page_checkpoint}...")
+                self._save_checkpoint()
+
         return results
     
     async def collect(self, pages:Optional[list[int]]=None):
@@ -216,8 +234,18 @@ class Mgnifier:
         print(self._url)
 
         async with self._init_client() as client:
-            results = await self._collector(client, pages=pages)
+            self._results = await self._collector(client, pages=pages)
 
         # process results
         # TODOa
-        return results
+        return self.response_df(self._results)
+
+
+    def _csv_checkpointer(self, results):
+        pd.DataFrame(
+            results
+        ).to_csv(
+            self._checkpoint_fpath,
+            delimiter=',',
+            index=False
+        )
