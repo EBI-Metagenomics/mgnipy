@@ -1,38 +1,30 @@
 
 import asyncio
-from pydantic import BaseModel, HttpUrl
+import json
 from pathlib import Path
 import pandas as pd
 import os
-
 from tqdm import tqdm
-
-from mgnipy._pydantic_models.CONSTANTS import (
-    SupportedApiVersions as SV, 
-    SupportedEndpoints as SE
-)
 from mgni_py_v1 import Client
 from mgni_py_v1.api.analyses import analyses_list
 from mgni_py_v1.api.studies import studies_list
 from mgni_py_v1.api.biomes import biomes_list
-
-from typing import Optional, Any
-
+from typing import Literal, Optional, Any
 from mgni_py_v1.types import Response
-
 from urllib.parse import urlencode
-from mgnipy._internal_functions.utils import create_folder
+from mgnipy._internal_functions import create_folder
 
-
-metadata_modules = {
+#args
+CONCURRENCY = 5
+METADATA_MODULES = {
     "analyses": analyses_list,
     "studies": studies_list,
     "biomes": biomes_list,
     None: studies_list,
 }
 
-CONCURRENCY = 5
 semaphore = asyncio.Semaphore(CONCURRENCY)
+
 
 # init for each model
 class Mgnifier:
@@ -45,30 +37,34 @@ class Mgnifier:
     def __init__(
         self,
         *,
-        db: SE | None = None,
-        params: dict | None = None,
-        base_url: HttpUrl = 'https://www.ebi.ac.uk/metagenomics/api/',
+        db: Optional[Literal["analyses", "studies", "biomes"]] = None,
+        params: Optional[dict[str, Any]] = None,
         checkpoint_dir: Optional[Path] = None,
         checkpoint_freq: Optional[int] = None,
         **kwargs,
     ):
         # url
         self._api_version = "v1"
-        self._base_url = base_url
+        self._base_url = 'https://www.ebi.ac.uk/metagenomics/api/'
         self._db = db
-        self._mpy_module = metadata_modules[db]
+        self._mpy_module = METADATA_MODULES[db]
 
         # prep checkpoint if
         self._checkpoint_dir = checkpoint_dir
         self._checkpoint_freq = checkpoint_freq or 3
+        self._checkpoint_csv = None
+        self._checkpoint_json = None
         # create checkpoint dir 
         if self._checkpoint_dir is not None:
-            create_folder(self._cache_dir)
-            self._checkpoint_fpath = os.path.join(
-                self._cache_dir,
+            create_folder(self._checkpoint_dir)
+            self._checkpoint_csv = os.path.join(
+                self._checkpoint_dir,
                 f"{self._mpy_module.__name__}.csv"
             )
-
+            self._checkpoint_json = os.path.join(
+                self._checkpoint_dir,
+                f"{self._mpy_module.__name__}.json"
+            )
         # params
         self._params = params or {}
         if kwargs:
@@ -84,6 +80,7 @@ class Mgnifier:
         self._cached_the_rest = None
         self._page_checkpoint = 0
 
+
     def __getattr__(self, name: str):
         if name == "mgni_py_client":
             return self._init_client()
@@ -93,7 +90,8 @@ class Mgnifier:
 
     def plan(self):
         """
-        Allows the user to see the numb er of pages/records to be retrieved before retrieving all data.
+        Allows the user to see the numb er of pages/records to be retrieved 
+        before retrieving all data.
         """
         print("Planning the API call with params:")
         print(self._params)
@@ -125,13 +123,36 @@ class Mgnifier:
         return self.response_df(self._cached_first_page)
 
 
+    async def collect(self, pages:Optional[list[int]]=None):
+
+        print(self._url)
+
+        async with self._init_client() as client:
+            self._results = await self._collector(client, pages=pages)
+
+        return pd.DataFrame(self._results)
+
+
+    async def continue_collect(self):
+        print("Continuing collection from checkpoint...")
+        if self._checkpoint_dir is None:
+            raise ValueError("No checkpoint directory specified during initialization.")
+        if not os.path.exists(self._checkpoint_json):
+            raise FileNotFoundError(f"No checkpoint file found at {self._checkpoint_json}")
+
+        pass
+        # TODO load checkpoint info
+
     # TODO pandera schema for data validation
     def response_df(self, data:dict)->pd.DataFrame:
         """helper functinon to expand attributes column into separate columns"""
         df = pd.DataFrame(data)
-        attr_df = pd.json_normalize(df['attributes']) 
-        df_extended = pd.concat([df.drop(columns=['attributes']), attr_df], axis=1)
-        return df_extended
+        if 'attributes' not in df.columns:
+            return df
+        else:
+            attr_df = pd.json_normalize(df['attributes']) 
+            df_extended = pd.concat([df.drop(columns=['attributes']), attr_df], axis=1)
+            return df_extended
 
 
     # helpers
@@ -175,9 +196,10 @@ class Mgnifier:
             )
 
 
-    async def _collector(self, client, pages:Optional[list[int]]=None):
+    async def _collector(
+        self, client, pages:Optional[list[int]]=None
+    ):
 
-        
         # not allow to run this without preview/plan first?
         if self._total_pages is None:
             raise AssertionError(
@@ -192,7 +214,6 @@ class Mgnifier:
 
             # init TODO: dict?
             results = [self.response_df(self._cached_first_page)] if self._cached_first_page else []
-        
 
         elif isinstance(pages, list):
             if not all(p<=self._total_pages for p in pages):
@@ -225,27 +246,27 @@ class Mgnifier:
 
             if self._checkpoint_dir is not None and self._page_checkpoint % self._checkpoint_freq == 0:
                 print(f"Checkpointing at page {self._page_checkpoint}...")
-                self._save_checkpoint()
+                self._save_checkpoint(results)
 
         return results
-    
-    async def collect(self, pages:Optional[list[int]]=None):
-
-        print(self._url)
-
-        async with self._init_client() as client:
-            self._results = await self._collector(client, pages=pages)
-
-        # process results
-        # TODOa
-        return self.response_df(self._results)
 
 
     def _csv_checkpointer(self, results):
         pd.DataFrame(
             results
         ).to_csv(
-            self._checkpoint_fpath,
+            self._checkpoint_csv,
             delimiter=',',
             index=False
         )
+
+        with open(self._checkpoint_json, "w") as f:
+            json.dump(
+                {
+                    "page_checkpoint": self._page_checkpoint,
+                    "params": self._params,
+                    "db": self._db,
+                    "checkpoint_freq": self._checkpoint_freq,
+                },
+                f, indent=2
+            )

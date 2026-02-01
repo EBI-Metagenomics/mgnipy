@@ -2,8 +2,8 @@ from importlib import metadata
 
 __version__ = metadata.version("mgnipy")
 
-from ._v1.MGniPy import MgnifyClient
+from .metadata._v1 import Mgnifier
 
 # import when "from example import *"
-__all__ = ["MgnifyClient"]
+#__all__ = ["MgnifyClient"]
 
