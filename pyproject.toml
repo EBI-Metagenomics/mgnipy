@@ -65,6 +65,7 @@ profile = "black"
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/tutorial/#rule-selection
 extend-select = ["E", "W", "F", "B"]
+ignore = ["E501"]  # ignore line length for now
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
@@ -91,5 +92,5 @@ requires = ["setuptools>=64", "setuptools_scm>=8"]
 mgnipy-hello = "mgnipy.cli:main"
 
 [project.urls]
-"Bug Tracker" = "https://github.com/angelphanth/mgnipy/issues"
-"Homepage" = "https://github.com/angelphanth/mgnipy"
+"Bug Tracker" = "https://github.com/EBI-Metagenomics/mgnipy/issues"
+"Homepage" = "https://github.com/EBI-Metagenomics/mgnipy"

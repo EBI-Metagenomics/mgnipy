@@ -7,89 +7,122 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.0
 #   kernelspec:
-#     display_name: .venv
+#     display_name: mgnipy
 #     language: python
 #     name: python3
 # ---
 
 # %% [markdown]
-# # Understanding the client library generated using `openapi-python-client`
+# # Understanding the python client libraries generated using `openapi-python-client`
 #
-# - with a demo? 
-# - mgnipy will be a wrapper or sdk for the api
-# - as the generated read me states:
+# <details>
+# <summary style=color:green> 
+# As stated in the README:
+# </summary>
+# <h1></h1>
 #
-# > 1. Every path/method combo becomes a Python module with four functions:
-# >    1. `sync`: Blocking request that returns parsed data (if successful) or `None`
-# >    1. `sync_detailed`: Blocking request that always returns a `Request`, optionally with `parsed` set if the request was successful.
-# >    1. `asyncio`: Like `sync` but async instead of blocking
-# >    1. `asyncio_detailed`: Like `sync_detailed` but async instead of blocking
-# >
-# > 1. All path/query params, and bodies become method arguments.
-# > 1. If your endpoint had any tags on it, the first tag will be used as a module name for the function (my_tag above)
-# > 1. Any endpoint which did not have a tag will be in `mgnipy_one.api.default`
+# Every path/method combo becomes a Python module with four functions:
+# 1. `sync`: Blocking request that returns parsed data (if successful) or `None`
+# 2. `sync_detailed`: Blocking request that always returns a `Request`, optionally with `parsed` set if the request was successful.
+# 3.  `asyncio`: Like `sync` but async instead of blocking
+# 4. `asyncio_detailed`: Like `sync_detailed` but async instead of blocking
 #
-# - so basically we will get the path/method and matching datamodel
-# - pass along the user given params
-# - make the get request and then transform the result/response
-#     - df
-#     - anndata
-# - caching??
+# - All path/query params, and bodies become method arguments.
+# - If your endpoint had any tags on it, the first tag will be used as a module name for the function (my_tag above)
 #
+# <h1></h1>
+# </details>
+# <br>
+#
+# Below we will have an example where we will get all studies of the biome and their sample counts: Root:Host-associated:Plants:Rhizosphere
+#
+# -----
 
 # %% [markdown]
-# yes so to get started we will use an example of getting all study ids and their sample counts 
+# At a minimum:
 #
-# e.g. `https://www.ebi.ac.uk/metagenomics/api/v1/studies?biome_name=root%3AHost-associated%3APlants%3ARhizosphere`
+# 1. We need to find the appropriate module for our query: `studies/studies_list.py`
+# 2. Provide the `mgni_py.Client` instance
+# 3. (Optional) add type annotations
+#
+# 2. the client
+# from mgni_py_v1 import Client as ClientOne
 
 # %%
-# the path 
+# at minimum need
+# 1. the path 
 from mgni_py_v1.api.studies import studies_list
-# the client
-from mgni_py_v1 import Client as ClientOne
-# the models
+from mgni_py_v1 import Client
+
+# extra nice to have annotations
+# 3. the models
 from mgni_py_v1.models import PaginatedStudyList
-from mgni_py_v1.types import Response, UNSET
+from mgni_py_v1.types import UNSET, Response
 
-base_url = "https://www.ebi.ac.uk/metagenomics/api"
-params = dict(
-    biome_name="root:Host-associated:Plants:Rhizosphere",
-    page_size=25,#default
-    search=UNSET
-
-)
+# %% [markdown]
+# To instantiate the python client we really only need the base_url. However there are options for loggiing and other httpx args. 
+#
+# `mgni_py_v1.Client` will take care of constructing and closing the httpx clients
 
 # %%
-biome_name = "root:Host-associated:Plants:Rhizosphere"
-search = UNSET
-page_size = 25 #default
-
-# takes care of constructing and closing the httpx clients
-client = ClientOne(
-    base_url=base_url,
+example_client = Client(
+    base_url = "https://www.ebi.ac.uk/metagenomics/api/"
 )
+# check it out
+print(example_client)
 
-with client as client:
-    response: Response[PaginatedStudyList] = studies_list.sync_detailed(
-        client=client, biome_name=biome_name, search=search, page_size=page_size
+# %% [markdown]
+# The get request is made when running the `.sync...()` or `.async...()` functions. For example if executing
+# ```python
+# with example_client as client:
+#     response = studies_list.sync_detailed(
+#         client=client, page_size=10
+#     )
+# ```
+# the order of the methods within `studies_list.py` is:
+#
+# 1. `_get_kwargs` to prepare the query params, ensuring that the kwarg exists e.g. that `page_size` is an acceptable kwarg
+# 2. the httpx request is made with the kwargs
+# 3. `_build_response` to prepare as `Response` type
+# 4. In the `Response` is attribute `Response.parsed` which uses `_parse_response` to get response as json / dict
+#
+# The difference between with and sans `..._detailed()` is that with returns the whole response and sans only returns the parsed response. 
+#
+# -----
+#
+# We will now make carry out the example request to get all studies of biome "root:Host-associated:Plants:Rhizosphere".
+
+# %%
+# prep our search
+params = {
+    "biome_name": "root:Host-associated:Plants:Rhizosphere",
+    #this is default num of results per page in mgnify
+    "page_size": 25,
+    #"search": UNSET 
+}
+
+# make the sync call and store respone
+with example_client as client:
+    response = studies_list.sync_detailed(
+        client=client, **params
     )
 
-
-
-# %%
-response.parsed.to_dict()['data'][0]
-
-# %%
+# check 
 response.status_code
 
 # %% [markdown]
+# and if we take a look at the parsed content:
+
+# %%
+response.parsed.to_dict().keys()
+
+# %% [markdown]
+# - In `data` is the study metadata
+#     - for the first page of results only
+# - In `meta` is information on how many results and how many pages thaose results are spread out on based on the given `page_size`
 #
+# Note: you need to instantiate a new client object every call
 
 # %%
-# import tqdm.asyncio
+# TODO explore and get the number of samples from data
 
-# %%
-# for f in tqdm.asyncio.tqdm.as_completed(result):
-#     await result
-
-# %%

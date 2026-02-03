@@ -93,8 +93,8 @@ html_theme = "sphinx_book_theme"
 html_logo = "assets/mgnipy.svg"
 html_favicon = "assets/mgnipy.svg"
 html_theme_options = {
-    "github_url": "https://github.com/angelphanth/mgnipy",
-    "repository_url": "https://github.com/angelphanth/mgnipy",
+    "github_url": "https://github.com/EBI-Metagenomics/mgnipy",
+    "repository_url": "https://github.com/EBI-Metagenomics/mgnipy",
     "repository_branch": "main",
     "home_page_in_toc": True,
     "path_to_docs": "docs",

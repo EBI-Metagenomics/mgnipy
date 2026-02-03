@@ -1,3 +1,6 @@
+jupytext openapi-py-client/*.ipynb --sync
+jupytext tutorial/*.ipynb --sync
+
 sphinx-apidoc --force \
     --implicit-namespaces --module-first \
     -o reference/mgnipy ../mgnipy

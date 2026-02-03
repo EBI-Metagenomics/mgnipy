@@ -23,6 +23,16 @@ tutorial/tutorial
 openapi-py-client/README_mgni-py-v1
 openapi-py-client/README_mgni-py-v2
 openapi-py-client/intro-openapi-python-client
+
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: "tutorials"
+:hidden: false
+
+tutorial/demo-mgnify-tomatoes
+
 ```
 
 ```{toctree}
