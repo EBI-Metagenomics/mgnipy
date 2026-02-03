@@ -288,3 +288,91 @@ class Mgnifier:
                 f,
                 indent=2,
             )
+
+
+class SampleMgnifier(Mgnifier):
+    """
+    The Mgnipy SampleMgnifier class is a user-friendly interface for exploring sample metadata from the MGnify API.
+
+    """
+
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        checkpoint_dir: Optional[Path] = None,
+        checkpoint_freq: Optional[int] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            db="samples",
+            params=params,
+            checkpoint_dir=checkpoint_dir,
+            checkpoint_freq=checkpoint_freq,
+            **kwargs,
+        )
+    # TODO
+    
+
+
+class AnalysesMgnifier(Mgnifier):
+    """
+    The Mgnipy AnalysesMgnifier class is a user-friendly interface for exploring analyses metadata from the MGnify API.
+
+    """
+
+    def __init__(
+        self,
+        *,
+        analyses_params: Optional[dict[str, Any]] = None,
+        checkpoint_dir: Optional[Path] = None,
+        checkpoint_freq: Optional[int] = None,
+        search: Optional[Mgnifier | SampleMgnifier] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            db="analyses",
+            params=analyses_params,
+            checkpoint_dir=checkpoint_dir,
+            checkpoint_freq=checkpoint_freq,
+            **kwargs,
+        )
+
+        if search is None: 
+            self._search = None
+        elif isinstance(search, (Mgnifier, SampleMgnifier)):
+            self._search = search
+
+            if self._search.results is None:
+                print("search Mgnifier has no results. Ignoring.")
+            else: 
+                # extract analysis accessions from search results
+                analysis_accessions = []
+                for df in self._search.results:
+                    if "analyses" in df.columns:
+                        for analyses_list in df["analyses"]:
+                            if isinstance(analyses_list, list):
+                                analysis_accessions.extend(analyses_list)
+                # update params to filter analyses by these accessions
+                if "accession" in self._params:
+                    print(
+                        "Warning: 'accession' parameter in analyses_params will be overridden by search results."
+                    )
+                self._params["accession"] = ",".join(analysis_accessions)
+                
+        else:
+            raise ValueError("search must be a Mgnifier or SampleMgnifier instance or None")
+        
+
+
+        if search is not None:
+
+            if self._search.params.results is None: 
+                pass
+
+    # async def go_slim(self, accessions:Optional[list[str]]=None)-> dict:
+
+    #     async with self._init_client() as client:
+    #         self._go_slim_terms = await analyses_go_slim_list.asyncio_detailed(client, accession=acc)
+
+    #     # return pd.DataFrame(self._go_slim_terms)
