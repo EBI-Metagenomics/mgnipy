@@ -79,8 +79,6 @@ class Mgnifier:
             for et in et_param if isinstance(et_param, list) else [et_param]:
                 validate_experiment_type(et)
 
-        self._url = self._build_url()
-
         # cache
         self._total_pages = None
         self._cached_first_page = None
@@ -109,6 +107,8 @@ class Mgnifier:
             return self._init_client()
         elif name == "supported_kwargs":
             return self._get_supported_kwargs()
+        elif name == "request_url":
+            return self._build_url()
         else:
             return self.__dict__[f"_{name}"]
 
@@ -121,7 +121,7 @@ class Mgnifier:
             f"Parameters: {self._params}\n"
             f"Checkpoint Directory: {self._checkpoint_dir}\n"
             f"========================================\n"
-            f"Request URL: {self._url}\n"
+            f"Request URL: {self._build_url()}\n"
         )
 
     def plan(self):
@@ -134,7 +134,7 @@ class Mgnifier:
         print(
             f"Acquiring meta for {self._params.get('page_size', 25)} {self._db} per page..."
         )
-        print(f"Request URL: {self._url}")
+        print(f"Request URL: {self._build_url()}")
         # make get request using mgni_py client
         resp_dict = self._get_request(self._params)
         if resp_dict is None:
@@ -165,7 +165,7 @@ class Mgnifier:
 
     async def collect(self, pages: Optional[list[int]] = None):
 
-        print(self._url)
+        print(self._build_url())
 
         async with self._init_client() as client:
             self._results = await self._collector(client, pages=pages)
@@ -220,7 +220,7 @@ class Mgnifier:
     def _build_url(self) -> str:
         """build url for logging/verbose"""
         start_url = os.path.join(self._base_url, self._api_version, self._db)
-        encoded_params = urlencode(self._params)
+        encoded_params = urlencode(self._params, doseq=True)
         return f"{start_url}/?{encoded_params}"
 
     async def _get_page(self, client: Client, page_num: int) -> Response:
