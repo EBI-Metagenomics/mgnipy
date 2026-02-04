@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 import json
 import os
 from pathlib import Path
@@ -106,6 +107,8 @@ class Mgnifier:
     def __getattr__(self, name: str):
         if name == "mgni_py_client":
             return self._init_client()
+        elif name == "supported_kwargs":
+            return self._get_supported_kwargs()
         else:
             return self.__dict__[f"_{name}"]
 
@@ -304,3 +307,7 @@ class Mgnifier:
                 indent=2,
             )
 
+    def _get_supported_kwargs(self) -> list[str]:
+        """helper function to get supported kwargs for the current mpy module"""
+        sig = inspect.signature(self._mpy_module._get_kwargs)
+        return list(sig.parameters.keys())
