@@ -1,7 +1,14 @@
 # mainly Enum constants for pydantic models
-from pydantic import TypeAdapter, ValidationError
+from pydantic import (
+    TypeAdapter,
+    ValidationError,
+)
 
-from .CONSTANTS import SupportedApiVersions, SupportedEndpoints
+from .CONSTANTS import (
+    ExperimentTypes,
+    SupportedApiVersions,
+    SupportedEndpoints,
+)
 
 
 # define pydantic typeadapters
@@ -17,3 +24,9 @@ def validate_endpoint(input):
         return TypeAdapter(SupportedEndpoints).validate_python(input)
     except ValidationError as e:
         raise ValueError(f"Invalid endpoint: {input}") from e
+
+def validate_experiment_type(input):
+    try:
+        return TypeAdapter(ExperimentTypes).validate_python(input)
+    except ValidationError as e:
+        raise ValueError(f"Invalid experiment type: {input}") from e
