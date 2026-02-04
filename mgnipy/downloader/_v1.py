@@ -34,8 +34,11 @@ class SampleFinder(Mgnifier):
             checkpoint_freq=checkpoint_freq,
             **kwargs,
         )
+        # overwrite, with this can search by biome, experiment, study etc
+        self.mpy_module = samples_list
 
         self._presearch = presearch
+        self._presearch_accessions: Optional[dict[str, str]] = None
         if isinstance(self._presearch, Mgnifier):
             if self._presearch.total_pages is None:
                 raise AssertionError(
@@ -55,17 +58,13 @@ class SampleFinder(Mgnifier):
             elif self._presearch._page_checkpoint == self._presearch.total_pages:
             # have all accessions in results already 
                 presearch_results = pd.concat(self._presearch.results)
-                # print(presearch_results.shape,
-                #     "Columns in presearch results:", 
-                #     presearch_results.columns.tolist()
-                # )
+
                 acc_key = "study_accession" if (
                     presearch_results['type'].unique()[0]=='studies'
                 ) else "accession"
-                # for pass to params
-                self._params[acc_key] = list(presearch_results['accession'])
-                print(list(presearch_results['accession']))
-
+                self._presearch_accessions = {acc_key: list(presearch_results['accession'])}
+                # NOTE: a limitation of api is that only takes last study_accession, need workaround 
+                #self._params.update(self._presearch_accessions)
             else: 
                 self._params.update(self._presearch.params)
                 # TODO for each planned page of presearch will get samples
@@ -73,19 +72,8 @@ class SampleFinder(Mgnifier):
         elif self._presearch is not None:
             raise TypeError("presearch must be a Mgnifier instance or None")
         
-        # need to put page_size to end?
-        #self._params.update({"page_size": self._params['page_size']})
-
-        super().__init__(
-            db="samples",
-            params=self._params,
-            checkpoint_dir=checkpoint_dir,
-            checkpoint_freq=checkpoint_freq,
-            **kwargs,
-        )        
-        # with this can search by biome, experiment, study etc
-        self.mpy_module = samples_list
-                
+    def _collect_study(self):
+        pass
 
     @property
     def sample_accessions(self) -> Optional[list[str]]:
