@@ -58,6 +58,10 @@ docs = [
 
 [tool.isort]
 profile = "black"
+multi_line_output = 3
+force_grid_wrap = 2
+include_trailing_comma = true
+use_parentheses = true
 
 [tool.ruff]
 # https://docs.astral.sh/ruff/rules/#flake8-bandit-s
