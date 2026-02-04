@@ -24,7 +24,7 @@ METADATA_MODULES = {
     SupportedEndpoints.STUDIES: studies_samples_list,  # list samples per study
     SupportedEndpoints.SAMPLES: samples_runs_list,  # list runs/assemply per sample
     SupportedEndpoints.RUNS: runs_analyses_list,  # list analyses per run
-    SupportedEndpoints.ANALYSES: analyses_list,
+    SupportedEndpoints.ANALYSES: analyses_list, # and results here
 }
 
 semaphore = asyncio.Semaphore(CONCURRENCY)
@@ -124,6 +124,8 @@ class Mgnifier:
         print(f"Request URL: {self._url}")
         # make get request using mgni_py client
         resp_dict = self._get_request(self._params)
+        if resp_dict is None:
+            raise RuntimeError("Failed to get response from MGnify API.")
         # set
         self._total_pages = resp_dict["meta"]["pagination"]["pages"]
         self._current_page = resp_dict["meta"]["pagination"]["page"]
@@ -197,7 +199,10 @@ class Mgnifier:
                 **given_params,
             )
         print(f"Response status code: {response.status_code}")
-        return response.parsed.to_dict()
+        if response.status_code == 200:
+            return response.parsed.to_dict()
+        else: 
+            return None
 
     def _build_url(self) -> str:
         """build url for logging/verbose"""
@@ -289,90 +294,3 @@ class Mgnifier:
                 indent=2,
             )
 
-
-class SampleMgnifier(Mgnifier):
-    """
-    The Mgnipy SampleMgnifier class is a user-friendly interface for exploring sample metadata from the MGnify API.
-
-    """
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        checkpoint_dir: Optional[Path] = None,
-        checkpoint_freq: Optional[int] = None,
-        **kwargs,
-    ):
-        super().__init__(
-            db="samples",
-            params=params,
-            checkpoint_dir=checkpoint_dir,
-            checkpoint_freq=checkpoint_freq,
-            **kwargs,
-        )
-    # TODO
-    
-
-
-class AnalysesMgnifier(Mgnifier):
-    """
-    The Mgnipy AnalysesMgnifier class is a user-friendly interface for exploring analyses metadata from the MGnify API.
-
-    """
-
-    def __init__(
-        self,
-        *,
-        analyses_params: Optional[dict[str, Any]] = None,
-        checkpoint_dir: Optional[Path] = None,
-        checkpoint_freq: Optional[int] = None,
-        search: Optional[Mgnifier | SampleMgnifier] = None,
-        **kwargs,
-    ):
-        super().__init__(
-            db="analyses",
-            params=analyses_params,
-            checkpoint_dir=checkpoint_dir,
-            checkpoint_freq=checkpoint_freq,
-            **kwargs,
-        )
-
-        if search is None: 
-            self._search = None
-        elif isinstance(search, (Mgnifier, SampleMgnifier)):
-            self._search = search
-
-            if self._search.results is None:
-                print("search Mgnifier has no results. Ignoring.")
-            else: 
-                # extract analysis accessions from search results
-                analysis_accessions = []
-                for df in self._search.results:
-                    if "analyses" in df.columns:
-                        for analyses_list in df["analyses"]:
-                            if isinstance(analyses_list, list):
-                                analysis_accessions.extend(analyses_list)
-                # update params to filter analyses by these accessions
-                if "accession" in self._params:
-                    print(
-                        "Warning: 'accession' parameter in analyses_params will be overridden by search results."
-                    )
-                self._params["accession"] = ",".join(analysis_accessions)
-                
-        else:
-            raise ValueError("search must be a Mgnifier or SampleMgnifier instance or None")
-        
-
-
-        if search is not None:
-
-            if self._search.params.results is None: 
-                pass
-
-    # async def go_slim(self, accessions:Optional[list[str]]=None)-> dict:
-
-    #     async with self._init_client() as client:
-    #         self._go_slim_terms = await analyses_go_slim_list.asyncio_detailed(client, accession=acc)
-
-    #     # return pd.DataFrame(self._go_slim_terms)
