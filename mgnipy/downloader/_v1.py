@@ -5,13 +5,9 @@ from typing import (
     Any,
     Optional,
 )
-import tqdm
 import pandas as pd
-from mgni_py_v1 import Client
 from mgni_py_v1.api.samples import samples_list
-from mgni_py_v1.types import Response
 from mgnipy.metadata import Mgnifier
-from urllib.parse import urlencode
 from mgnipy._internal_functions import get_semaphore
 
 semaphore = get_semaphore()
@@ -106,7 +102,7 @@ class Samplifier(Mgnifier):
     # overwrite 
     def __str__(self):
         base = super().__str__()
-        study_acc = f"study_accession: {self._presearch_accessions.get('study_accession', None)}"
+        study_acc = f"Repeating params: study_accession: {self._presearch_accessions.get('study_accession', None)}"
         return f"{base}\n{study_acc}"
 
 
@@ -136,7 +132,7 @@ class Samplifier(Mgnifier):
                 # set
                 self._total_pages[acc] = resp_dict["meta"]["pagination"]["pages"]
                 self._count[acc] = resp_dict["meta"]["pagination"]["count"]
-                self._cached_first_page[acc] = resp_dict["data"]
+                self._cached_first_page[acc] = [resp_dict["data"]]
 
                 print(f"Total pages to retrieve: {self._total_pages[acc]}")
                 print(f"Total records to retrieve: {self._count[acc]}\n")
@@ -164,13 +160,16 @@ class Samplifier(Mgnifier):
         else: 
             return super().preview()
 
+
     def _temp_param_updater(self, study_accession: str):
         temp_params = deepcopy(self._params)
         temp_params['study_accession'] = study_accession
         return temp_params
 
+
     async def collect(
         self, 
+        *,
         pages: Optional[list[int]] = None,
         study_accession: Optional[str] = None
     ):
@@ -183,19 +182,17 @@ class Samplifier(Mgnifier):
                 )
             
             async def collect_one(acc) -> tuple[str, pd.DataFrame]:
-                print(f"Collecting for study_accession: {acc}...")
+                #print(f"Collecting for study_accession: {acc}...")
                 temp_params = self._temp_param_updater(acc)
-                print(self._build_url(params=temp_params))
+                #print(self._build_url(params=temp_params))
                 async with self._init_client() as client:
-                    return (acc, await self._collector(
+                    return acc, await self._collector(
                         client, 
                         pages=pages, 
                         params=temp_params,
                         cached_pages=self._cached_first_page.get(acc, None),
                         total_pages=self._total_pages.get(acc, None)
-                    ))
-            # init
-            self._results = []
+                    )
 
             # ignore pages if repeating params ..
             if pages is not None: 
@@ -209,110 +206,20 @@ class Samplifier(Mgnifier):
                 raise ValueError(f"Study accession {study_accession} not found: {self._total_pages}")
             
             elif isinstance(study_accession, str) and study_accession in self._total_pages:
-                self._results.append(await collect_one(study_accession))
-
-                return pd.concat(self._results[0][1])
+                self._results = await collect_one(study_accession)
+                return pd.concat(self._results[1])
 
             elif study_accession is None: 
                 print(
                     "No study_accession specified, " 
-                    "collecting for all accessions:",
-                    list(self._total_pages.keys())
+                    "collecting pages for all accessions:",
+                    list(self._total_pages)
                 )
-
-                tasks = [collect_one(acc) for acc in self._total_pages.keys()]
-                self._results.append(await asyncio.gather(*tasks))
-                print(self._results)
+                tasks = [collect_one(acc) for acc in self._total_pages]
+                self._results = await asyncio.gather(*tasks)
                 return {acc: pd.concat(df) for acc, df in self._results}
-
             else: 
                 raise TypeError("study_accession must be a string or None")
         else: 
             return await super().collect(pages=pages)
-
-
-    def _collect_study(self):
-        pass
-
-    @property
-    def sample_accessions(self) -> Optional[list[str]]:
-        """
-        Get the list of sample accessions from the results.
-
-        Returns:
-            Optional[list[str]]: List of sample accessions if results are available, otherwise None.
-        """
-        if self.results is None:
-            return None
-
-        accessions = []
-        for df in self.results:
-            if "accession" in df.columns:
-                accessions.extend(df["accession"].tolist())
-        return accessions
-
-    # TODO
     
-
-
-class AnalysesMgnifier(Mgnifier):
-    """
-    The Mgnipy AnalysesMgnifier class is a user-friendly interface for exploring analyses metadata from the MGnify API.
-
-    """
-
-    def __init__(
-        self,
-        *,
-        analyses_params: Optional[dict[str, Any]] = None,
-        checkpoint_dir: Optional[Path] = None,
-        checkpoint_freq: Optional[int] = None,
-        search: Optional[Mgnifier ] = None,
-        **kwargs,
-    ):
-        super().__init__(
-            db="analyses",
-            params=analyses_params,
-            checkpoint_dir=checkpoint_dir,
-            checkpoint_freq=checkpoint_freq,
-            **kwargs,
-        )
-
-        if search is None: 
-            self._search = None
-        elif isinstance(search, (Mgnifier)):
-            self._search = search
-
-            if self._search.results is None:
-                print("search Mgnifier has no results. Ignoring.")
-            else: 
-                # extract analysis accessions from search results
-                analysis_accessions = []
-                for df in self._search.results:
-                    if "analyses" in df.columns:
-                        for analyses_list in df["analyses"]:
-                            if isinstance(analyses_list, list):
-                                analysis_accessions.extend(analyses_list)
-                # update params to filter analyses by these accessions
-                if "accession" in self._params:
-                    print(
-                        "Warning: 'accession' parameter in analyses_params will be overridden by search results."
-                    )
-                self._params["accession"] = ",".join(analysis_accessions)
-                
-        else:
-            raise ValueError("search must be a Mgnifier or SampleMgnifier instance or None")
-        
-
-
-        if search is not None:
-
-            if self._search.params.results is None: 
-                pass
-
-    # async def go_slim(self, accessions:Optional[list[str]]=None)-> dict:
-
-    #     async with self._init_client() as client:
-    #         self._go_slim_terms = await analyses_go_slim_list.asyncio_detailed(client, accession=acc)
-
-    #     # return pd.DataFrame(self._go_slim_terms)
