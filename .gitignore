@@ -14,7 +14,7 @@ __pycache__
 # These files are produced during the Python build process
 build/
 .eggs
-dist/
+#dist/
 **.egg-info
 
 # Sphinx documenter creates these
