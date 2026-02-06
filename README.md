@@ -11,19 +11,46 @@ pip install mgnipy
 ```
 
 ## Usage
+Look in biome resource for studies for a given biome. 
 
+First instantiate the mgnifier:
 ```python
-TODO
+from mgnipy import Mgnifier
+
+# init
+glass = Mgnifier(
+    resource="biomes",
+    # GOLD ecosystem classification
+    lineage="root:Host-associated:Plants:Rhizosphere", 
+)
+
+# look at the built request url
+print(glass)
 ```
 
-## Documentation
+Then plan or preview the number of pages and records before collecting all their metadata :)
+```python
+# only prints some info
+glass.plan()
+
+# also returns the first page of results as a pd.DataFrame
+df = glass.preview()
+```
+
+Now that you ahve confirmed that this is the metadta that you want then collect it:
+(currently in memory)
+```python
+metadata = await df.collect()
+```
+
+## Additional documentation
 
 - [MGnify API Docs](https://www.ebi.ac.uk/metagenomics/api/docs/)
 - [openapi-python-client](https://github.com/openapi-generators/openapi-python-client)
 
 ## Development
 
-TODO
+see [Contributing.md](Contributing.md)
 
 ## License
 
