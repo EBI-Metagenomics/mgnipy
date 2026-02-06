@@ -45,7 +45,7 @@ class Mgnifier:
     def __init__(
         self,
         *,
-        db: Optional[
+        resource: Optional[
             Literal["biomes", "studies", "samples", "runs", "analyses"]
         ] = None,
         params: Optional[dict[str, Any]] = None,
@@ -56,8 +56,8 @@ class Mgnifier:
         # url
         self._api_version = "v1"
         self._base_url = "https://www.ebi.ac.uk/metagenomics/api/"
-        self._db = db or "studies" #default
-        self._mpy_module = METADATA_MODULES[SupportedEndpoints(self._db)]
+        self._resource = resource or "studies" #default
+        self._mpy_module = METADATA_MODULES[SupportedEndpoints(self._resource)]
 
         # TODO checkpoints
         # prep checkpoint if
@@ -108,7 +108,7 @@ class Mgnifier:
 
     def __str__(self):
         return (
-            f"Mgnifier instance for MGnify {self._db} metadata\n"
+            f"Mgnifier instance for MGnify {self._resource} metadata\n"
             f"----------------------------------------\n"
             f"Base URL: {self._base_url}\n"
             f"API Version: {self._api_version}\n"
@@ -126,7 +126,7 @@ class Mgnifier:
         print("Planning the API call with params:")
         print(self._params)
         print(
-            f"Acquiring meta for {self._params.get('page_size', 25)} {self._db} per page..."
+            f"Acquiring meta for {self._params.get('page_size', 25)} {self._resource} per page..."
         )
         print(f"Request URL: {self._build_url()}")
         # make get request using mgni_py client
@@ -201,7 +201,7 @@ class Mgnifier:
         """build url for logging/verbose"""
         if params is None: 
             params = self._params
-        start_url = os.path.join(self._base_url, self._api_version, self._db)
+        start_url = os.path.join(self._base_url, self._api_version, self._resource)
         encoded_params = urlencode(params, doseq=True)
         return f"{start_url}/?{encoded_params}"
 
@@ -244,7 +244,7 @@ class Mgnifier:
             )
 
         if (pages is None) and (cached_pages is not None):
-            print("No pages specified, collecting all...")
+            #print("No pages specified, collecting all...")
             results = [self.response_df(page) for page in cached_pages]
             # skip page 1 because already done
             pages = list(range(len(cached_pages)+1, total_pages + 1))
@@ -254,13 +254,11 @@ class Mgnifier:
                     f"One or more specified pages exceed total pages {total_pages}."
                     f"Specified pages: {pages}"
                 )
-
             results = []
-            print(f"Collecting specified pages: {pages}...")
-
+            #print(f"Collecting pages: {pages}...")
         else:
             raise ValueError("pages must be a list of integers or None")
-
+        
         # creating async tasks
         async_tasks = []
         for page_num in pages:
@@ -268,15 +266,12 @@ class Mgnifier:
             # label
             task.page = page_num
             async_tasks.append(task)
-
         # gathering results as completed
         for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
-            result = await task
-            # page_num = getattr(task, "page", None) #FIXME why all none
-            results.append(self.response_df(result.parsed.to_dict()["data"]))
-            # checkpointing
+            page_result = await task
+            results.append(self.response_df(page_result.parsed.to_dict()["data"]))
+            # for checkpointing
             page_checkpoint += 1
-
             if (
                 self._checkpoint_dir is not None
                 and page_checkpoint % self._checkpoint_freq == 0
@@ -287,7 +282,6 @@ class Mgnifier:
                     page_checkpoint=page_checkpoint,
                     params=params, 
                 )
-
         return results
 
     def _csv_checkpointer(self, results, page_checkpoint=None, params=None):
@@ -299,7 +293,7 @@ class Mgnifier:
                 {
                     "page_checkpoint": page_checkpoint,
                     "params": params or self._params,
-                    "db": self._db,
+                    "resource": self._resource,
                     "checkpoint_freq": self._checkpoint_freq,
                 },
                 f,
