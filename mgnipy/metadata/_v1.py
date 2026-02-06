@@ -19,12 +19,12 @@ from mgni_py_v1.api.samples import samples_runs_list
 from mgni_py_v1.api.studies import studies_samples_list
 from mgni_py_v1.types import Response
 from tqdm import tqdm
-
+from mgnipy._internal_functions import get_semaphore
 from mgnipy._pydantic_models.CONSTANTS import SupportedEndpoints
 from mgnipy._pydantic_models.adapters import validate_experiment_type
 
 # args
-CONCURRENCY = 5
+
 METADATA_MODULES = {
     SupportedEndpoints.BIOMES: biomes_studies_list,  # list studies per biome, search in biome
     SupportedEndpoints.STUDIES: studies_samples_list,  # list samples per study, search in study
@@ -33,8 +33,7 @@ METADATA_MODULES = {
     SupportedEndpoints.ANALYSES: analyses_list, # and results here, search in a given analyses
 }
 
-semaphore = asyncio.Semaphore(CONCURRENCY)
-
+semaphore = get_semaphore()
 
 # init for each model
 class Mgnifier:
@@ -57,8 +56,8 @@ class Mgnifier:
         # url
         self._api_version = "v1"
         self._base_url = "https://www.ebi.ac.uk/metagenomics/api/"
-        self._db = db
-        self._mpy_module = METADATA_MODULES[SupportedEndpoints(db)]
+        self._db = db or "studies" #default
+        self._mpy_module = METADATA_MODULES[SupportedEndpoints(self._db)]
 
         # TODO checkpoints
         # prep checkpoint if
@@ -66,6 +65,8 @@ class Mgnifier:
         self._checkpoint_freq = checkpoint_freq or 3
         self._checkpoint_csv = None
         self._checkpoint_json = None
+        if self._checkpoint_dir is not None:
+            self._set_checkpoint_paths()
 
         # params
         self._params = params or {}
@@ -80,12 +81,10 @@ class Mgnifier:
                 validate_experiment_type(et)
 
         # cache
-        self._total_pages = None
-        self._cached_first_page = None
-        self._cached_the_rest = None
-        self._page_checkpoint = 0
+        self._total_pages: Optional[int] = None
+        self._cached_first_page: Optional[dict] = None
 
-        self._results = None
+        self._results: Optional[list[pd.DataFrame]] = None
 
     @property
     def mpy_module(self):
@@ -95,12 +94,7 @@ class Mgnifier:
     def mpy_module(self, new_module):
         self._mpy_module = new_module
         if self._checkpoint_dir is not None:
-            self._checkpoint_csv = os.path.join(
-                self._checkpoint_dir, f"{self._mpy_module.__name__}.csv"
-            )
-            self._checkpoint_json = os.path.join(
-                self._checkpoint_dir, f"{self._mpy_module.__name__}.json"
-            )
+            self._set_checkpoint_paths()
 
     def __getattr__(self, name: str):
         if name == "mgni_py_client":
@@ -141,10 +135,8 @@ class Mgnifier:
             raise RuntimeError("Failed to get response from MGnify API.")
         # set
         self._total_pages = resp_dict["meta"]["pagination"]["pages"]
-        self._current_page = resp_dict["meta"]["pagination"]["page"]
         self._count = resp_dict["meta"]["pagination"]["count"]
-        self._cached_first_page = resp_dict["data"]
-        self._page_checkpoint = 1
+        self._cached_first_page = [resp_dict["data"]]
 
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
@@ -171,18 +163,6 @@ class Mgnifier:
             self._results = await self._collector(client, pages=pages)
 
         return pd.concat(self._results)
-
-    async def continue_collect(self):
-        print("Continuing collection from checkpoint...")
-        if self._checkpoint_dir is None:
-            raise ValueError("No checkpoint directory specified during initialization.")
-        if not os.path.exists(self._checkpoint_json):
-            raise FileNotFoundError(
-                f"No checkpoint file found at {self._checkpoint_json}"
-            )
-
-        pass
-        # TODO load checkpoint info
 
     # TODO pandera schema for data validation
     def response_df(self, data: dict) -> pd.DataFrame:
@@ -217,47 +197,61 @@ class Mgnifier:
         else: 
             return None
 
-    def _build_url(self) -> str:
+    def _build_url(self, params: Optional[dict[str, Any]] = None) -> str:
         """build url for logging/verbose"""
+        if params is None: 
+            params = self._params
         start_url = os.path.join(self._base_url, self._api_version, self._db)
-        encoded_params = urlencode(self._params, doseq=True)
+        encoded_params = urlencode(params, doseq=True)
         return f"{start_url}/?{encoded_params}"
 
-    async def _get_page(self, client: Client, page_num: int) -> Response:
+    async def _get_page(
+        self, 
+        client: Client, 
+        page_num: int, 
+        params: Optional[dict[str, Any]] = None
+    ) -> Response:
         """coroutine function to get coroutine for each page"""
         # limiting concurrency to protect server
         async with semaphore:
             return await self._mpy_module.asyncio_detailed(
                 client=client,
-                **self._params,
+                **(params if params is not None else self._params),
                 page=page_num,
             )
 
-    async def _collector(self, client: Client, pages: Optional[list[int]] = None):
+    async def _collector(
+        self, 
+        client: Client, 
+        pages: Optional[list[int]] = None,
+        params: Optional[dict[str, Any]] = None,
+        cached_pages: Optional[list[dict]] = None,
+        total_pages: Optional[int] = None,
+    ):
+        
+        params = params or self._params
+        total_pages = total_pages or self._total_pages
+        cached_pages = cached_pages or self._cached_first_page
+        page_checkpoint = len(cached_pages) if cached_pages is not None else 0
+        
 
         # not allow to run this without preview/plan first?
-        if self._total_pages is None:
+        if (self._total_pages is None):
             raise AssertionError(
                 "Please run Mgnifier.plan or .preview before"
                 "deciding to collect metadata for params:\n"
-                f"{self._params}"
+                f"{params}"
             )
 
-        if pages is None:
+        if (pages is None) and (cached_pages is not None):
             print("No pages specified, collecting all...")
-            pages = list(range(self._page_checkpoint + 1, self._total_pages + 1))
-
-            # init TODO: dict?
-            results = (
-                [self.response_df(self._cached_first_page)]
-                if self._cached_first_page
-                else []
-            )
-
+            results = [self.response_df(page) for page in cached_pages]
+            # skip page 1 because already done
+            pages = list(range(len(cached_pages)+1, total_pages + 1))
         elif isinstance(pages, list):
-            if not all(p <= self._total_pages for p in pages):
+            if not all(p <= total_pages for p in pages):
                 raise ValueError(
-                    f"One or more specified pages exceed total pages {self._total_pages}."
+                    f"One or more specified pages exceed total pages {total_pages}."
                     f"Specified pages: {pages}"
                 )
 
@@ -270,7 +264,7 @@ class Mgnifier:
         # creating async tasks
         async_tasks = []
         for page_num in pages:
-            task = asyncio.create_task(self._get_page(client, page_num))
+            task = asyncio.create_task(self._get_page(client, page_num, params))
             # label
             task.page = page_num
             async_tasks.append(task)
@@ -281,25 +275,30 @@ class Mgnifier:
             # page_num = getattr(task, "page", None) #FIXME why all none
             results.append(self.response_df(result.parsed.to_dict()["data"]))
             # checkpointing
-            self._page_checkpoint += 1
+            page_checkpoint += 1
 
             if (
                 self._checkpoint_dir is not None
-                and self._page_checkpoint % self._checkpoint_freq == 0
+                and page_checkpoint % self._checkpoint_freq == 0
             ):
-                print(f"Checkpointing at page {self._page_checkpoint}...")
-                self._save_checkpoint(results)
+                print(f"Checkpointing at page {page_checkpoint}...")
+                self._save_checkpoint(
+                    results, 
+                    page_checkpoint=page_checkpoint,
+                    params=params, 
+                )
 
         return results
 
-    def _csv_checkpointer(self, results):
+    def _csv_checkpointer(self, results, page_checkpoint=None, params=None):
+
         pd.concat(results).to_csv(self._checkpoint_csv, delimiter=",", index=False)
 
         with open(self._checkpoint_json, "w") as f:
             json.dump(
                 {
-                    "page_checkpoint": self._page_checkpoint,
-                    "params": self._params,
+                    "page_checkpoint": page_checkpoint,
+                    "params": params or self._params,
                     "db": self._db,
                     "checkpoint_freq": self._checkpoint_freq,
                 },
@@ -311,3 +310,11 @@ class Mgnifier:
         """helper function to get supported kwargs for the current mpy module"""
         sig = inspect.signature(self._mpy_module._get_kwargs)
         return list(sig.parameters.keys())
+    
+    def _set_checkpoint_paths(self):
+        self._checkpoint_csv = os.path.join(
+            self._checkpoint_dir, f"{self._mpy_module.__name__}.csv"
+        )
+        self._checkpoint_json = os.path.join(
+            self._checkpoint_dir, f"{self._mpy_module.__name__}.json"
+        )
