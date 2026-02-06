@@ -1,7 +1,11 @@
-# ref: https://setuptools.pypa.io/en/stable/userguide/pyproject_config.html
+
 [project]
 authors = [
   { name = "Angel L. P." },
+  { name = "chrisAta" },
+  { name = "MGS-sails" },
+  { name = "mberacochea" },
+  { name = "SandyRogers" },
   { name = "Sebastian Ayala Ruano" },
   { name = "Alberto Santos" }
 ]
@@ -9,12 +13,10 @@ description = "python driver for mgnipy api"
 name = "mgnipy"
 # See the section below: [tools.setuptools.dynamic]
 dynamic = [
-  "version", # version is loaded from the package
-  #"dependencies", # add if using requirements.txt
+  "version",
 ]
 readme = "README.md"
-requires-python = ">=3.10" # test all higher Python versions
-# These are keywords
+requires-python = ">=3.10" 
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
@@ -31,8 +33,6 @@ dependencies = [
     "scipy>=1.13.1",
     "tqdm>=4.67.1",
 ]
-
-
 
 [dependency-groups]
 dev = [
@@ -53,18 +53,12 @@ docs = [
     "sphinx-new-tab-link>=0.8.0",
 ]
 
-
-
-
 [tool.isort]
 profile = "black"
 multi_line_output = 3
 force_grid_wrap = 2
 include_trailing_comma = true
 use_parentheses = true
-
-[tool.ruff]
-# https://docs.astral.sh/ruff/rules/#flake8-bandit-s
 
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/tutorial/#rule-selection
@@ -83,14 +77,9 @@ include = ["mgnipy*"]
 mgni-py-v1 = { path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" }
 mgni-py-v2 = { path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" }
 
-
-
-
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = ["setuptools>=64", "setuptools_scm>=8"]
-
-
 
 [project.scripts]
 mgnipy-hello = "mgnipy.cli:main"

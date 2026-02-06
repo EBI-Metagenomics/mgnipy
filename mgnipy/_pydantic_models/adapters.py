@@ -25,6 +25,7 @@ def validate_endpoint(input):
     except ValidationError as e:
         raise ValueError(f"Invalid endpoint: {input}") from e
 
+
 def validate_experiment_type(input):
     try:
         return TypeAdapter(ExperimentTypes).validate_python(input)

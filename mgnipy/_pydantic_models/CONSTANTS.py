@@ -32,8 +32,10 @@ class SupportedEndpoints(Enum):
     STUDIES = "studies"
     SUPER_STUDIES = "super-studies"
 
+
 class ExperimentTypes(str, Enum):
     """https://www.ebi.ac.uk/metagenomics/api/v1/experiment-types"""
+
     AMPLICON = "amplicon"
     ASSEMBLY = "assembly"
     HYBRID_ASSEMBLY = "hybrid_assembly"

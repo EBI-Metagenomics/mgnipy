@@ -4,17 +4,23 @@ import glob
 import os
 import sys
 from datetime import datetime
-from logging import DEBUG, FileHandler, Formatter, Logger, StreamHandler
+from logging import (
+    DEBUG,
+    FileHandler,
+    Formatter,
+    Logger,
+    StreamHandler,
+)
 from pathlib import Path
 from typing import Optional
 
 import yaml
 from pydantic import (
+    DirectoryPath,
+    FilePath,
+    StrictBool,
     TypeAdapter,
-    DirectoryPath, 
-    FilePath, 
-    StrictBool, 
-    validate_call
+    validate_call,
 )
 
 fpath_adapter = TypeAdapter(FilePath)
@@ -68,7 +74,7 @@ def create_folder(directory_path: Path, is_nested: bool = False):
                 os.mkdir(directory_path)
                 print(f"Created directory '{directory_path}'")
         except OSError as e:
-            raise OSError(f"Error creating directory '{directory_path}': {e}")
+            raise OSError(f"Error creating directory '{directory_path}': {e}") from e
 
 
 # FUNCTIONS FOR CONFIG
@@ -313,7 +319,7 @@ class AutoLogger(Logger):
 @validate_call
 def filter_filepaths(
     fpath: DirectoryPath | list[FilePath],
-    identifiers: list[str] = [""],
+    identifiers: Optional[list[str]] = None,
     exclude: Optional[list[str]] = None,
 ) -> list:
     """
@@ -331,6 +337,9 @@ def filter_filepaths(
         filepaths = fpath
     else:
         raise TypeError(f"fpath must be a string or list: {type(fpath)}")
+
+    if identifiers is None:
+        identifiers = [""]
 
     # filtering for files that have those identifiers
     in_filtered = [
