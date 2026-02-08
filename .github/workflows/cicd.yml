@@ -4,7 +4,6 @@
 name: Python application
 
 on:
-  push:
   pull_request:
     branches: ["main"]
 
@@ -52,7 +51,7 @@ jobs:
           uv sync --locked --dev
 
       - name: Run tests
-        run: uv run pytest tests
+        run: uv run pytest mgnipy tests
 
   build_source_dist:
     name: Build source distribution

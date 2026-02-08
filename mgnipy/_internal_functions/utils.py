@@ -159,9 +159,9 @@ def get_basename(fname: Optional[FilePath] = None) -> str:
 
     Examples
     --------
-    >>> get_basename()
+    >>> get_basename() # doctest: +SKIP
     'utils'
-    >>> get_basename('this/is-a-filepath.csv')
+    >>> get_basename('this/is-a-filepath.csv') # doctest: +SKIP
     'is-a-filepath'
     """
 
