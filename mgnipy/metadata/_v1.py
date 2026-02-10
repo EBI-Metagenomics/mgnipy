@@ -70,7 +70,7 @@ class Mgnifier:
         self._checkpoint_dir = checkpoint_dir
         self._checkpoint_freq = checkpoint_freq or 3
         self._checkpoint_csv = None
-        self._checkpoint_json = None
+        self._config_json = None
         if self._checkpoint_dir is not None:
             self._set_checkpoint_paths()
 
@@ -290,7 +290,7 @@ class Mgnifier:
 
         pd.concat(results).to_csv(self._checkpoint_csv, delimiter=",", index=False)
 
-        with open(self._checkpoint_json, "w") as f:
+        with open(self._config_json, "w") as f:
             json.dump(
                 {
                     "page_checkpoint": page_checkpoint,
@@ -311,7 +311,7 @@ class Mgnifier:
         self._checkpoint_csv = os.path.join(
             self._checkpoint_dir, f"{self._mpy_module.__name__}.csv"
         )
-        self._checkpoint_json = os.path.join(
+        self._config_json = os.path.join(
             self._checkpoint_dir, f"{self._mpy_module.__name__}.json"
         )
 
