@@ -54,3 +54,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+
+openapi/mgni-py-v1/*
+openapi/mgni-py-v2/*
+reference/*
