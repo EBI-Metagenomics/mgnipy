@@ -1,6 +1,6 @@
 # MGnify API_v1 python client `mgni-py-v1`
 
-A client library for accessing MGnify API 
+A client library for accessing version 1 of the MGnify API 
 
 <details>
 <summary style=color:lightgreen> 

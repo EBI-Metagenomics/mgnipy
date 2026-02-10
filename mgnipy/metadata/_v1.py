@@ -126,7 +126,7 @@ class Mgnifier:
 
     def plan(self):
         """
-        Allows the user to see the numb er of pages/records to be retrieved
+        Allows the user to see the number of pages/records to be retrieved
         before retrieving all data.
         """
         print("Planning the API call with params:")
@@ -152,11 +152,11 @@ class Mgnifier:
         Previews the metadata of the first page of results as a DataFrame.
         """
         if self._cached_first_page is None:
-            print("MGnigier.plan not yet checked. Running now...")
+            print("Mgnifier.plan not yet checked. Running now...")
             self.plan()
 
         print(
-            f"Previewing Page 1 of {self._total_pages} pages ({self._count} records)..."
+            f"Previewing page 1 of {self._total_pages} pages ({self._count} records)..."
         )
 
         return self.response_df(self._cached_first_page[0])
@@ -173,15 +173,15 @@ class Mgnifier:
     # TODO pandera schema for data validation
     def response_df(self, data: dict) -> pd.DataFrame:
         """helper functinon to expand attributes column into separate columns"""
-        df = pd.DataFrame(data)
-        if "attributes" in df.columns:
-            attr_df = pd.json_normalize(df["attributes"])
-            df = pd.concat([df.drop(columns=["attributes"]), attr_df], axis=1)
-        if "relationships" in df.columns:
-            rel_df = pd.json_normalize(df["relationships"])
-            df = pd.concat([df.drop(columns=["relationships"]), rel_df], axis=1)
+        res_df = pd.DataFrame(data)
+        if "attributes" in res_df.columns:
+            attr_df = pd.json_normalize(res_df["attributes"])
+            res_df = pd.concat([res_df.drop(columns=["attributes"]), attr_df], axis=1)
+        if "relationships" in res_df.columns:
+            rel_df = pd.json_normalize(res_df["relationships"])
+            res_df = pd.concat([res_df.drop(columns=["relationships"]), rel_df], axis=1)
 
-        return df
+        return res_df
 
     # helpers
     def _init_client(self):
@@ -245,7 +245,7 @@ class Mgnifier:
                 f"{params}"
             )
 
-        if (pages is None) and (cached_pages is not None):
+        if not pages and cached_pages:
             # print("No pages specified, collecting all...")
             results = [self.response_df(page) for page in cached_pages]
             # skip page 1 because already done
@@ -318,7 +318,7 @@ class Mgnifier:
 
 class Samplifier(Mgnifier):
     """
-    The Mgnipy SampleFinder class is a user-friendly interface for exploring sample metadata from the MGnify API.
+    The Mgnipy Samplifier class is a user-friendly interface for exploring sample metadata from the MGnify API.
 
     """
 
