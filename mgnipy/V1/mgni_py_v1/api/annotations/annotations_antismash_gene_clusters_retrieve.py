@@ -5,12 +5,19 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.annotations_antismash_gene_clusters_retrieve_format import (
     AnnotationsAntismashGeneClustersRetrieveFormat,
 )
 from ...models.anti_smash_gene_cluster import AntiSmashGeneCluster
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -39,7 +46,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AntiSmashGeneCluster | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> AntiSmashGeneCluster | None:
     if response.status_code == 200:
         response_200 = AntiSmashGeneCluster.from_dict(response.json())
 

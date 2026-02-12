@@ -5,14 +5,21 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.analyses_kegg_orthologs_list_format import (
     AnalysesKeggOrthologsListFormat,
 )
 from ...models.paginated_kegg_ortholog_retrieve_list import (
     PaginatedKeggOrthologRetrieveList,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

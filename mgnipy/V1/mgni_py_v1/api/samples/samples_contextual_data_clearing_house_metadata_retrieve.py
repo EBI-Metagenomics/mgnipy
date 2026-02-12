@@ -5,12 +5,19 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.sample import Sample
 from ...models.samples_contextual_data_clearing_house_metadata_retrieve_format import (
     SamplesContextualDataClearingHouseMetadataRetrieveFormat,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -39,7 +46,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Sample | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Sample | None:
     if response.status_code == 200:
         response_200 = Sample.from_dict(response.json())
 
@@ -51,7 +60,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Sample]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Sample]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,

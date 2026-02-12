@@ -4,10 +4,17 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.assemblies_list_format import AssembliesListFormat
 from ...models.paginated_assembly_list import PaginatedAssemblyList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -86,7 +93,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> PaginatedAssemblyList | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> PaginatedAssemblyList | None:
     if response.status_code == 200:
         response_200 = PaginatedAssemblyList.from_dict(response.json())
 

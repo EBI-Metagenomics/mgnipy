@@ -5,7 +5,10 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.m_gnify_analysis_detail import MGnifyAnalysisDetail
 from ...types import Response
 
@@ -23,7 +26,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> MGnifyAnalysisDetail | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> MGnifyAnalysisDetail | None:
     if response.status_code == 200:
         response_200 = MGnifyAnalysisDetail.from_dict(response.json())
 

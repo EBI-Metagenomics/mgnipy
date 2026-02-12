@@ -1,14 +1,22 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.download_file_type import DownloadFileType
 from ..models.download_type import DownloadType
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.m_gnify_download_file_index_file import MGnifyDownloadFileIndexFile
@@ -168,7 +176,9 @@ class MGnifyAnalysisDownloadFile:
 
         file_size_bytes = _parse_file_size_bytes(d.pop("file_size_bytes", UNSET))
 
-        def _parse_index_files(data: object) -> list[MGnifyDownloadFileIndexFile] | None | Unset:
+        def _parse_index_files(
+            data: object,
+        ) -> list[MGnifyDownloadFileIndexFile] | None | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -179,7 +189,9 @@ class MGnifyAnalysisDownloadFile:
                 index_files_type_0 = []
                 _index_files_type_0 = data
                 for index_files_type_0_item_data in _index_files_type_0:
-                    index_files_type_0_item = MGnifyDownloadFileIndexFile.from_dict(index_files_type_0_item_data)
+                    index_files_type_0_item = MGnifyDownloadFileIndexFile.from_dict(
+                        index_files_type_0_item_data
+                    )
 
                     index_files_type_0.append(index_files_type_0_item)
 

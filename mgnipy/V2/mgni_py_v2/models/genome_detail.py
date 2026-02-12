@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.genome_type import GenomeType
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -179,35 +187,45 @@ class GenomeDetail:
                 return data
             return cast(None | str, data)
 
-        ena_genome_accession = _parse_ena_genome_accession(d.pop("ena_genome_accession"))
+        ena_genome_accession = _parse_ena_genome_accession(
+            d.pop("ena_genome_accession")
+        )
 
         def _parse_ena_sample_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        ena_sample_accession = _parse_ena_sample_accession(d.pop("ena_sample_accession"))
+        ena_sample_accession = _parse_ena_sample_accession(
+            d.pop("ena_sample_accession")
+        )
 
         def _parse_ncbi_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        ncbi_genome_accession = _parse_ncbi_genome_accession(d.pop("ncbi_genome_accession"))
+        ncbi_genome_accession = _parse_ncbi_genome_accession(
+            d.pop("ncbi_genome_accession")
+        )
 
         def _parse_img_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        img_genome_accession = _parse_img_genome_accession(d.pop("img_genome_accession"))
+        img_genome_accession = _parse_img_genome_accession(
+            d.pop("img_genome_accession")
+        )
 
         def _parse_patric_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        patric_genome_accession = _parse_patric_genome_accession(d.pop("patric_genome_accession"))
+        patric_genome_accession = _parse_patric_genome_accession(
+            d.pop("patric_genome_accession")
+        )
 
         length = d.pop("length")
 

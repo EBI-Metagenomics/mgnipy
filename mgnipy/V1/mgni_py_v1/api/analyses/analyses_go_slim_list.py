@@ -5,10 +5,17 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.analyses_go_slim_list_format import AnalysesGoSlimListFormat
 from ...models.paginated_go_term_retrive_list import PaginatedGoTermRetriveList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

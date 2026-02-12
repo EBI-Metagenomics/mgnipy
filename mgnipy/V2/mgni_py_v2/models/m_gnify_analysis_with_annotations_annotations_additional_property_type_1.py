@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -10,15 +15,17 @@ if TYPE_CHECKING:
     from ..models.m_gnify_analysis_typed_annotation import MGnifyAnalysisTypedAnnotation
 
 
-T = TypeVar("T", bound="MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1")
+T = TypeVar(
+    "T", bound="MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1"
+)
 
 
 @_attrs_define
 class MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1:
     """ """
 
-    additional_properties: dict[str, list[MGnifyAnalysisTypedAnnotation] | None] = _attrs_field(
-        init=False, factory=dict
+    additional_properties: dict[str, list[MGnifyAnalysisTypedAnnotation] | None] = (
+        _attrs_field(init=False, factory=dict)
     )
 
     def to_dict(self) -> dict[str, Any]:
@@ -27,7 +34,9 @@ class MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1:
             if isinstance(prop, list):
                 field_dict[prop_name] = []
                 for additional_property_type_0_item_data in prop:
-                    additional_property_type_0_item = additional_property_type_0_item_data.to_dict()
+                    additional_property_type_0_item = (
+                        additional_property_type_0_item_data.to_dict()
+                    )
                     field_dict[prop_name].append(additional_property_type_0_item)
 
             else:
@@ -47,7 +56,9 @@ class MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1:
         additional_properties = {}
         for prop_name, prop_dict in d.items():
 
-            def _parse_additional_property(data: object) -> list[MGnifyAnalysisTypedAnnotation] | None:
+            def _parse_additional_property(
+                data: object,
+            ) -> list[MGnifyAnalysisTypedAnnotation] | None:
                 if data is None:
                     return data
                 try:
@@ -55,12 +66,18 @@ class MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1:
                         raise TypeError()
                     additional_property_type_0 = []
                     _additional_property_type_0 = data
-                    for additional_property_type_0_item_data in _additional_property_type_0:
-                        additional_property_type_0_item = MGnifyAnalysisTypedAnnotation.from_dict(
-                            additional_property_type_0_item_data
+                    for (
+                        additional_property_type_0_item_data
+                    ) in _additional_property_type_0:
+                        additional_property_type_0_item = (
+                            MGnifyAnalysisTypedAnnotation.from_dict(
+                                additional_property_type_0_item_data
+                            )
                         )
 
-                        additional_property_type_0.append(additional_property_type_0_item)
+                        additional_property_type_0.append(
+                            additional_property_type_0_item
+                        )
 
                     return additional_property_type_0
                 except (TypeError, ValueError, AttributeError, KeyError):
@@ -83,7 +100,9 @@ class MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1:
     def __getitem__(self, key: str) -> list[MGnifyAnalysisTypedAnnotation] | None:
         return self.additional_properties[key]
 
-    def __setitem__(self, key: str, value: list[MGnifyAnalysisTypedAnnotation] | None) -> None:
+    def __setitem__(
+        self, key: str, value: list[MGnifyAnalysisTypedAnnotation] | None
+    ) -> None:
         self.additional_properties[key] = value
 
     def __delitem__(self, key: str) -> None:

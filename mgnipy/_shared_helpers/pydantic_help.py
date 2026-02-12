@@ -6,6 +6,7 @@ from pydantic import (
 
 int_gt_adapter = TypeAdapter(conint(gt=0))
 
+
 def validate_gt_int(input: int, smaller_int: int = 0) -> int:
     """
     Validates that the input integer is greater than a specified smaller integer (default is 0).
@@ -42,10 +43,6 @@ def validate_gt_int(input: int, smaller_int: int = 0) -> int:
     1
     """
     try:
-        return TypeAdapter(
-            conint(gt=smaller_int)
-        ).validate_python(input)
+        return TypeAdapter(conint(gt=smaller_int)).validate_python(input)
     except ValidationError as e:
-        raise ValueError(
-            f"Int must be greater than {smaller_int}: {input}"
-        ) from e
+        raise ValueError(f"Int must be greater than {smaller_int}: {input}") from e

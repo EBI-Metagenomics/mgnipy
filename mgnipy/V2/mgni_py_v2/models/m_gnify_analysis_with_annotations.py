@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.pipeline_versions import PipelineVersions
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.analysed_run import AnalysedRun
@@ -59,7 +67,9 @@ class MGnifyAnalysisWithAnnotations:
     pipeline_version: None | PipelineVersions
     downloads: list[MGnifyAnalysisDownloadFile]
     read_run: AnalysedRun | None
-    quality_control_summary: MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None
+    quality_control_summary: (
+        MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None
+    )
     annotations: MGnifyAnalysisWithAnnotationsAnnotations
     results_dir: None | str | Unset = UNSET
     metadata: MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset = UNSET
@@ -118,7 +128,10 @@ class MGnifyAnalysisWithAnnotations:
             read_run = self.read_run
 
         quality_control_summary: dict[str, Any] | None
-        if isinstance(self.quality_control_summary, MGnifyAnalysisWithAnnotationsQualityControlSummaryType0):
+        if isinstance(
+            self.quality_control_summary,
+            MGnifyAnalysisWithAnnotationsQualityControlSummaryType0,
+        ):
             quality_control_summary = self.quality_control_summary.to_dict()
         else:
             quality_control_summary = self.quality_control_summary
@@ -276,16 +289,26 @@ class MGnifyAnalysisWithAnnotations:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                quality_control_summary_type_0 = MGnifyAnalysisWithAnnotationsQualityControlSummaryType0.from_dict(data)
+                quality_control_summary_type_0 = (
+                    MGnifyAnalysisWithAnnotationsQualityControlSummaryType0.from_dict(
+                        data
+                    )
+                )
 
                 return quality_control_summary_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None, data)
+            return cast(
+                MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None, data
+            )
 
-        quality_control_summary = _parse_quality_control_summary(d.pop("quality_control_summary"))
+        quality_control_summary = _parse_quality_control_summary(
+            d.pop("quality_control_summary")
+        )
 
-        annotations = MGnifyAnalysisWithAnnotationsAnnotations.from_dict(d.pop("annotations"))
+        annotations = MGnifyAnalysisWithAnnotationsAnnotations.from_dict(
+            d.pop("annotations")
+        )
 
         def _parse_results_dir(data: object) -> None | str | Unset:
             if data is None:
@@ -296,7 +319,9 @@ class MGnifyAnalysisWithAnnotations:
 
         results_dir = _parse_results_dir(d.pop("results_dir", UNSET))
 
-        def _parse_metadata(data: object) -> MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset:
+        def _parse_metadata(
+            data: object,
+        ) -> MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -304,7 +329,9 @@ class MGnifyAnalysisWithAnnotations:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                metadata_type_0 = MGnifyAnalysisWithAnnotationsMetadataType0.from_dict(data)
+                metadata_type_0 = MGnifyAnalysisWithAnnotationsMetadataType0.from_dict(
+                    data
+                )
 
                 return metadata_type_0
             except (TypeError, ValueError, AttributeError, KeyError):

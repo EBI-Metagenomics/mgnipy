@@ -1,12 +1,19 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import (
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="Run")
 
@@ -161,7 +168,9 @@ class Run:
                 return data
             return cast(None | str | Unset, data)
 
-        ena_study_accession = _parse_ena_study_accession(d.pop("ena_study_accession", UNSET))
+        ena_study_accession = _parse_ena_study_accession(
+            d.pop("ena_study_accession", UNSET)
+        )
 
         def _parse_instrument_platform(data: object) -> None | str | Unset:
             if data is None:
@@ -170,7 +179,9 @@ class Run:
                 return data
             return cast(None | str | Unset, data)
 
-        instrument_platform = _parse_instrument_platform(d.pop("instrument_platform", UNSET))
+        instrument_platform = _parse_instrument_platform(
+            d.pop("instrument_platform", UNSET)
+        )
 
         def _parse_instrument_model(data: object) -> None | str | Unset:
             if data is None:

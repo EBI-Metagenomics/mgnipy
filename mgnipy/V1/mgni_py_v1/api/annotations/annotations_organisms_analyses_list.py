@@ -5,12 +5,19 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.annotations_organisms_analyses_list_format import (
     AnnotationsOrganismsAnalysesListFormat,
 )
 from ...models.paginated_analysis_list import PaginatedAnalysisList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -51,7 +58,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> PaginatedAnalysisList | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> PaginatedAnalysisList | None:
     if response.status_code == 200:
         response_200 = PaginatedAnalysisList.from_dict(response.json())
 

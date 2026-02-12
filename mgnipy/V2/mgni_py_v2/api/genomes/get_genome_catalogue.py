@@ -5,7 +5,10 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.genome_catalogue_detail import GenomeCatalogueDetail
 from ...types import Response
 
@@ -23,7 +26,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> GenomeCatalogueDetail | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> GenomeCatalogueDetail | None:
     if response.status_code == 200:
         response_200 = GenomeCatalogueDetail.from_dict(response.json())
 

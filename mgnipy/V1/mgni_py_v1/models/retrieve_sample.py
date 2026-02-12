@@ -2,13 +2,20 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import (
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="RetrieveSample")
 
@@ -235,7 +242,9 @@ class RetrieveSample:
                 pass
             return cast(datetime.date | None | Unset, data)
 
-        analysis_completed = _parse_analysis_completed(d.pop("analysis_completed", UNSET))
+        analysis_completed = _parse_analysis_completed(
+            d.pop("analysis_completed", UNSET)
+        )
 
         def _parse_collection_date(data: object) -> datetime.date | None | Unset:
             if data is None:
@@ -288,7 +297,9 @@ class RetrieveSample:
                 return data
             return cast(None | str | Unset, data)
 
-        environment_feature = _parse_environment_feature(d.pop("environment_feature", UNSET))
+        environment_feature = _parse_environment_feature(
+            d.pop("environment_feature", UNSET)
+        )
 
         def _parse_environment_material(data: object) -> None | str | Unset:
             if data is None:
@@ -297,7 +308,9 @@ class RetrieveSample:
                 return data
             return cast(None | str | Unset, data)
 
-        environment_material = _parse_environment_material(d.pop("environment_material", UNSET))
+        environment_material = _parse_environment_material(
+            d.pop("environment_material", UNSET)
+        )
 
         def _parse_sample_name(data: object) -> None | str | Unset:
             if data is None:

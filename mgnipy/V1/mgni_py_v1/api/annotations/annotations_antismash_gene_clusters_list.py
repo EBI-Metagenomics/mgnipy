@@ -4,14 +4,21 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.annotations_antismash_gene_clusters_list_format import (
     AnnotationsAntismashGeneClustersListFormat,
 )
 from ...models.paginated_anti_smash_gene_cluster_list import (
     PaginatedAntiSmashGeneClusterList,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

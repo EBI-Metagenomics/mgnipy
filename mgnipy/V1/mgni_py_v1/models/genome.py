@@ -2,14 +2,21 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import (
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
 from ..models.type_enum import TypeEnum
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="Genome")
 
@@ -424,7 +431,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        ena_genome_accession = _parse_ena_genome_accession(d.pop("ena_genome_accession", UNSET))
+        ena_genome_accession = _parse_ena_genome_accession(
+            d.pop("ena_genome_accession", UNSET)
+        )
 
         def _parse_ena_sample_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -433,7 +442,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        ena_sample_accession = _parse_ena_sample_accession(d.pop("ena_sample_accession", UNSET))
+        ena_sample_accession = _parse_ena_sample_accession(
+            d.pop("ena_sample_accession", UNSET)
+        )
 
         def _parse_ena_study_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -442,7 +453,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        ena_study_accession = _parse_ena_study_accession(d.pop("ena_study_accession", UNSET))
+        ena_study_accession = _parse_ena_study_accession(
+            d.pop("ena_study_accession", UNSET)
+        )
 
         def _parse_ncbi_genome_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -451,7 +464,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        ncbi_genome_accession = _parse_ncbi_genome_accession(d.pop("ncbi_genome_accession", UNSET))
+        ncbi_genome_accession = _parse_ncbi_genome_accession(
+            d.pop("ncbi_genome_accession", UNSET)
+        )
 
         def _parse_ncbi_sample_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -460,7 +475,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        ncbi_sample_accession = _parse_ncbi_sample_accession(d.pop("ncbi_sample_accession", UNSET))
+        ncbi_sample_accession = _parse_ncbi_sample_accession(
+            d.pop("ncbi_sample_accession", UNSET)
+        )
 
         def _parse_ncbi_study_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -469,7 +486,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        ncbi_study_accession = _parse_ncbi_study_accession(d.pop("ncbi_study_accession", UNSET))
+        ncbi_study_accession = _parse_ncbi_study_accession(
+            d.pop("ncbi_study_accession", UNSET)
+        )
 
         def _parse_img_genome_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -478,7 +497,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        img_genome_accession = _parse_img_genome_accession(d.pop("img_genome_accession", UNSET))
+        img_genome_accession = _parse_img_genome_accession(
+            d.pop("img_genome_accession", UNSET)
+        )
 
         def _parse_patric_genome_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -487,7 +508,9 @@ class Genome:
                 return data
             return cast(None | str | Unset, data)
 
-        patric_genome_accession = _parse_patric_genome_accession(d.pop("patric_genome_accession", UNSET))
+        patric_genome_accession = _parse_patric_genome_accession(
+            d.pop("patric_genome_accession", UNSET)
+        )
 
         def _parse_busco_completeness(data: object) -> float | None | Unset:
             if data is None:
@@ -496,7 +519,9 @@ class Genome:
                 return data
             return cast(float | None | Unset, data)
 
-        busco_completeness = _parse_busco_completeness(d.pop("busco_completeness", UNSET))
+        busco_completeness = _parse_busco_completeness(
+            d.pop("busco_completeness", UNSET)
+        )
 
         def _parse_rna_5s(data: object) -> float | None | Unset:
             if data is None:
@@ -577,7 +602,9 @@ class Genome:
                 return data
             return cast(int | None | Unset, data)
 
-        pangenome_core_size = _parse_pangenome_core_size(d.pop("pangenome_core_size", UNSET))
+        pangenome_core_size = _parse_pangenome_core_size(
+            d.pop("pangenome_core_size", UNSET)
+        )
 
         def _parse_pangenome_accessory_size(data: object) -> int | None | Unset:
             if data is None:
@@ -586,7 +613,9 @@ class Genome:
                 return data
             return cast(int | None | Unset, data)
 
-        pangenome_accessory_size = _parse_pangenome_accessory_size(d.pop("pangenome_accessory_size", UNSET))
+        pangenome_accessory_size = _parse_pangenome_accessory_size(
+            d.pop("pangenome_accessory_size", UNSET)
+        )
 
         genome = cls(
             genome_id=genome_id,

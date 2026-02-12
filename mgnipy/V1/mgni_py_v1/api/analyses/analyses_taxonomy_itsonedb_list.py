@@ -5,12 +5,19 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.analyses_taxonomy_itsonedb_list_format import (
     AnalysesTaxonomyItsonedbListFormat,
 )
 from ...models.paginated_organism_retrive_list import PaginatedOrganismRetriveList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

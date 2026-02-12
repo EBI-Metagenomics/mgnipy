@@ -4,10 +4,17 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.genome_fragment_search import GenomeFragmentSearch
 from ...models.genome_search_create_format import GenomeSearchCreateFormat
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -46,7 +53,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> GenomeFragmentSearch | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> GenomeFragmentSearch | None:
     if response.status_code == 201:
         response_201 = GenomeFragmentSearch.from_dict(response.json())
 

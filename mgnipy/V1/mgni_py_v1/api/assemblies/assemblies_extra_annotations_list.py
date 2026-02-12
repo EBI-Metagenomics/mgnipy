@@ -5,14 +5,21 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.assemblies_extra_annotations_list_format import (
     AssembliesExtraAnnotationsListFormat,
 )
 from ...models.paginated_assembly_extra_annotation_list import (
     PaginatedAssemblyExtraAnnotationList,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

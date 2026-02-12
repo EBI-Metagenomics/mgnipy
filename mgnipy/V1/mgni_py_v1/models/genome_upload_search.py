@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import (
+    Any,
+    TypeVar,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -61,9 +64,16 @@ class GenomeUploadSearch:
     def to_multipart(self) -> types.RequestFiles:
         files: types.RequestFiles = []
 
-        files.append(("file_uploaded", (None, str(self.file_uploaded).encode(), "text/plain")))
+        files.append(
+            ("file_uploaded", (None, str(self.file_uploaded).encode(), "text/plain"))
+        )
 
-        files.append(("mag_catalogue", (None, str(self.mag_catalogue.value).encode(), "text/plain")))
+        files.append(
+            (
+                "mag_catalogue",
+                (None, str(self.mag_catalogue.value).encode(), "text/plain"),
+            )
+        )
 
         for prop_name, prop in self.additional_properties.items():
             files.append((prop_name, (None, str(prop).encode(), "text/plain")))

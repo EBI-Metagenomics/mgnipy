@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import (
+    Any,
+    TypeVar,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -9,7 +12,10 @@ from attrs import field as _attrs_field
 from ..models.m_gnify_download_file_index_file_index_type import (
     MGnifyDownloadFileIndexFileIndexType,
 )
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="MGnifyDownloadFileIndexFile")
 

@@ -4,10 +4,17 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.kegg_modules_list_format import KeggModulesListFormat
 from ...models.paginated_kegg_module_list import PaginatedKeggModuleList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

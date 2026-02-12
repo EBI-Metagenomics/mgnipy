@@ -4,10 +4,17 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.annotations_go_terms_list_format import AnnotationsGoTermsListFormat
 from ...models.paginated_go_term_list import PaginatedGoTermList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -39,7 +46,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> PaginatedGoTermList | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> PaginatedGoTermList | None:
     if response.status_code == 200:
         response_200 = PaginatedGoTermList.from_dict(response.json())
 
@@ -51,7 +60,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[PaginatedGoTermList]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[PaginatedGoTermList]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,

@@ -5,18 +5,27 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.sample import Sample
 from ...models.samples_studies_publications_annotations_existence_retrieve_format import (
     SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
     accession: str,
     *,
-    format_: SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset = UNSET,
+    format_: (
+        SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset
+    ) = UNSET,
 ) -> dict[str, Any]:
     params: dict[str, Any] = {}
 
@@ -39,7 +48,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Sample | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Sample | None:
     if response.status_code == 200:
         response_200 = Sample.from_dict(response.json())
 
@@ -51,7 +62,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Sample]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Sample]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -64,7 +77,9 @@ def sync_detailed(
     accession: str,
     *,
     client: AuthenticatedClient,
-    format_: SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset = UNSET,
+    format_: (
+        SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset
+    ) = UNSET,
 ) -> Response[Sample]:
     """Get a summary of whether a Sample's linked Studies have any Publications which are annotated by
     Europe PMC.
@@ -101,7 +116,9 @@ def sync(
     accession: str,
     *,
     client: AuthenticatedClient,
-    format_: SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset = UNSET,
+    format_: (
+        SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset
+    ) = UNSET,
 ) -> Sample | None:
     """Get a summary of whether a Sample's linked Studies have any Publications which are annotated by
     Europe PMC.
@@ -133,7 +150,9 @@ async def asyncio_detailed(
     accession: str,
     *,
     client: AuthenticatedClient,
-    format_: SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset = UNSET,
+    format_: (
+        SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset
+    ) = UNSET,
 ) -> Response[Sample]:
     """Get a summary of whether a Sample's linked Studies have any Publications which are annotated by
     Europe PMC.
@@ -168,7 +187,9 @@ async def asyncio(
     accession: str,
     *,
     client: AuthenticatedClient,
-    format_: SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset = UNSET,
+    format_: (
+        SamplesStudiesPublicationsAnnotationsExistenceRetrieveFormat | Unset
+    ) = UNSET,
 ) -> Sample | None:
     """Get a summary of whether a Sample's linked Studies have any Publications which are annotated by
     Europe PMC.

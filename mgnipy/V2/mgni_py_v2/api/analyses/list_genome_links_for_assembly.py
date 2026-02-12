@@ -5,11 +5,18 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.ninja_pagination_response_schema_genome_assembly_link_schema import (
     NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -46,7 +53,9 @@ def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema.from_dict(response.json())
+        response_200 = NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema.from_dict(
+            response.json()
+        )
 
         return response_200
 

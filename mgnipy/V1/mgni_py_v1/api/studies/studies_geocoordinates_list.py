@@ -5,12 +5,19 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.paginated_sample_geo_coordinate_list import (
     PaginatedSampleGeoCoordinateList,
 )
 from ...models.studies_geocoordinates_list_format import StudiesGeocoordinatesListFormat
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

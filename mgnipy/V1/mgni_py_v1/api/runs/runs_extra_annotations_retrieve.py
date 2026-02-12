@@ -5,12 +5,19 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.run_extra_annotation import RunExtraAnnotation
 from ...models.runs_extra_annotations_retrieve_format import (
     RunsExtraAnnotationsRetrieveFormat,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -41,7 +48,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> RunExtraAnnotation | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> RunExtraAnnotation | None:
     if response.status_code == 200:
         response_200 = RunExtraAnnotation.from_dict(response.json())
 
@@ -53,7 +62,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[RunExtraAnnotation]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[RunExtraAnnotation]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,

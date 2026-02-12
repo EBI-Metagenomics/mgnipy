@@ -1,6 +1,9 @@
 """A client library for accessing MGnify API"""
 
-from .client import AuthenticatedClient, Client
+from .client import (
+    AuthenticatedClient,
+    Client,
+)
 
 __all__ = (
     "AuthenticatedClient",

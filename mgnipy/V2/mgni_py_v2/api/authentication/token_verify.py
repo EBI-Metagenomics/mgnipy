@@ -4,7 +4,10 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.schema import Schema
 from ...models.token_verify_input_schema import TokenVerifyInputSchema
 from ...types import Response
@@ -29,7 +32,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Schema | None:
     if response.status_code == 200:
         response_200 = Schema.from_dict(response.json())
 
@@ -41,7 +46,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Schema]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,

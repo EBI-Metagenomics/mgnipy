@@ -4,12 +4,19 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.genomes_search_gather_list_format import GenomesSearchGatherListFormat
 from ...models.paginated_genome_upload_search_list import (
     PaginatedGenomeUploadSearchList,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

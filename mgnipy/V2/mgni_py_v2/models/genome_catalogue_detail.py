@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -11,7 +16,10 @@ from dateutil.parser import isoparse
 from ..models.genome_catalogue_detail_catalogue_type import (
     GenomeCatalogueDetailCatalogueType,
 )
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -178,7 +186,9 @@ class GenomeCatalogueDetail:
                 return data
             return cast(None | str, data)
 
-        protein_catalogue_description = _parse_protein_catalogue_description(d.pop("protein_catalogue_description"))
+        protein_catalogue_description = _parse_protein_catalogue_description(
+            d.pop("protein_catalogue_description")
+        )
 
         updated_at = isoparse(d.pop("updated_at"))
 
@@ -194,7 +204,9 @@ class GenomeCatalogueDetail:
                 return data
             return cast(int | None, data)
 
-        unclustered_genome_count = _parse_unclustered_genome_count(d.pop("unclustered_genome_count"))
+        unclustered_genome_count = _parse_unclustered_genome_count(
+            d.pop("unclustered_genome_count")
+        )
 
         ftp_url = d.pop("ftp_url")
 
@@ -204,13 +216,17 @@ class GenomeCatalogueDetail:
 
         catalogue_type = GenomeCatalogueDetailCatalogueType(d.pop("catalogue_type"))
 
-        def _parse_other_stats(data: object) -> GenomeCatalogueDetailOtherStatsType0 | None:
+        def _parse_other_stats(
+            data: object,
+        ) -> GenomeCatalogueDetailOtherStatsType0 | None:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                other_stats_type_0 = GenomeCatalogueDetailOtherStatsType0.from_dict(data)
+                other_stats_type_0 = GenomeCatalogueDetailOtherStatsType0.from_dict(
+                    data
+                )
 
                 return other_stats_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -226,7 +242,9 @@ class GenomeCatalogueDetail:
                 return data
             return cast(None | str | Unset, data)
 
-        protein_catalogue_name = _parse_protein_catalogue_name(d.pop("protein_catalogue_name", UNSET))
+        protein_catalogue_name = _parse_protein_catalogue_name(
+            d.pop("protein_catalogue_name", UNSET)
+        )
 
         def _parse_genome_count(data: object) -> int | None | Unset:
             if data is None:

@@ -2,13 +2,21 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.assembly_detail_metadata_type_0 import AssemblyDetailMetadataType0
@@ -180,7 +188,9 @@ class AssemblyDetail:
                 return data
             return cast(None | str | Unset, data)
 
-        reads_study_accession = _parse_reads_study_accession(d.pop("reads_study_accession", UNSET))
+        reads_study_accession = _parse_reads_study_accession(
+            d.pop("reads_study_accession", UNSET)
+        )
 
         def _parse_assembly_study_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -189,7 +199,9 @@ class AssemblyDetail:
                 return data
             return cast(None | str | Unset, data)
 
-        assembly_study_accession = _parse_assembly_study_accession(d.pop("assembly_study_accession", UNSET))
+        assembly_study_accession = _parse_assembly_study_accession(
+            d.pop("assembly_study_accession", UNSET)
+        )
 
         def _parse_assembler_name(data: object) -> None | str | Unset:
             if data is None:

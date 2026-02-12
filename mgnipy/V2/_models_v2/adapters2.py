@@ -4,8 +4,7 @@ from pydantic import (
     ValidationError,
 )
 
-from .CONSTANTS import (
-    ExperimentTypes,
+from mgnipy.V2._models_v2.CONSTANTS2 import (
     SupportedApiVersions,
     SupportedEndpoints,
 )
@@ -24,4 +23,3 @@ def validate_endpoint(input):
         return TypeAdapter(SupportedEndpoints).validate_python(input)
     except ValidationError as e:
         raise ValueError(f"Invalid endpoint: {input}") from e
-

@@ -5,14 +5,21 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.analyses_interpro_identifiers_list_format import (
     AnalysesInterproIdentifiersListFormat,
 )
 from ...models.paginated_interpro_identifier_retrive_list import (
     PaginatedInterproIdentifierRetriveList,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

@@ -12,6 +12,13 @@ from typing import (
 from urllib.parse import urlencode
 
 import pandas as pd
+from tqdm import tqdm
+
+from mgnipy._shared_helpers import get_semaphore
+from mgnipy.V1._models_v1.adapters1 import validate_experiment_type
+from mgnipy.V1._models_v1.CONSTANTS1 import SupportedEndpoints
+
+# from mgnipy._shared_helpers.async_helpers import async_disk_lru_cache
 from mgnipy.V1.mgni_py_v1 import Client
 from mgnipy.V1.mgni_py_v1.api.analyses import analyses_list
 from mgnipy.V1.mgni_py_v1.api.biomes import biomes_studies_list
@@ -22,13 +29,6 @@ from mgnipy.V1.mgni_py_v1.api.samples import (
 )
 from mgnipy.V1.mgni_py_v1.api.studies import studies_samples_list
 from mgnipy.V1.mgni_py_v1.types import Response
-from tqdm import tqdm
-
-from mgnipy._shared_helpers import get_semaphore
-from ._models.adapters import validate_experiment_type
-from ._models.CONSTANTS import SupportedEndpoints
-
-from mgnipy._shared_helpers.async_helpers import async_disk_lru_cache
 
 # args
 
@@ -213,7 +213,7 @@ class Mgnifier:
         encoded_params = urlencode(params, doseq=True)
         return f"{start_url}/?{encoded_params}"
 
-    @async_disk_lru_cache()
+    # @async_disk_lru_cache()
     async def _get_page(
         self, client: Client, page_num: int, params: Optional[dict[str, Any]] = None
     ) -> Response:

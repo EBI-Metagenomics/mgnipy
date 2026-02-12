@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.pipeline_versions import PipelineVersions
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.analysed_run import AnalysedRun
@@ -112,7 +120,9 @@ class MGnifyAnalysisDetail:
             read_run = self.read_run
 
         quality_control_summary: dict[str, Any] | None
-        if isinstance(self.quality_control_summary, MGnifyAnalysisDetailQualityControlSummaryType0):
+        if isinstance(
+            self.quality_control_summary, MGnifyAnalysisDetailQualityControlSummaryType0
+        ):
             quality_control_summary = self.quality_control_summary.to_dict()
         else:
             quality_control_summary = self.quality_control_summary
@@ -256,20 +266,26 @@ class MGnifyAnalysisDetail:
 
         read_run = _parse_read_run(d.pop("read_run"))
 
-        def _parse_quality_control_summary(data: object) -> MGnifyAnalysisDetailQualityControlSummaryType0 | None:
+        def _parse_quality_control_summary(
+            data: object,
+        ) -> MGnifyAnalysisDetailQualityControlSummaryType0 | None:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                quality_control_summary_type_0 = MGnifyAnalysisDetailQualityControlSummaryType0.from_dict(data)
+                quality_control_summary_type_0 = (
+                    MGnifyAnalysisDetailQualityControlSummaryType0.from_dict(data)
+                )
 
                 return quality_control_summary_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(MGnifyAnalysisDetailQualityControlSummaryType0 | None, data)
 
-        quality_control_summary = _parse_quality_control_summary(d.pop("quality_control_summary"))
+        quality_control_summary = _parse_quality_control_summary(
+            d.pop("quality_control_summary")
+        )
 
         def _parse_results_dir(data: object) -> None | str | Unset:
             if data is None:
@@ -280,7 +296,9 @@ class MGnifyAnalysisDetail:
 
         results_dir = _parse_results_dir(d.pop("results_dir", UNSET))
 
-        def _parse_metadata(data: object) -> MGnifyAnalysisDetailMetadataType0 | None | Unset:
+        def _parse_metadata(
+            data: object,
+        ) -> MGnifyAnalysisDetailMetadataType0 | None | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):

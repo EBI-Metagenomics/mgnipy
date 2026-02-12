@@ -1,14 +1,22 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.download_file_type import DownloadFileType
 from ..models.download_type import DownloadType
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.download_file_index_file import DownloadFileIndexFile
@@ -43,7 +51,9 @@ class MGnifyGenomeDownloadFile:
     parent_identifier: int | str
     download_group: None | str | Unset = UNSET
     file_size_bytes: int | None | Unset = UNSET
-    index_file: DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset = UNSET
+    index_file: DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset = (
+        UNSET
+    )
     url: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -161,7 +171,9 @@ class MGnifyGenomeDownloadFile:
 
         file_size_bytes = _parse_file_size_bytes(d.pop("file_size_bytes", UNSET))
 
-        def _parse_index_file(data: object) -> DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset:
+        def _parse_index_file(
+            data: object,
+        ) -> DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -180,14 +192,18 @@ class MGnifyGenomeDownloadFile:
                 index_file_type_1 = []
                 _index_file_type_1 = data
                 for index_file_type_1_item_data in _index_file_type_1:
-                    index_file_type_1_item = DownloadFileIndexFile.from_dict(index_file_type_1_item_data)
+                    index_file_type_1_item = DownloadFileIndexFile.from_dict(
+                        index_file_type_1_item_data
+                    )
 
                     index_file_type_1.append(index_file_type_1_item)
 
                 return index_file_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset, data)
+            return cast(
+                DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset, data
+            )
 
         index_file = _parse_index_file(d.pop("index_file", UNSET))
 

@@ -5,14 +5,21 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.analyses_genome_properties_list_format import (
     AnalysesGenomePropertiesListFormat,
 )
 from ...models.paginated_genome_property_retrieve_list import (
     PaginatedGenomePropertyRetrieveList,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

@@ -4,12 +4,19 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.annotations_pfam_entries_list_format import (
     AnnotationsPfamEntriesListFormat,
 )
 from ...models.paginated_pfam_list import PaginatedPfamList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -41,7 +48,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> PaginatedPfamList | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> PaginatedPfamList | None:
     if response.status_code == 200:
         response_200 = PaginatedPfamList.from_dict(response.json())
 
@@ -53,7 +62,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[PaginatedPfamList]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[PaginatedPfamList]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,

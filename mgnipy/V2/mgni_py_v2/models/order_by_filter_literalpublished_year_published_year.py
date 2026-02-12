@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import (
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -9,7 +13,10 @@ from attrs import field as _attrs_field
 from ..models.order_by_filter_literalpublished_year_published_year_order_type_0 import (
     OrderByFilterLiteralpublishedYearPublishedYearOrderType0,
 )
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="OrderByFilterLiteralpublishedYearPublishedYear")
 
@@ -21,14 +28,18 @@ class OrderByFilterLiteralpublishedYearPublishedYear:
         order (None | OrderByFilterLiteralpublishedYearPublishedYearOrderType0 | Unset):
     """
 
-    order: None | OrderByFilterLiteralpublishedYearPublishedYearOrderType0 | Unset = UNSET
+    order: None | OrderByFilterLiteralpublishedYearPublishedYearOrderType0 | Unset = (
+        UNSET
+    )
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         order: None | str | Unset
         if isinstance(self.order, Unset):
             order = UNSET
-        elif isinstance(self.order, OrderByFilterLiteralpublishedYearPublishedYearOrderType0):
+        elif isinstance(
+            self.order, OrderByFilterLiteralpublishedYearPublishedYearOrderType0
+        ):
             order = self.order.value
         else:
             order = self.order
@@ -45,7 +56,9 @@ class OrderByFilterLiteralpublishedYearPublishedYear:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
 
-        def _parse_order(data: object) -> None | OrderByFilterLiteralpublishedYearPublishedYearOrderType0 | Unset:
+        def _parse_order(
+            data: object,
+        ) -> None | OrderByFilterLiteralpublishedYearPublishedYearOrderType0 | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -53,12 +66,17 @@ class OrderByFilterLiteralpublishedYearPublishedYear:
             try:
                 if not isinstance(data, str):
                     raise TypeError()
-                order_type_0 = OrderByFilterLiteralpublishedYearPublishedYearOrderType0(data)
+                order_type_0 = OrderByFilterLiteralpublishedYearPublishedYearOrderType0(
+                    data
+                )
 
                 return order_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | OrderByFilterLiteralpublishedYearPublishedYearOrderType0 | Unset, data)
+            return cast(
+                None | OrderByFilterLiteralpublishedYearPublishedYearOrderType0 | Unset,
+                data,
+            )
 
         order = _parse_order(d.pop("order", UNSET))
 

@@ -4,12 +4,19 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.annotations_interpro_identifiers_list_format import (
     AnnotationsInterproIdentifiersListFormat,
 )
 from ...models.paginated_interpro_identifier_list import PaginatedInterproIdentifierList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

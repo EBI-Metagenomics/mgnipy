@@ -2,14 +2,22 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
 from ..models.catalogue_type_enum import CatalogueTypeEnum
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
     from ..models.genome_catalogue_other_stats_type_0 import (
@@ -208,7 +216,9 @@ class GenomeCatalogue:
                 return data
             return cast(None | str | Unset, data)
 
-        protein_catalogue_name = _parse_protein_catalogue_name(d.pop("protein_catalogue_name", UNSET))
+        protein_catalogue_name = _parse_protein_catalogue_name(
+            d.pop("protein_catalogue_name", UNSET)
+        )
 
         def _parse_protein_catalogue_description(data: object) -> None | str | Unset:
             if data is None:
@@ -228,7 +238,9 @@ class GenomeCatalogue:
                 return data
             return cast(int | None | Unset, data)
 
-        unclustered_genome_count = _parse_unclustered_genome_count(d.pop("unclustered_genome_count", UNSET))
+        unclustered_genome_count = _parse_unclustered_genome_count(
+            d.pop("unclustered_genome_count", UNSET)
+        )
 
         _last_update = d.pop("last_update", UNSET)
         last_update: datetime.datetime | Unset
@@ -241,7 +253,9 @@ class GenomeCatalogue:
 
         ftp_url = d.pop("ftp_url", UNSET)
 
-        def _parse_other_stats(data: object) -> GenomeCatalogueOtherStatsType0 | None | Unset:
+        def _parse_other_stats(
+            data: object,
+        ) -> GenomeCatalogueOtherStatsType0 | None | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):

@@ -4,12 +4,19 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.genome_upload_search import GenomeUploadSearch
 from ...models.genomes_search_gather_create_format import (
     GenomesSearchGatherCreateFormat,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -48,7 +55,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> GenomeUploadSearch | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> GenomeUploadSearch | None:
     if response.status_code == 201:
         response_201 = GenomeUploadSearch.from_dict(response.json())
 
@@ -60,7 +69,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[GenomeUploadSearch]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[GenomeUploadSearch]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,

@@ -4,11 +4,18 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.ninja_pagination_response_schema_m_gnify_analysis_detail import (
     NinjaPaginationResponseSchemaMGnifyAnalysisDetail,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -42,7 +49,9 @@ def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> NinjaPaginationResponseSchemaMGnifyAnalysisDetail | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaMGnifyAnalysisDetail.from_dict(response.json())
+        response_200 = NinjaPaginationResponseSchemaMGnifyAnalysisDetail.from_dict(
+            response.json()
+        )
 
         return response_200
 

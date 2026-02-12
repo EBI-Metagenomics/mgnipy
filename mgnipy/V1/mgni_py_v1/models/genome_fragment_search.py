@@ -1,14 +1,20 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import (
+    Any,
+    TypeVar,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from .. import types
 from ..models.catalogues_filter_enum import CataloguesFilterEnum
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="GenomeFragmentSearch")
 
@@ -58,11 +64,20 @@ class GenomeFragmentSearch:
 
         for catalogues_filter_item_element in self.catalogues_filter:
             files.append(
-                ("catalogues_filter", (None, str(catalogues_filter_item_element.value).encode(), "text/plain"))
+                (
+                    "catalogues_filter",
+                    (
+                        None,
+                        str(catalogues_filter_item_element.value).encode(),
+                        "text/plain",
+                    ),
+                )
             )
 
         if not isinstance(self.threshold, Unset):
-            files.append(("threshold", (None, str(self.threshold).encode(), "text/plain")))
+            files.append(
+                ("threshold", (None, str(self.threshold).encode(), "text/plain"))
+            )
 
         for prop_name, prop in self.additional_properties.items():
             files.append((prop_name, (None, str(prop).encode(), "text/plain")))

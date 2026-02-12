@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -55,7 +59,9 @@ class PublicationAnnotations:
         sample_processing = []
         _sample_processing = d.pop("sample_processing")
         for sample_processing_item_data in _sample_processing:
-            sample_processing_item = EuropePmcAnnotationGroup.from_dict(sample_processing_item_data)
+            sample_processing_item = EuropePmcAnnotationGroup.from_dict(
+                sample_processing_item_data
+            )
 
             sample_processing.append(sample_processing_item)
 

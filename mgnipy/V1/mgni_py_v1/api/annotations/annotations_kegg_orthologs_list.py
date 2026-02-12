@@ -4,12 +4,19 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.annotations_kegg_orthologs_list_format import (
     AnnotationsKeggOrthologsListFormat,
 )
 from ...models.paginated_kegg_ortholog_list import PaginatedKeggOrthologList
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(

@@ -5,14 +5,21 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_3506390em_gnify_functional_analysis_annotation_type import (
     AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
 )
 from ...models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
     NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation,
 )
-from ...types import UNSET, Response, Unset
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -51,7 +58,11 @@ def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation.from_dict(response.json())
+        response_200 = (
+            NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation.from_dict(
+                response.json()
+            )
+        )
 
         return response_200
 

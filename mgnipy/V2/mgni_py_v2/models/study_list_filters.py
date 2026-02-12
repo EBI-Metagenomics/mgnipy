@@ -1,13 +1,20 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import (
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.pipeline_versions import PipelineVersions
-from ..types import UNSET, Unset
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="StudyListFilters")
 
@@ -73,7 +80,9 @@ class StudyListFilters:
 
         biome_lineage = _parse_biome_lineage(d.pop("biome_lineage", UNSET))
 
-        def _parse_has_analyses_from_pipeline(data: object) -> None | PipelineVersions | Unset:
+        def _parse_has_analyses_from_pipeline(
+            data: object,
+        ) -> None | PipelineVersions | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -88,7 +97,9 @@ class StudyListFilters:
                 pass
             return cast(None | PipelineVersions | Unset, data)
 
-        has_analyses_from_pipeline = _parse_has_analyses_from_pipeline(d.pop("has_analyses_from_pipeline", UNSET))
+        has_analyses_from_pipeline = _parse_has_analyses_from_pipeline(
+            d.pop("has_analyses_from_pipeline", UNSET)
+        )
 
         def _parse_search(data: object) -> None | str | Unset:
             if data is None:
