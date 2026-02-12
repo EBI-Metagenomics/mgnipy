@@ -1,0 +1,36 @@
+from enum import Enum
+
+
+class ENAStudyFields(str, Enum):
+    BREED = "breed"
+    BROKER_NAME = "broker_name"
+    CENTER_NAME = "center_name"
+    CULTIVAR = "cultivar"
+    DATAHUB = "datahub"
+    DESCRIPTION = "description"
+    FIRST_PUBLIC = "first_public"
+    GEO_ACCESSION = "geo_accession"
+    ISOLATE = "isolate"
+    KEYWORDS = "keywords"
+    LAST_UPDATED = "last_updated"
+    PARENT_STUDY_ACCESSION = "parent_study_accession"
+    PROJECT_NAME = "project_name"
+    SCIENTIFIC_NAME = "scientific_name"
+    SECONDARY_STUDY_ACCESSION = "secondary_study_accession"
+    SECONDARY_STUDY_ALIAS = "secondary_study_alias"
+    SECONDARY_STUDY_CENTER_NAME = "secondary_study_center_name"
+    STATUS = "status"
+    STRAIN = "strain"
+    STUDY_ACCESSION = "study_accession"
+    STUDY_ALIAS = "study_alias"
+    STUDY_DESCRIPTION = "study_description"
+    STUDY_NAME = "study_name"
+    STUDY_TITLE = "study_title"
+    SUBMISSION_TOOL = "submission_tool"
+    TAG = "tag"
+    TAX_DIVISION = "tax_division"
+    TAX_ID = "tax_id"
+    TAX_LINEAGE = "tax_lineage"
+
+    def __str__(self) -> str:
+        return str(self.value)

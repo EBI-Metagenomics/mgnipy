@@ -24,11 +24,12 @@ classifiers = [
 license = "GPL-3.0-or-later" # https://choosealicense.com/licenses/gpl-3.0/
 dependencies = [
     "anndata>=0.10.9",
-    "mgni-py-v1",
-    "mgni-py-v2",
+    "attrs>=25.4.0",
+    "httpx>=0.28.1",
     "numpy>=2.0.2",
     "pandas>=2.3.3",
     "pydantic>=2.12.5",
+    "python-dateutil>=2.9.0.post0",
     "pyyaml>=6.0.3",
     "requests>=2.32.5",
     "scipy>=1.13.1",
@@ -73,10 +74,6 @@ addopts = "--doctest-modules"
 include = ["mgnipy*"]
 
 [tool.setuptools_scm]
-
-[tool.uv.sources]
-mgni-py-v1 = { path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" }
-mgni-py-v2 = { path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" }
 
 [build-system]
 build-backend = "setuptools.build_meta"

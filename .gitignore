@@ -14,7 +14,7 @@ __pycache__
 # These files are produced during the Python build process
 build/
 .eggs
-#dist/
+dist/
 **.egg-info
 
 # Sphinx documenter creates these
@@ -54,7 +54,6 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-
 
 openapi/mgni-py-v1/*
 openapi/mgni-py-v2/*

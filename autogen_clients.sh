@@ -22,8 +22,9 @@ openapi-python-client generate \
     --config "$FOLDER_PATH/config-v2.yaml" \
     --overwrite
 
-## or make changes to the generated code before building the whl files
+# move the generated modules into mgnipy
 
+: '
 # build whls 
 cd "$FOLDER_PATH/$PROJECT_NAME_ONE"
 poetry build -f wheel -o ../dist/
@@ -33,9 +34,17 @@ cd "$FOLDER_PATH/$PROJECT_NAME_TWO"
 poetry build -f wheel -o ../dist/
 cd -
 
-# install
+# install as dependency using uv
 for whl in "$FOLDER_PATH"/dist/*.whl; do
   uv add "$whl"
 done
 uv lock 
 uv sync
+'
+
+: '
+# also add the following to pyproject.toml to use the whl files instead
+[tool.uv.sources]
+mgni-py-v1 = { path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" }
+mgni-py-v2 = { path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" }
+'
