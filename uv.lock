@@ -1132,18 +1132,66 @@ wheels = [
 ]
 
 [[package]]
+name = "mgni-py-v1"
+version = "1.0.0"
+source = { path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" }
+dependencies = [
+    { name = "attrs" },
+    { name = "httpx" },
+    { name = "python-dateutil" },
+]
+wheels = [
+    { filename = "mgni_py_v1-1.0.0-py3-none-any.whl", hash = "sha256:cfada99048cbbde2e466da384777e61e94f74da228627235f488cd8a5c0db3ab" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "attrs", specifier = ">=22.2.0" },
+    { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
+    { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
+]
+
+[[package]]
+name = "mgni-py-v2"
+version = "2.0.0"
+source = { path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" }
+dependencies = [
+    { name = "attrs" },
+    { name = "httpx" },
+    { name = "python-dateutil" },
+]
+wheels = [
+    { filename = "mgni_py_v2-2.0.0-py3-none-any.whl", hash = "sha256:c6fadf67e96e0b8a28e51f2256881862197e527d4e1b021782fef315457efe4c" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "attrs", specifier = ">=22.2.0" },
+    { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
+    { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
+]
+
+[[package]]
 name = "mgnipy"
 source = { editable = "." }
 dependencies = [
     { name = "anndata", version = "0.11.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "anndata", version = "0.12.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+<<<<<<< HEAD
     { name = "attrs" },
     { name = "httpx" },
+=======
+    { name = "mgni-py-v1" },
+    { name = "mgni-py-v2" },
+>>>>>>> origin/main
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pandas" },
     { name = "pydantic" },
+<<<<<<< HEAD
     { name = "python-dateutil" },
+=======
+>>>>>>> origin/main
     { name = "pyyaml" },
     { name = "requests" },
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -1175,12 +1223,20 @@ docs = [
 [package.metadata]
 requires-dist = [
     { name = "anndata", specifier = ">=0.10.9" },
+<<<<<<< HEAD
     { name = "attrs", specifier = ">=25.4.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "numpy", specifier = ">=2.0.2" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
+=======
+    { name = "mgni-py-v1", path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" },
+    { name = "mgni-py-v2", path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" },
+    { name = "numpy", specifier = ">=2.0.2" },
+    { name = "pandas", specifier = ">=2.3.3" },
+    { name = "pydantic", specifier = ">=2.12.5" },
+>>>>>>> origin/main
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "scipy", specifier = ">=1.13.1" },

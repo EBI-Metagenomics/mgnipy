@@ -1,0 +1,3 @@
+# https://github.com/openapi-generators/openapi-python-client?tab=readme-ov-file#configuration
+project_name_override: mgni-py-v1
+package_name_override: mgni_py_v1

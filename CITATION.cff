@@ -5,8 +5,9 @@ authors:
 - family-names: "Last"
   given-names: "First"
   orcid: "https://orcid.org/0000-0000-0000-0000"
-title: "Python Package Template repository"
+
+title: "MGniPy: A Python client for the MGnify API"
 version: 0.0.1
-doi: 10.5281/zenodo.1234
-date-released: 2025-07-23
-url: "https://github.com/biosustain/mgnipy"
+#doi: 10.5281/zenodo.1234
+date-released: 2026-01-23
+url: "https://github.com/EBI-Metagenomics/mgnipy"

@@ -39,11 +39,6 @@ extensions = [
     "sphinx_copybutton",  # add copy button to code blocks
 ]
 
-#  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
-nb_execution_mode = "auto"
-
-myst_enable_extensions = ["dollarmath", "amsmath"]
-
 # Plotly support through require javascript library
 # https://myst-nb.readthedocs.io/en/latest/render/interactive.html#plotly
 html_js_files = [
@@ -53,15 +48,14 @@ os.environ["PLOTLY_RENDERER"] = "notebook"  # compatibility with plotly6
 
 # https://myst-nb.readthedocs.io/en/latest/configuration.html
 # Execution
+#  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
+nb_execution_mode = "auto"
+nb_execution_timeout = -1  # -1 means no timeout
 nb_execution_raise_on_error = True
 # Rendering
 nb_merge_streams = True
 
-# https://myst-nb.readthedocs.io/en/latest/authoring/custom-formats.html#write-custom-formats
-# ! if you use it, then you cannot directly execute the notebook in the browser in colab
-# (the file needs to be fetched from the repository)
-# just keep both syncing it using papermill
-# nb_custom_formats = {".py": ["jupytext.reads", {"fmt": "py:percent"}]}
+myst_enable_extensions = ["dollarmath", "amsmath"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -81,7 +75,9 @@ exclude_patterns = [
 # Intersphinx options
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    # "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "anndata": ("https://anndata.readthedocs.io/en/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
     # "scikit-learn": ("https://scikit-learn.org/stable/", None),
     # "matplotlib": ("https://matplotlib.org/stable/", None),
 }
@@ -94,11 +90,11 @@ intersphinx_mapping = {
 # https://github.com/executablebooks/MyST-NB/blob/master/docs/conf.py
 # html_title = ""
 html_theme = "sphinx_book_theme"
-# html_logo = "_static/logo-wide.svg"
-# html_favicon = "_static/logo-square.svg"
+html_logo = "assets/mgnipy.svg"
+html_favicon = "assets/mgnipy.svg"
 html_theme_options = {
-    "github_url": "https://github.com/angelphanth/mgnipy",
-    "repository_url": "https://github.com/angelphanth/mgnipy",
+    "github_url": "https://github.com/EBI-Metagenomics/mgnipy",
+    "repository_url": "https://github.com/EBI-Metagenomics/mgnipy",
     "repository_branch": "main",
     "home_page_in_toc": True,
     "path_to_docs": "docs",
@@ -130,7 +126,10 @@ if os.environ.get("READTHEDOCS") == "True":
     from pathlib import Path
 
     PROJECT_ROOT = Path(__file__).parent.parent
-    PACKAGE_ROOT = PROJECT_ROOT / "src" / "mgnipy"
+    print(f"PROJECT_ROOT: {PROJECT_ROOT}")
+    PACKAGE_ROOT = PROJECT_ROOT / "mgnipy"
+    CLIENT_ROOT_V1 = PROJECT_ROOT / "openapi" / "mgni-py-v1" / "mgni_py_v1"
+    CLIENT_ROOT_V2 = PROJECT_ROOT / "openapi" / "mgni-py-v2" / "mgni_py_v2"
 
     def run_apidoc(_):
         from sphinx.ext import apidoc
@@ -142,12 +141,34 @@ if os.environ.get("READTHEDOCS") == "True":
                 "--module-first",
                 "--separate",
                 "-o",
-                str(PROJECT_ROOT / "docs" / "reference"),
+                str(PROJECT_ROOT / "docs" / "reference" / "mgnipy"),
                 str(PACKAGE_ROOT),
                 str(PACKAGE_ROOT / "*.c"),
                 str(PACKAGE_ROOT / "*.so"),
             ]
         )
+
+        apidoc.main([
+            "--force",
+            "--implicit-namespaces",
+            "--module-first",
+            "--separate",
+            "-o", str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v1"),
+            str(CLIENT_ROOT_V1),
+            str(CLIENT_ROOT_V1 / "*.c"),
+            str(CLIENT_ROOT_V1 / "*.so"),
+        ])
+
+        apidoc.main([
+            "--force",
+            "--implicit-namespaces",
+            "--module-first",
+            "--separate",
+            "-o", str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v2"),
+            str(CLIENT_ROOT_V2),
+            str(CLIENT_ROOT_V2 / "*.c"),
+            str(CLIENT_ROOT_V2 / "*.so"),
+        ])
 
     def setup(app):
         app.connect("builder-inited", run_apidoc)
