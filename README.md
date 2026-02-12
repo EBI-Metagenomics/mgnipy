@@ -1,50 +1,59 @@
-# Example Python package
+# MGnipy
 
-All design principles are explained in the [developing.md](developing.md) file.
-The Python package template was created by Jakob Nybo Nissen and Henry Webel.
+MGni.py is a python wrapper for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/), supporting both version 1 and version 2. 
 
-## How to use
+The python client libraries were auto-generated using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). Openapi-python-client provides data models and methods for the api reources and uses httpx and attr. 
 
-Can be used as GitHub template repository,
-see [GitHub documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+## Installation
 
-You will need to find and replace occurences of
-
-- `mgnipy` -> `your_package_name`
-  - also the folder `mgnipy`
-- `angelphanth` -> `GitHub_user_name` (or `organization`)
-  with the name of your package and GitHub user name (or organization).
-
-- look for `First Last` to see where to replace with your name
-- choose a license, see [GitHub documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/licensing-a-repository)
-  and [Creative Commons](https://creativecommons.org/chooser/).
-  Replace [`LICENSE`](LICENSE) file with the license you choose.
-- Update the `CITATION.cff` file with your information.
-
-## Development environment
-
-Install package so that new code is picked up in a restared python interpreter:
-
-```
-pip install -e ".[dev]"
+```bash
+pip install mgnipy
 ```
 
-## Basic usage
+## Usage
+Look in biome resource for studies for a given biome. 
 
-> works using this template
-
+First instantiate the mgnifier:
 ```python
-from mgnipy import hello_world
-print (mgnipy.__version__)
-print(hello_world(4))
+from mgnipy import Mgnifier
+
+# init
+glass = Mgnifier(
+    resource="biomes",
+    # GOLD ecosystem classification
+    lineage="root:Host-associated:Plants:Rhizosphere", 
+)
+
+# look at the built request url
+print(glass)
 ```
 
-## Readthedocs
+Then plan or preview the number of pages and records before collecting all their metadata :)
+```python
+# only prints some info
+glass.plan()
 
-The documentation can be build using readthedocs automatically. See
-[project on Readthedocs](https://readthedocs.org/projects/angelphanth-python-package/)
-for the project based on this template. A new project needs
-to [be registered on ReadTheDocs](https://docs.readthedocs.com/platform/stable/intro/add-project.html).
+# also returns the first page of results as a pd.DataFrame
+df = glass.preview()
+```
 
-- make sure to enable build from PRs in the settings (advanded settings)
-- checkout configuration file: [`.readthedocs.yaml`](.readthedocs.yaml)
+Now that you ahve confirmed that this is the metadta that you want then collect it:
+(currently in memory)
+```python
+metadata = await df.collect()
+```
+
+## Additional documentation
+
+- [MGnify API Docs](https://www.ebi.ac.uk/metagenomics/api/docs/)
+- [openapi-python-client](https://github.com/openapi-generators/openapi-python-client)
+
+## Development
+
+see [Contributing.md](Contributing.md)
+
+## License
+
+TODO
+
+
