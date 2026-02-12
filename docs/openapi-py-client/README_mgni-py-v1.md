@@ -53,10 +53,10 @@ from mgni_py_v1.models import MyDataModel
 from mgni_py_v1.api.my_tag import get_my_data_model
 from mgni_py_v1.types import Response
 
-with client as client:
-    my_data: MyDataModel = get_my_data_model.sync(client=client)
+with client as client_context:
+    my_data: MyDataModel = get_my_data_model.sync(client=client_context)
     # or if you need more info (e.g. status_code)
-    response: Response[MyDataModel] = get_my_data_model.sync_detailed(client=client)
+    response: Response[MyDataModel] = get_my_data_model.sync_detailed(client=client_context)
 ```
 
 Or do the same thing with an async version:
@@ -66,9 +66,9 @@ from mgni_py_v1.models import MyDataModel
 from mgni_py_v1.api.my_tag import get_my_data_model
 from mgni_py_v1.types import Response
 
-async with client as client:
-    my_data: MyDataModel = await get_my_data_model.asyncio(client=client)
-    response: Response[MyDataModel] = await get_my_data_model.asyncio_detailed(client=client)
+async with client as client_context:
+    my_data: MyDataModel = await get_my_data_model.asyncio(client=client_context)
+    response: Response[MyDataModel] = await get_my_data_model.asyncio_detailed(client=client_context)
 ```
 
 By default, when you're calling an HTTPS API it will attempt to verify that SSL is working correctly. Using certificate verification is highly recommended most of the time, but sometimes you may need to authenticate to a server (especially an internal server) using a custom certificate bundle.
