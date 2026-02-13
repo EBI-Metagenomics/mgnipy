@@ -1,83 +1,109 @@
-# from pathlib import Path
-# from typing import (
-#     Literal,
-#     Optional,
+from pathlib import Path
+from typing import (
+    Any,
+    Literal,
+    Optional,
+)
+
+import pandas as pd
+
+# from mgnipy._pydantic_models.v2.adapters import validate_experiment_type
+from mgnipy._shared_helpers import get_semaphore
+
+
+# from .mgni_py_v2.api.analyses import analyses_list
+# from mgni_py_v1.api.runs import runs_analyses_list
+# from mgni_py_v1.api.samples import (
+#     samples_list,
+#     samples_runs_list,
 # )
 
-# import pandas as pd
+semaphore = get_semaphore()
 
-# # from mgnipy._pydantic_models.v2.adapters import validate_experiment_type
-# from mgnipy._shared_helpers import get_semaphore
+# base class
+# inheriting class for each endpoint 
+# with methods for getting, planning etc. 
 
-
-# # from .mgni_py_v2.api.analyses import analyses_list
-# # from mgni_py_v1.api.runs import runs_analyses_list
-# # from mgni_py_v1.api.samples import (
-# #     samples_list,
-# #     samples_runs_list,
-# # )
-
-# semaphore = get_semaphore()
+# a class to take all of these together 
 
 
-# # init for each model
-# class Mgnifier:
-#     """
-#     The Mgnipy Mgnifier class is a user-friendly interface for exploring study, sample and analysis metadata from the MGnify API.
+class Mgnifier:
 
-#     """
+    def __init__(
+        self,
+        *,
+        resource: Optional[
+            Literal["studies", "samples", "genomes", "analyses"]
+        ] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        pass
 
-#     def __init__(
-#         self,
-#         *,
-#         root: Optional[
-#             Literal[
-#                 "biomes",
-#                 "super-studies",
-#                 "publications",
-#                 "studies",
-#                 "samples",
-#                 "analyses",
-#                 "annotations",
-#             ]
-#         ] = None,
-#         leaf: Optional[Literal["studies", "samples", "analyses"]] = None,
-#         depth: Optional[int] = None,
-#         checkpoint_dir: Optional[Path] = None,
-#         checkpoint_freq: Optional[int] = None,
-#         **kwargs,
-#     ):
-#         # url
-#         self._api_version = "v2"  # TODO this and base url to env
-#         self._base_url = "https://www.ebi.ac.uk/"  # TODO and this
-#         self._mpy_module = None
 
-#         self._all_biomes = None  # to do biome helper
-#         self.param_validator = None  # to do adapter to validate that kwargs are valid params for the endpoint
+    def plan():
+        pass
 
-#         # TODO checkpoints
-#         # prep checkpoint if
-#         self._checkpoint_dir = checkpoint_dir
-#         self._checkpoint_freq = checkpoint_freq or 3
-#         self._checkpoint_csv = None
-#         self._config_json = None
-#         if self._checkpoint_dir is not None:
-#             self._set_checkpoint_paths()
+    def preview():
+        pass
 
-#         # params
-#         self._params = params or {}
-#         if kwargs:
-#             self._params.update(kwargs)
-#         if "page_size" not in self._params:
-#             self._params["page_size"] = 25
-#         if "experiment_type" in self._params:
-#             et_param = self._params["experiment_type"]
-#             # validate each exp type
-#             for et in et_param if isinstance(et_param, list) else [et_param]:
-#                 validate_experiment_type(et)
+    async def get():
+        # accessions
+        pass
 
-#         # cache
-#         self._total_pages: Optional[int] = None
-#         self._cached_first_page: Optional[dict] = None
+    def to_pandas():
+        pass
 
-#         self._results: Optional[list[pd.DataFrame]] = None
+    def to_parquet():
+        pass
+
+    def to_anndata():
+        pass
+
+    def to_polars():
+        pass
+
+    def export():
+        pass
+
+class StudyMgnifier(Mgnifier):
+
+    def __init__(
+        self,
+        *,
+        accessions: Optional[list[str]] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        pass
+
+
+class AnalysisMgnifier(Mgnifier):
+    def __init__(
+        self,
+        *,
+        accessions: Optional[list[str]] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        pass
+
+class SampleMgnifier(Mgnifier):
+    def __init__(
+        self,
+        *,
+        accessions: Optional[list[str]] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        pass
+
+class GenomeMgnifier(Mgnifier):
+    def __init__(
+        self,
+        *,
+        accessions: Optional[list[str]] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        pass
