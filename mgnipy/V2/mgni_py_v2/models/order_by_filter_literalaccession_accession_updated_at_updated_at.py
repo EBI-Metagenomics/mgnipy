@@ -13,7 +13,7 @@ from attrs import field as _attrs_field
 from ..models.order_by_filter_literalaccession_accession_updated_at_updated_at_order_type_0 import (
     OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAtOrderType0,
 )
-from ..types import (
+from ..._models_v2.types import (
     UNSET,
     Unset,
 )

@@ -4,14 +4,14 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import (
+from ....client import (
     AuthenticatedClient,
     Client,
 )
 from ...models.ninja_pagination_response_schema_m_gnify_study import (
     NinjaPaginationResponseSchemaMGnifyStudy,
 )
-from ...types import (
+from ...._models_v2.types import (
     UNSET,
     Response,
     Unset,

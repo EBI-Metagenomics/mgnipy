@@ -5,12 +5,12 @@ from urllib.parse import quote
 import httpx
 
 from ... import errors
-from ...client import (
+from ....client import (
     AuthenticatedClient,
     Client,
 )
 from ...models.publication_annotations import PublicationAnnotations
-from ...types import Response
+from ...._models_v2.types import Response
 
 
 def _get_kwargs(

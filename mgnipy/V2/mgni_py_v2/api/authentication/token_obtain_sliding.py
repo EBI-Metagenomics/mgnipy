@@ -4,13 +4,13 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import (
+from ....client import (
     AuthenticatedClient,
     Client,
 )
 from ...models.webin_token_request import WebinTokenRequest
 from ...models.webin_token_response import WebinTokenResponse
-from ...types import Response
+from ...._models_v2.types import Response
 
 
 def _get_kwargs(

@@ -1,6 +1,6 @@
 """A client library for accessing MGnify API"""
 
-from .client import (
+from ..client import (
     AuthenticatedClient,
     Client,
 )

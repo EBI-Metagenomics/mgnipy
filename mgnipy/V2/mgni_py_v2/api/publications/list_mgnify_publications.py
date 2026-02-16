@@ -4,7 +4,7 @@ from typing import Any
 import httpx
 
 from ... import errors
-from ...client import (
+from ....client import (
     AuthenticatedClient,
     Client,
 )
@@ -14,7 +14,7 @@ from ...models.list_mgnify_publications_order_type_0 import (
 from ...models.ninja_pagination_response_schema_m_gnify_publication import (
     NinjaPaginationResponseSchemaMGnifyPublication,
 )
-from ...types import (
+from ...._models_v2.types import (
     UNSET,
     Response,
     Unset,

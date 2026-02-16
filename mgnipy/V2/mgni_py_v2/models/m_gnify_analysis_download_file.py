@@ -13,7 +13,7 @@ from attrs import field as _attrs_field
 
 from ..models.download_file_type import DownloadFileType
 from ..models.download_type import DownloadType
-from ..types import (
+from ..._models_v2.types import (
     UNSET,
     Unset,
 )

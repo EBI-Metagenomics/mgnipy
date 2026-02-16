@@ -16,7 +16,7 @@ from dateutil.parser import isoparse
 from ..models.genome_catalogue_base_catalogue_type import (
     GenomeCatalogueBaseCatalogueType,
 )
-from ..types import (
+from ..._models_v2.types import (
     UNSET,
     Unset,
 )
