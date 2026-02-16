@@ -13,29 +13,33 @@ from attrs import (
 class Client:
     """A class for keeping track of data related to the API
 
-    The following are accepted as keyword arguments and will be used to construct httpx Clients internally:
-
-        ``base_url``: The base URL for the API, all requests are made to a relative path to this URL
-
-        ``cookies``: A dictionary of cookies to be sent with every request
-
-        ``headers``: A dictionary of headers to be sent with every request
-
-        ``timeout``: The maximum amount of a time a request can take. API functions will raise
+    Parameters
+    ----------
+    base_url : str
+        The base URL for the API, all requests are made to a relative path to this URL
+    cookies : dict[str, str], optional
+        A dictionary of cookies to be sent with every request
+    headers : dict[str, str], optional
+        A dictionary of headers to be sent with every request
+    timeout : httpx.Timeout, optional
+        The maximum amount of a time a request can take. API functions will raise
         httpx.TimeoutException if this is exceeded.
+    verify_ssl : str | bool | ssl.SSLContext, optional
+        Whether or not to verify the SSL certificate of the API server. This should be True in production,
+        but can be set to False for testing purposes. Default is True.
+    follow_redirects : bool, optional
+        Whether or not to follow redirects. Default is False.
+    httpx_args : dict[str, Any], optional
+        A dictionary of additional arguments to be passed to the ``httpx.Client`` and ``httpx.AsyncClient`` constructor.
+    raise_on_unexpected_status : bool, optional
+        Whether or not to raise an errors.UnexpectedStatus if the API returns a
+        status code that was not documented in the source OpenAPI document. Default is False.
 
-        ``verify_ssl``: Whether or not to verify the SSL certificate of the API server. This should be True in production,
-        but can be set to False for testing purposes.
-
-        ``follow_redirects``: Whether or not to follow redirects. Default value is False.
-
-        ``httpx_args``: A dictionary of additional arguments to be passed to the ``httpx.Client`` and ``httpx.AsyncClient`` constructor.
-
-
-    Attributes:
-        raise_on_unexpected_status: Whether or not to raise an errors.UnexpectedStatus if the API returns a
-            status code that was not documented in the source OpenAPI document. Can also be provided as a keyword
-            argument to the constructor.
+    Attributes
+    ----------
+    raise_on_unexpected_status : bool
+        Whether or not to raise an errors.UnexpectedStatus if the API returns a
+        status code that was not documented in the source OpenAPI document.
     """
 
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
@@ -144,32 +148,45 @@ class Client:
 class AuthenticatedClient:
     """A Client which has been authenticated for use on secured endpoints
 
-    The following are accepted as keyword arguments and will be used to construct httpx Clients internally:
-
-        ``base_url``: The base URL for the API, all requests are made to a relative path to this URL
-
-        ``cookies``: A dictionary of cookies to be sent with every request
-
-        ``headers``: A dictionary of headers to be sent with every request
-
-        ``timeout``: The maximum amount of a time a request can take. API functions will raise
+    Parameters
+    ----------
+    base_url : str
+        The base URL for the API, all requests are made to a relative path to this URL
+    cookies : dict[str, str], optional
+        A dictionary of cookies to be sent with every request
+    headers : dict[str, str], optional
+        A dictionary of headers to be sent with every request
+    timeout : httpx.Timeout, optional
+        The maximum amount of a time a request can take. API functions will raise
         httpx.TimeoutException if this is exceeded.
+    verify_ssl : str | bool | ssl.SSLContext, optional
+        Whether or not to verify the SSL certificate of the API server. This should be True in production,
+        but can be set to False for testing purposes. Default is True.
+    follow_redirects : bool, optional
+        Whether or not to follow redirects. Default is False.
+    httpx_args : dict[str, Any], optional
+        A dictionary of additional arguments to be passed to the ``httpx.Client`` and ``httpx.AsyncClient`` constructor.
+    raise_on_unexpected_status : bool, optional
+        Whether or not to raise an errors.UnexpectedStatus if the API returns a
+        status code that was not documented in the source OpenAPI document. Default is False.
+    token : str
+        The token to use for authentication
+    prefix : str, optional
+        The prefix to use for the Authorization header. Default is "Bearer".
+    auth_header_name : str, optional
+        The name of the Authorization header. Default is "Authorization".
 
-        ``verify_ssl``: Whether or not to verify the SSL certificate of the API server. This should be True in production,
-        but can be set to False for testing purposes.
-
-        ``follow_redirects``: Whether or not to follow redirects. Default value is False.
-
-        ``httpx_args``: A dictionary of additional arguments to be passed to the ``httpx.Client`` and ``httpx.AsyncClient`` constructor.
-
-
-    Attributes:
-        raise_on_unexpected_status: Whether or not to raise an errors.UnexpectedStatus if the API returns a
-            status code that was not documented in the source OpenAPI document. Can also be provided as a keyword
-            argument to the constructor.
-        token: The token to use for authentication
-        prefix: The prefix to use for the Authorization header
-        auth_header_name: The name of the Authorization header
+    Attributes
+    ----------
+    raise_on_unexpected_status : bool
+        Whether or not to raise an errors.UnexpectedStatus if the API returns a
+        status code that was not documented in the source OpenAPI document.
+    token : str
+        The token to use for authentication
+    prefix : str
+        The prefix to use for the Authorization header
+    auth_header_name : str
+        The name of the Authorization header
     """
 
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
@@ -284,3 +301,5 @@ class AuthenticatedClient:
     async def __aexit__(self, *args: Any, **kwargs: Any) -> None:
         """Exit a context manager for underlying httpx.AsyncClient (see httpx docs)"""
         await self.get_async_httpx_client().__aexit__(*args, **kwargs)
+
+
