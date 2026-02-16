@@ -4,6 +4,7 @@ from platformdirs import user_cache_dir
 APPNAME = "mgnipy"
 APPAUTHOR = "MGnify"
 CACHE_DIR = user_cache_dir(APPNAME, APPAUTHOR)
+BASE_URL = "https://www.ebi.ac.uk/"
 
 __version__ = metadata.version(APPNAME)
 
@@ -11,7 +12,7 @@ __version__ = metadata.version(APPNAME)
 
 """A client library for accessing MGnify API"""
 
-from ..client import (
+from mgnipy.V2.client import (
     AuthenticatedClient,
     Client,
 )

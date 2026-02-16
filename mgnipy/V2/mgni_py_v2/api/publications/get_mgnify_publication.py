@@ -10,7 +10,7 @@ from ....client import (
     Client,
 )
 from ...models.m_gnify_publication_detail import MGnifyPublicationDetail
-from ...._models_v2.types import Response
+from ...._mgnipy_models.types import Response
 
 
 def _get_kwargs(

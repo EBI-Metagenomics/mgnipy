@@ -10,7 +10,7 @@ from ....client import (
 )
 from ...models.webin_token_request import WebinTokenRequest
 from ...models.webin_token_response import WebinTokenResponse
-from ...._models_v2.types import Response
+from ...._mgnipy_models.types import Response
 
 
 def _get_kwargs(

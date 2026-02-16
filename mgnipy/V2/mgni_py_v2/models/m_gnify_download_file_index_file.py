@@ -12,7 +12,7 @@ from attrs import field as _attrs_field
 from ..models.m_gnify_download_file_index_file_index_type import (
     MGnifyDownloadFileIndexFileIndexType,
 )
-from ..._models_v2.types import (
+from ..._mgnipy_models.types import (
     UNSET,
     Unset,
 )

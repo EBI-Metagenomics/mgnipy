@@ -12,7 +12,7 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.genome_type import GenomeType
-from ..._models_v2.types import (
+from ..._mgnipy_models.types import (
     UNSET,
     Unset,
 )

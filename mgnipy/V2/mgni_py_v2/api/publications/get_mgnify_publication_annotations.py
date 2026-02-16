@@ -10,7 +10,7 @@ from ....client import (
     Client,
 )
 from ...models.publication_annotations import PublicationAnnotations
-from ...._models_v2.types import Response
+from ...._mgnipy_models.types import Response
 
 
 def _get_kwargs(

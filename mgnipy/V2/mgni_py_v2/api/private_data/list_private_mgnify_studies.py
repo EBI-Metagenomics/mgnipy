@@ -11,7 +11,7 @@ from ....client import (
 from ...models.ninja_pagination_response_schema_m_gnify_study import (
     NinjaPaginationResponseSchemaMGnifyStudy,
 )
-from ...._models_v2.types import (
+from ...._mgnipy_models.types import (
     UNSET,
     Response,
     Unset,

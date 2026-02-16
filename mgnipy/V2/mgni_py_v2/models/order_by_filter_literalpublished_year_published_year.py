@@ -13,7 +13,7 @@ from attrs import field as _attrs_field
 from ..models.order_by_filter_literalpublished_year_published_year_order_type_0 import (
     OrderByFilterLiteralpublishedYearPublishedYearOrderType0,
 )
-from ..._models_v2.types import (
+from ..._mgnipy_models.types import (
     UNSET,
     Unset,
 )
