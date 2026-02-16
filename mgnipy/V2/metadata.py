@@ -11,7 +11,7 @@ from typing import (
 from urllib.parse import urlencode
 
 from tqdm import tqdm
-
+from math import ceil
 from mgnipy._shared_helpers.pydantic_help import int_gt_adapter
 
 from mgnipy.V2 import Client
@@ -22,9 +22,13 @@ from mgnipy._shared_helpers import get_semaphore
 from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
 
 from mgnipy.V2.biomes import list_mgnify_biomes
-from mgnipy.V2.studies import list_mgnify_studies
+from mgnipy.V2.studies import (
+    list_mgnify_studies,
+    list_mgnify_study_samples,
+    list_mgnify_study_analyses,
+)
 from mgnipy.V2.samples import list_mgnify_samples
-from mgnipy.V2.analyses import list_mgnify_analyses
+from mgnipy.V2.analyses import get_mgnify_analysis
 from mgnipy.V2.genomes import list_mgnify_genomes
 
 semaphore = get_semaphore()
@@ -32,15 +36,15 @@ semaphore = get_semaphore()
 # constants
 from mgnipy import (
     BASE_URL,
-    #CACHE_DIR,
+    #CACHE_DIR, TODO cache, paused for now
 )
 
 METADATA_MODULES = {
-    SupportedEndpoints.BIOMES: list_mgnify_biomes,  # list studies per biome, search in biome
-    SupportedEndpoints.STUDIES: list_mgnify_studies,  # list samples per study, search in study
-    SupportedEndpoints.SAMPLES: list_mgnify_samples,  # list runs/assemply per sample, search in sample
-    SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # and results here, search in a given analyses
-    SupportedEndpoints.GENOMES: list_mgnify_genomes, # list genomes, search in genome
+    SupportedEndpoints.BIOMES: list_mgnify_biomes,  # what biomes
+    SupportedEndpoints.STUDIES: list_mgnify_studies,  # search for study
+    SupportedEndpoints.SAMPLES: list_mgnify_study_samples,  # all samples for given study
+    SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,  # all analyses for given study
+    SupportedEndpoints.GENOMES: list_mgnify_genomes, 
 }
 
 class Mgnifier:
@@ -109,6 +113,9 @@ class Mgnifier:
             return self._build_url()
         elif name == "api_version":
             print("v2")
+        elif name == "accessions":
+            self._set_accessions_list()
+            return self._accessions
         else:
             return self.__dict__[f"_{name}"]
 
@@ -146,7 +153,7 @@ class Mgnifier:
         
         # set
         self._count = response_dict["count"]
-        self._total_pages = self._count // self._params["page_size"] 
+        self._total_pages = ceil(self._count / self._params["page_size"])
 
         # verbose
         print(f"Total pages to retrieve: {self._total_pages}")
@@ -172,7 +179,8 @@ class Mgnifier:
         print(
             f"Previewing page 1 of {self._total_pages} pages of {self._count} records:"
         )
-        return self.to_pandas(self._cached_first_page)
+        return self.to_pandas([self._cached_first_page])
+
 
     async def get(
         self, 
@@ -186,10 +194,10 @@ class Mgnifier:
         async with self._init_client() as client:
             await self._collector(client, pages=pages)
 
-        return pd.concat(
-            [self.to_pandas(page) for page in self._results],
-            ignore_index=True
-        )
+        # set accessions list for retrieved data if applicable
+        self._set_accessions_list()
+
+        return self.to_pandas(self._results)
 
 
     def to_pandas(
@@ -198,15 +206,20 @@ class Mgnifier:
         **kwargs
     ) -> pd.DataFrame:
         
-        data = data or self._results or self._cached_first_page
+        _data = data or self._results or [self._cached_first_page]
 
-        if data is None:
+        if _data==[None] or _data is None:
             raise RuntimeError(
                 "No data available to convert to DataFrame. "
                 "Please run preview() or get() first."
             )
         
-        return pd.DataFrame(data, **kwargs)
+        combined_df = pd.concat(
+            [pd.DataFrame(page) for page in _data],
+            ignore_index=True
+        )
+
+        return pd.DataFrame(combined_df, **kwargs)
 
 
     def to_parquet(self):
@@ -268,18 +281,20 @@ class Mgnifier:
         start_url = os.path.join(self._base_url, self._end_url)
         encoded_params = urlencode(params, doseq=True)
         return f"{start_url}/?{encoded_params}"
+    
+    def _set_accessions_list(self) -> Optional[List[str]]:
+        """helper function to set accessions list for the current mpy module"""
 
-    def _to_df(self, data: dict) -> pd.DataFrame:
-        """helper functinon to expand attributes column into separate columns"""
-        res_df = pd.DataFrame(data)
-        # if "attributes" in res_df.columns:
-        #     attr_df = pd.json_normalize(res_df["attributes"])
-        #     res_df = pd.concat([res_df.drop(columns=["attributes"]), attr_df], axis=1)
-        # if "relationships" in res_df.columns:
-        #     rel_df = pd.json_normalize(res_df["relationships"])
-        #     res_df = pd.concat([res_df.drop(columns=["relationships"]), rel_df], axis=1)
-
-        return res_df
+        if self._mpy_module == list_mgnify_studies:
+            self._accessions = self.to_pandas()['accession'].tolist()
+        elif self._mpy_module == list_mgnify_study_analyses:
+            self._accessions = self.to_pandas()['accession'].tolist()
+        elif self._mpy_module == list_mgnify_study_samples:
+            self._accessions = self.to_pandas()['accession'].tolist()
+        elif self._mpy_module == list_mgnify_genomes:
+            self._accessions = self.to_pandas()['accession'].tolist()
+        else:
+            self._accessions = None
 
     # @async_disk_lru_cache()
     async def _get_page_async(
@@ -372,44 +387,60 @@ class BiomesMgnifier(Mgnifier):
 
 
 
-class StudyMgnifier(Mgnifier):
+class StudiesMgnifier(Mgnifier):
 
     def __init__(
         self,
         *,
-        accessions: Optional[list[str]] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(accessions=accessions, params=params, **kwargs)
+        super().__init__(resource='studies', params=params, **kwargs)
 
 
-class AnalysisMgnifier(Mgnifier):
+class AnalysesMgnifier(Mgnifier):
+    def __init__(
+        self,
+        study_accession: str,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            resource='analyses',
+            params=params, 
+            accession=study_accession, 
+            **kwargs
+        )
+
+
+class SamplesMgnifier(Mgnifier):
+    def __init__(
+        self,
+        study_accession: str,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            resource='samples',
+            accession=study_accession, 
+            params=params, 
+            **kwargs
+        )
+
+
+class GenomesMgnifier(Mgnifier):
     def __init__(
         self,
         *,
-        accessions: Optional[list[str]] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(accessions=accessions, params=params, **kwargs)
-
-class SampleMgnifier(Mgnifier):
-    def __init__(
-        self,
-        *,
-        accessions: Optional[list[str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ):
-        super().__init__(accessions=accessions, params=params, **kwargs)
-
-class GenomeMgnifier(Mgnifier):
-    def __init__(
-        self,
-        *,
-        accessions: Optional[list[str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ):
-        super().__init__(accessions=accessions, params=params, **kwargs)
+        # TODO 
+        super().__init__(
+            resource="genomes",
+            params=params, 
+            **kwargs
+        )
+    

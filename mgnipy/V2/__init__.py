@@ -5,7 +5,22 @@ from .client import (
     Client,
 )
 
+from .metadata import (
+    SamplesMgnifier,
+    GenomesMgnifier,
+    StudiesMgnifier,
+    BiomesMgnifier,
+    AnalysesMgnifier,
+    Mgnifier
+)
+
 __all__ = (
     "AuthenticatedClient",
     "Client",
+    "SamplesMgnifier",
+    "GenomesMgnifier",
+    "StudiesMgnifier",
+    "BiomesMgnifier",
+    "AnalysesMgnifier",
+    "Mgnifier",
 )
