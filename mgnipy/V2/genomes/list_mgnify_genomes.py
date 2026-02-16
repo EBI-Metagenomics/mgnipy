@@ -3,15 +3,15 @@ from typing import Any
 
 import httpx
 
-from ... import errors
-from ....client import (
+from mgnipy._shared_helpers import errors
+from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
-from ...models.ninja_pagination_response_schema_genome_list import (
+from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_genome_list import (
     NinjaPaginationResponseSchemaGenomeList,
 )
-from ...types import (
+from mgnipy.V2._mgnipy_models.types import (
     UNSET,
     Response,
     Unset,

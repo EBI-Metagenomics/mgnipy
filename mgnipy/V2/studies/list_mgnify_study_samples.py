@@ -4,15 +4,15 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
-from ....client import (
+from mgnipy._shared_helpers import errors
+from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
-from ...models.ninja_pagination_response_schema_m_gnify_sample_with_metadata import (
+from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_m_gnify_sample_with_metadata import (
     NinjaPaginationResponseSchemaMGnifySampleWithMetadata,
 )
-from ...types import (
+from mgnipy.V2._mgnipy_models.types import (
     UNSET,
     Response,
     Unset,

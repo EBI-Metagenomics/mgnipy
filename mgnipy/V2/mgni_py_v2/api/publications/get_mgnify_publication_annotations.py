@@ -4,7 +4,7 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
+from ....._shared_helpers import errors
 from ....client import (
     AuthenticatedClient,
     Client,

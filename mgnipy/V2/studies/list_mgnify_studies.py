@@ -3,17 +3,17 @@ from typing import Any
 
 import httpx
 
-from ... import errors
-from ....client import (
+from mgnipy._shared_helpers import errors
+from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
-from ...models.list_mgnify_studies_order_type_0 import ListMgnifyStudiesOrderType0
-from ...models.ninja_pagination_response_schema_m_gnify_study import (
+from mgnipy.V2.mgni_py_v2.models.list_mgnify_studies_order_type_0 import ListMgnifyStudiesOrderType0
+from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_m_gnify_study import (
     NinjaPaginationResponseSchemaMGnifyStudy,
 )
-from ...models.pipeline_versions import PipelineVersions
-from ...types import (
+from mgnipy.V2.mgni_py_v2.models.pipeline_versions import PipelineVersions
+from mgnipy.V2._mgnipy_models.types import (
     UNSET,
     Response,
     Unset,

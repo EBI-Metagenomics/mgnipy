@@ -4,18 +4,18 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
-from ....client import (
+from mgnipy._shared_helpers import errors
+from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
-from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_3506390em_gnify_functional_analysis_annotation_type import (
-    AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+from mgnipy.V2.mgni_py_v2.models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
+    AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
 )
-from ...models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
+from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
     NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation,
 )
-from ...types import (
+from mgnipy.V2._mgnipy_models.types import (
     UNSET,
     Response,
     Unset,
@@ -24,7 +24,7 @@ from ...types import (
 
 def _get_kwargs(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
@@ -85,7 +85,7 @@ def _build_response(
 
 def sync_detailed(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -97,7 +97,7 @@ def sync_detailed(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
@@ -126,7 +126,7 @@ def sync_detailed(
 
 def sync(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -138,7 +138,7 @@ def sync(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
@@ -162,7 +162,7 @@ def sync(
 
 async def asyncio_detailed(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -174,7 +174,7 @@ async def asyncio_detailed(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
@@ -201,7 +201,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -213,7 +213,7 @@ async def asyncio(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
