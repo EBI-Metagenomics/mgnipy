@@ -47,7 +47,42 @@ METADATA_MODULES = {
     SupportedEndpoints.GENOMES: list_mgnify_genomes, 
 }
 
+
 class Mgnifier:
+    """
+    MGnify API v2 metadata retriever and manager.
+
+    This class provides a unified interface for retrieving, previewing, and exporting metadata from the MGnify API v2 for various resources (biomes, studies, samples, analyses, genomes).
+
+    Attributes
+    ----------
+    base_url : str
+        The base URL for the MGnify API.
+    resource : str
+        The resource type (e.g., 'biomes', 'studies', 'samples', 'genomes', 'analyses').
+    mpy_module : Callable
+        The function used to retrieve metadata for the selected resource.
+    params : dict
+        Parameters for the API call.
+    kwargs : dict
+        Additional keyword arguments for the API call.
+    end_url : str
+        The endpoint URL for the resource.
+    checkpoint_dir : Path or None
+        Directory for checkpointing results.
+    checkpoint_freq : int
+        Frequency of checkpointing.
+    count : int or None
+        Total number of records available for the query.
+    total_pages : int or None
+        Total number of pages available for the query.
+    cached_first_page : list or None
+        Cached results from the first page.
+    results : list or None
+        All results retrieved from the API.
+    accessions : list or None
+        List of accessions for the current resource, if available.
+    """
 
     def __init__(
         self,
@@ -60,6 +95,22 @@ class Mgnifier:
         checkpoint_freq: Optional[int] = None,
         **kwargs,
     ):
+        """
+        Initialize a Mgnifier instance for a specific MGnify resource.
+
+        Parameters
+        ----------
+        resource : {"biomes", "studies", "samples", "genomes", "analyses"}, optional
+            The resource type to query. Defaults to "biomes".
+        params : dict, optional
+            Dictionary of parameters for the API call.
+        checkpoint_dir : Path, optional
+            Directory to store checkpoints.
+        checkpoint_freq : int, optional
+            Frequency (in pages) to checkpoint results. Defaults to 3.
+        **kwargs : dict
+            Additional keyword arguments to include in the API parameters.
+        """
         # for client
         self._base_url: str = BASE_URL
         self._resource: str = resource or "biomes"  # default
@@ -105,6 +156,24 @@ class Mgnifier:
         self._mpy_module = new_module
 
     def __getattr__(self, name: str):
+        """
+        Dynamically access attributes, including computed or helper properties.
+
+        Parameters
+        ----------
+        name : str
+            The attribute name to retrieve.
+
+        Returns
+        -------
+        Any
+            The value of the requested attribute or computed property.
+
+        Raises
+        ------
+        AttributeError
+            If the attribute does not exist.
+        """
         if name == "mgnipy_client":
             return self._init_client()
         elif name == "supported_kwargs":
@@ -121,6 +190,14 @@ class Mgnifier:
 
 
     def __str__(self):
+        """
+        Return a string representation of the Mgnifier instance, summarizing key configuration and state.
+
+        Returns
+        -------
+        str
+            Human-readable summary of the instance.
+        """
         return (
             f"Mgnifier instance for MGnify {self._resource} metadata\n"
             f"----------------------------------------\n"
@@ -136,6 +213,20 @@ class Mgnifier:
 
     # methods
     def plan(self):
+        """
+        Estimate the number of pages and records available for the current query.
+
+        This method performs a minimal API call to determine the total number of records and pages for the current resource and parameters.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        RuntimeError
+            If the API call fails.
+        """
         """
         View number of pages/records to be retrieved before retrieving all data.
         """
@@ -162,6 +253,21 @@ class Mgnifier:
 
     def preview(self):
         """
+        Preview the metadata of the first page of results as a DataFrame.
+
+        If plan() has not been run, it will be called automatically.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame containing the first page of results.
+
+        Raises
+        ------
+        RuntimeError
+            If the API call fails or no data is available.
+        """
+        """
         Previews the metadata of the first page of results as a DataFrame.
         """
         # plan if not already
@@ -187,6 +293,28 @@ class Mgnifier:
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ) -> pd.DataFrame:
+        """
+        Retrieve all (or selected) pages of metadata asynchronously and return as a DataFrame.
+
+        Parameters
+        ----------
+        pages : list of int, optional
+            List of page numbers to retrieve. If None, retrieves all pages.
+        strict : bool, default False
+            If True, raises an error if plan() or preview() has not been run.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame containing the concatenated results from all pages.
+
+        Raises
+        ------
+        AssertionError
+            If plan() or preview() has not been run and strict is True.
+        RuntimeError
+            If no data is available to convert to DataFrame.
+        """
 
         # verbose
         print(self._build_url())
@@ -206,6 +334,26 @@ class Mgnifier:
         data: Optional[List[dict]] = None,
         **kwargs
     ) -> pd.DataFrame:
+        """
+        Convert the current or provided metadata to a pandas DataFrame.
+
+        Parameters
+        ----------
+        data : list of dict, optional
+            List of records to convert. If None, uses self._results or self._cached_first_page.
+        **kwargs
+            Additional keyword arguments passed to pd.DataFrame.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame containing the metadata.
+
+        Raises
+        ------
+        RuntimeError
+            If no data is available to convert.
+        """
         
         _data = data or self._results or [self._cached_first_page]
 
@@ -224,23 +372,47 @@ class Mgnifier:
 
 
     def to_parquet(self):
+        """
+        Convert the metadata to a parquet file.
+        (Not yet implemented.)
+        """
         pass
 
 
     def to_anndata(self):
+        """
+        Convert the metadata to an AnnData object.
+        (Not yet implemented.)
+        """
         pass
 
 
     def to_polars(self):
+        """
+        Convert the metadata to a polars DataFrame.
+        (Not yet implemented.)
+        """
         pass
 
 
     def export(self):
+        """
+        Export the metadata to a file or other format.
+        (Not yet implemented.)
+        """
         pass
 
 
     # hidden helper methods 
     def _init_client(self):
+        """
+        Initialize and return a MGnify API client instance.
+
+        Returns
+        -------
+        Client
+            Configured MGnify API client.
+        """
         client_v1 = Client(
             base_url=str(self._base_url),
             # TODO logs?
@@ -248,6 +420,19 @@ class Mgnifier:
         return client_v1
 
     def _get_page(self, given_params: dict) -> dict:
+        """
+        Retrieve a single page of metadata using the synchronous API client.
+
+        Parameters
+        ----------
+        given_params : dict
+            Parameters for the API call.
+
+        Returns
+        -------
+        dict
+            Parsed response from the API, or None if the request failed.
+        """
         with self._init_client() as client:
             response = self._mpy_module.sync_detailed(
                 client=client,
@@ -260,11 +445,32 @@ class Mgnifier:
             return None     
 
     def _get_supported_kwargs(self) -> list[str]:
+        """
+        Get the list of supported keyword arguments for the current resource's API function.
+
+        Returns
+        -------
+        list of str
+            List of supported keyword argument names.
+        """
         """helper function to get supported kwargs for the current mpy module"""
         sig = inspect.signature(self._mpy_module._get_kwargs)
         return list(sig.parameters.keys())
 
     def _check_kwargs(self) -> str: 
+        """
+        Validate the current parameters for the selected resource.
+
+        Returns
+        -------
+        str
+            Validated keyword arguments or raises an error if invalid.
+
+        Raises
+        ------
+        ValueError
+            If invalid parameters are provided.
+        """
         try: 
             kwargy = self._mpy_module._get_kwargs(**self._params)
         except ValueError as e:
@@ -272,11 +478,37 @@ class Mgnifier:
         return kwargy
 
     def _tmp_param_update(self, **kwargs) -> dict[str, Any]:
+        """
+        Return a copy of the current parameters, updated with any provided keyword arguments.
+
+        Parameters
+        ----------
+        **kwargs
+            Parameters to update or add.
+
+        Returns
+        -------
+        dict
+            Updated parameters dictionary.
+        """
         temp_params = deepcopy(self._params)
         temp_params.update(kwargs)
         return temp_params
 
     def _build_url(self, params: Optional[dict[str, Any]] = None) -> str:
+        """
+        Build a URL for the current resource and parameters (for logging/verbose output).
+
+        Parameters
+        ----------
+        params : dict, optional
+            Parameters to include in the URL. If None, uses self._params.
+
+        Returns
+        -------
+        str
+            The constructed URL.
+        """
         """build url for logging/verbose only"""
         params = params or self._params
         start_url = os.path.join(self._base_url, self._end_url)
@@ -284,6 +516,14 @@ class Mgnifier:
         return f"{start_url}/?{encoded_params}"
     
     def _set_accessions_list(self) -> Optional[List[str]]:
+        """
+        Set the list of accessions for the current resource, if available.
+
+        Returns
+        -------
+        list of str or None
+            List of accessions, or None if not available for the resource.
+        """
         """helper function to set accessions list for the current mpy module"""
 
         if self._mpy_module == list_mgnify_studies:
@@ -304,6 +544,23 @@ class Mgnifier:
         page_num: int, 
         params: Optional[dict[str, Any]] = None
     ):
+        """
+        Asynchronously retrieve a single page of metadata.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        page_num : int
+            Page number to retrieve.
+        params : dict, optional
+            Parameters for the API call.
+
+        Returns
+        -------
+        Response
+            The API response object for the requested page.
+        """
         """coroutine function to get coroutine for each page"""
         # limiting concurrency to protect server
         async with semaphore:
@@ -319,6 +576,31 @@ class Mgnifier:
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ):
+        """
+        Asynchronously collect metadata for all (or selected) pages and store results.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        pages : list of int, optional
+            List of page numbers to retrieve. If None, retrieves all pages.
+        strict : bool, default False
+            If True, raises an error if plan() or preview() has not been run.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        AssertionError
+            If plan() or preview() has not been run and strict is True.
+        ValueError
+            If invalid page numbers are provided.
+        TypeError
+            If pages is not a list or None.
+        """
         # not allow to run this without preview/plan first?
         if self._total_pages is None:
             if strict: 
