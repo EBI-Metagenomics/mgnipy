@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 
 from tqdm import tqdm
 from math import ceil
-from mgnipy._shared_helpers.pydantic_help import int_gt_adapter
+from mgnipy._shared_helpers.pydantic_help import validate_gt_int
 
 from mgnipy.V2 import Client
 
@@ -76,7 +76,7 @@ class Mgnifier:
         if "page_size" not in self._params:
             self._params["page_size"] = 25
         else: 
-            int_gt_adapter(self._params["page_size"])
+            validate_gt_int(self._params["page_size"])
         # check params are valid for endpoint
         self._kwargs: dict[str, Any] = self._check_kwargs()
         self._end_url: str = self._kwargs.get(
