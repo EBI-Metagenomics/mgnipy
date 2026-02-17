@@ -10,11 +10,11 @@ from typing import (
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.pipeline_versions import PipelineVersions
 from ..._mgnipy_models.types import (
     UNSET,
     Unset,
 )
+from ..models.pipeline_versions import PipelineVersions
 
 T = TypeVar("T", bound="StudyListFilters")
 

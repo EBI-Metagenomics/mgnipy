@@ -16,4 +16,4 @@ class SupportedEndpoints(Enum):
     PRIVATE_DATA = "private_data"
     MISCELLANEOUS = "miscellaneous"
     AUTHENTICATION = "authentication"
-    BIOMES = "biomes" #miscellaneous
+    BIOMES = "biomes"  # miscellaneous

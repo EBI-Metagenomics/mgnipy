@@ -1,9 +1,8 @@
 import asyncio
-from bigtree import (
-    Tree,
-)
+import inspect
 import os
 from copy import deepcopy
+from math import ceil
 from pathlib import Path
 from typing import (
     Any,
@@ -13,41 +12,33 @@ from typing import (
 )
 from urllib.parse import urlencode
 
-from tqdm import tqdm
-from math import ceil
-from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-
-from mgnipy.V2 import Client
-
 import pandas as pd
-import inspect
-from mgnipy._shared_helpers import get_semaphore
-from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
+from bigtree import (
+    Tree,
+)
+from tqdm import tqdm
 
+from mgnipy import BASE_URL
+from mgnipy._shared_helpers import get_semaphore
+from mgnipy._shared_helpers.pydantic_help import validate_gt_int
+from mgnipy.V2 import Client
+from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.biomes import list_mgnify_biomes
+from mgnipy.V2.genomes import list_mgnify_genomes
 from mgnipy.V2.studies import (
     list_mgnify_studies,
-    list_mgnify_study_samples,
     list_mgnify_study_analyses,
+    list_mgnify_study_samples,
 )
-from mgnipy.V2.samples import list_mgnify_samples
-from mgnipy.V2.analyses import get_mgnify_analysis
-from mgnipy.V2.genomes import list_mgnify_genomes
 
 semaphore = get_semaphore()
-
-# constants
-from mgnipy import (
-    BASE_URL,
-    #CACHE_DIR, TODO cache, paused for now
-)
 
 METADATA_MODULES = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # what biomes
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # search for study
     SupportedEndpoints.SAMPLES: list_mgnify_study_samples,  # all samples for given study
     SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,  # all analyses for given study
-    SupportedEndpoints.GENOMES: list_mgnify_genomes, 
+    SupportedEndpoints.GENOMES: list_mgnify_genomes,
 }
 
 
@@ -117,9 +108,7 @@ class Mgnifier:
         # for client
         self._base_url: str = BASE_URL
         self._resource: str = resource or "biomes"  # default
-        self._mpy_module = METADATA_MODULES[
-            SupportedEndpoints(self._resource)
-        ]
+        self._mpy_module = METADATA_MODULES[SupportedEndpoints(self._resource)]
 
         # params as dict
         self._params: dict[str, Any] = params or {}
@@ -129,26 +118,24 @@ class Mgnifier:
         # check page_size > 0 if provided, default 25
         if "page_size" not in self._params:
             self._params["page_size"] = 25
-        else: 
+        else:
             validate_gt_int(self._params["page_size"])
         # check params are valid for endpoint
         self._kwargs: dict[str, Any] = self._check_kwargs()
         self._end_url: str = self._kwargs.get(
-            "url", 
-            f"/metagenomics/api/v2/{self._resource}/"
+            "url", f"/metagenomics/api/v2/{self._resource}/"
         ).strip("/")
 
         # checkpointing
         self._checkpoint_dir: Optional[Path] = checkpoint_dir
         self._checkpoint_freq: int = checkpoint_freq or 3
 
-        # results 
+        # results
         self._count: Optional[int] = None
         self._total_pages: Optional[int] = None
         self._cached_first_page: Optional[List] = None
         self._results: Optional[List[List[dict]]] = None
         self._accessions: Optional[List[str]] = None
-
 
     @property
     def mpy_module(self):
@@ -191,7 +178,6 @@ class Mgnifier:
         else:
             return self.__dict__[f"_{name}"]
 
-
     def __str__(self):
         """
         Return a string representation of the Mgnifier instance, summarizing key configuration and state.
@@ -212,7 +198,6 @@ class Mgnifier:
             f"Checkpoint Directory: {self._checkpoint_dir}\n"
             f"Checkpoint Frequency: {self._checkpoint_freq}\n"
         )
-
 
     # methods
     def plan(self):
@@ -244,7 +229,7 @@ class Mgnifier:
         response_dict = self._get_page(tmp_params)
         if response_dict is None:
             raise RuntimeError("Failed to get response from MGnify API.")
-        
+
         # set
         self._count = response_dict["count"]
         self._total_pages = ceil(self._count / self._params["page_size"])
@@ -252,7 +237,6 @@ class Mgnifier:
         # verbose
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
-
 
     def preview(self):
         """
@@ -290,9 +274,8 @@ class Mgnifier:
         )
         return self.to_pandas([self._cached_first_page])
 
-
     async def get(
-        self, 
+        self,
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ) -> pd.DataFrame:
@@ -331,12 +314,7 @@ class Mgnifier:
 
         return self.to_pandas(self._results)
 
-
-    def to_pandas(
-        self, 
-        data: Optional[List[dict]] = None,
-        **kwargs
-    ) -> pd.DataFrame:
+    def to_pandas(self, data: Optional[List[dict]] = None, **kwargs) -> pd.DataFrame:
         """
         Convert the current or provided metadata to a pandas DataFrame.
 
@@ -357,20 +335,19 @@ class Mgnifier:
         RuntimeError
             If no data is available to convert.
         """
-        
+
         _data = data or self._results or [self._cached_first_page]
 
         if _data == [None] or _data is None:
             print("No data available to convert to DataFrame. Returning None.")
             return None
-        
+
         combined_df = pd.concat(
             [self._df_expand_nested(pd.DataFrame(page)) for page in _data],
-            ignore_index=True
+            ignore_index=True,
         )
 
         return pd.DataFrame(combined_df, **kwargs)
-
 
     def to_parquet(self):
         """
@@ -379,14 +356,12 @@ class Mgnifier:
         """
         pass
 
-
     def to_anndata(self):
         """
         Convert the metadata to an AnnData object.
         (Not yet implemented.)
         """
         pass
-
 
     def to_polars(self):
         """
@@ -395,7 +370,6 @@ class Mgnifier:
         """
         pass
 
-
     def export(self):
         """
         Export the metadata to a file or other format.
@@ -403,8 +377,7 @@ class Mgnifier:
         """
         pass
 
-
-    # hidden helper methods 
+    # hidden helper methods
     def _init_client(self):
         """
         Initialize and return a MGnify API client instance.
@@ -443,7 +416,7 @@ class Mgnifier:
         if response.status_code == 200:
             return response.parsed.to_dict()
         else:
-            return None     
+            return None
 
     def _get_supported_kwargs(self) -> list[str]:
         """
@@ -458,7 +431,7 @@ class Mgnifier:
         sig = inspect.signature(self._mpy_module._get_kwargs)
         return list(sig.parameters.keys())
 
-    def _check_kwargs(self) -> str: 
+    def _check_kwargs(self) -> str:
         """
         Validate the current parameters for the selected resource.
 
@@ -472,10 +445,10 @@ class Mgnifier:
         ValueError
             If invalid parameters are provided.
         """
-        try: 
+        try:
             kwargy = self._mpy_module._get_kwargs(**self._params)
         except ValueError as e:
-            raise ValueError(f"Invalid parameters provided: {e}")
+            raise ValueError(f"Invalid parameters provided: {e}") from None
         return kwargy
 
     def _tmp_param_update(self, **kwargs) -> dict[str, Any]:
@@ -497,13 +470,13 @@ class Mgnifier:
         return temp_params
 
     def _build_url(
-        self, 
-        params: Optional[dict[str, Any]] = None, 
-        exclude: list[str] = ["accession", "pubmed_id", "catalogue_id"]
+        self,
+        params: Optional[dict[str, Any]] = None,
+        exclude: list[str] = None,
     ) -> str:
         """
         Build a URL for the current resource and parameters (for logging/verbose output).
-    
+
         Parameters
         ----------
         params : dict, optional
@@ -515,6 +488,9 @@ class Mgnifier:
             The constructed URL.
         """
         """build url for logging/verbose only"""
+
+        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
+
         params = params or self._params
         incl_params = deepcopy(params)
         for k in exclude or []:
@@ -522,7 +498,7 @@ class Mgnifier:
         start_url = os.path.join(self._base_url, self._end_url)
         encoded_params = urlencode(incl_params, doseq=True)
         return f"{start_url}/?{encoded_params}"
-    
+
     def _set_accessions_list(self) -> Optional[List[str]]:
         """
         Set the list of accessions for the current resource, if available.
@@ -533,24 +509,22 @@ class Mgnifier:
             List of accessions, or None if not available for the resource.
         """
         """helper function to set accessions list for the current mpy module"""
-        if self.to_pandas() is None: 
+        if self.to_pandas() is None:
             self._accessions = None
         elif self._mpy_module == list_mgnify_studies:
-            self._accessions = self.to_pandas()['accession'].tolist()
+            self._accessions = self.to_pandas()["accession"].tolist()
         elif self._mpy_module == list_mgnify_study_analyses:
-            self._accessions = self.to_pandas()['accession'].tolist()
+            self._accessions = self.to_pandas()["accession"].tolist()
         elif self._mpy_module == list_mgnify_study_samples:
-            self._accessions = self.to_pandas()['accession'].tolist()
+            self._accessions = self.to_pandas()["accession"].tolist()
         elif self._mpy_module == list_mgnify_genomes:
-            self._accessions = self.to_pandas()['accession'].tolist()
+            self._accessions = self.to_pandas()["accession"].tolist()
         else:
             self._accessions = None
 
     def _df_expand_nested(
-            self, 
-            df: pd.DataFrame, 
-            cols: list[str] = ['metadata']
-        ) -> pd.DataFrame:
+        self, df: pd.DataFrame, cols: list[str] = None
+    ) -> pd.DataFrame:
         """
         Expand nested structures in the DataFrame into separate columns.
 
@@ -566,6 +540,9 @@ class Mgnifier:
         pd.DataFrame
             The expanded DataFrame.
         """
+
+        cols = cols or ["metadata"]
+
         new_df = df.copy()
         for c in cols:
             if c in new_df.columns:
@@ -575,10 +552,7 @@ class Mgnifier:
 
     # @async_disk_lru_cache()
     async def _get_page_async(
-        self, 
-        client: Client, 
-        page_num: int, 
-        params: Optional[dict[str, Any]] = None
+        self, client: Client, page_num: int, params: Optional[dict[str, Any]] = None
     ):
         """
         Asynchronously retrieve a single page of metadata.
@@ -604,7 +578,7 @@ class Mgnifier:
                 client=client,
                 **(params or self._params),
                 page=page_num,
-            )    
+            )
 
     async def _collector(
         self,
@@ -639,18 +613,16 @@ class Mgnifier:
         """
         # not allow to run this without preview/plan first?
         if self._total_pages is None:
-            if strict: 
+            if strict:
                 raise AssertionError(
                     "Please run Mgnifier.plan() or .preview() before "
                     "deciding to collect metadata for params:\n"
                     f"{self._params}"
                 )
             else:
-                print(
-                    "Mgnifier.plan() not yet checked. Running now..."
-                )
+                print("Mgnifier.plan() not yet checked. Running now...")
                 self.plan()
-        
+
         # prep page nums
         if isinstance(pages, list):
             _pages = deepcopy(pages)
@@ -658,7 +630,7 @@ class Mgnifier:
                 if not (isinstance(p, int) and 0 < p <= self._total_pages):
                     if strict:
                         raise ValueError(
-                            f"Invalid page number: {p}. " 
+                            f"Invalid page number: {p}. "
                             "Pages must be positive integers "
                             f"not exceeding total pages {self._total_pages}."
                         )
@@ -667,12 +639,12 @@ class Mgnifier:
                             f"Warning: Invalid page number {p} skipped as > than {self._total_pages}."
                         )
                         _pages.remove(p)
-        elif pages is None: 
+        elif pages is None:
             # init all pages if not provided
             _pages = list(range(1, self._total_pages + 1))
-        else: 
+        else:
             raise TypeError("pages must be a list of integers or None")
-        
+
         # skip cached first page if avail
         if 1 in _pages and self._cached_first_page is not None:
             print("Page 1 already cached from preview, skipping...")
@@ -685,18 +657,14 @@ class Mgnifier:
         async_tasks = [
             asyncio.create_task(
                 self._get_page_async(
-                    client=client, 
-                    page_num=page_num, 
-                    params=self._params
+                    client=client, page_num=page_num, params=self._params
                 )
-            )  for page_num in _pages
+            )
+            for page_num in _pages
         ]
 
         # gathering results as completed
-        for task in tqdm(
-            asyncio.as_completed(async_tasks), 
-            total=len(async_tasks)
-        ):
+        for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
             # awaiting each task as it completes and appending results
             page_result = await task
             self._results.append(page_result.parsed.to_dict()["items"])
@@ -704,13 +672,9 @@ class Mgnifier:
 
 class BiomesMgnifier(Mgnifier):
 
-    def __init__(
-        self, 
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         self._tree = None
         super().__init__(resource="biomes", **kwargs)
-
 
     # biome-specific methods
     def to_bigtree(self) -> Tree:
@@ -730,16 +694,24 @@ class BiomesMgnifier(Mgnifier):
         # convert to pandas and then to tree
         df = self.to_pandas()
         # TODO generate nodes first
-        self._tree = Tree.from_list(df['lineage'], sep=':')
+        self._tree = Tree.from_list(df["lineage"], sep=":")
         return self._tree
-    
+
     def show_tree(
-            self,
-            method: Literal[
-                "compact", "show", "print",
-                "horizontal", "hshow", "h", "hprint",
-                "vertical", "vshow", "v", "vprint"
-            ] = "compact"
+        self,
+        method: Literal[
+            "compact",
+            "show",
+            "print",
+            "horizontal",
+            "hshow",
+            "h",
+            "hprint",
+            "vertical",
+            "vshow",
+            "v",
+            "vprint",
+        ] = "compact",
     ):
         if self._tree is None:
             # create tree if not already
@@ -769,7 +741,7 @@ class StudiesMgnifier(Mgnifier):
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(resource='studies', params=params, **kwargs)
+        super().__init__(resource="studies", params=params, **kwargs)
 
 
 class AnalysesMgnifier(Mgnifier):
@@ -781,10 +753,7 @@ class AnalysesMgnifier(Mgnifier):
         **kwargs,
     ):
         super().__init__(
-            resource='analyses',
-            params=params, 
-            accession=study_accession, 
-            **kwargs
+            resource="analyses", params=params, accession=study_accession, **kwargs
         )
 
 
@@ -797,10 +766,7 @@ class SamplesMgnifier(Mgnifier):
         **kwargs,
     ):
         super().__init__(
-            resource='samples',
-            accession=study_accession, 
-            params=params, 
-            **kwargs
+            resource="samples", accession=study_accession, params=params, **kwargs
         )
 
 
@@ -811,10 +777,5 @@ class GenomesMgnifier(Mgnifier):
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        # TODO 
-        super().__init__(
-            resource="genomes",
-            params=params, 
-            **kwargs
-        )
-    
+        # TODO
+        super().__init__(resource="genomes", params=params, **kwargs)

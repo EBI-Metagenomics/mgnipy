@@ -1,17 +1,14 @@
-BASE_URL = "https://www.ebi.ac.uk/"
-
 from .client import (
     AuthenticatedClient,
     Client,
 )
-
 from .metadata import (
-    SamplesMgnifier,
-    GenomesMgnifier,
-    StudiesMgnifier,
-    BiomesMgnifier,
     AnalysesMgnifier,
-    Mgnifier
+    BiomesMgnifier,
+    GenomesMgnifier,
+    Mgnifier,
+    SamplesMgnifier,
+    StudiesMgnifier,
 )
 
 __all__ = (
@@ -24,3 +21,5 @@ __all__ = (
     "AnalysesMgnifier",
     "Mgnifier",
 )
+
+BASE_URL = "https://www.ebi.ac.uk/"

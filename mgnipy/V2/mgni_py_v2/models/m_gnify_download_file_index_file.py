@@ -9,12 +9,12 @@ from typing import (
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.m_gnify_download_file_index_file_index_type import (
-    MGnifyDownloadFileIndexFileIndexType,
-)
 from ..._mgnipy_models.types import (
     UNSET,
     Unset,
+)
+from ..models.m_gnify_download_file_index_file_index_type import (
+    MGnifyDownloadFileIndexFileIndexType,
 )
 
 T = TypeVar("T", bound="MGnifyDownloadFileIndexFile")

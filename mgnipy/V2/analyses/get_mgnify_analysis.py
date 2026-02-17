@@ -9,8 +9,8 @@ from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
-from mgnipy.V2.mgni_py_v2.models.m_gnify_analysis_detail import MGnifyAnalysisDetail
 from mgnipy.V2._mgnipy_models.types import Response
+from mgnipy.V2.mgni_py_v2.models.m_gnify_analysis_detail import MGnifyAnalysisDetail
 
 
 def _get_kwargs(

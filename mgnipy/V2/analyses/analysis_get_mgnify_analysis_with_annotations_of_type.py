@@ -9,16 +9,16 @@ from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
+from mgnipy.V2._mgnipy_models.types import (
+    UNSET,
+    Response,
+    Unset,
+)
 from mgnipy.V2.mgni_py_v2.models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
     AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
 )
 from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
     NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation,
-)
-from mgnipy.V2._mgnipy_models.types import (
-    UNSET,
-    Response,
-    Unset,
 )
 
 

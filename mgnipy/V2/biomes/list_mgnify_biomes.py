@@ -8,13 +8,13 @@ from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
-from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_biome import (
-    NinjaPaginationResponseSchemaBiome,
-)
 from mgnipy.V2._mgnipy_models.types import (
     UNSET,
     Response,
     Unset,
+)
+from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_biome import (
+    NinjaPaginationResponseSchemaBiome,
 )
 
 

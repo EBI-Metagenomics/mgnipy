@@ -4,13 +4,13 @@ from typing import Any
 import httpx
 
 from ....._shared_helpers import errors
+from ...._mgnipy_models.types import Response
 from ....client import (
     AuthenticatedClient,
     Client,
 )
 from ...models.webin_token_refresh_request import WebinTokenRefreshRequest
 from ...models.webin_token_response import WebinTokenResponse
-from ...._mgnipy_models.types import Response
 
 
 def _get_kwargs(

@@ -5,12 +5,12 @@ from urllib.parse import quote
 import httpx
 
 from ....._shared_helpers import errors
+from ...._mgnipy_models.types import Response
 from ....client import (
     AuthenticatedClient,
     Client,
 )
 from ...models.m_gnify_publication_detail import MGnifyPublicationDetail
-from ...._mgnipy_models.types import Response
 
 
 def _get_kwargs(

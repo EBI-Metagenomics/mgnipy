@@ -8,14 +8,16 @@ from mgnipy.V2 import (
     AuthenticatedClient,
     Client,
 )
-from mgnipy.V2.mgni_py_v2.models.list_mgnify_samples_order_type_0 import ListMgnifySamplesOrderType0
-from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_m_gnify_sample import (
-    NinjaPaginationResponseSchemaMGnifySample,
-)
 from mgnipy.V2._mgnipy_models.types import (
     UNSET,
     Response,
     Unset,
+)
+from mgnipy.V2.mgni_py_v2.models.list_mgnify_samples_order_type_0 import (
+    ListMgnifySamplesOrderType0,
+)
+from mgnipy.V2.mgni_py_v2.models.ninja_pagination_response_schema_m_gnify_sample import (
+    NinjaPaginationResponseSchemaMGnifySample,
 )
 
 
