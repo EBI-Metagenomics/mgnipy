@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.19.0
+#       jupytext_version: 1.19.1
 #   kernelspec:
 #     display_name: mgnipy
 #     language: python
@@ -15,35 +15,31 @@
 # %% [markdown]
 # # Demo: Retrieving Mgnify tomato samples
 #
-# <!-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorial/demo-mgnify-tomatoes.ipynb) -->
+# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorial/demo-mgnify-tomatoes.ipynb)
 
 # %% [markdown]
-# In this tutorial we demonstrate how MGniPy can be used to retrieve tomato rhizosphere metagenomics analyses (only sample metadata for now) available on MGnify. 
+# In this tutorial we demonstrate how mgnipy can be used to retrieve tomato rhizosphere metagenomics analyses (only sample metadata for now) available on MGnify. 
 
 # %% [markdown]
-# ## Searching for studies
-#
-# We can use a Mgnifier to look in a given resource: 
-# - `biomes` to look for studies
-# - `studies` to look for samples
-# - `samples` to look for runs/assemblies
-# - `runs` to look for analyses
-# - `analyses` to look for results? 
-#
+# ## Spying into the metadata using a `Mgnifier`
+# We can use a Mgnifier to get metadata for resources: 
+# - `studies` with option to filter by biome, pipeline ver, and search terms
+# - `samples` for a given study accession
+# - `analyses` for a given study accession
+# - `genomes` given its accession
 
 # %%
-from mgnipy import Mgnifier
+from mgnipy.V2 import StudiesMgnifier
 
 # %% [markdown]
-# you can either pass query parameters as dict to `params` or as kwargs. Please refer to [mgnify api docs](https://www.ebi.ac.uk/metagenomics/api/docs/) for the accepted kwargs for now or via attribute `Mgnifier.supported_kwargs`
+# you can either pass query parameters as dict to `params` or as kwargs. Please refer to [mgnify api docs](https://www.ebi.ac.uk/metagenomics/api/v2/) for the accepted kwargs for now or via attribute `Mgnifier.supported_kwargs`
 
 # %%
 # init 
-glass = Mgnifier(
-    resource='biomes',
-    lineage="root:Host-associated:Plants:Rhizosphere",
+glass = StudiesMgnifier(
+    biome_lineage="root:Host-associated:Plants:Rhizosphere",
     search="tomato",
-    page_size=3
+    page_size=5
 )
 
 print(glass)
@@ -63,46 +59,80 @@ glass.plan()
 glass.preview()
 
 # %% [markdown]
-# nice okay let's collect the rest of the records (the one other page)
+# nice okay let's get the rest of the records (the 3 other pages)
 
-# %%
+# %% tags=["hide-output"]
 import asyncio
-study_meta = await glass.collect()
+study_meta = await glass.get()
+
+# check it out
 display(study_meta)
+
+# %% [markdown]
+# The matching study accessions can be accessed via attribute `.accessions`
 
 # %% [markdown]
 # ## Getting the samples from the studies
 #
-# We will use `Samplifier` which we can provide with a `presearch` which will automatically pass the resulted accessions and collect the associated samples for. 
-#
-# But you don't need to do a presearch using mgnifier :) 
-#
-# you can also pass known accessions/study_accessions as a kwarg to the samplifier.
-
-# %%
-from mgnipy.metadata import Samplifier
-
-samplify = Samplifier(
-    presearch=glass,
-    page_size=5
-)
-    
-print(samplify)
-
-# %% [markdown]
-# next we plan or preview again before collecting sample data. here if we preview, it returns a dict of dfs, one for each repeating param
-
-# %%
-preview_dict = samplify.preview()
-
-preview_dict['MGYS00006231']
-
-# %% [markdown]
-# if the preview looks good and youw ant to proceed to collect all then dont provide specific study_accessions of the above to collect, otherwise do.
+# We can use `SamplesMgnifier` to get the sample accessions for those study accessioins. 
 
 # %% tags=["hide-output"]
-tomato_samples = await samplify.collect(study_accession=['MGYS00006231'])
-# check out rseults
-tomato_samples['MGYS00006231'].head(10)
+from mgnipy.V2 import SamplesMgnifier
+
+# init
+by_study = {}
+for acc in glass.accessions:
+    lens = SamplesMgnifier(
+        study_accession=acc
+    )
+    # verbose
+    print(lens.plan())
+    # get sample metadata 
+    by_study[acc] = await lens.get()
+    # spacing
+    print("\n\n")
+
+# %% [markdown]
+# it wanting all in one df
 
 # %%
+import pandas as pd
+
+# concat
+tomato_samples = pd.concat(by_study)
+
+# check it out
+tomato_samples.sample(5)
+
+# %% [markdown]
+# ## Getting the analyses from the studies
+#
+# We can use `AnalysesMgnifier` to get the analyses metadata for the study accessioins. 
+
+# %%
+from mgnipy.V2 import AnalysesMgnifier
+
+# init
+analyses_by_study = {}
+for acc in glass.accessions:
+    lens = AnalysesMgnifier(
+        study_accession=acc
+    )
+    # verbose
+    print(lens.plan())
+    # get analyses metadata, but here only first 2 pages for demo purposes 
+    analyses_by_study[acc] = await lens.get(pages=[1,2])
+    # spacing
+    print("\n\n")
+
+# %% [markdown]
+# it wanting all in one df
+
+# %%
+# currently no results
+
+# # concat
+# tomato_analyses = pd.concat(analyses_by_study)
+
+# # check it out
+# tomato_analyses.sample(5)

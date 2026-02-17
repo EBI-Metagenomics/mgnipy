@@ -31,6 +31,7 @@ openapi-py-client/intro-openapi-python-client
 :caption: "tutorials"
 :hidden: false
 
+tutorial/demo-mgnify-biomes
 tutorial/demo-mgnify-tomatoes
 
 ```
@@ -41,8 +42,6 @@ tutorial/demo-mgnify-tomatoes
 :hidden: false
 
 reference/mgnipy/mgnipy
-reference/mgni-py-v1/mgni_py_v1
-reference/mgni-py-v2/mgni_py_v2
 ```
 <!-- 
 ```{toctree}
