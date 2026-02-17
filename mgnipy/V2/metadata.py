@@ -184,7 +184,8 @@ class Mgnifier:
 
     async def get(
         self, 
-        pages: Optional[list[int]] = None
+        pages: Optional[list[int]] = None,
+        strict: bool = False,
     ) -> pd.DataFrame:
 
         # verbose
@@ -192,7 +193,7 @@ class Mgnifier:
 
         # async request all pages and store results in self._results
         async with self._init_client() as client:
-            await self._collector(client, pages=pages)
+            await self._collector(client, pages=pages, strict=strict)
 
         # set accessions list for retrieved data if applicable
         self._set_accessions_list()
@@ -316,14 +317,21 @@ class Mgnifier:
         self,
         client: Client,
         pages: Optional[list[int]] = None,
+        strict: bool = False,
     ):
         # not allow to run this without preview/plan first?
         if self._total_pages is None:
-            raise AssertionError(
-                "Please run Mgnifier.plan() or .preview() before "
-                "deciding to collect metadata for params:\n"
-                f"{self._params}"
-            )
+            if strict: 
+                raise AssertionError(
+                    "Please run Mgnifier.plan() or .preview() before "
+                    "deciding to collect metadata for params:\n"
+                    f"{self._params}"
+                )
+            else:
+                print(
+                    "Mgnifier.plan() not yet checked. Running now..."
+                )
+                self.plan()
         
         # prep page nums
         if isinstance(pages, list):
