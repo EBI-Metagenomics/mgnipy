@@ -178,11 +178,11 @@ wheels = [
 
 [[package]]
 name = "bigtree"
-version = "1.3.0"
+version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/37/56/d227cf350a0752bd3caa0a588f1aff6c4818b12b04e5bdc0fb2e41434e27/bigtree-1.3.0.tar.gz", hash = "sha256:8470997ade2fb77a9cd990315922b9f09aed4ca15c70da29157d2dc7e468e780", size = 1362153, upload-time = "2026-01-25T07:38:57.499Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/ae/ac72cebb51b4d3180e44b20a52634c682b66bf7eaf7a0db2236db419f324/bigtree-1.3.1.tar.gz", hash = "sha256:a22a0ecd9b0abb283f4a1515370dbf1ec93adee70746767272e2c49d7af9f407", size = 1364017, upload-time = "2026-02-13T16:14:31.24Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/d7/7fce1567997578654b04063bb677ba8805ad08219536a5610dc620909cf7/bigtree-1.3.0-py3-none-any.whl", hash = "sha256:4a09d8a60e401ebc1e343597330a07e58c2d3a62b0d3df2f069a5c155eb090e5", size = 113321, upload-time = "2026-01-25T07:38:55.843Z" },
+    { url = "https://files.pythonhosted.org/packages/b3/72/6102c002b1b4c04f8c5ed870f102f576a5fbd6a41cdb3e49ed339aa95dfe/bigtree-1.3.1-py3-none-any.whl", hash = "sha256:c8b766b00188c532d3499bfd9e9666b357428db507fc701f088031a0d5c614d5", size = 114051, upload-time = "2026-02-13T16:14:32.28Z" },
 ]
 
 [package.optional-dependencies]
@@ -1183,6 +1183,7 @@ dependencies = [
     { name = "anndata", version = "0.12.10", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "async-lru" },
     { name = "attrs" },
+    { name = "bigtree", extra = ["image", "rich"] },
     { name = "httpx" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
@@ -1199,7 +1200,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "bigtree", extra = ["image", "rich"] },
     { name = "black", extra = ["jupyter"] },
     { name = "isort" },
     { name = "openapi-python-client" },
@@ -1224,6 +1224,7 @@ requires-dist = [
     { name = "anndata", specifier = ">=0.10.9" },
     { name = "async-lru", specifier = ">=2.1.0" },
     { name = "attrs", specifier = ">=25.4.0" },
+    { name = "bigtree", extras = ["image", "rich"], specifier = ">=1.3.1" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "numpy", specifier = ">=2.0.2" },
     { name = "pandas", specifier = ">=2.3.3" },
@@ -1238,7 +1239,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bigtree", extras = ["image", "pyvis", "rich"], specifier = ">=1.3.0" },
     { name = "black", extras = ["jupyter"], specifier = ">=25.11.0" },
     { name = "isort", specifier = ">=6.1.0" },
     { name = "openapi-python-client", specifier = ">=0.17.3" },
