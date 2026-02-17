@@ -39,6 +39,13 @@ extensions = [
     "sphinx_copybutton",  # add copy button to code blocks
 ]
 
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': False,
+    'private-members': False,  # Exclude _private attributes
+    'special-members': False,  # Exclude __special__ methods
+}
+
 # Plotly support through require javascript library
 # https://myst-nb.readthedocs.io/en/latest/render/interactive.html#plotly
 html_js_files = [
