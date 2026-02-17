@@ -58,3 +58,6 @@ cover/
 openapi/mgni-py-v1/*
 openapi/mgni-py-v2/*
 reference/*
+
+*.ignore
+*.ignoreme
