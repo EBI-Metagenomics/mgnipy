@@ -1,4 +1,7 @@
 import asyncio
+from bigtree import (
+    Tree,
+)
 import os
 from copy import deepcopy
 from pathlib import Path
@@ -357,14 +360,12 @@ class Mgnifier:
         
         _data = data or self._results or [self._cached_first_page]
 
-        if _data==[None] or _data is None:
-            raise RuntimeError(
-                "No data available to convert to DataFrame. "
-                "Please run preview() or get() first."
-            )
+        if _data == [None] or _data is None:
+            print("No data available to convert to DataFrame. Returning None.")
+            return None
         
         combined_df = pd.concat(
-            [pd.DataFrame(page) for page in _data],
+            [self._df_expand_nested(pd.DataFrame(page)) for page in _data],
             ignore_index=True
         )
 
@@ -495,10 +496,14 @@ class Mgnifier:
         temp_params.update(kwargs)
         return temp_params
 
-    def _build_url(self, params: Optional[dict[str, Any]] = None) -> str:
+    def _build_url(
+        self, 
+        params: Optional[dict[str, Any]] = None, 
+        exclude: list[str] = ["accession", "pubmed_id", "catalogue_id"]
+    ) -> str:
         """
         Build a URL for the current resource and parameters (for logging/verbose output).
-
+    
         Parameters
         ----------
         params : dict, optional
@@ -511,8 +516,11 @@ class Mgnifier:
         """
         """build url for logging/verbose only"""
         params = params or self._params
+        incl_params = deepcopy(params)
+        for k in exclude or []:
+            incl_params.pop(k, None)
         start_url = os.path.join(self._base_url, self._end_url)
-        encoded_params = urlencode(params, doseq=True)
+        encoded_params = urlencode(incl_params, doseq=True)
         return f"{start_url}/?{encoded_params}"
     
     def _set_accessions_list(self) -> Optional[List[str]]:
@@ -525,8 +533,9 @@ class Mgnifier:
             List of accessions, or None if not available for the resource.
         """
         """helper function to set accessions list for the current mpy module"""
-
-        if self._mpy_module == list_mgnify_studies:
+        if self.to_pandas() is None: 
+            self._accessions = None
+        elif self._mpy_module == list_mgnify_studies:
             self._accessions = self.to_pandas()['accession'].tolist()
         elif self._mpy_module == list_mgnify_study_analyses:
             self._accessions = self.to_pandas()['accession'].tolist()
@@ -536,6 +545,33 @@ class Mgnifier:
             self._accessions = self.to_pandas()['accession'].tolist()
         else:
             self._accessions = None
+
+    def _df_expand_nested(
+            self, 
+            df: pd.DataFrame, 
+            cols: list[str] = ['metadata']
+        ) -> pd.DataFrame:
+        """
+        Expand nested structures in the DataFrame into separate columns.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The DataFrame to expand.
+        cols : list of str
+            List of column names to expand.
+
+        Returns
+        -------
+        pd.DataFrame
+            The expanded DataFrame.
+        """
+        new_df = df.copy()
+        for c in cols:
+            if c in new_df.columns:
+                attr_df = pd.json_normalize(new_df[c])
+                new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
+        return new_df
 
     # @async_disk_lru_cache()
     async def _get_page_async(
@@ -617,27 +653,32 @@ class Mgnifier:
         
         # prep page nums
         if isinstance(pages, list):
+            _pages = deepcopy(pages)
             for p in pages:
                 if not (isinstance(p, int) and 0 < p <= self._total_pages):
-                    raise ValueError(
-                        f"Invalid page number: {p}. " 
-                        "Pages must be positive integers "
-                        f"not exceeding total pages {self._total_pages}."
-                    )
+                    if strict:
+                        raise ValueError(
+                            f"Invalid page number: {p}. " 
+                            "Pages must be positive integers "
+                            f"not exceeding total pages {self._total_pages}."
+                        )
+                    else:
+                        print(
+                            f"Warning: Invalid page number {p} skipped as > than {self._total_pages}."
+                        )
+                        _pages.remove(p)
         elif pages is None: 
             # init all pages if not provided
-            pages = list(range(1, self._total_pages + 1))
+            _pages = list(range(1, self._total_pages + 1))
         else: 
             raise TypeError("pages must be a list of integers or None")
         
         # skip cached first page if avail
-        if 1 in pages and self._cached_first_page is not None:
+        if 1 in _pages and self._cached_first_page is not None:
             print("Page 1 already cached from preview, skipping...")
-            _pages = deepcopy(pages)
             _pages.remove(1)
             self._results = [self._cached_first_page]
         else:
-            _pages = deepcopy(pages)
             self._results = []
 
         # creating async tasks
@@ -665,16 +706,59 @@ class BiomesMgnifier(Mgnifier):
 
     def __init__(
         self, 
-        *,
-        leaves: Optional[
-            Literal["studies", "samples", "analyses"]
-        ] = None,
         **kwargs
     ):
+        self._tree = None
         super().__init__(resource="biomes", **kwargs)
 
-    # biome-specific methods
 
+    # biome-specific methods
+    def to_bigtree(self) -> Tree:
+        """
+        Convert the biomes metadata to a tree structure for visualization or analysis.
+
+        Returns
+        -------
+        Tree
+            A tree representation of the biomes and their relationships.
+        """
+        if self._results is None:
+            raise RuntimeError(
+                "No data available to convert to tree. "
+                "Please run preview() or get() first."
+            )
+        # convert to pandas and then to tree
+        df = self.to_pandas()
+        # TODO generate nodes first
+        self._tree = Tree.from_list(df['lineage'], sep=':')
+        return self._tree
+    
+    def show_tree(
+            self,
+            method: Literal[
+                "compact", "show", "print",
+                "horizontal", "hshow", "h", "hprint",
+                "vertical", "vshow", "v", "vprint"
+            ] = "compact"
+    ):
+        if self._tree is None:
+            # create tree if not already
+            self.to_bigtree()
+
+        if method in ["compact", "show", "print"]:
+            # TODO print_tree(self._tree)
+            self._tree.show()
+        elif method in ["horizontal", "hshow", "h", "hprint"]:
+            self._tree.hshow()
+        elif method in ["vertical", "vshow", "v", "vprint"]:
+            self._tree.vshow()
+        else:
+            raise ValueError(
+                f"Invalid method: {method}. "
+                "Supported methods: 'compact', 'show', 'print', "
+                "'horizontal', 'hshow', 'h', 'hprint', "
+                "'vertical', 'vshow', 'v', 'vprint'."
+            )
 
 
 class StudiesMgnifier(Mgnifier):
