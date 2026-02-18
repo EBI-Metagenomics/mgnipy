@@ -128,6 +128,18 @@ class Mgnifier:
         self._results: Optional[List[List[dict]]] = None
         self._accessions: Optional[List[str]] = None
 
+    def __iter__(self):
+        """
+        Allow iteration over the metadata records, yielding one record at a time.
+
+        Returns
+        -------
+        Iterator[dict]
+            An iterator that yields metadata records as dictionaries. 
+        """
+        df = self.to_pandas()
+        return (dict(row) for _, row in df.iterrows())
+
     @property
     def mpy_module(self):
         return self._mpy_module
