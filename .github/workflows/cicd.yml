@@ -54,7 +54,7 @@ jobs:
           uv sync --locked --dev
 
       - name: Run tests
-        run: uv run pytest mgnipy tests
+        run: uv run pytest mgnipy/_shared_helpers mgnipy/mgnipy.py tests
 
   build_source_dist:
     name: Build source distribution

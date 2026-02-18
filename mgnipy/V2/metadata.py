@@ -21,7 +21,7 @@ from tqdm import tqdm
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
+from mgnipy.V2._mgnipy_models.CONSTANTS2 import SupportedEndpoints
 from mgnipy.V2.mgni_py_v2 import Client
 from mgnipy.V2.mgni_py_v2.api.genomes import list_mgnify_genomes
 from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
