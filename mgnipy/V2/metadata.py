@@ -19,7 +19,7 @@ from bigtree import (
 from tqdm import tqdm
 
 from mgnipy import BASE_URL
-from mgnipy._shared_helpers import get_semaphore
+from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
 from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.mgni_py_v2 import Client

@@ -5,59 +5,48 @@
 :relative-images:
 ```
 
-<!-- hidden toc trees for sidebar -->
-
-<!-- ```{toctree}
+```{toctree}
 :maxdepth: 2
-:caption: "Tutorials"
-:hidden: true
+:caption: "tutorials"
+:hidden: 
 
-tutorial/tutorial
-``` -->
+tutorial/demo-mgnify-biomes
+tutorial/demo-mgnify-tomatoes
+```
+
 
 ```{toctree}
 :maxdepth: 2
 :caption: "openapi-python-client"
-:hidden: false
+:hidden: 
 
+openapi-py-client/intro-openapi-python-client
 openapi-py-client/README_mgni-py-v1
 openapi-py-client/README_mgni-py-v2
-openapi-py-client/intro-openapi-python-client
 
 ```
 
-```{toctree}
-:maxdepth: 2
-:caption: "tutorials"
-:hidden: false
-
-tutorial/demo-mgnify-biomes
-tutorial/demo-mgnify-tomatoes
-
-```
 
 ```{toctree}
 :maxdepth: 2
 :caption: "Reference"
-:hidden: false
+:hidden: 
 
-reference/mgnipy/mgnipy
+reference/modules
+
 ```
-<!-- 
+
 ```{toctree}
 :maxdepth: 2
 :caption: "Technical notes"
-:hidden: true
+:hidden: 
 
-README
-developing
-``` -->
+README.md
+```
 
-## Indices and tables
-
-- [Index](genindex)
-- [Module Index](modindex)
-- [Search](search)
+```{include} ../Contributing.md
+:start-line: 0 
+```
 
 ```{include} ../CREDITS.md
 :start-line: 0

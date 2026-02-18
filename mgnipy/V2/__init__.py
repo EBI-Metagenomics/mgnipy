@@ -12,14 +12,14 @@ from .mgni_py_v2.client import (
 )
 
 __all__ = (
-    "AuthenticatedClient",
-    "Client",
-    "SamplesMgnifier",
-    "GenomesMgnifier",
-    "StudiesMgnifier",
-    "BiomesMgnifier",
-    "AnalysesMgnifier",
     "Mgnifier",
+    "BiomesMgnifier",
+    "StudiesMgnifier",
+    "SamplesMgnifier",
+    "AnalysesMgnifier",
+    "GenomesMgnifier",
+    "Client",
+    "AuthenticatedClient",
 )
 
 BASE_URL = "https://www.ebi.ac.uk/"

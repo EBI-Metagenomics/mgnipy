@@ -20,7 +20,7 @@ dist/
 # Sphinx documenter creates these
 _build
 _static
-_templates
+#_templates
 /docs/reference
 /docs/jupyter_execute
 

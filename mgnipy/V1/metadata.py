@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 import pandas as pd
 from tqdm import tqdm
 
-from mgnipy._shared_helpers import get_semaphore
+from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy.V1._models_v1.adapters1 import validate_experiment_type
 from mgnipy.V1._models_v1.CONSTANTS1 import SupportedEndpoints
 
