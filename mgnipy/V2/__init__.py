@@ -1,4 +1,4 @@
-from .client import (
+from .mgni_py_v2.client import (
     AuthenticatedClient,
     Client,
 )

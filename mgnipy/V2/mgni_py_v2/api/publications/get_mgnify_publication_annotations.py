@@ -4,13 +4,13 @@ from urllib.parse import quote
 
 import httpx
 
-from ....._shared_helpers import errors
-from ...._mgnipy_models.types import Response
-from ....client import (
+from ... import errors
+from ...client import (
     AuthenticatedClient,
     Client,
 )
 from ...models.publication_annotations import PublicationAnnotations
+from ...types import Response
 
 
 def _get_kwargs(

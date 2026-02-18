@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.19.0
+#       jupytext_version: 1.19.1
 #   kernelspec:
 #     display_name: mgnipy
 #     language: python
@@ -13,7 +13,9 @@
 # ---
 
 # %% [markdown]
-# # Understanding the python client libraries generated using `openapi-python-client`
+# # Intro to `openapi-python-client`
+#
+# Understanding the python client libraries generated using `openapi-python-client`. For if you want to work with the `mgnipy.V1.mgni_py_v1` or `mgnipy.V2.mgni_py_v2` submodules directly.
 #
 # <details>
 # <summary style=color:green> 
@@ -46,23 +48,23 @@
 # 3. (Optional) add type annotations
 #
 # 2. the client
-# from mgni_py_v1 import Client as ClientOne
+# from mgnipy.V1.mgni_py_v1 import Client as ClientOne
 
 # %%
 # at minimum need
 # 1. the path 
-from mgni_py_v1.api.studies import studies_list
-from mgni_py_v1 import Client
+from mgnipy.V1.mgni_py_v1.api.studies import studies_list
+from mgnipy.V1.mgni_py_v1 import Client
 
 # extra nice to have annotations
 # 3. the models
-from mgni_py_v1.models import PaginatedStudyList
-from mgni_py_v1.types import UNSET, Response
+from mgnipy.V1.mgni_py_v1.models import PaginatedStudyList
+from mgnipy.V1.mgni_py_v1.types import UNSET, Response
 
 # %% [markdown]
 # To instantiate the python client we really only need the base_url. However there are options for loggiing and other httpx args. 
 #
-# `mgni_py_v1.Client` will take care of constructing and closing the httpx clients
+# `mgnipy.V1.mgni_py_v1.Client` will take care of constructing and closing the httpx clients
 
 # %%
 example_client = Client(
@@ -121,8 +123,5 @@ response.parsed.to_dict().keys()
 #     - for the first page of results only
 # - In `meta` is information on how many results and how many pages thaose results are spread out on based on the given `page_size`
 #
-# Note: you need to instantiate a new client object every call
-
-# %%
-# TODO explore and get the number of samples from data
-
+#
+# **Note: you need to instantiate a new client object every call**

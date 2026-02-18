@@ -3,18 +3,18 @@ from typing import Any
 
 import httpx
 
-from ....._shared_helpers import errors
-from ...._mgnipy_models.types import (
-    UNSET,
-    Response,
-    Unset,
-)
-from ....client import (
+from ... import errors
+from ...client import (
     AuthenticatedClient,
     Client,
 )
 from ...models.ninja_pagination_response_schema_m_gnify_study import (
     NinjaPaginationResponseSchemaMGnifyStudy,
+)
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
 )
 
 

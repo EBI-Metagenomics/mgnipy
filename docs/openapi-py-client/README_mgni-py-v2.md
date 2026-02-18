@@ -1,4 +1,4 @@
-# MGnify API_v2 python client `mgni-py-v2`
+# MGnify API_v2 python client submodule
 
 A client library for accessing version 2 of the MGnify API 
 
@@ -9,7 +9,7 @@ Expand for more info on how the client library was generated using
 </summary>
 <h1></h1>
 
-`mgni_py_v2` is a python library that was automatically generated from the MGnify API_v2 openapi.json url using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). An example of the command that was used:
+`mgnipy.V2.mgni_py_v2` is a python library that was automatically generated from the MGnify API_v2 openapi.json url using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). An example of the command that was used:
 
 ```shell
 openapi-python-client generate \
@@ -19,21 +19,20 @@ openapi-python-client generate \
     --overwrite 
 ```
 
-Specifically **_./autogen_clients.sh_** was used to 
-1. generate the python client library `mgni-py-v2` using `openapi-python-client generate`
-2. build the wheel file (requires [poetry](https://python-poetry.org/docs/))
-3. add the wheel file to the `mgnipy` project dependencies (managed by [uv](https://docs.astral.sh/uv/))
+Specifically **_./autogen_clients.sh_** was used to generate the python client library `mgni-py-v2` using `openapi-python-client generate`
+
+Then the module dir was moved into mgnipy dir. 
 <h1></h1>
 </details>
 <br>
 
-The rest of the readme was automatically generated and provided by openapi-python-client:
+The rest of the readme was automatically generated and provided by openapi-python-client (with updates to the import paths):
 
 ## Usage
 First, create a client:
 
 ```python
-from mgni_py_v2 import Client
+from mgnipy.V2.mgni_py_v2 import Client
 
 client = Client(base_url="https://api.example.com")
 ```
@@ -41,7 +40,7 @@ client = Client(base_url="https://api.example.com")
 If the endpoints you're going to hit require authentication, use `AuthenticatedClient` instead:
 
 ```python
-from mgni_py_v2 import AuthenticatedClient
+from mgnipy.V2.mgni_py_v2 import AuthenticatedClient
 
 client = AuthenticatedClient(base_url="https://api.example.com", token="SuperSecretToken")
 ```
@@ -49,9 +48,9 @@ client = AuthenticatedClient(base_url="https://api.example.com", token="SuperSec
 Now call your endpoint and use your models:
 
 ```python
-from mgni_py_v2.models import MyDataModel
-from mgni_py_v2.api.my_tag import get_my_data_model
-from mgni_py_v2.types import Response
+from mgnipy.V2.mgni_py_v2.models import MyDataModel
+from mgnipy.V2.mgni_py_v2.api.my_tag import get_my_data_model
+from mgnipy.V2.mgni_py_v2.types import Response
 
 with client as client:
     my_data: MyDataModel = get_my_data_model.sync(client=client)
@@ -62,9 +61,9 @@ with client as client:
 Or do the same thing with an async version:
 
 ```python
-from mgni_py_v2.models import MyDataModel
-from mgni_py_v2.api.my_tag import get_my_data_model
-from mgni_py_v2.types import Response
+from mgnipy.V2.mgni_py_v2.models import MyDataModel
+from mgnipy.V2.mgni_py_v2.api.my_tag import get_my_data_model
+from mgnipy.V2.mgni_py_v2.types import Response
 
 async with client as client:
     my_data: MyDataModel = await get_my_data_model.asyncio(client=client)
@@ -100,14 +99,14 @@ Things to know:
 
 1. All path/query params, and bodies become method arguments.
 1. If your endpoint had any tags on it, the first tag will be used as a module name for the function (my_tag above)
-1. Any endpoint which did not have a tag will be in `mgni_py_v2.api.default`
+1. Any endpoint which did not have a tag will be in `mgnipy.V2.mgni_py_v2.api.default`
 
 ## Advanced customizations
 
 There are more settings on the generated `Client` class which let you control more runtime behavior, check out the docstring on that class for more info. You can also customize the underlying `httpx.Client` or `httpx.AsyncClient` (depending on your use-case):
 
 ```python
-from mgni_py_v2 import Client
+from mgnipy.V2.mgni_py_v2 import Client
 
 def log_request(request):
     print(f"Request event hook: {request.method} {request.url} - Waiting for response")
@@ -128,7 +127,7 @@ You can even set the httpx client directly, but beware that this will override a
 
 ```python
 import httpx
-from mgni_py_v2 import Client
+from mgnipy.V2.mgni_py_v2 import Client
 
 client = Client(
     base_url="https://api.example.com",

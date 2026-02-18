@@ -13,12 +13,12 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
-from ..._mgnipy_models.types import (
-    UNSET,
-    Unset,
-)
 from ..models.genome_catalogue_base_catalogue_type import (
     GenomeCatalogueBaseCatalogueType,
+)
+from ..types import (
+    UNSET,
+    Unset,
 )
 
 if TYPE_CHECKING:

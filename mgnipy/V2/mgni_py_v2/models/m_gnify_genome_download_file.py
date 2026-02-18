@@ -11,12 +11,12 @@ from typing import (
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..._mgnipy_models.types import (
+from ..models.download_file_type import DownloadFileType
+from ..models.download_type import DownloadType
+from ..types import (
     UNSET,
     Unset,
 )
-from ..models.download_file_type import DownloadFileType
-from ..models.download_type import DownloadType
 
 if TYPE_CHECKING:
     from ..models.download_file_index_file import DownloadFileIndexFile

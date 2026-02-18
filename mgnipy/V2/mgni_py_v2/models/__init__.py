@@ -2,8 +2,8 @@
 
 from .additional_contained_genome_schema import AdditionalContainedGenomeSchema
 from .analysed_run import AnalysedRun
-from .analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
-    AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
+from .analysis_get_mgnify_analysis_with_annotations_of_type_3506390em_gnify_functional_analysis_annotation_type import (
+    AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
 )
 from .assembly import Assembly
 from .assembly_detail import AssemblyDetail
@@ -159,7 +159,7 @@ from .webin_token_response import WebinTokenResponse
 __all__ = (
     "AdditionalContainedGenomeSchema",
     "AnalysedRun",
-    "AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType",
+    "AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType",
     "Assembly",
     "AssemblyDetail",
     "AssemblyDetailMetadataType0",

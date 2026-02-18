@@ -21,11 +21,11 @@ from tqdm import tqdm
 from mgnipy import BASE_URL
 from mgnipy._shared_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy.V2 import Client
+from mgnipy.V2.mgni_py_v2 import Client
 from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
-from mgnipy.V2.biomes import list_mgnify_biomes
-from mgnipy.V2.genomes import list_mgnify_genomes
-from mgnipy.V2.studies import (
+from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
+from mgnipy.V2.mgni_py_v2.api.genomes import list_mgnify_genomes
+from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_studies,
     list_mgnify_study_analyses,
     list_mgnify_study_samples,

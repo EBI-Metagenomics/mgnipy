@@ -11,11 +11,11 @@ from typing import (
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..._mgnipy_models.types import (
+from ..models.pipeline_versions import PipelineVersions
+from ..types import (
     UNSET,
     Unset,
 )
-from ..models.pipeline_versions import PipelineVersions
 
 if TYPE_CHECKING:
     from ..models.analysed_run import AnalysedRun
