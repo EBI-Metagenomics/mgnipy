@@ -137,8 +137,56 @@ class Mgnifier:
         Iterator[dict]
             An iterator that yields metadata records as dictionaries. 
         """
-        df = self.to_pandas()
+        df = self.to_pandas() # TODO: work with the raw results instead of to df
         return (dict(row) for _, row in df.iterrows())
+
+    def __getitem__(self, key) -> List[dict] | dict:
+        """
+        Allow indexing into the metadata records by integer index, accession, or lineage.
+
+        Parameters
+        ----------
+        key : int, slice, or str
+            The key to index by. Can be an integer index, a slice, 
+            a valid accession string, or a valid lineage string.
+
+        Returns
+        -------
+        list of dict or dict
+            The metadata record(s) corresponding to the provided key.
+
+        Raises
+        ------
+        KeyError
+            If the key is not a valid index, accession, or lineage.
+        """
+
+        # TODO: work with the raw results instead of to df
+        df = self.to_pandas()
+        df_as_list = df.to_dict(orient="records")
+        # by index
+        if isinstance(key, (int, slice)):
+            return df_as_list[key]
+        # by accession
+        elif (
+            isinstance(key, str) 
+            and self._accessions 
+            and key in self._accessions
+        ):
+            return df.query(f"accession == '{key}'").to_dict(orient="records")
+        # by lineage
+        elif (
+            isinstance(key, str) 
+            and "lineage" in df.columns
+        ):
+            return df.query(f"lineage == '{key}'").to_dict(orient="records")
+        # else raise error
+        else:
+            raise KeyError(
+                f"Invalid key: {key}. "
+                "Key must be an integer index, a slice, or a valid accession or lineage string."
+            )
+
 
     @property
     def mpy_module(self):
@@ -557,13 +605,12 @@ class Mgnifier:
         """helper function to set accessions list for the current mpy module"""
         if self.to_pandas() is None:
             self._accessions = None
-        elif self._mpy_module == list_mgnify_studies:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        elif self._mpy_module == list_mgnify_study_analyses:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        elif self._mpy_module == list_mgnify_study_samples:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        elif self._mpy_module == list_mgnify_genomes:
+        elif self._mpy_module in [
+            list_mgnify_studies, 
+            list_mgnify_study_analyses,
+            list_mgnify_study_samples,
+            list_mgnify_genomes,
+        ]:
             self._accessions = self.to_pandas()["accession"].tolist()
         else:
             self._accessions = None
