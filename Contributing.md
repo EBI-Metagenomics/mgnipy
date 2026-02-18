@@ -6,23 +6,24 @@ Install the code with development and docs dependencies:
 uv sync --all-groups
 ```
 
-## Format code and sort imports
+## Prior to PR: 
+### Format code and sort imports
 
 ```bash
-black .
-isort .
+black mgnipy
+isort mgnipy
 ```
 
-## lint code
+### lint code
 
 ```bash
-ruff check .
+ruff check mgnipy
 ```
 
-## Run tests
+### Run tests
 
 ```bash
-pytest
+pytest mgnipy tests
 ```
 
 There are 2 options for putting tests. 
@@ -40,12 +41,5 @@ There are 2 options for putting tests.
     ```
     Note: if you want to include a docstring example without running as a test then append ` # doctest: +SKIP ` to the line of code. 
 
-## Sync notebooks with jupytext
-
-For easier diffs, you can use jupytext to sync notebooks in the `docs/tutorial` directory with the percent format.
-
-```bash
-jupytext --sync docs/tutorial/*.ipynb
-```
-
-This is configured in the [`.jupytext`](docs/tutorial/.jupytext) file in that directory.
+### Update docs 
+See the [docs/README.md](docs/README.md)

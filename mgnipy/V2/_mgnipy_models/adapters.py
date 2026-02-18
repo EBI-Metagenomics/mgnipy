@@ -4,7 +4,7 @@ from pydantic import (
     ValidationError,
 )
 
-from mgnipy.V2._models_v2.CONSTANTS2 import (
+from mgnipy.V2._mgnipy_models.CONSTANTS import (
     SupportedApiVersions,
     SupportedEndpoints,
 )

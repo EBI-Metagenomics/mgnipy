@@ -2,8 +2,8 @@ jupytext openapi-py-client/*.ipynb --sync
 jupytext tutorial/*.ipynb --sync
 
 sphinx-apidoc --force \
-    --implicit-namespaces --module-first \
-    -o reference/mgnipy ../mgnipy
+    --module-first  --remove-old -t _templates \
+    -o reference ../mgnipy
 
 # sphinx-apidoc --force \
 #     --implicit-namespaces --module-first \
