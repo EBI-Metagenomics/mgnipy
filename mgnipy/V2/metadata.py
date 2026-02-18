@@ -58,10 +58,6 @@ class Mgnifier:
         The function used to retrieve metadata for the selected resource.
     params : dict
         Parameters for the API call.
-    kwargs : dict
-        Additional keyword arguments for the API call.
-    end_url : str
-        The endpoint URL for the resource.
     checkpoint_dir : Path or None
         Directory for checkpointing results.
     checkpoint_freq : int
