@@ -18,10 +18,10 @@ from bigtree import (
 )
 from tqdm import tqdm
 
-from mgnipy import BASE_URL
+from mgnipy._models.config import MgnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
+from mgnipy.V2._mgnipy_models.CONSTANTS2 import SupportedEndpoints
 from mgnipy.V2.mgni_py_v2 import Client
 from mgnipy.V2.mgni_py_v2.api.genomes import list_mgnify_genomes
 from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
@@ -32,7 +32,7 @@ from mgnipy.V2.mgni_py_v2.api.studies import (
 )
 
 semaphore = get_semaphore()
-
+BASE_URL = MgnipyConfig().base_url
 METADATA_MODULES = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # what biomes
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # search for study
@@ -58,10 +58,6 @@ class Mgnifier:
         The function used to retrieve metadata for the selected resource.
     params : dict
         Parameters for the API call.
-    kwargs : dict
-        Additional keyword arguments for the API call.
-    end_url : str
-        The endpoint URL for the resource.
     checkpoint_dir : Path or None
         Directory for checkpointing results.
     checkpoint_freq : int
@@ -120,11 +116,6 @@ class Mgnifier:
             self._params["page_size"] = 25
         else:
             validate_gt_int(self._params["page_size"])
-        # check params are valid for endpoint
-        self._kwargs: dict[str, Any] = self._check_kwargs()
-        self._end_url: str = self._kwargs.get(
-            "url", f"/metagenomics/api/v2/{self._resource}/"
-        ).strip("/")
 
         # checkpointing
         self._checkpoint_dir: Optional[Path] = checkpoint_dir
@@ -136,6 +127,58 @@ class Mgnifier:
         self._cached_first_page: Optional[List] = None
         self._results: Optional[List[List[dict]]] = None
         self._accessions: Optional[List[str]] = None
+
+    def __iter__(self):
+        """
+        Allow iteration over the metadata records, yielding one record at a time.
+
+        Returns
+        -------
+        Iterator[dict]
+            An iterator that yields metadata records as dictionaries.
+        """
+        df = self.to_pandas()  # TODO: work with the raw results instead of to df
+        return (dict(row) for _, row in df.iterrows())
+
+    def __getitem__(self, key) -> List[dict] | dict:
+        """
+        Allow indexing into the metadata records by integer index, accession, or lineage.
+
+        Parameters
+        ----------
+        key : int, slice, or str
+            The key to index by. Can be an integer index, a slice,
+            a valid accession string, or a valid lineage string.
+
+        Returns
+        -------
+        list of dict or dict
+            The metadata record(s) corresponding to the provided key.
+
+        Raises
+        ------
+        KeyError
+            If the key is not a valid index, accession, or lineage.
+        """
+
+        # TODO: work with the raw results instead of to df
+        df = self.to_pandas()
+        df_as_list = df.to_dict(orient="records")
+        # by index
+        if isinstance(key, (int, slice)):
+            return df_as_list[key]
+        # by accession
+        elif isinstance(key, str) and self._accessions and key in self._accessions:
+            return df.query(f"accession == '{key}'").to_dict(orient="records")
+        # by lineage
+        elif isinstance(key, str) and "lineage" in df.columns:
+            return df.query(f"lineage == '{key}'").to_dict(orient="records")
+        # else raise error
+        else:
+            raise KeyError(
+                f"Invalid key: {key}. "
+                "Key must be an integer index, a slice, or a valid accession or lineage string."
+            )
 
     @property
     def mpy_module(self):
@@ -192,14 +235,47 @@ class Mgnifier:
             f"----------------------------------------\n"
             f"Base URL: {self._base_url}\n"
             f"Parameters: {self._params}\n"
-            f"==========================================\n"
-            f"Request URL: {self._build_url()}\n"
             f"----------------------------------------\n"
             f"Checkpoint Directory: {self._checkpoint_dir}\n"
             f"Checkpoint Frequency: {self._checkpoint_freq}\n"
         )
 
     # methods
+    def filter(
+        self,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        """
+        Update the parameters for the API call to filter results.
+
+        Parameters
+        ----------
+        params : dict, optional
+            Dictionary of parameters to update.
+        **kwargs : dict
+            Additional keyword arguments to include in the parameters.
+
+        Returns
+        -------
+        None
+        """
+
+        if params:
+            self._params.update(params)
+        if kwargs:
+            self._params.update(kwargs)
+        # check new params are valid for endpoint
+        self._check_kwargs()
+        # reset results and metadata since params changed
+        self._count = None
+        self._total_pages = None
+        self._cached_first_page = None
+        self._results = None
+        self._accessions = None
+
+        return self
+
     def plan(self):
         """
         Estimate the number of pages and records available for the current query.
@@ -276,6 +352,8 @@ class Mgnifier:
 
     async def get(
         self,
+        limit: Optional[int] = None,
+        *,
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ) -> pd.DataFrame:
@@ -284,6 +362,8 @@ class Mgnifier:
 
         Parameters
         ----------
+        limit : int, optional
+            Maximum number of records to retrieve. If None, retrieves all records.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
         strict : bool, default False
@@ -307,7 +387,7 @@ class Mgnifier:
 
         # async request all pages and store results in self._results
         async with self._init_client() as client:
-            await self._collector(client, pages=pages, strict=strict)
+            await self._collector(client, limit=limit, pages=pages, strict=strict)
 
         # set accessions list for retrieved data if applicable
         self._set_accessions_list()
@@ -492,10 +572,16 @@ class Mgnifier:
         exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
 
         params = params or self._params
+
+        # check params are valid for endpoint
+        _kwargs: dict[str, Any] = self._check_kwargs()
+        _end_url: str = _kwargs.get(
+            "url", f"/metagenomics/api/v2/{self._resource}/"
+        ).strip("/")
         incl_params = deepcopy(params)
         for k in exclude or []:
             incl_params.pop(k, None)
-        start_url = os.path.join(self._base_url, self._end_url)
+        start_url = os.path.join(self._base_url, _end_url)
         encoded_params = urlencode(incl_params, doseq=True)
         return f"{start_url}/?{encoded_params}"
 
@@ -511,13 +597,12 @@ class Mgnifier:
         """helper function to set accessions list for the current mpy module"""
         if self.to_pandas() is None:
             self._accessions = None
-        elif self._mpy_module == list_mgnify_studies:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        elif self._mpy_module == list_mgnify_study_analyses:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        elif self._mpy_module == list_mgnify_study_samples:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        elif self._mpy_module == list_mgnify_genomes:
+        elif self._mpy_module in [
+            list_mgnify_studies,
+            list_mgnify_study_analyses,
+            list_mgnify_study_samples,
+            list_mgnify_genomes,
+        ]:
             self._accessions = self.to_pandas()["accession"].tolist()
         else:
             self._accessions = None
@@ -583,6 +668,7 @@ class Mgnifier:
     async def _collector(
         self,
         client: Client,
+        limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ):
@@ -593,6 +679,8 @@ class Mgnifier:
         ----------
         client : Client
             MGnify API client instance.
+        limit : int, optional
+            Maximum number of records to retrieve. If None, retrieves all records.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
         strict : bool, default False
@@ -624,7 +712,14 @@ class Mgnifier:
                 self.plan()
 
         # prep page nums
-        if isinstance(pages, list):
+        if limit is not None:
+            if not (isinstance(limit, int) and limit > 0):
+                raise ValueError("limit must be a positive integer.")
+            # TODO for now undershooting limit
+            max_page = ceil(limit / self._params["page_size"])
+            print(max_page)
+            _pages = list(range(1, min(max_page, self._total_pages) + 1))
+        elif isinstance(pages, list):
             _pages = deepcopy(pages)
             for p in pages:
                 if not (isinstance(p, int) and 0 < p <= self._total_pages):

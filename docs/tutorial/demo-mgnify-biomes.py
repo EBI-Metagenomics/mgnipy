@@ -15,9 +15,17 @@
 # %% [markdown]
 # # What biomes are available in MGnify? 
 #
+# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorial/demo-mgnify-biomes.ipynb)
+
+# %%
+# uncomment below if colab
+# #!pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy
+# #!pip install asyncio
+
+# %% [markdown]
 # In this notebook we visualize the [biome classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) of metagenome projects available on mgnify. 
 #
-# We can use the BiomesMgnifier.
+# We can use the BiomesMgnifier or MGnipy.
 
 # %%
 from mgnipy.V2 import BiomesMgnifier
@@ -63,3 +71,46 @@ df_biomes.head()
 
 # %% tags=["hide-output"]
 glass.show_tree()
+
+# %% [markdown]
+# ## Or using `mgnipy.MGnipy`
+#
+# A more readable syntax with the same functionality :) 
+
+# %%
+from mgnipy import MGnipy
+
+# init
+glass = MGnipy()
+
+# biomes endpoint
+biomes = glass.biomes
+
+# instead pass search params to filter method
+biomes.filter(
+    biome_lineage="root:Host-associated:Plants:Rhizosphere",
+)
+
+# check it out 
+print(biomes)
+
+# %% [markdown]
+# Still can asynchronously get results:
+
+# %%
+await biomes.get()
+
+# look at first two
+biomes[0:2]
+
+# %% [markdown]
+# or like above as a df:
+
+# %%
+biomes.to_pandas()
+
+# %% [markdown]
+# and viz as tree:
+
+# %%
+biomes.show_tree("vshow")

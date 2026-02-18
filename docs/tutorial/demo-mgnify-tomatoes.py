@@ -17,6 +17,11 @@
 #
 # [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorial/demo-mgnify-tomatoes.ipynb)
 
+# %%
+# uncomment below if colab
+# #!pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy
+# #!pip install asyncio
+
 # %% [markdown]
 # In this tutorial we demonstrate how mgnipy can be used to retrieve tomato rhizosphere metagenomics analyses (only sample metadata for now) available on MGnify. 
 

@@ -21,5 +21,3 @@ __all__ = (
     "Client",
     "AuthenticatedClient",
 )
-
-BASE_URL = "https://www.ebi.ac.uk/"
