@@ -276,6 +276,8 @@ class Mgnifier:
 
     async def get(
         self,
+        limit: Optional[int] = None,
+        *,
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ) -> pd.DataFrame:
@@ -284,6 +286,8 @@ class Mgnifier:
 
         Parameters
         ----------
+        limit : int, optional
+            Maximum number of records to retrieve. If None, retrieves all records.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
         strict : bool, default False
@@ -307,7 +311,7 @@ class Mgnifier:
 
         # async request all pages and store results in self._results
         async with self._init_client() as client:
-            await self._collector(client, pages=pages, strict=strict)
+            await self._collector(client, limit=limit, pages=pages, strict=strict)
 
         # set accessions list for retrieved data if applicable
         self._set_accessions_list()
@@ -583,6 +587,7 @@ class Mgnifier:
     async def _collector(
         self,
         client: Client,
+        limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ):
@@ -593,6 +598,8 @@ class Mgnifier:
         ----------
         client : Client
             MGnify API client instance.
+        limit : int, optional
+            Maximum number of records to retrieve. If None, retrieves all records.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
         strict : bool, default False
@@ -624,7 +631,14 @@ class Mgnifier:
                 self.plan()
 
         # prep page nums
-        if isinstance(pages, list):
+        if limit is not None:
+            if not (isinstance(limit, int) and limit > 0):
+                raise ValueError("limit must be a positive integer.")
+            # TODO for now undershooting limit 
+            max_page = ceil(limit / self._params["page_size"])
+            print(max_page)
+            _pages = list(range(1, min(max_page, self._total_pages) + 1))
+        elif isinstance(pages, list):
             _pages = deepcopy(pages)
             for p in pages:
                 if not (isinstance(p, int) and 0 < p <= self._total_pages):
