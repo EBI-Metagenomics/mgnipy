@@ -1,7 +1,3 @@
-from .mgni_py_v2.client import (
-    AuthenticatedClient,
-    Client,
-)
 from .metadata import (
     AnalysesMgnifier,
     BiomesMgnifier,
@@ -9,6 +5,10 @@ from .metadata import (
     Mgnifier,
     SamplesMgnifier,
     StudiesMgnifier,
+)
+from .mgni_py_v2.client import (
+    AuthenticatedClient,
+    Client,
 )
 
 __all__ = (

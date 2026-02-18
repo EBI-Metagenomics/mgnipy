@@ -1,10 +1,5 @@
 import asyncio
 
-import tqdm
-from async_lru import alru_cache
-
-from mgnipy import CACHE_DIR
-
 
 def get_semaphore(concurrency: int = 5) -> asyncio.Semaphore:
     return asyncio.Semaphore(concurrency)
