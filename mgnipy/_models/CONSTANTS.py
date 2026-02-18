@@ -1,14 +1,17 @@
 # mainly Enum constants for pydantic models
 from enum import Enum
 
+
 class SpecialEnum(Enum):
     def __str__(self):
         return str(self.value)
 
+
 class SupportedApiVersions(SpecialEnum):
-    #V1 = 'v1' # TODO: add support for v1 endpoints
+    # V1 = 'v1' # TODO: add support for v1 endpoints
     V2 = "v2"
     LATEST = "latest"
+
 
 class SupportedEndpoints(SpecialEnum):
     ANALYSES = "analyses"
@@ -16,7 +19,7 @@ class SupportedEndpoints(SpecialEnum):
     PUBLICATIONS = "publications"
     SAMPLES = "samples"
     STUDIES = "studies"
-#    PRIVATE_DATA = "private_data"
-#    MISCELLANEOUS = "miscellaneous"
-#    AUTHENTICATION = "authentication"
+    #    PRIVATE_DATA = "private_data"
+    #    MISCELLANEOUS = "miscellaneous"
+    #    AUTHENTICATION = "authentication"
     BIOMES = "biomes"  # miscellaneous

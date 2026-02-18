@@ -135,9 +135,9 @@ class Mgnifier:
         Returns
         -------
         Iterator[dict]
-            An iterator that yields metadata records as dictionaries. 
+            An iterator that yields metadata records as dictionaries.
         """
-        df = self.to_pandas() # TODO: work with the raw results instead of to df
+        df = self.to_pandas()  # TODO: work with the raw results instead of to df
         return (dict(row) for _, row in df.iterrows())
 
     def __getitem__(self, key) -> List[dict] | dict:
@@ -147,7 +147,7 @@ class Mgnifier:
         Parameters
         ----------
         key : int, slice, or str
-            The key to index by. Can be an integer index, a slice, 
+            The key to index by. Can be an integer index, a slice,
             a valid accession string, or a valid lineage string.
 
         Returns
@@ -168,17 +168,10 @@ class Mgnifier:
         if isinstance(key, (int, slice)):
             return df_as_list[key]
         # by accession
-        elif (
-            isinstance(key, str) 
-            and self._accessions 
-            and key in self._accessions
-        ):
+        elif isinstance(key, str) and self._accessions and key in self._accessions:
             return df.query(f"accession == '{key}'").to_dict(orient="records")
         # by lineage
-        elif (
-            isinstance(key, str) 
-            and "lineage" in df.columns
-        ):
+        elif isinstance(key, str) and "lineage" in df.columns:
             return df.query(f"lineage == '{key}'").to_dict(orient="records")
         # else raise error
         else:
@@ -186,7 +179,6 @@ class Mgnifier:
                 f"Invalid key: {key}. "
                 "Key must be an integer index, a slice, or a valid accession or lineage string."
             )
-
 
     @property
     def mpy_module(self):
@@ -606,7 +598,7 @@ class Mgnifier:
         if self.to_pandas() is None:
             self._accessions = None
         elif self._mpy_module in [
-            list_mgnify_studies, 
+            list_mgnify_studies,
             list_mgnify_study_analyses,
             list_mgnify_study_samples,
             list_mgnify_genomes,
@@ -723,7 +715,7 @@ class Mgnifier:
         if limit is not None:
             if not (isinstance(limit, int) and limit > 0):
                 raise ValueError("limit must be a positive integer.")
-            # TODO for now undershooting limit 
+            # TODO for now undershooting limit
             max_page = ceil(limit / self._params["page_size"])
             print(max_page)
             _pages = list(range(1, min(max_page, self._total_pages) + 1))

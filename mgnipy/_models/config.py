@@ -1,20 +1,19 @@
-from pydantic import (
-    BaseModel, 
-    DirectoryPath,
-    Field, 
-    HttpUrl,
-    AliasChoices,
-)
-
 from typing import (
     Optional,
 )
 
+from platformdirs import user_cache_dir
+from pydantic import (
+    AliasChoices,
+    BaseModel,
+    DirectoryPath,
+    Field,
+    HttpUrl,
+)
+
 from .CONSTANTS import SupportedApiVersions
 
-from platformdirs import user_cache_dir
 
-    
 class MgnipyConfig(BaseModel):
     class Config:
         extra = "forbid"
