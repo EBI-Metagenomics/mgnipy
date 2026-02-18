@@ -11,11 +11,11 @@ from pydantic import (
     HttpUrl,
 )
 
-from .CONSTANTS import SupportedApiVersions
+from mgnipy._models.CONSTANTS import SupportedApiVersions
 
 
 class MgnipyConfig(BaseModel):
-    class Config:
+    class ConfigDict:
         extra = "forbid"
         use_enum_values = True
 
