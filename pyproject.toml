@@ -7,7 +7,9 @@ authors = [
   { name = "mberacochea" },
   { name = "SandyRogers" },
   { name = "Sebastian Ayala Ruano" },
-  { name = "Alberto Santos" }
+  { name = "Alberto Santos" },
+  { name = "MGnify" },
+  { name = "Robert Finn" }
 ]
 description = "python driver for mgnipy api"
 name = "mgnipy"

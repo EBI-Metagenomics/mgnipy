@@ -8,8 +8,8 @@ os.environ["PLOTLY_RENDERER"] = "notebook"
 # -- Project information -----------------------------------------------------
 
 project = "mgnipy"
-copyright = "2025, First Last"
-author = "First Last"
+copyright = "2025, MGnify"
+author = "MGnify"
 PACKAGE_VERSION = metadata.version("mgnipy")
 version = PACKAGE_VERSION
 release = PACKAGE_VERSION
