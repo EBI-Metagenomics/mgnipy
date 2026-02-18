@@ -8,7 +8,7 @@ The python client libraries were auto-generated using [openapi-python-client](ht
 
 ```bash
 # TestPypi
-pip install --index-url https://test.pypi.org/simple/ mgnipy
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy
 ```
 
 ## Usage
