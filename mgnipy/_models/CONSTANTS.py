@@ -6,7 +6,7 @@ class SpecialEnum(Enum):
         return str(self.value)
 
 class SupportedApiVersions(SpecialEnum):
-    V1 = 'v1'
+    #V1 = 'v1' # TODO: add support for v1 endpoints
     V2 = "v2"
     LATEST = "latest"
 
