@@ -18,7 +18,7 @@ from bigtree import (
 )
 from tqdm import tqdm
 
-from mgnipy import BASE_URL
+from mgnipy._models.config import MgnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
 from mgnipy.V2._mgnipy_models.CONSTANTS import SupportedEndpoints
@@ -32,7 +32,7 @@ from mgnipy.V2.mgni_py_v2.api.studies import (
 )
 
 semaphore = get_semaphore()
-
+BASE_URL = MgnipyConfig().base_url
 METADATA_MODULES = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # what biomes
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # search for study
