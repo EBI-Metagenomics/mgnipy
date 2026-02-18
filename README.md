@@ -7,28 +7,33 @@ The python client libraries were auto-generated using [openapi-python-client](ht
 ## Installation
 
 ```bash
-pip install mgnipy
+# TestPypi
+pip install --index-url https://test.pypi.org/simple/ mgnipy
 ```
 
 ## Usage
-Look in biome resource for studies for a given biome. 
+You can use the `Mgnifier`s to find study, sample, analyses, genome accessions and associated metadata. 
 
-First instantiate the mgnifier:
+First instantiate the mgnifier. Search params can be provided as `params: Optional[dict]` or `kwargs`. To see the supported kwargs there is an attribute `Mgnigier.supported_kwargs` 
+
 ```python
-from mgnipy import Mgnifier
+from mgnipy.V2 import StudiesMgnifier
 
 # init
-glass = Mgnifier(
-    resource="biomes",
+glass = StudiesMgnifier(
     # GOLD ecosystem classification
-    lineage="root:Host-associated:Plants:Rhizosphere", 
+    biomes_lineage="root:Host-associated:Plants:Rhizosphere", 
+    search="tomato"
 )
 
-# look at the built request url
+# to see supported kwargs, uncomment
+#print(glass.supported_kwargs)
+
+# checkout the built request url, not sent yet
 print(glass)
 ```
 
-Then plan or preview the number of pages and records before collecting all their metadata :)
+Then `.preview()` (lightweight) or `.plan()` (even lighterweight) the number of pages and records before collecting all their metadata :)
 ```python
 # only prints some info
 glass.plan()
@@ -40,7 +45,18 @@ df = glass.preview()
 Now that you ahve confirmed that this is the metadta that you want then collect it:
 (currently in memory)
 ```python
-metadata = await df.collect()
+import asyncio 
+
+# returns as a pandas df, or asyncio.run()
+metadata = await df.get()
+```
+
+You can also access `Mgnifier.accessions` and pass the accessions to the mgnipy dataset collectors 
+```python
+from mgnipy.V2 import GoSlimCollector
+
+# init 
+bottle = GoSlimCollector(accessions=glass.accessions)
 ```
 
 ## Additional documentation
