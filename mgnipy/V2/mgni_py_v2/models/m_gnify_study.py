@@ -1,35 +1,38 @@
 from __future__ import annotations
 
-import datetime
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+
+from ..types import UNSET, Unset
+
 from dateutil.parser import isoparse
+from typing import cast
+import datetime
 
 if TYPE_CHECKING:
-    from ..models.biome import Biome
+  from ..models.biome import Biome
+
+
+
 
 
 T = TypeVar("T", bound="MGnifyStudy")
 
 
+
 @_attrs_define
 class MGnifyStudy:
-    """
-    Attributes:
-        accession (str):
-        ena_accessions (list[str]):
-        title (str):
-        biome (Biome | None):
-        updated_at (datetime.datetime):
-    """
+    """ 
+        Attributes:
+            accession (str):
+            ena_accessions (list[str]):
+            title (str):
+            biome (Biome | None):
+            updated_at (datetime.datetime):
+     """
 
     accession: str
     ena_accessions: list[str]
@@ -38,12 +41,17 @@ class MGnifyStudy:
     updated_at: datetime.datetime
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
         from ..models.biome import Biome
-
         accession = self.accession
 
         ena_accessions = self.ena_accessions
+
+
 
         title = self.title
 
@@ -55,28 +63,29 @@ class MGnifyStudy:
 
         updated_at = self.updated_at.isoformat()
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "accession": accession,
-                "ena_accessions": ena_accessions,
-                "title": title,
-                "biome": biome,
-                "updated_at": updated_at,
-            }
-        )
+        field_dict.update({
+            "accession": accession,
+            "ena_accessions": ena_accessions,
+            "title": title,
+            "biome": biome,
+            "updated_at": updated_at,
+        })
 
         return field_dict
+
+
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.biome import Biome
-
         d = dict(src_dict)
         accession = d.pop("accession")
 
         ena_accessions = cast(list[str], d.pop("ena_accessions"))
+
 
         title = d.pop("title")
 
@@ -88,6 +97,8 @@ class MGnifyStudy:
                     raise TypeError()
                 biome_type_0 = Biome.from_dict(data)
 
+
+
                 return biome_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
@@ -95,7 +106,11 @@ class MGnifyStudy:
 
         biome = _parse_biome(d.pop("biome"))
 
+
         updated_at = isoparse(d.pop("updated_at"))
+
+
+
 
         m_gnify_study = cls(
             accession=accession,
@@ -104,6 +119,7 @@ class MGnifyStudy:
             biome=biome,
             updated_at=updated_at,
         )
+
 
         m_gnify_study.additional_properties = d
         return m_gnify_study

@@ -1,31 +1,35 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
+from typing import cast
+
 if TYPE_CHECKING:
-    from ..models.europe_pmc_annotation import EuropePmcAnnotation
+  from ..models.europe_pmc_annotation import EuropePmcAnnotation
+
+
+
 
 
 T = TypeVar("T", bound="EuropePmcAnnotationGroup")
 
 
+
 @_attrs_define
 class EuropePmcAnnotationGroup:
-    """
-    Attributes:
-        annotation_type (str): Type (i.e. the concept) of the annotation
-        title (str): Explanatory version of the annotation type
-        description (str): Detailed description of the annotation type
-        annotations (list[EuropePmcAnnotation]): List of annotations of the given type
-    """
+    """ 
+        Attributes:
+            annotation_type (str): Type (i.e. the concept) of the annotation
+            title (str): Explanatory version of the annotation type
+            description (str): Detailed description of the annotation type
+            annotations (list[EuropePmcAnnotation]): List of annotations of the given type
+     """
 
     annotation_type: str
     title: str
@@ -33,7 +37,12 @@ class EuropePmcAnnotationGroup:
     annotations: list[EuropePmcAnnotation]
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
+        from ..models.europe_pmc_annotation import EuropePmcAnnotation
         annotation_type = self.annotation_type
 
         title = self.title
@@ -45,23 +54,25 @@ class EuropePmcAnnotationGroup:
             annotations_item = annotations_item_data.to_dict()
             annotations.append(annotations_item)
 
+
+
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "annotation_type": annotation_type,
-                "title": title,
-                "description": description,
-                "annotations": annotations,
-            }
-        )
+        field_dict.update({
+            "annotation_type": annotation_type,
+            "title": title,
+            "description": description,
+            "annotations": annotations,
+        })
 
         return field_dict
+
+
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.europe_pmc_annotation import EuropePmcAnnotation
-
         d = dict(src_dict)
         annotation_type = d.pop("annotation_type")
 
@@ -71,10 +82,13 @@ class EuropePmcAnnotationGroup:
 
         annotations = []
         _annotations = d.pop("annotations")
-        for annotations_item_data in _annotations:
+        for annotations_item_data in (_annotations):
             annotations_item = EuropePmcAnnotation.from_dict(annotations_item_data)
 
+
+
             annotations.append(annotations_item)
+
 
         europe_pmc_annotation_group = cls(
             annotation_type=annotation_type,
@@ -82,6 +96,7 @@ class EuropePmcAnnotationGroup:
             description=description,
             annotations=annotations,
         )
+
 
         europe_pmc_annotation_group.additional_properties = d
         return europe_pmc_annotation_group

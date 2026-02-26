@@ -1,23 +1,30 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
+from urllib.parse import quote
 
 import httpx
 
+from ...client import AuthenticatedClient, Client
+from ...types import Response, UNSET
 from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
+
 from ...models.webin_token_refresh_request import WebinTokenRefreshRequest
 from ...models.webin_token_response import WebinTokenResponse
-from ...types import Response
+from typing import cast
+
 
 
 def _get_kwargs(
     *,
     body: WebinTokenRefreshRequest,
+
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
+
+
+    
+
+    
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -26,17 +33,19 @@ def _get_kwargs(
 
     _kwargs["json"] = body.to_dict()
 
+
     headers["Content-Type"] = "application/json"
 
     _kwargs["headers"] = headers
     return _kwargs
 
 
-def _parse_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> WebinTokenResponse | None:
+
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> WebinTokenResponse | None:
     if response.status_code == 200:
         response_200 = WebinTokenResponse.from_dict(response.json())
+
+
 
         return response_200
 
@@ -46,9 +55,7 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[WebinTokenResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[WebinTokenResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -61,8 +68,9 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: WebinTokenRefreshRequest,
+
 ) -> Response[WebinTokenResponse]:
-    """Refresh an authentication token to increase its validity duration.
+    """ Refresh an authentication token to increase its validity duration.
 
      If a token's expiry has passed, but its (longer) refresh expiry remains valid, this endpoint can be
     used to fetch a replacement token without logging in again.
@@ -76,10 +84,12 @@ def sync_detailed(
 
     Returns:
         Response[WebinTokenResponse]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         body=body,
+
     )
 
     response = client.get_httpx_client().request(
@@ -88,13 +98,13 @@ def sync_detailed(
 
     return _build_response(client=client, response=response)
 
-
 def sync(
     *,
     client: AuthenticatedClient | Client,
     body: WebinTokenRefreshRequest,
+
 ) -> WebinTokenResponse | None:
-    """Refresh an authentication token to increase its validity duration.
+    """ Refresh an authentication token to increase its validity duration.
 
      If a token's expiry has passed, but its (longer) refresh expiry remains valid, this endpoint can be
     used to fetch a replacement token without logging in again.
@@ -108,20 +118,22 @@ def sync(
 
     Returns:
         WebinTokenResponse
-    """
+     """
+
 
     return sync_detailed(
         client=client,
-        body=body,
-    ).parsed
+body=body,
 
+    ).parsed
 
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: WebinTokenRefreshRequest,
+
 ) -> Response[WebinTokenResponse]:
-    """Refresh an authentication token to increase its validity duration.
+    """ Refresh an authentication token to increase its validity duration.
 
      If a token's expiry has passed, but its (longer) refresh expiry remains valid, this endpoint can be
     used to fetch a replacement token without logging in again.
@@ -135,23 +147,27 @@ async def asyncio_detailed(
 
     Returns:
         Response[WebinTokenResponse]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         body=body,
+
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await client.get_async_httpx_client().request(
+        **kwargs
+    )
 
     return _build_response(client=client, response=response)
-
 
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: WebinTokenRefreshRequest,
+
 ) -> WebinTokenResponse | None:
-    """Refresh an authentication token to increase its validity duration.
+    """ Refresh an authentication token to increase its validity duration.
 
      If a token's expiry has passed, but its (longer) refresh expiry remains valid, this endpoint can be
     used to fetch a replacement token without logging in again.
@@ -165,11 +181,11 @@ async def asyncio(
 
     Returns:
         WebinTokenResponse
-    """
+     """
 
-    return (
-        await asyncio_detailed(
-            client=client,
-            body=body,
-        )
-    ).parsed
+
+    return (await asyncio_detailed(
+        client=client,
+body=body,
+
+    )).parsed

@@ -1,46 +1,45 @@
 from __future__ import annotations
 
-import datetime
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
-from ..types import (
-    UNSET,
-    Unset,
-)
+from ..types import UNSET, Unset
+
+from ..types import UNSET, Unset
+from dateutil.parser import isoparse
+from typing import cast
+import datetime
 
 if TYPE_CHECKING:
-    from ..models.assembly_detail_metadata_type_0 import AssemblyDetailMetadataType0
-    from ..models.assembly_detail_status_type_0 import AssemblyDetailStatusType0
+  from ..models.assembly_detail_metadata_type_0 import AssemblyDetailMetadataType0
+  from ..models.assembly_detail_status_type_0 import AssemblyDetailStatusType0
+
+
+
 
 
 T = TypeVar("T", bound="AssemblyDetail")
 
 
+
 @_attrs_define
 class AssemblyDetail:
-    """
-    Attributes:
-        updated_at (datetime.datetime):
-        accession (None | str | Unset):
-        run_accession (None | str | Unset):
-        sample_accession (None | str | Unset):
-        reads_study_accession (None | str | Unset):
-        assembly_study_accession (None | str | Unset):
-        assembler_name (None | str | Unset):
-        assembler_version (None | str | Unset):
-        metadata (AssemblyDetailMetadataType0 | None | Unset): Additional metadata associated with the assembly
-        status (AssemblyDetailStatusType0 | None | Unset): Status information for the assembly
-    """
+    """ 
+        Attributes:
+            updated_at (datetime.datetime):
+            accession (None | str | Unset):
+            run_accession (None | str | Unset):
+            sample_accession (None | str | Unset):
+            reads_study_accession (None | str | Unset):
+            assembly_study_accession (None | str | Unset):
+            assembler_name (None | str | Unset):
+            assembler_version (None | str | Unset):
+            metadata (AssemblyDetailMetadataType0 | None | Unset): Additional metadata associated with the assembly
+            status (AssemblyDetailStatusType0 | None | Unset): Status information for the assembly
+     """
 
     updated_at: datetime.datetime
     accession: None | str | Unset = UNSET
@@ -54,10 +53,13 @@ class AssemblyDetail:
     status: AssemblyDetailStatusType0 | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-    def to_dict(self) -> dict[str, Any]:
-        from ..models.assembly_detail_metadata_type_0 import AssemblyDetailMetadataType0
-        from ..models.assembly_detail_status_type_0 import AssemblyDetailStatusType0
 
+
+
+
+    def to_dict(self) -> dict[str, Any]:
+        from ..models.assembly_detail_status_type_0 import AssemblyDetailStatusType0
+        from ..models.assembly_detail_metadata_type_0 import AssemblyDetailMetadataType0
         updated_at = self.updated_at.isoformat()
 
         accession: None | str | Unset
@@ -118,13 +120,12 @@ class AssemblyDetail:
         else:
             status = self.status
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "updated_at": updated_at,
-            }
-        )
+        field_dict.update({
+            "updated_at": updated_at,
+        })
         if accession is not UNSET:
             field_dict["accession"] = accession
         if run_accession is not UNSET:
@@ -146,13 +147,17 @@ class AssemblyDetail:
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.assembly_detail_metadata_type_0 import AssemblyDetailMetadataType0
         from ..models.assembly_detail_status_type_0 import AssemblyDetailStatusType0
-
         d = dict(src_dict)
         updated_at = isoparse(d.pop("updated_at"))
+
+
+
 
         def _parse_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -163,6 +168,7 @@ class AssemblyDetail:
 
         accession = _parse_accession(d.pop("accession", UNSET))
 
+
         def _parse_run_accession(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -171,6 +177,7 @@ class AssemblyDetail:
             return cast(None | str | Unset, data)
 
         run_accession = _parse_run_accession(d.pop("run_accession", UNSET))
+
 
         def _parse_sample_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -181,6 +188,7 @@ class AssemblyDetail:
 
         sample_accession = _parse_sample_accession(d.pop("sample_accession", UNSET))
 
+
         def _parse_reads_study_accession(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -188,9 +196,8 @@ class AssemblyDetail:
                 return data
             return cast(None | str | Unset, data)
 
-        reads_study_accession = _parse_reads_study_accession(
-            d.pop("reads_study_accession", UNSET)
-        )
+        reads_study_accession = _parse_reads_study_accession(d.pop("reads_study_accession", UNSET))
+
 
         def _parse_assembly_study_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -199,9 +206,8 @@ class AssemblyDetail:
                 return data
             return cast(None | str | Unset, data)
 
-        assembly_study_accession = _parse_assembly_study_accession(
-            d.pop("assembly_study_accession", UNSET)
-        )
+        assembly_study_accession = _parse_assembly_study_accession(d.pop("assembly_study_accession", UNSET))
+
 
         def _parse_assembler_name(data: object) -> None | str | Unset:
             if data is None:
@@ -212,6 +218,7 @@ class AssemblyDetail:
 
         assembler_name = _parse_assembler_name(d.pop("assembler_name", UNSET))
 
+
         def _parse_assembler_version(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -220,6 +227,7 @@ class AssemblyDetail:
             return cast(None | str | Unset, data)
 
         assembler_version = _parse_assembler_version(d.pop("assembler_version", UNSET))
+
 
         def _parse_metadata(data: object) -> AssemblyDetailMetadataType0 | None | Unset:
             if data is None:
@@ -231,12 +239,15 @@ class AssemblyDetail:
                     raise TypeError()
                 metadata_type_0 = AssemblyDetailMetadataType0.from_dict(data)
 
+
+
                 return metadata_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(AssemblyDetailMetadataType0 | None | Unset, data)
 
         metadata = _parse_metadata(d.pop("metadata", UNSET))
+
 
         def _parse_status(data: object) -> AssemblyDetailStatusType0 | None | Unset:
             if data is None:
@@ -248,12 +259,15 @@ class AssemblyDetail:
                     raise TypeError()
                 status_type_0 = AssemblyDetailStatusType0.from_dict(data)
 
+
+
                 return status_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(AssemblyDetailStatusType0 | None | Unset, data)
 
         status = _parse_status(d.pop("status", UNSET))
+
 
         assembly_detail = cls(
             updated_at=updated_at,
@@ -267,6 +281,7 @@ class AssemblyDetail:
             metadata=metadata,
             status=status,
         )
+
 
         assembly_detail.additional_properties = d
         return assembly_detail

@@ -1,41 +1,40 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..types import (
-    UNSET,
-    Unset,
-)
+from ..types import UNSET, Unset
+
+from ..types import UNSET, Unset
+from typing import cast
 
 if TYPE_CHECKING:
-    from ..models.europe_pmc_annotation_tag import EuropePmcAnnotationTag
+  from ..models.europe_pmc_annotation_tag import EuropePmcAnnotationTag
+
+
+
 
 
 T = TypeVar("T", bound="EuropePmcAnnotationMention")
 
 
+
 @_attrs_define
 class EuropePmcAnnotationMention:
-    """
-    Attributes:
-        exact (str): The exact text of the annotation in the text
-        type_ (str): The type of the annotation
-        tags (list[EuropePmcAnnotationTag]): A list of tags that associate the annotation with an ontology term
-        id (None | str | Unset):
-        postfix (None | str | Unset): The text immediately following the annotation
-        prefix (None | str | Unset): The text immediately preceding the annotation
-        provider (str | Unset): The provider of the annotation Default: 'Metagenomic'.
-        section (None | str | Unset): The section of the text where the annotation occurs
-    """
+    """ 
+        Attributes:
+            exact (str): The exact text of the annotation in the text
+            type_ (str): The type of the annotation
+            tags (list[EuropePmcAnnotationTag]): A list of tags that associate the annotation with an ontology term
+            id (None | str | Unset):
+            postfix (None | str | Unset): The text immediately following the annotation
+            prefix (None | str | Unset): The text immediately preceding the annotation
+            provider (str | Unset): The provider of the annotation Default: 'Metagenomic'.
+            section (None | str | Unset): The section of the text where the annotation occurs
+     """
 
     exact: str
     type_: str
@@ -43,11 +42,16 @@ class EuropePmcAnnotationMention:
     id: None | str | Unset = UNSET
     postfix: None | str | Unset = UNSET
     prefix: None | str | Unset = UNSET
-    provider: str | Unset = "Metagenomic"
+    provider: str | Unset = 'Metagenomic'
     section: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
+        from ..models.europe_pmc_annotation_tag import EuropePmcAnnotationTag
         exact = self.exact
 
         type_ = self.type_
@@ -56,6 +60,8 @@ class EuropePmcAnnotationMention:
         for tags_item_data in self.tags:
             tags_item = tags_item_data.to_dict()
             tags.append(tags_item)
+
+
 
         id: None | str | Unset
         if isinstance(self.id, Unset):
@@ -83,15 +89,14 @@ class EuropePmcAnnotationMention:
         else:
             section = self.section
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "exact": exact,
-                "type": type_,
-                "tags": tags,
-            }
-        )
+        field_dict.update({
+            "exact": exact,
+            "type": type_,
+            "tags": tags,
+        })
         if id is not UNSET:
             field_dict["id"] = id
         if postfix is not UNSET:
@@ -105,10 +110,11 @@ class EuropePmcAnnotationMention:
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.europe_pmc_annotation_tag import EuropePmcAnnotationTag
-
         d = dict(src_dict)
         exact = d.pop("exact")
 
@@ -116,10 +122,13 @@ class EuropePmcAnnotationMention:
 
         tags = []
         _tags = d.pop("tags")
-        for tags_item_data in _tags:
+        for tags_item_data in (_tags):
             tags_item = EuropePmcAnnotationTag.from_dict(tags_item_data)
 
+
+
             tags.append(tags_item)
+
 
         def _parse_id(data: object) -> None | str | Unset:
             if data is None:
@@ -130,6 +139,7 @@ class EuropePmcAnnotationMention:
 
         id = _parse_id(d.pop("id", UNSET))
 
+
         def _parse_postfix(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -139,6 +149,7 @@ class EuropePmcAnnotationMention:
 
         postfix = _parse_postfix(d.pop("postfix", UNSET))
 
+
         def _parse_prefix(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -147,6 +158,7 @@ class EuropePmcAnnotationMention:
             return cast(None | str | Unset, data)
 
         prefix = _parse_prefix(d.pop("prefix", UNSET))
+
 
         provider = d.pop("provider", UNSET)
 
@@ -159,6 +171,7 @@ class EuropePmcAnnotationMention:
 
         section = _parse_section(d.pop("section", UNSET))
 
+
         europe_pmc_annotation_mention = cls(
             exact=exact,
             type_=type_,
@@ -169,6 +182,7 @@ class EuropePmcAnnotationMention:
             provider=provider,
             section=section,
         )
+
 
         europe_pmc_annotation_mention.additional_properties = d
         return europe_pmc_annotation_mention

@@ -1,37 +1,44 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
+from typing import cast
+
 if TYPE_CHECKING:
-    from ..models.additional_contained_genome_schema import (
-        AdditionalContainedGenomeSchema,
-    )
+  from ..models.additional_contained_genome_schema import AdditionalContainedGenomeSchema
+
+
+
 
 
 T = TypeVar("T", bound="NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema")
 
 
+
 @_attrs_define
 class NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema:
-    """
-    Attributes:
-        count (int):
-        items (list[AdditionalContainedGenomeSchema]):
-    """
+    """ 
+        Attributes:
+            count (int):
+            items (list[AdditionalContainedGenomeSchema]):
+     """
 
     count: int
     items: list[AdditionalContainedGenomeSchema]
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
+        from ..models.additional_contained_genome_schema import AdditionalContainedGenomeSchema
         count = self.count
 
         items = []
@@ -39,41 +46,43 @@ class NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema:
             items_item = items_item_data.to_dict()
             items.append(items_item)
 
+
+
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "count": count,
-                "items": items,
-            }
-        )
+        field_dict.update({
+            "count": count,
+            "items": items,
+        })
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.additional_contained_genome_schema import (
-            AdditionalContainedGenomeSchema,
-        )
-
+        from ..models.additional_contained_genome_schema import AdditionalContainedGenomeSchema
         d = dict(src_dict)
         count = d.pop("count")
 
         items = []
         _items = d.pop("items")
-        for items_item_data in _items:
+        for items_item_data in (_items):
             items_item = AdditionalContainedGenomeSchema.from_dict(items_item_data)
 
+
+
             items.append(items_item)
+
 
         ninja_pagination_response_schema_additional_contained_genome_schema = cls(
             count=count,
             items=items,
         )
 
-        ninja_pagination_response_schema_additional_contained_genome_schema.additional_properties = (
-            d
-        )
+
+        ninja_pagination_response_schema_additional_contained_genome_schema.additional_properties = d
         return ninja_pagination_response_schema_additional_contained_genome_schema
 
     @property

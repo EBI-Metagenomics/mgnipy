@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class ENAStudyFields(str, Enum):
     BREED = "breed"
     BROKER_NAME = "broker_name"

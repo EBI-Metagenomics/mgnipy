@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class DownloadType(str, Enum):
     ANALYSIS_RO_CRATE = "Analysis RO Crate"
     CODING_SEQUENCES = "Coding Sequences"

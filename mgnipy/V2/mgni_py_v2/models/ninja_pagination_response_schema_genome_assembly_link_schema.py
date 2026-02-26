@@ -1,35 +1,44 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
+from typing import cast
+
 if TYPE_CHECKING:
-    from ..models.genome_assembly_link_schema import GenomeAssemblyLinkSchema
+  from ..models.genome_assembly_link_schema import GenomeAssemblyLinkSchema
+
+
+
 
 
 T = TypeVar("T", bound="NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema")
 
 
+
 @_attrs_define
 class NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema:
-    """
-    Attributes:
-        count (int):
-        items (list[GenomeAssemblyLinkSchema]):
-    """
+    """ 
+        Attributes:
+            count (int):
+            items (list[GenomeAssemblyLinkSchema]):
+     """
 
     count: int
     items: list[GenomeAssemblyLinkSchema]
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
+        from ..models.genome_assembly_link_schema import GenomeAssemblyLinkSchema
         count = self.count
 
         items = []
@@ -37,39 +46,43 @@ class NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema:
             items_item = items_item_data.to_dict()
             items.append(items_item)
 
+
+
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "count": count,
-                "items": items,
-            }
-        )
+        field_dict.update({
+            "count": count,
+            "items": items,
+        })
 
         return field_dict
+
+
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.genome_assembly_link_schema import GenomeAssemblyLinkSchema
-
         d = dict(src_dict)
         count = d.pop("count")
 
         items = []
         _items = d.pop("items")
-        for items_item_data in _items:
+        for items_item_data in (_items):
             items_item = GenomeAssemblyLinkSchema.from_dict(items_item_data)
 
+
+
             items.append(items_item)
+
 
         ninja_pagination_response_schema_genome_assembly_link_schema = cls(
             count=count,
             items=items,
         )
 
-        ninja_pagination_response_schema_genome_assembly_link_schema.additional_properties = (
-            d
-        )
+
+        ninja_pagination_response_schema_genome_assembly_link_schema.additional_properties = d
         return ninja_pagination_response_schema_genome_assembly_link_schema
 
     @property

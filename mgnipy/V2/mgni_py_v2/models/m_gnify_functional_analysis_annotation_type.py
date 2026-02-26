@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class MGnifyFunctionalAnalysisAnnotationType(str, Enum):
     PFAMS = "pfams"
     TAXONOMIES_DADA2_PR2 = "taxonomies__dada2_pr2"

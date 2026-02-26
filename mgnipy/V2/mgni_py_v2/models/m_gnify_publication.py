@@ -1,37 +1,36 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..types import (
-    UNSET,
-    Unset,
-)
+from ..types import UNSET, Unset
+
+from ..types import UNSET, Unset
+from typing import cast
 
 if TYPE_CHECKING:
-    from ..models.m_gnify_publication_metadata import MGnifyPublicationMetadata
+  from ..models.m_gnify_publication_metadata import MGnifyPublicationMetadata
+
+
+
 
 
 T = TypeVar("T", bound="MGnifyPublication")
 
 
+
 @_attrs_define
 class MGnifyPublication:
-    """
-    Attributes:
-        title (str):
-        metadata (MGnifyPublicationMetadata):
-        pubmed_id (int | Unset):
-        published_year (int | None | Unset):
-    """
+    """ 
+        Attributes:
+            title (str):
+            metadata (MGnifyPublicationMetadata):
+            pubmed_id (int | Unset):
+            published_year (int | None | Unset):
+     """
 
     title: str
     metadata: MGnifyPublicationMetadata
@@ -39,7 +38,12 @@ class MGnifyPublication:
     published_year: int | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
+        from ..models.m_gnify_publication_metadata import MGnifyPublicationMetadata
         title = self.title
 
         metadata = self.metadata.to_dict()
@@ -52,14 +56,13 @@ class MGnifyPublication:
         else:
             published_year = self.published_year
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "title": title,
-                "metadata": metadata,
-            }
-        )
+        field_dict.update({
+            "title": title,
+            "metadata": metadata,
+        })
         if pubmed_id is not UNSET:
             field_dict["pubmed_id"] = pubmed_id
         if published_year is not UNSET:
@@ -67,14 +70,18 @@ class MGnifyPublication:
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.m_gnify_publication_metadata import MGnifyPublicationMetadata
-
         d = dict(src_dict)
         title = d.pop("title")
 
         metadata = MGnifyPublicationMetadata.from_dict(d.pop("metadata"))
+
+
+
 
         pubmed_id = d.pop("pubmed_id", UNSET)
 
@@ -87,12 +94,14 @@ class MGnifyPublication:
 
         published_year = _parse_published_year(d.pop("published_year", UNSET))
 
+
         m_gnify_publication = cls(
             title=title,
             metadata=metadata,
             pubmed_id=pubmed_id,
             published_year=published_year,
         )
+
 
         m_gnify_publication.additional_properties = d
         return m_gnify_publication

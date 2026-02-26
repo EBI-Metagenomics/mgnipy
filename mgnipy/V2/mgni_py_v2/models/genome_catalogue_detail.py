@@ -1,58 +1,53 @@
 from __future__ import annotations
 
-import datetime
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
-from ..models.genome_catalogue_detail_catalogue_type import (
-    GenomeCatalogueDetailCatalogueType,
-)
-from ..types import (
-    UNSET,
-    Unset,
-)
+from ..types import UNSET, Unset
+
+from ..models.genome_catalogue_detail_catalogue_type import GenomeCatalogueDetailCatalogueType
+from ..types import UNSET, Unset
+from dateutil.parser import isoparse
+from typing import cast
+import datetime
 
 if TYPE_CHECKING:
-    from ..models.biome import Biome
-    from ..models.genome_catalogue_detail_other_stats_type_0 import (
-        GenomeCatalogueDetailOtherStatsType0,
-    )
+  from ..models.biome import Biome
+  from ..models.genome_catalogue_detail_other_stats_type_0 import GenomeCatalogueDetailOtherStatsType0
+
+
+
 
 
 T = TypeVar("T", bound="GenomeCatalogueDetail")
 
 
+
 @_attrs_define
 class GenomeCatalogueDetail:
-    """
-    Attributes:
-        catalogue_id (str):
-        version (str):
-        name (str):
-        description (None | str):
-        protein_catalogue_description (None | str):
-        updated_at (datetime.datetime):
-        result_directory (None | str):
-        unclustered_genome_count (int | None): Total number of genomes in the catalogue, including non-cluster-
-            representatives not available via this API.
-        ftp_url (str):
-        pipeline_version_tag (str):
-        catalogue_biome_label (str):
-        catalogue_type (GenomeCatalogueDetailCatalogueType):
-        other_stats (GenomeCatalogueDetailOtherStatsType0 | None):
-        protein_catalogue_name (None | str | Unset):
-        genome_count (int | None | Unset):
-        biome (Biome | None | Unset):
-    """
+    """ 
+        Attributes:
+            catalogue_id (str):
+            version (str):
+            name (str):
+            description (None | str):
+            protein_catalogue_description (None | str):
+            updated_at (datetime.datetime):
+            result_directory (None | str):
+            unclustered_genome_count (int | None): Total number of genomes in the catalogue, including non-cluster-
+                representatives not available via this API.
+            ftp_url (str):
+            pipeline_version_tag (str):
+            catalogue_biome_label (str):
+            catalogue_type (GenomeCatalogueDetailCatalogueType):
+            other_stats (GenomeCatalogueDetailOtherStatsType0 | None):
+            protein_catalogue_name (None | str | Unset):
+            genome_count (int | None | Unset):
+            biome (Biome | None | Unset):
+     """
 
     catalogue_id: str
     version: str
@@ -72,12 +67,13 @@ class GenomeCatalogueDetail:
     biome: Biome | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
         from ..models.biome import Biome
-        from ..models.genome_catalogue_detail_other_stats_type_0 import (
-            GenomeCatalogueDetailOtherStatsType0,
-        )
-
+        from ..models.genome_catalogue_detail_other_stats_type_0 import GenomeCatalogueDetailOtherStatsType0
         catalogue_id = self.catalogue_id
 
         version = self.version
@@ -132,25 +128,24 @@ class GenomeCatalogueDetail:
         else:
             biome = self.biome
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "catalogue_id": catalogue_id,
-                "version": version,
-                "name": name,
-                "description": description,
-                "protein_catalogue_description": protein_catalogue_description,
-                "updated_at": updated_at,
-                "result_directory": result_directory,
-                "unclustered_genome_count": unclustered_genome_count,
-                "ftp_url": ftp_url,
-                "pipeline_version_tag": pipeline_version_tag,
-                "catalogue_biome_label": catalogue_biome_label,
-                "catalogue_type": catalogue_type,
-                "other_stats": other_stats,
-            }
-        )
+        field_dict.update({
+            "catalogue_id": catalogue_id,
+            "version": version,
+            "name": name,
+            "description": description,
+            "protein_catalogue_description": protein_catalogue_description,
+            "updated_at": updated_at,
+            "result_directory": result_directory,
+            "unclustered_genome_count": unclustered_genome_count,
+            "ftp_url": ftp_url,
+            "pipeline_version_tag": pipeline_version_tag,
+            "catalogue_biome_label": catalogue_biome_label,
+            "catalogue_type": catalogue_type,
+            "other_stats": other_stats,
+        })
         if protein_catalogue_name is not UNSET:
             field_dict["protein_catalogue_name"] = protein_catalogue_name
         if genome_count is not UNSET:
@@ -160,13 +155,12 @@ class GenomeCatalogueDetail:
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.biome import Biome
-        from ..models.genome_catalogue_detail_other_stats_type_0 import (
-            GenomeCatalogueDetailOtherStatsType0,
-        )
-
+        from ..models.genome_catalogue_detail_other_stats_type_0 import GenomeCatalogueDetailOtherStatsType0
         d = dict(src_dict)
         catalogue_id = d.pop("catalogue_id")
 
@@ -181,16 +175,19 @@ class GenomeCatalogueDetail:
 
         description = _parse_description(d.pop("description"))
 
+
         def _parse_protein_catalogue_description(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        protein_catalogue_description = _parse_protein_catalogue_description(
-            d.pop("protein_catalogue_description")
-        )
+        protein_catalogue_description = _parse_protein_catalogue_description(d.pop("protein_catalogue_description"))
+
 
         updated_at = isoparse(d.pop("updated_at"))
+
+
+
 
         def _parse_result_directory(data: object) -> None | str:
             if data is None:
@@ -199,14 +196,14 @@ class GenomeCatalogueDetail:
 
         result_directory = _parse_result_directory(d.pop("result_directory"))
 
+
         def _parse_unclustered_genome_count(data: object) -> int | None:
             if data is None:
                 return data
             return cast(int | None, data)
 
-        unclustered_genome_count = _parse_unclustered_genome_count(
-            d.pop("unclustered_genome_count")
-        )
+        unclustered_genome_count = _parse_unclustered_genome_count(d.pop("unclustered_genome_count"))
+
 
         ftp_url = d.pop("ftp_url")
 
@@ -216,17 +213,18 @@ class GenomeCatalogueDetail:
 
         catalogue_type = GenomeCatalogueDetailCatalogueType(d.pop("catalogue_type"))
 
-        def _parse_other_stats(
-            data: object,
-        ) -> GenomeCatalogueDetailOtherStatsType0 | None:
+
+
+
+        def _parse_other_stats(data: object) -> GenomeCatalogueDetailOtherStatsType0 | None:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                other_stats_type_0 = GenomeCatalogueDetailOtherStatsType0.from_dict(
-                    data
-                )
+                other_stats_type_0 = GenomeCatalogueDetailOtherStatsType0.from_dict(data)
+
+
 
                 return other_stats_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -235,6 +233,7 @@ class GenomeCatalogueDetail:
 
         other_stats = _parse_other_stats(d.pop("other_stats"))
 
+
         def _parse_protein_catalogue_name(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -242,9 +241,8 @@ class GenomeCatalogueDetail:
                 return data
             return cast(None | str | Unset, data)
 
-        protein_catalogue_name = _parse_protein_catalogue_name(
-            d.pop("protein_catalogue_name", UNSET)
-        )
+        protein_catalogue_name = _parse_protein_catalogue_name(d.pop("protein_catalogue_name", UNSET))
+
 
         def _parse_genome_count(data: object) -> int | None | Unset:
             if data is None:
@@ -254,6 +252,7 @@ class GenomeCatalogueDetail:
             return cast(int | None | Unset, data)
 
         genome_count = _parse_genome_count(d.pop("genome_count", UNSET))
+
 
         def _parse_biome(data: object) -> Biome | None | Unset:
             if data is None:
@@ -265,12 +264,15 @@ class GenomeCatalogueDetail:
                     raise TypeError()
                 biome_type_0 = Biome.from_dict(data)
 
+
+
                 return biome_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(Biome | None | Unset, data)
 
         biome = _parse_biome(d.pop("biome", UNSET))
+
 
         genome_catalogue_detail = cls(
             catalogue_id=catalogue_id,
@@ -290,6 +292,7 @@ class GenomeCatalogueDetail:
             genome_count=genome_count,
             biome=biome,
         )
+
 
         genome_catalogue_detail.additional_properties = d
         return genome_catalogue_detail

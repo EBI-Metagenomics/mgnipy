@@ -1,9 +1,6 @@
 from enum import Enum
 
-
-class AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType(
-    str, Enum
-):
+class AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType(str, Enum):
     PFAMS = "pfams"
     TAXONOMIES_DADA2_PR2 = "taxonomies__dada2_pr2"
     TAXONOMIES_DADA2_SILVA = "taxonomies__dada2_silva"

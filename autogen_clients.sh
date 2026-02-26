@@ -17,7 +17,7 @@ openapi-python-client generate \
 
 # for v2
 openapi-python-client generate \
-    --url https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json \
+    --path "$FOLDER_PATH/openapi_v2.json" \
     --output-path "$FOLDER_PATH/$PROJECT_NAME_TWO" \
     --config "$FOLDER_PATH/config-v2.yaml" \
     --overwrite

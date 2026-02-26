@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class MGnifyDownloadFileIndexFileIndexType(str, Enum):
     CSI = "csi"
     FAI = "fai"
