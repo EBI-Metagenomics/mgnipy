@@ -31,6 +31,38 @@ class BiomesProxy(Mgnifier):
         self._tree = None
         super().__init__(resource="biomes", **kwargs)
 
+    def __getitem__(self, key) -> List[StudiesProxy] | StudiesProxy:
+        """TODO: docstring"""
+
+        df = self.to_pandas()
+        df_as_list = df.to_dict(orient="records")
+
+        # get dataset builder(s)
+        if isinstance(key, str) and key in self.lineages:
+            # TODO accept aliases for biome lineage e.g biome_name, biome
+            return StudiesProxy(biome_lineage=key)
+        elif isinstance(key, int) and self._accessions:
+            return StudiesProxy(biome_lineage=df_as_list[key]["lineage"])
+        elif isinstance(key, slice) and self._accessions:
+            return [
+                StudiesProxy(biome_lineage=record["lineage"])
+                for record in df_as_list[key]
+            ]
+        else:
+            raise KeyError(
+                f"Invalid key: {key}. "
+                "Key must be an integer index, a slice, or a valid lineage string."
+            )
+
+    @property
+    def lineages(self) -> List[str]:
+        if self._results is None:
+            raise RuntimeError(
+                "No data available to get lineages. "
+                "Please run preview() or get() first."
+            )
+        return self.to_pandas()["lineage"].to_list()
+
     # biome-specific methods
     def to_bigtree(self) -> Tree:
         """
@@ -46,10 +78,8 @@ class BiomesProxy(Mgnifier):
                 "No data available to convert to tree. "
                 "Please run preview() or get() first."
             )
-        # convert to pandas and then to tree
-        df = self.to_pandas()
         # TODO generate nodes first
-        self._tree = Tree.from_list(df["lineage"], sep=":")
+        self._tree = Tree.from_list(self.lineages, sep=":")
         return self._tree
 
     def show_tree(
@@ -98,6 +128,48 @@ class StudiesProxy(Mgnifier):
     ):
         super().__init__(resource="studies", params=params, **kwargs)
 
+    def __getitem__(self, key) -> List[SamplesProxy] | SamplesProxy:
+        """TODO: docstring"""
+
+        df = self.to_pandas()
+        df_as_list = df.to_dict(orient="records")
+
+        # get dataset builder(s)
+        if isinstance(key, str) and self._accessions and key in self._accessions:
+            return SamplesProxy(accession=key)
+        elif isinstance(key, int) and self._accessions:
+            return SamplesProxy(accession=df_as_list[key]["accession"])
+        elif isinstance(key, slice) and self._accessions:
+            return [
+                SamplesProxy(accession=record["accession"])
+                for record in df_as_list[key]
+            ]
+        elif self._accessions is None:
+            raise RuntimeError(
+                "No accessions available for indexing. "
+                "E.g., run preview() or get() first to retrieve metadata and accessions."
+            )
+        else:
+            raise KeyError(
+                f"Invalid key: {key}. "
+                "Key must be an integer index, a slice, or a valid accession string."
+            )
+
+
+class SamplesProxy(Mgnifier):
+    def __init__(
+        self,
+        study_accession: str,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            resource="samples", accession=study_accession, params=params, **kwargs
+        )
+
+    # TODO RunsProxy??
+
 
 class AnalysesProxy(Mgnifier):
     def __init__(
@@ -134,19 +206,6 @@ class AnalysesProxy(Mgnifier):
                 f"Invalid key: {key}. "
                 "Key must be an integer index, a slice, or a valid accession string."
             )
-
-
-class SamplesProxy(Mgnifier):
-    def __init__(
-        self,
-        study_accession: str,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ):
-        super().__init__(
-            resource="samples", accession=study_accession, params=params, **kwargs
-        )
 
 
 class GenomesProxy(Mgnifier):
