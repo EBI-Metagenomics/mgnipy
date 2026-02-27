@@ -103,7 +103,7 @@ class Mgnifier:
         self._base_url: str = BASE_URL
         self._resource: str = resource or "biomes"  # default
         self._mpy_module = METADATA_MODULES[SupportedEndpoints(self._resource)]
-        self._supported_kwargs = self._get_supported_kwargs()
+        self._supported_kwargs = self.list_parameters()
         self._pagination_status = self._get_pagination_status()
 
         # params as dict
@@ -199,7 +199,7 @@ class Mgnifier:
     def mpy_module(self, new_module):
         self._mpy_module = new_module
         # update supported kwargs for new module
-        self._supported_kwargs = self._get_supported_kwargs()
+        self._supported_kwargs = self.list_parameters()
         # update pagination status for new module
         self._pagination_status = self._get_pagination_status()
 
@@ -254,6 +254,19 @@ class Mgnifier:
         )
 
     # methods
+    def list_parameters(self) -> list[str]:
+        """
+        Get the list of supported keyword arguments for the current resource's API function.
+
+        Returns
+        -------
+        list of str
+            List of supported keyword argument names.
+        """
+        """helper function to get supported kwargs for the current mpy module"""
+        sig = inspect.signature(self._mpy_module._get_kwargs)
+        return list(sig.parameters.keys())
+
     def filter(
         self,
         params: Optional[dict[str, Any]] = None,
@@ -760,19 +773,6 @@ class Mgnifier:
         else:
             self._count = 1
             self._total_pages = 1
-
-    def _get_supported_kwargs(self) -> list[str]:
-        """
-        Get the list of supported keyword arguments for the current resource's API function.
-
-        Returns
-        -------
-        list of str
-            List of supported keyword argument names.
-        """
-        """helper function to get supported kwargs for the current mpy module"""
-        sig = inspect.signature(self._mpy_module._get_kwargs)
-        return list(sig.parameters.keys())
 
     def _get_pagination_status(self) -> bool:
         """
