@@ -23,3 +23,38 @@ class SupportedEndpoints(SpecialEnum):
     #    MISCELLANEOUS = "miscellaneous"
     #    AUTHENTICATION = "authentication"
     BIOMES = "biomes"  # miscellaneous
+
+
+class StudiesPrefixes(SpecialEnum):
+    MGYS = "MGYS"
+    ERP = "ERP"
+    PRJEB = "PRJEB"
+    PRJNA = "PRJNA"
+
+
+class SamplesPrefixes(SpecialEnum):
+    SRS = "SRS"
+    ERS = "ERS"
+    SAMEA = "SAMEA"
+    SAMN = "SAMN"
+
+
+class AnalysesPrefixes(SpecialEnum):
+    MGYA = "MGYA"
+
+
+class RunsPrefixes(SpecialEnum):
+    SRR = "SRR"
+    ERR = "ERR"
+
+
+class GenomesPrefixes(SpecialEnum):
+    MGYG = "MGYG"
+
+
+class AssemblyPrefixes(SpecialEnum):
+    ERZ = "ERZ"
+
+
+class BiomesPrefixes(SpecialEnum):
+    ROOT = "root"

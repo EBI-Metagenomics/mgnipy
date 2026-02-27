@@ -4,10 +4,7 @@ from pydantic import (
     ValidationError,
 )
 
-from mgnipy.V2._mgnipy_models.CONSTANTS2 import (
-    SupportedApiVersions,
-    SupportedEndpoints,
-)
+from mgnipy._models.CONSTANTS import *
 
 
 # define pydantic typeadapters
