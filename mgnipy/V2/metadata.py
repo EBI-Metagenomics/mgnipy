@@ -30,6 +30,9 @@ from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_study_analyses,
     list_mgnify_study_samples,
 )
+from mgnipy.V2.mgni_py_v2.api.analyses import (
+    analysis_get_mgnify_analysis_with_annotations_661c2d6a as get_analysis_annotations,
+)
 
 semaphore = get_semaphore()
 BASE_URL = MgnipyConfig().base_url
@@ -105,17 +108,13 @@ class Mgnifier:
         self._base_url: str = BASE_URL
         self._resource: str = resource or "biomes"  # default
         self._mpy_module = METADATA_MODULES[SupportedEndpoints(self._resource)]
+        self._supported_kwargs = self._get_supported_kwargs()
 
         # params as dict
         self._params: dict[str, Any] = params or {}
         # add kwargs to params if provided
         if kwargs:
             self._params.update(kwargs)
-        # check page_size > 0 if provided, default 25
-        if "page_size" not in self._params:
-            self._params["page_size"] = 25
-        else:
-            validate_gt_int(self._params["page_size"])
 
         # checkpointing
         self._checkpoint_dir: Optional[Path] = checkpoint_dir
@@ -166,10 +165,25 @@ class Mgnifier:
         df_as_list = df.to_dict(orient="records")
         # by index
         if isinstance(key, (int, slice)):
+            if self._resource == "analyses":
+                annot_mgnifiers = []
+                for record in df_as_list[key]:
+                    annot = Mgnifier(
+                        resource=self._resource, accession=record["accession"]
+                    )
+                    annot.mpy_module = get_analysis_annotations
+                    annot_mgnifiers.append(annot)
+                return annot_mgnifiers
             return df_as_list[key]
         # by accession
         elif isinstance(key, str) and self._accessions and key in self._accessions:
-            return df.query(f"accession == '{key}'").to_dict(orient="records")
+            if self._resource == "analyses":
+                annotations = Mgnifier(resource=self._resource, accession=key)
+                annotations.mpy_module = get_analysis_annotations
+                return annotations
+            else:
+                return df.query(f"accession == '{key}'").to_dict(orient="records")
+
         # by lineage
         elif isinstance(key, str) and "lineage" in df.columns:
             return df.query(f"lineage == '{key}'").to_dict(orient="records")
@@ -180,6 +194,20 @@ class Mgnifier:
                 "Key must be an integer index, a slice, or a valid accession or lineage string."
             )
 
+    def _get_accession_type(self, accession: str) -> str:
+        if accession in StudiesPrefixes:
+            return "studies"
+        elif accession in SamplesPrefixes:
+            return "samples"
+        elif accession in AnalysesPrefixes:
+            return "analyses"
+        elif accession in RunsPrefixes:
+            return "runs"
+        elif accession in AssemblyPrefixes:
+            return "assembly"
+        elif accession in GenomesPrefixes:
+            return "genomes"
+
     @property
     def mpy_module(self):
         return self._mpy_module
@@ -187,6 +215,7 @@ class Mgnifier:
     @mpy_module.setter
     def mpy_module(self, new_module):
         self._mpy_module = new_module
+        self._supported_kwargs = self._get_supported_kwargs()
 
     def __getattr__(self, name: str):
         """
@@ -209,8 +238,6 @@ class Mgnifier:
         """
         if name == "mgnipy_client":
             return self._init_client()
-        elif name == "supported_kwargs":
-            return self._get_supported_kwargs()
         elif name == "request_url":
             return self._build_url()
         elif name == "api_version":
@@ -218,6 +245,8 @@ class Mgnifier:
         elif name == "accessions":
             self._set_accessions_list()
             return self._accessions
+        elif name == "annotations":
+            print("downloader proxies")
         else:
             return self.__dict__[f"_{name}"]
 
@@ -296,19 +325,29 @@ class Mgnifier:
         """
         print("Planning the API call with params:")
         print(self._params)
-        print(
-            f"Acquiring meta for {self._params['page_size']} {self._resource} per page..."
-        )
+
+        if "page_size" not in self._supported_kwargs:
+            tmp_params = self._params.copy()
+        elif "page_size" not in self._params:
+            # check page_size > 0 if provided, default 25
+            self._params["page_size"] = 25
+            tmp_params = self._tmp_param_update(page_size=1)
+        else:
+            validate_gt_int(self._params["page_size"])
+            tmp_params = self._tmp_param_update(page_size=1)
 
         # make tiny get request using mgni_py client
-        tmp_params = self._tmp_param_update(page_size=1)
         response_dict = self._get_page(tmp_params)
+        # dealing with response
         if response_dict is None:
             raise RuntimeError("Failed to get response from MGnify API.")
-
-        # set
-        self._count = response_dict["count"]
-        self._total_pages = ceil(self._count / self._params["page_size"])
+        elif ("count" in response_dict) and ("page_size" in self._params):
+            # set
+            self._count = response_dict["count"]
+            self._total_pages = ceil(self._count / self._params["page_size"])
+        else:
+            self._count = 1
+            self._total_pages = 1
 
         # verbose
         print(f"Total pages to retrieve: {self._total_pages}")
@@ -330,25 +369,24 @@ class Mgnifier:
         RuntimeError
             If the API call fails or no data is available.
         """
-        """
-        Previews the metadata of the first page of results as a DataFrame.
-        """
         # plan if not already
         if (self._count is None) or (self._total_pages is None):
             print("Mgnifier.plan() not yet checked. Running now...")
             self.plan()
         # request first page and cache
         print("Retrieving first page of results for preview...")
-        tmp_params = self._tmp_param_update(page=1)
-        response_dict = self._get_page(tmp_params)
-        if response_dict is None:
-            raise RuntimeError("Failed to get response from MGnify API.")
-        self._cached_first_page = response_dict["items"]
-        # verbose
-        print(
-            f"Previewing page 1 of {self._total_pages} pages of {self._count} records:"
-        )
-        return self.to_pandas([self._cached_first_page])
+        if "page" in self._supported_kwargs:
+            tmp_params = self._tmp_param_update(page=1)
+            response_dict = self._get_page(tmp_params)
+            if response_dict is not None:
+                self._cached_first_page = response_dict["items"]
+                return self.to_pandas([self._cached_first_page])
+        else:
+            response_dict = self._get_page(self._params)
+            if response_dict is not None:
+                self._cached_first_page = [response_dict]
+                return self.to_pandas([self._cached_first_page])
+        raise RuntimeError("Failed to get response from MGnify API.")
 
     async def get(
         self,
@@ -709,60 +747,68 @@ class Mgnifier:
                 )
             else:
                 print("Mgnifier.plan() not yet checked. Running now...")
-                self.plan()
+                self.preview()
 
-        # prep page nums
-        if limit is not None:
-            if not (isinstance(limit, int) and limit > 0):
-                raise ValueError("limit must be a positive integer.")
-            # TODO for now undershooting limit
-            max_page = ceil(limit / self._params["page_size"])
-            print(max_page)
-            _pages = list(range(1, min(max_page, self._total_pages) + 1))
-        elif isinstance(pages, list):
-            _pages = deepcopy(pages)
-            for p in pages:
-                if not (isinstance(p, int) and 0 < p <= self._total_pages):
-                    if strict:
-                        raise ValueError(
-                            f"Invalid page number: {p}. "
-                            "Pages must be positive integers "
-                            f"not exceeding total pages {self._total_pages}."
-                        )
-                    else:
-                        print(
-                            f"Warning: Invalid page number {p} skipped as > than {self._total_pages}."
-                        )
-                        _pages.remove(p)
-        elif pages is None:
-            # init all pages if not provided
-            _pages = list(range(1, self._total_pages + 1))
-        else:
-            raise TypeError("pages must be a list of integers or None")
+        if "page" in self._supported_kwargs:
+            # prep page nums
+            if limit is not None:
+                validate_gt_int(limit)
+                # TODO exact limit when pageinated?
+                max_page = ceil(limit / self._params["page_size"])
+                _pages = list(range(1, min(max_page, self._total_pages) + 1))
+            elif isinstance(pages, list):
+                _pages = deepcopy(pages)
+                for p in pages:
+                    if not (isinstance(p, int) and 0 < p <= self._total_pages):
+                        if strict:
+                            raise ValueError(
+                                f"Invalid page number: {p}. "
+                                "Pages must be positive integers "
+                                f"not exceeding total pages {self._total_pages}."
+                            )
+                        else:
+                            print(
+                                f"Warning: Invalid page number {p} skipped as > than {self._total_pages}."
+                            )
+                            _pages.remove(p)
+            elif pages is None:
+                # init all pages if not provided
+                _pages = list(range(1, self._total_pages + 1))
+            else:
+                raise TypeError("pages must be a list of integers or None")
 
-        # skip cached first page if avail
-        if 1 in _pages and self._cached_first_page is not None:
-            print("Page 1 already cached from preview, skipping...")
-            _pages.remove(1)
-            self._results = [self._cached_first_page]
-        else:
-            self._results = []
+            # skip cached first page if avail
+            if 1 in _pages and self._cached_first_page is not None:
+                print("Page 1 already cached from preview, skipping...")
+                _pages.remove(1)
+                self._results = [self._cached_first_page]
+            else:
+                self._results = []
 
-        # creating async tasks
-        async_tasks = [
-            asyncio.create_task(
-                self._get_page_async(
-                    client=client, page_num=page_num, params=self._params
+            # creating async tasks
+            async_tasks = [
+                asyncio.create_task(
+                    self._get_page_async(
+                        client=client, page_num=page_num, params=self._params
+                    )
                 )
-            )
-            for page_num in _pages
-        ]
+                for page_num in _pages
+            ]
 
-        # gathering results as completed
-        for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
-            # awaiting each task as it completes and appending results
-            page_result = await task
-            self._results.append(page_result.parsed.to_dict()["items"])
+            # gathering results as completed
+            for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
+                # awaiting each task as it completes and appending results
+                page_result = await task
+                self._results.append(page_result.parsed.to_dict()["items"])
+
+        elif self._total_pages == 1:
+            self._results = [self._cached_first_page]
+
+        else:
+            raise RuntimeError(
+                "Pagination not supported for this resource. "
+                "Please check the API documentation for supported parameters."
+            )
 
 
 class BiomesMgnifier(Mgnifier):
