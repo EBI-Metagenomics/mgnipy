@@ -292,9 +292,9 @@ class Mgnifier:
         """
         # verbose
         print("Planning the API call with params:")
-        print(self._params)
         # get the item count and total pages based on page_size if pagination, else set to 1
         self._get_counts()
+        print(self._params)
         # verbose
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
@@ -315,7 +315,8 @@ class Mgnifier:
         """
         # plan if not already
         if (self._count is None) or (self._total_pages is None):
-            self._get_counts()
+            # more verbose than _get_counts() alone
+            self.dry_run()
 
         if self._pagination_status:
             # request first page and cache
