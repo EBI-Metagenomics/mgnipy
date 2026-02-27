@@ -1,5 +1,6 @@
 import asyncio
 import inspect
+import warnings
 import os
 from copy import deepcopy
 from math import ceil
@@ -61,16 +62,10 @@ class Mgnifier:
         The function used to retrieve metadata for the selected resource.
     params : dict
         Parameters for the API call.
-    checkpoint_dir : Path or None
-        Directory for checkpointing results.
-    checkpoint_freq : int
-        Frequency of checkpointing.
     count : int or None
         Total number of records available for the query.
     total_pages : int or None
         Total number of pages available for the query.
-    cached_first_page : list or None
-        Cached results from the first page.
     results : list or None
         All results retrieved from the API.
     accessions : list or None
@@ -109,6 +104,7 @@ class Mgnifier:
         self._resource: str = resource or "biomes"  # default
         self._mpy_module = METADATA_MODULES[SupportedEndpoints(self._resource)]
         self._supported_kwargs = self._get_supported_kwargs()
+        self._pagination_status = self._get_pagination_status()
 
         # params as dict
         self._params: dict[str, Any] = params or {}
@@ -139,6 +135,7 @@ class Mgnifier:
         df = self.to_pandas()  # TODO: work with the raw results instead of to df
         return (dict(row) for _, row in df.iterrows())
 
+    # TODO simplify
     def __getitem__(self, key) -> List[dict] | dict:
         """
         Allow indexing into the metadata records by integer index, accession, or lineage.
@@ -163,7 +160,7 @@ class Mgnifier:
         # TODO: work with the raw results instead of to df
         df = self.to_pandas()
         df_as_list = df.to_dict(orient="records")
-        # by index
+        # by index, if analyses then get curator
         if isinstance(key, (int, slice)):
             if self._resource == "analyses":
                 annot_mgnifiers = []
@@ -194,20 +191,6 @@ class Mgnifier:
                 "Key must be an integer index, a slice, or a valid accession or lineage string."
             )
 
-    def _get_accession_type(self, accession: str) -> str:
-        if accession in StudiesPrefixes:
-            return "studies"
-        elif accession in SamplesPrefixes:
-            return "samples"
-        elif accession in AnalysesPrefixes:
-            return "analyses"
-        elif accession in RunsPrefixes:
-            return "runs"
-        elif accession in AssemblyPrefixes:
-            return "assembly"
-        elif accession in GenomesPrefixes:
-            return "genomes"
-
     @property
     def mpy_module(self):
         return self._mpy_module
@@ -215,7 +198,10 @@ class Mgnifier:
     @mpy_module.setter
     def mpy_module(self, new_module):
         self._mpy_module = new_module
+        # update supported kwargs for new module
         self._supported_kwargs = self._get_supported_kwargs()
+        # update pagination status for new module
+        self._pagination_status = self._get_pagination_status()
 
     def __getattr__(self, name: str):
         """
@@ -245,8 +231,6 @@ class Mgnifier:
         elif name == "accessions":
             self._set_accessions_list()
             return self._accessions
-        elif name == "annotations":
-            print("downloader proxies")
         else:
             return self.__dict__[f"_{name}"]
 
@@ -305,132 +289,114 @@ class Mgnifier:
 
         return self
 
-    def plan(self):
+    def plan(self) -> None:
         """
-        Estimate the number of pages and records available for the current query.
-
-        This method performs a minimal API call to determine the total number of records and pages for the current resource and parameters.
+        Plan the API call by validating parameters and estimating the number of pages and records available.
+        Prints the plan details for the user to review before executing the full data retrieval.
+        This method can be called before get() to ensure that the parameters are valid and to understand the scope of the data retrieval.
 
         Returns
         -------
         None
-
-        Raises
-        ------
-        RuntimeError
-            If the API call fails.
         """
-        """
-        View number of pages/records to be retrieved before retrieving all data.
-        """
+        # verbose
         print("Planning the API call with params:")
         print(self._params)
-
-        if "page_size" not in self._supported_kwargs:
-            tmp_params = self._params.copy()
-        elif "page_size" not in self._params:
-            # check page_size > 0 if provided, default 25
-            self._params["page_size"] = 25
-            tmp_params = self._tmp_param_update(page_size=1)
-        else:
-            validate_gt_int(self._params["page_size"])
-            tmp_params = self._tmp_param_update(page_size=1)
-
-        # make tiny get request using mgni_py client
-        response_dict = self._get_page(tmp_params)
-        # dealing with response
-        if response_dict is None:
-            raise RuntimeError("Failed to get response from MGnify API.")
-        elif ("count" in response_dict) and ("page_size" in self._params):
-            # set
-            self._count = response_dict["count"]
-            self._total_pages = ceil(self._count / self._params["page_size"])
-        else:
-            self._count = 1
-            self._total_pages = 1
-
+        # get the item count and total pages based on page_size if pagination, else set to 1
+        self._get_counts()
         # verbose
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
 
-    def preview(self):
+    def preview(self) -> pd.DataFrame:
         """
-        Preview the metadata of the first page of results as a DataFrame.
-
-        If plan() has not been run, it will be called automatically.
+        Preview the first page of metadata for the current resource and parameters, without retrieving all pages. This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame containing the first page of results.
+            A DataFrame containing the metadata from the first page of results.
 
         Raises
         ------
         RuntimeError
-            If the API call fails or no data is available.
+            If the API call fails or if no data is available to preview.
         """
         # plan if not already
         if (self._count is None) or (self._total_pages is None):
-            print("Mgnifier.plan() not yet checked. Running now...")
-            self.plan()
-        # request first page and cache
-        print("Retrieving first page of results for preview...")
-        if "page" in self._supported_kwargs:
+            self._get_counts()
+
+        if self._pagination_status:
+            # request first page and cache
+            print("Retrieving first page of results for preview...")
             tmp_params = self._tmp_param_update(page=1)
-            response_dict = self._get_page(tmp_params)
+            response_dict = self._get_request(tmp_params)
+            # dealing with response
             if response_dict is not None:
                 self._cached_first_page = response_dict["items"]
                 return self.to_pandas([self._cached_first_page])
         else:
-            response_dict = self._get_page(self._params)
+            response_dict = self._get_request(self._params)
             if response_dict is not None:
                 self._cached_first_page = [response_dict]
                 return self.to_pandas([self._cached_first_page])
         raise RuntimeError("Failed to get response from MGnify API.")
 
-    async def get(
+    def get(
         self,
         limit: Optional[int] = None,
         *,
         pages: Optional[list[int]] = None,
         strict: bool = False,
     ) -> pd.DataFrame:
-        """
-        Retrieve all (or selected) pages of metadata asynchronously and return as a DataFrame.
-
-        Parameters
-        ----------
-        limit : int, optional
-            Maximum number of records to retrieve. If None, retrieves all records.
-        pages : list of int, optional
-            List of page numbers to retrieve. If None, retrieves all pages.
-        strict : bool, default False
-            If True, raises an error if plan() or preview() has not been run.
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame containing the concatenated results from all pages.
-
-        Raises
-        ------
-        AssertionError
-            If plan() or preview() has not been run and strict is True.
-        RuntimeError
-            If no data is available to convert to DataFrame.
-        """
-
-        # verbose
-        print(self._build_url())
-
-        # async request all pages and store results in self._results
-        async with self._init_client() as client:
-            await self._collector(client, limit=limit, pages=pages, strict=strict)
+        """ """
+        if self._pagination_status:
+            # async request all pages and store results in self._results
+            with self._init_client() as client:
+                self._collector(client, limit=limit, pages=pages, strict=strict)
+        else:
+            if (
+                (self._total_pages is None)
+                or (self._count is None)
+                or (self._cached_first_page is None)
+            ):
+                _ = self.preview()
+            # cache to result
+            self._results = [self._cached_first_page]
 
         # set accessions list for retrieved data if applicable
         self._set_accessions_list()
 
-        return self.to_pandas(self._results)
+        # return self.to_pandas(self._results)
+
+    async def asyncio_get(
+        self,
+        limit: Optional[int] = None,
+        *,
+        pages: Optional[list[int]] = None,
+        strict: bool = False,
+    ) -> pd.DataFrame:
+        """handles pageinated (async) or not"""
+
+        if self._pagination_status:
+            # async request all pages and store results in self._results
+            async with self._init_client() as client:
+                await self._asyncio_collector(
+                    client, limit=limit, pages=pages, strict=strict
+                )
+        else:
+            if (
+                (self._total_pages is None)
+                or (self._count is None)
+                or (self._cached_first_page is None)
+            ):
+                _ = self.preview()
+            # cache to result
+            self._results = [self._cached_first_page]
+
+        # set accessions list for retrieved data if applicable
+        self._set_accessions_list()
+        # return self.to_pandas(self._results)
 
     def to_pandas(self, data: Optional[List[dict]] = None, **kwargs) -> pd.DataFrame:
         """
@@ -495,7 +461,8 @@ class Mgnifier:
         """
         pass
 
-    # hidden helper methods
+    ## HIDDEN HELPER METHODS
+    ## Help with requests
     def _init_client(self):
         """
         Initialize and return a MGnify API client instance.
@@ -511,7 +478,7 @@ class Mgnifier:
         )
         return client_v1
 
-    def _get_page(self, given_params: dict) -> dict:
+    def _get_request(self, given_params: dict) -> Optional[dict]:
         """
         Retrieve a single page of metadata using the synchronous API client.
 
@@ -522,7 +489,7 @@ class Mgnifier:
 
         Returns
         -------
-        dict
+        dict or None
             Parsed response from the API, or None if the request failed.
         """
         with self._init_client() as client:
@@ -535,6 +502,264 @@ class Mgnifier:
             return response.parsed.to_dict()
         else:
             return None
+
+    def _get_page(
+        self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
+    ) -> Optional[dict]:
+        """
+        Retrieve a single page of metadata using the synchronous API client.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        params : dict, optional
+            Parameters for the API call.
+
+        Returns
+        -------
+        dict or None
+            Parsed response from the API, or None if the request failed.
+        """
+        return self._mpy_module.sync_detailed(
+            client=client,
+            **(params or self._params),
+            **kwargs,
+        )
+
+    def _collector(
+        self,
+        client: Client,
+        limit: Optional[int] = None,
+        pages: Optional[list[int]] = None,
+        strict: bool = False,
+    ):
+        # not allow to run this without preview/plan first?
+        if self._total_pages is None:
+            if strict:
+                raise AssertionError(
+                    "Please run Mgnifier.plan() or .preview() before "
+                    "deciding to collect metadata for params:\n"
+                    f"{self._params}"
+                )
+            else:
+                warnings.warn("Mgnifier.plan() not yet checked.", ResourceWarning)
+                self.preview()
+
+        # prep page nums
+        if limit is not None:
+            validate_gt_int(limit)
+            # TODO exact limit when pageinated?
+            max_page = ceil(limit / self._params["page_size"])
+            _pages = list(range(1, min(max_page, self._total_pages) + 1))
+        elif isinstance(pages, list):
+            _pages = deepcopy(pages)
+            for p in pages:
+                if not (isinstance(p, int) and 0 < p <= self._total_pages):
+                    if strict:
+                        raise ValueError(
+                            f"Invalid page number: {p}. "
+                            "Pages must be positive integers "
+                            f"not exceeding total pages {self._total_pages}."
+                        )
+                else:
+                    # else just skip invalid page numbers with warning
+                    print(
+                        f"Invalid page number {p} skipped as > than {self._total_pages}."
+                    )
+                    _pages.remove(p)
+        elif pages is None:
+            # init all pages if not provided
+            _pages = list(range(1, self._total_pages + 1))
+        else:
+            raise TypeError("pages must be a list of integers or None")
+
+        # append cached first page if avail
+        if 1 in _pages and self._cached_first_page is not None:
+            print("Page 1 already cached from preview, skipping...")
+            _pages.remove(1)
+            self._results = [self._cached_first_page]
+        else:
+            self._results = []
+
+        # gathering results as completed
+        for page_num in tqdm(_pages, desc="Retrieving pages"):
+            # awaiting each task as it completes and appending results
+            page_result = self._get_page(
+                client=client, params=self._params, page=page_num
+            )
+            self._results.append(page_result.parsed.to_dict()["items"])
+
+    # @async_disk_lru_cache()
+    async def _asyncio_get_page(
+        self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
+    ):
+        """
+        Asynchronously retrieve a single page of metadata.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        params : dict, optional
+            Parameters for the API call.
+
+        Returns
+        -------
+        Response
+            The API response object for the requested page.
+        """
+        """coroutine function to get coroutine for each page"""
+        # limiting concurrency to protect server
+        async with semaphore:
+            return await self._mpy_module.asyncio_detailed(
+                client=client,
+                **(params or self._params),
+                **kwargs,
+            )
+
+    async def _asyncio_collector(
+        self,
+        client: Client,
+        limit: Optional[int] = None,
+        pages: Optional[list[int]] = None,
+        strict: bool = False,
+    ):
+        """
+        Asynchronously collect metadata for all (or selected) pages and store results.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        limit : int, optional
+            Maximum number of records to retrieve. If None, retrieves all records.
+        pages : list of int, optional
+            List of page numbers to retrieve. If None, retrieves all pages.
+        strict : bool, default False
+            If True, raises an error if plan() or preview() has not been run.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        AssertionError
+            If plan() or preview() has not been run and strict is True.
+        ValueError
+            If invalid page numbers are provided.
+        TypeError
+            If pages is not a list or None.
+        """
+        # not allow to run this without preview/plan first?
+        if self._total_pages is None:
+            if strict:
+                raise AssertionError(
+                    "Please run Mgnifier.plan() or .preview() before "
+                    "deciding to collect metadata for params:\n"
+                    f"{self._params}"
+                )
+            else:
+                warnings.warn("Mgnifier.plan() not yet checked.", ResourceWarning)
+                self.preview()
+
+        # prep page nums
+        if limit is not None:
+            validate_gt_int(limit)
+            # TODO exact limit when pageinated?
+            max_page = ceil(limit / self._params["page_size"])
+            _pages = list(range(1, min(max_page, self._total_pages) + 1))
+        elif isinstance(pages, list):
+            _pages = deepcopy(pages)
+            for p in pages:
+                if not (isinstance(p, int) and 0 < p <= self._total_pages):
+                    if strict:
+                        raise ValueError(
+                            f"Invalid page number: {p}. "
+                            "Pages must be positive integers "
+                            f"not exceeding total pages {self._total_pages}."
+                        )
+                else:
+                    # else just skip invalid page numbers with warning
+                    print(
+                        f"Invalid page number {p} skipped as > than {self._total_pages}."
+                    )
+                    _pages.remove(p)
+        elif pages is None:
+            # init all pages if not provided
+            _pages = list(range(1, self._total_pages + 1))
+        else:
+            raise TypeError("pages must be a list of integers or None")
+
+        # append cached first page if avail
+        if 1 in _pages and self._cached_first_page is not None:
+            print("Page 1 already cached from preview, skipping...")
+            _pages.remove(1)
+            self._results = [self._cached_first_page]
+        else:
+            self._results = []
+
+        # creating async tasks
+        async_tasks = [
+            asyncio.create_task(
+                self._asyncio_get_page(
+                    client=client, params=self._params, page=page_num
+                )
+            )
+            for page_num in _pages
+        ]
+
+        # gathering results as completed
+        for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
+            # awaiting each task as it completes and appending results
+            page_result = await task
+            self._results.append(page_result.parsed.to_dict()["items"])
+
+    ## Help with workflow
+    def _get_counts(self):
+        """
+        Internal method to estimate the number of pages and records available for the current query.
+
+        This method performs a minimal API call to set the total number of records and pages for the current resource and parameters.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        RuntimeError
+            If the API call fails.
+        """
+
+        if self._pagination_status:
+            # default if not given
+            if "page_size" not in self._params:
+                # check page_size > 0 if provided, default 25
+                self._params["page_size"] = 25
+                tmp_params = self._tmp_param_update(page_size=1)
+            # check validity of given
+            else:
+                validate_gt_int(self._params["page_size"])
+                tmp_params = self._tmp_param_update(page_size=1)
+
+            # make tiny get request using mgni_py client
+            response_dict = self._get_request(tmp_params)
+
+            # dealing with response
+            if response_dict is None:
+                raise RuntimeError(
+                    "Failed to get response from MGnify API:\n"
+                    f"{self._build_url(params=tmp_params)}"
+                )
+            # otherwise set
+            self._count = response_dict["count"]
+            self._total_pages = ceil(self._count / self._params["page_size"])
+        # not pagination
+        else:
+            self._count = 1
+            self._total_pages = 1
 
     def _get_supported_kwargs(self) -> list[str]:
         """
@@ -549,6 +774,71 @@ class Mgnifier:
         sig = inspect.signature(self._mpy_module._get_kwargs)
         return list(sig.parameters.keys())
 
+    def _get_pagination_status(self) -> bool:
+        """
+        Check if the current resource requires pagination based on its supported keyword arguments.
+
+        Returns
+        -------
+        bool
+            True if pagination, False otherwise.
+        """
+        return (
+            "page" in self._supported_kwargs and "page_size" in self._supported_kwargs
+        )
+
+    ## Help with data handling
+    def _set_accessions_list(self) -> Optional[List[str]]:
+        """
+        Set the list of accessions for the current resource, if available.
+
+        Returns
+        -------
+        list of str or None
+            List of accessions, or None if not available for the resource.
+        """
+        """helper function to set accessions list for the current mpy module"""
+        if self.to_pandas() is None:
+            self._accessions = None
+        elif self._mpy_module in [
+            list_mgnify_studies,
+            list_mgnify_study_analyses,
+            list_mgnify_study_samples,
+            list_mgnify_genomes,
+        ]:
+            self._accessions = self.to_pandas()["accession"].tolist()
+        else:
+            self._accessions = None
+
+    def _df_expand_nested(
+        self, df: pd.DataFrame, cols: list[str] = None
+    ) -> pd.DataFrame:
+        """
+        Expand nested structures in the DataFrame into separate columns.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The DataFrame to expand.
+        cols : list of str
+            List of column names to expand.
+
+        Returns
+        -------
+        pd.DataFrame
+            The expanded DataFrame.
+        """
+
+        cols = cols or ["metadata"]
+
+        new_df = df.copy()
+        for c in cols:
+            if c in new_df.columns:
+                attr_df = pd.json_normalize(new_df[c])
+                new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
+        return new_df
+
+    ## Help with checks
     def _check_kwargs(self) -> str:
         """
         Validate the current parameters for the selected resource.
@@ -622,193 +912,6 @@ class Mgnifier:
         start_url = os.path.join(self._base_url, _end_url)
         encoded_params = urlencode(incl_params, doseq=True)
         return f"{start_url}/?{encoded_params}"
-
-    def _set_accessions_list(self) -> Optional[List[str]]:
-        """
-        Set the list of accessions for the current resource, if available.
-
-        Returns
-        -------
-        list of str or None
-            List of accessions, or None if not available for the resource.
-        """
-        """helper function to set accessions list for the current mpy module"""
-        if self.to_pandas() is None:
-            self._accessions = None
-        elif self._mpy_module in [
-            list_mgnify_studies,
-            list_mgnify_study_analyses,
-            list_mgnify_study_samples,
-            list_mgnify_genomes,
-        ]:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        else:
-            self._accessions = None
-
-    def _df_expand_nested(
-        self, df: pd.DataFrame, cols: list[str] = None
-    ) -> pd.DataFrame:
-        """
-        Expand nested structures in the DataFrame into separate columns.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            The DataFrame to expand.
-        cols : list of str
-            List of column names to expand.
-
-        Returns
-        -------
-        pd.DataFrame
-            The expanded DataFrame.
-        """
-
-        cols = cols or ["metadata"]
-
-        new_df = df.copy()
-        for c in cols:
-            if c in new_df.columns:
-                attr_df = pd.json_normalize(new_df[c])
-                new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
-        return new_df
-
-    # @async_disk_lru_cache()
-    async def _get_page_async(
-        self, client: Client, page_num: int, params: Optional[dict[str, Any]] = None
-    ):
-        """
-        Asynchronously retrieve a single page of metadata.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        page_num : int
-            Page number to retrieve.
-        params : dict, optional
-            Parameters for the API call.
-
-        Returns
-        -------
-        Response
-            The API response object for the requested page.
-        """
-        """coroutine function to get coroutine for each page"""
-        # limiting concurrency to protect server
-        async with semaphore:
-            return await self._mpy_module.asyncio_detailed(
-                client=client,
-                **(params or self._params),
-                page=page_num,
-            )
-
-    async def _collector(
-        self,
-        client: Client,
-        limit: Optional[int] = None,
-        pages: Optional[list[int]] = None,
-        strict: bool = False,
-    ):
-        """
-        Asynchronously collect metadata for all (or selected) pages and store results.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        limit : int, optional
-            Maximum number of records to retrieve. If None, retrieves all records.
-        pages : list of int, optional
-            List of page numbers to retrieve. If None, retrieves all pages.
-        strict : bool, default False
-            If True, raises an error if plan() or preview() has not been run.
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        AssertionError
-            If plan() or preview() has not been run and strict is True.
-        ValueError
-            If invalid page numbers are provided.
-        TypeError
-            If pages is not a list or None.
-        """
-        # not allow to run this without preview/plan first?
-        if self._total_pages is None:
-            if strict:
-                raise AssertionError(
-                    "Please run Mgnifier.plan() or .preview() before "
-                    "deciding to collect metadata for params:\n"
-                    f"{self._params}"
-                )
-            else:
-                print("Mgnifier.plan() not yet checked. Running now...")
-                self.preview()
-
-        if "page" in self._supported_kwargs:
-            # prep page nums
-            if limit is not None:
-                validate_gt_int(limit)
-                # TODO exact limit when pageinated?
-                max_page = ceil(limit / self._params["page_size"])
-                _pages = list(range(1, min(max_page, self._total_pages) + 1))
-            elif isinstance(pages, list):
-                _pages = deepcopy(pages)
-                for p in pages:
-                    if not (isinstance(p, int) and 0 < p <= self._total_pages):
-                        if strict:
-                            raise ValueError(
-                                f"Invalid page number: {p}. "
-                                "Pages must be positive integers "
-                                f"not exceeding total pages {self._total_pages}."
-                            )
-                        else:
-                            print(
-                                f"Warning: Invalid page number {p} skipped as > than {self._total_pages}."
-                            )
-                            _pages.remove(p)
-            elif pages is None:
-                # init all pages if not provided
-                _pages = list(range(1, self._total_pages + 1))
-            else:
-                raise TypeError("pages must be a list of integers or None")
-
-            # skip cached first page if avail
-            if 1 in _pages and self._cached_first_page is not None:
-                print("Page 1 already cached from preview, skipping...")
-                _pages.remove(1)
-                self._results = [self._cached_first_page]
-            else:
-                self._results = []
-
-            # creating async tasks
-            async_tasks = [
-                asyncio.create_task(
-                    self._get_page_async(
-                        client=client, page_num=page_num, params=self._params
-                    )
-                )
-                for page_num in _pages
-            ]
-
-            # gathering results as completed
-            for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
-                # awaiting each task as it completes and appending results
-                page_result = await task
-                self._results.append(page_result.parsed.to_dict()["items"])
-
-        elif self._total_pages == 1:
-            self._results = [self._cached_first_page]
-
-        else:
-            raise RuntimeError(
-                "Pagination not supported for this resource. "
-                "Please check the API documentation for supported parameters."
-            )
 
 
 class BiomesMgnifier(Mgnifier):
