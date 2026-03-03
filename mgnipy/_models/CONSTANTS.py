@@ -15,6 +15,7 @@ class SupportedApiVersions(SpecialEnum):
 
 class SupportedEndpoints(SpecialEnum):
     ANALYSES = "analyses"
+    ASSEMBLIES = "assemblies"
     GENOMES = "genomes"
     PUBLICATIONS = "publications"
     SAMPLES = "samples"
