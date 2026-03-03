@@ -22,7 +22,7 @@ from tqdm import tqdm
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy.V2._mgnipy_models.CONSTANTS2 import SupportedEndpoints
+from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.mgni_py_v2 import Client
 from mgnipy.V2.mgni_py_v2.api.genomes import list_mgnify_genomes
 from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
@@ -32,7 +32,7 @@ from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_study_samples,
 )
 from mgnipy.V2.mgni_py_v2.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations_661c2d6a as get_analysis_annotations,
+    list_analyses_for_assembly,
 )
 
 semaphore = get_semaphore()
@@ -42,7 +42,8 @@ CORE_MODULES = {
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # search for study
     SupportedEndpoints.SAMPLES: list_mgnify_study_samples,  # all samples for given study
     SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,  # all analyses for given study
-    SupportedEndpoints.GENOMES: list_mgnify_genomes,
+    SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes TODO
+    SupportedEndpoints.ASSEMBLIES: list_analyses_for_assembly,  # listing all analyses for given assembly
 }
 
 
@@ -76,7 +77,7 @@ class Mgnifier:
         self,
         *,
         resource: Optional[
-            Literal["biomes", "studies", "samples", "genomes", "analyses"]
+            Literal["biomes", "studies", "samples", "genomes", "analyses", "assemblies"]
         ] = None,
         params: Optional[dict[str, Any]] = None,
         checkpoint_dir: Optional[Path] = None,
@@ -88,7 +89,7 @@ class Mgnifier:
 
         Parameters
         ----------
-        resource : {"biomes", "studies", "samples", "genomes", "analyses"}, optional
+        resource : {"biomes", "studies", "samples", "genomes", "analyses", "assemblies"}, optional
             The resource type to query. Defaults to "biomes".
         params : dict, optional
             Dictionary of parameters for the API call.
@@ -773,12 +774,16 @@ class Mgnifier:
         """helper function to set accessions list for the current mpy module"""
         if self.to_pandas() is None:
             self._accessions = None
-        elif self._mpy_module in [
-            list_mgnify_studies,
-            list_mgnify_study_analyses,
-            list_mgnify_study_samples,
-            list_mgnify_genomes,
-        ]:
+        elif (
+            self._mpy_module
+            in [
+                list_mgnify_studies,
+                list_mgnify_study_analyses,
+                list_mgnify_study_samples,
+                list_mgnify_genomes,
+            ]
+            and "accession" in self.to_pandas().columns
+        ):
             self._accessions = self.to_pandas()["accession"].tolist()
         else:
             self._accessions = None
