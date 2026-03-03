@@ -25,6 +25,54 @@ class ResourceProxy(Mgnifier):
         super().__init__(resource=resource, params=params, **kwargs)
 
 
+class SamplesProxy(Mgnifier):
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(resource="samples", params=params, **kwargs)
+
+
+class StudiesProxy(Mgnifier):
+
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(resource="studies", params=params, **kwargs)
+
+    def __getitem__(self, key) -> List[SamplesProxy] | SamplesProxy:
+        """TODO: docstring"""
+
+        df = self.to_pandas()
+        df_as_list = df.to_dict(orient="records")
+
+        # get dataset builder(s)
+        if isinstance(key, str) and self._accessions and key in self._accessions:
+            return SamplesProxy(accession=key)
+        elif isinstance(key, int) and self._accessions:
+            return SamplesProxy(accession=df_as_list[key]["accession"])
+        elif isinstance(key, slice) and self._accessions:
+            return [
+                SamplesProxy(accession=record["accession"])
+                for record in df_as_list[key]
+            ]
+        elif self._accessions is None:
+            raise RuntimeError(
+                "No accessions available for indexing. "
+                "E.g., run preview() or get() first to retrieve metadata and accessions."
+            )
+        else:
+            raise KeyError(
+                f"Invalid key: {key}. "
+                "Key must be an integer index, a slice, or a valid accession string."
+            )
+
+
 class BiomesProxy(Mgnifier):
 
     def __init__(self, **kwargs):
@@ -118,69 +166,45 @@ class BiomesProxy(Mgnifier):
             )
 
 
-class StudiesProxy(Mgnifier):
-
+class AssembliesProxy(Mgnifier):
     def __init__(
         self,
         *,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(resource="studies", params=params, **kwargs)
-
-    def __getitem__(self, key) -> List[SamplesProxy] | SamplesProxy:
-        """TODO: docstring"""
-
-        df = self.to_pandas()
-        df_as_list = df.to_dict(orient="records")
-
-        # get dataset builder(s)
-        if isinstance(key, str) and self._accessions and key in self._accessions:
-            return SamplesProxy(accession=key)
-        elif isinstance(key, int) and self._accessions:
-            return SamplesProxy(accession=df_as_list[key]["accession"])
-        elif isinstance(key, slice) and self._accessions:
-            return [
-                SamplesProxy(accession=record["accession"])
-                for record in df_as_list[key]
-            ]
-        elif self._accessions is None:
-            raise RuntimeError(
-                "No accessions available for indexing. "
-                "E.g., run preview() or get() first to retrieve metadata and accessions."
-            )
-        else:
-            raise KeyError(
-                f"Invalid key: {key}. "
-                "Key must be an integer index, a slice, or a valid accession string."
-            )
-
-
-class SamplesProxy(Mgnifier):
-    def __init__(
-        self,
-        study_accession: str,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ):
-        super().__init__(
-            resource="samples", accession=study_accession, params=params, **kwargs
-        )
-
-    # TODO RunsProxy??
+        # TODO
+        super().__init__(resource="assemblies", params=params, **kwargs)
 
 
 class AnalysesProxy(Mgnifier):
     def __init__(
         self,
         *,
+        study_accession: Optional[str] = None,
+        assembly_accession: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(resource="analyses", params=params, **kwargs)
+        if study_accession and not assembly_accession:
+            super().__init__(
+                resource="analyses", accession=study_accession, params=params, **kwargs
+            )
+        elif assembly_accession and not study_accession:
+            super().__init__(
+                resource="assemblies",
+                accession=assembly_accession,
+                params=params,
+                **kwargs,
+            )
+        elif not study_accession:
+            super().__init__(resource="analyses", params=params, **kwargs)
+        else:
+            raise ValueError(
+                "Can provide either study_accession or assembly_accession, but not both."
+            )
 
-    def __getitem__(self, key) -> List[dict] | dict:
+    def __getitem__(self, key) -> List[DatasetBuilder] | DatasetBuilder:
         """TODO: docstring"""
 
         df = self.to_pandas()
