@@ -770,16 +770,7 @@ class Mgnifier:
         """helper function to set accessions list for the current mpy module"""
         if self.to_pandas() is None:
             self._accessions = None
-        elif (
-            self._mpy_module
-            in [
-                list_mgnify_studies,
-                list_mgnify_study_analyses,
-                list_mgnify_study_samples,
-                list_mgnify_genomes,
-            ]
-            and "accession" in self.to_pandas().columns
-        ):
+        elif "accession" in self.to_pandas().columns:
             self._accessions = self.to_pandas()["accession"].tolist()
         else:
             self._accessions = None
