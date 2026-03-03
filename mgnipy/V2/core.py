@@ -362,7 +362,7 @@ class Mgnifier:
 
         # return self.to_pandas(self._results)
 
-    async def asyncio_get(
+    async def aget(
         self,
         limit: Optional[int] = None,
         *,
@@ -374,9 +374,7 @@ class Mgnifier:
         if self._pagination_status:
             # async request all pages and store results in self._results
             async with self._init_client() as client:
-                await self._asyncio_collector(
-                    client, limit=limit, pages=pages, strict=strict
-                )
+                await self._acollector(client, limit=limit, pages=pages, strict=strict)
         else:
             if (
                 (self._total_pages is None)
@@ -578,7 +576,7 @@ class Mgnifier:
             self._results.append(page_result.parsed.to_dict()["items"])
 
     # @async_disk_lru_cache()
-    async def _asyncio_get_page(
+    async def _aget_page(
         self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
     ):
         """
@@ -605,7 +603,7 @@ class Mgnifier:
                 **kwargs,
             )
 
-    async def _asyncio_collector(
+    async def _acollector(
         self,
         client: Client,
         limit: Optional[int] = None,
@@ -690,9 +688,7 @@ class Mgnifier:
         # creating async tasks
         async_tasks = [
             asyncio.create_task(
-                self._asyncio_get_page(
-                    client=client, params=self._params, page=page_num
-                )
+                self._aget_page(client=client, params=self._params, page=page_num)
             )
             for page_num in _pages
         ]
