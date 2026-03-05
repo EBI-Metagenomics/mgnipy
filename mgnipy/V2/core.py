@@ -110,18 +110,8 @@ class Mgnifier:
         # for client
         self._base_url: str = BASE_URL
         # if resource given, initiate endpoint module and supported params
-        self._resource: str = resource
-        if SupportedEndpoints.is_valid(self._resource):
-            self.endpoint_module = CORE_MODULES[SupportedEndpoints(self._resource)]
-        elif self._resource is not None:
-            raise ValueError(
-                f"Invalid resource: {self._resource}. "
-                f"Resource must be one of {SupportedEndpoints.as_list()} or None."
-            )
-        else:
-            self._endpoint_module = None
-            self._supported_kwargs = None
-            self._pagination_status = None
+        # otherwise all None see resource.setter
+        self.resource = resource
 
         # params as dict
         self._params: dict[str, Any] = params or {}
@@ -218,7 +208,10 @@ class Mgnifier:
             self._set_accessions_list()
             return self._accessions
         else:
-            return self.__dict__[f"_{name}"]
+            try:
+                return self.__dict__[f"_{name}"]
+            except:
+                raise KeyError(f"{name} is not a valid attribute of Mgnifier")
 
     def __str__(self):
         """
@@ -263,6 +256,28 @@ class Mgnifier:
         self._resource = os.path.basename(
             os.path.dirname(self._endpoint_module.__file__)
         )
+
+    @property
+    def resource(self):
+        return self._resource
+
+    @resource.setter
+    def resource(self, new_resource):
+        if SupportedEndpoints.is_valid(new_resource):
+            # set resource name
+            self._resource = new_resource
+            # get default endpoint module
+            self.endpoint_module = CORE_MODULES[SupportedEndpoints(new_resource)]
+        elif new_resource is None:
+            self._resource = None
+            self._endpoint_module = None
+            self._supported_kwargs = None
+            self._pagination_status = None
+        else:
+            raise ValueError(
+                f"Invalid resource: {new_resource}. "
+                f"Resource must be one of {SupportedEndpoints.as_list()}."
+            )
 
     # methods
     @require_endpoint_module
