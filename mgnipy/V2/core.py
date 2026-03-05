@@ -32,18 +32,25 @@ from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_study_samples,
 )
 from mgnipy.V2.mgni_py_v2.api.analyses import (
-    list_analyses_for_assembly,
+    list_mgnify_analyses,
+    list_assemblies,
 )
+from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
+import logging
 
 semaphore = get_semaphore()
 BASE_URL = MgnipyConfig().base_url
 CORE_MODULES = {
-    SupportedEndpoints.BIOMES: list_mgnify_biomes,  # what biomes
-    SupportedEndpoints.STUDIES: list_mgnify_studies,  # search for study
-    SupportedEndpoints.SAMPLES: list_mgnify_study_samples,  # all samples for given study
-    SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,  # all analyses for given study
-    SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes TODO
-    SupportedEndpoints.ASSEMBLIES: list_analyses_for_assembly,  # listing all analyses for given assembly
+    SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
+    SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
+    SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
+    # ^ list_mgnify_study_samples,  # all samples for given study
+    SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
+    # ^ list_mgnify_study_analyses,  # all analyses for given study
+    # ^ list_analyses_for_assembly,  # all analyses for given assembly
+    SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
+    # ^ list_genome_links_for_assembly,  # all genome links for given assembly
+    SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
 }
 
 
@@ -59,7 +66,7 @@ class Mgnifier:
         The base URL for the MGnify API.
     resource : str
         The resource type (e.g., 'biomes', 'studies', 'samples', 'genomes', 'analyses').
-    mpy_module : Callable
+    endpoint_module : Callable
         The function used to retrieve metadata for the selected resource.
     params : dict
         Parameters for the API call.
@@ -80,8 +87,8 @@ class Mgnifier:
             Literal["biomes", "studies", "samples", "genomes", "analyses", "assemblies"]
         ] = None,
         params: Optional[dict[str, Any]] = None,
-        checkpoint_dir: Optional[Path] = None,
-        checkpoint_freq: Optional[int] = None,
+        # checkpoint_dir: Optional[Path] = None,
+        # checkpoint_freq: Optional[int] = None,
         **kwargs,
     ):
         """
@@ -102,10 +109,19 @@ class Mgnifier:
         """
         # for client
         self._base_url: str = BASE_URL
-        self._resource: str = resource or "biomes"  # default
-        self._mpy_module = CORE_MODULES[SupportedEndpoints(self._resource)]
-        self._supported_kwargs = self.list_parameters()
-        self._pagination_status = self._get_pagination_status()
+        # if resource given, initiate endpoint module and supported params
+        self._resource: str = resource
+        if SupportedEndpoints.is_valid(self._resource):
+            self.endpoint_module = CORE_MODULES[SupportedEndpoints(self._resource)]
+        elif self._resource is not None:
+            raise ValueError(
+                f"Invalid resource: {self._resource}. "
+                f"Resource must be one of {SupportedEndpoints.as_list()} or None."
+            )
+        else:
+            self._endpoint_module = None
+            self._supported_kwargs = None
+            self._pagination_status = None
 
         # params as dict
         self._params: dict[str, Any] = params or {}
@@ -114,8 +130,8 @@ class Mgnifier:
             self._params.update(kwargs)
 
         # checkpointing
-        self._checkpoint_dir: Optional[Path] = checkpoint_dir
-        self._checkpoint_freq: int = checkpoint_freq or 3
+        # self._checkpoint_dir: Optional[Path] = checkpoint_dir
+        # self._checkpoint_freq: int = checkpoint_freq or 3
 
         # results
         self._count: Optional[int] = None
@@ -173,18 +189,6 @@ class Mgnifier:
                 "Key must be an integer index, a slice, or a valid accession string."
             )
 
-    @property
-    def mpy_module(self):
-        return self._mpy_module
-
-    @mpy_module.setter
-    def mpy_module(self, new_module):
-        self._mpy_module = new_module
-        # update supported kwargs for new module
-        self._supported_kwargs = self.list_parameters()
-        # update pagination status for new module
-        self._pagination_status = self._get_pagination_status()
-
     def __getattr__(self, name: str):
         """
         Dynamically access attributes, including computed or helper properties.
@@ -226,13 +230,42 @@ class Mgnifier:
             Human-readable summary of the instance.
         """
         return (
-            f"Mgnifier instance for MGnify {self._resource} metadata\n"
+            f"Mgnifier instance for resource: {self._resource}\n"
             f"----------------------------------------\n"
             f"Base URL: {self._base_url}\n"
             f"Parameters: {self._params}\n"
         )
 
+    # decorators
+    def require_endpoint_module(func):
+        def wrapper(self, *args, **kwargs):
+            if self.endpoint_module is None:
+                raise RuntimeError(
+                    "endpoint_module is not set: Please choose a valid `resource`"
+                )
+            return func(self, *args, **kwargs)
+
+        return wrapper
+
+    # setters
+    @property
+    def endpoint_module(self):
+        return self._endpoint_module
+
+    @endpoint_module.setter
+    def endpoint_module(self, new_module):
+        self._endpoint_module = new_module
+        # update supported kwargs for new module
+        self._supported_kwargs = self.list_parameters()
+        # update pagination status for new module
+        self._pagination_status = self._get_pagination_status()
+        # autoupdate resource based on mgni_py_v2
+        self._resource = os.path.basename(
+            os.path.dirname(self._endpoint_module.__file__)
+        )
+
     # methods
+    @require_endpoint_module
     def list_parameters(self) -> list[str]:
         """
         Get the list of supported keyword arguments for the current resource's API function.
@@ -243,7 +276,7 @@ class Mgnifier:
             List of supported keyword argument names.
         """
         """helper function to get supported kwargs for the current mpy module"""
-        sig = inspect.signature(self._mpy_module._get_kwargs)
+        sig = inspect.signature(self._endpoint_module._get_kwargs)
         return list(sig.parameters.keys())
 
     def filter(
@@ -281,6 +314,7 @@ class Mgnifier:
 
         return self
 
+    @require_endpoint_module
     def dry_run(self) -> None:
         """
         Plan the API call by validating parameters and estimating the number of pages and records available.
@@ -292,14 +326,15 @@ class Mgnifier:
         None
         """
         # verbose
-        print("Planning the API call with params:")
+        logging.info("Planning the API call with params:")
         # get the item count and total pages based on page_size if pagination, else set to 1
         self._get_counts()
-        print(self._params)
+        logging.info(self._params)
         # verbose
-        print(f"Total pages to retrieve: {self._total_pages}")
-        print(f"Total records to retrieve: {self._count}")
+        logging.info(f"Total pages to retrieve: {self._total_pages}")
+        logging.info(f"Total records to retrieve: {self._count}")
 
+    @require_endpoint_module
     def preview(self) -> pd.DataFrame:
         """
         Preview the first page of metadata for the current resource and parameters, without retrieving all pages. This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
@@ -321,7 +356,7 @@ class Mgnifier:
 
         if self._pagination_status:
             # request first page and cache
-            print("Retrieving first page of results for preview...")
+            logging.info("Retrieving first page of results for preview...")
             tmp_params = self._tmp_param_update(page=1)
             response_dict = self._get_request(tmp_params)
             # dealing with response
@@ -335,6 +370,7 @@ class Mgnifier:
                 return self.to_pandas([self._cached_first_page])
         raise RuntimeError("Failed to get response from MGnify API.")
 
+    @require_endpoint_module
     def get(
         self,
         limit: Optional[int] = None,
@@ -362,6 +398,7 @@ class Mgnifier:
 
         # return self.to_pandas(self._results)
 
+    @require_endpoint_module
     async def aget(
         self,
         limit: Optional[int] = None,
@@ -414,7 +451,7 @@ class Mgnifier:
         _data = data or self._results or [self._cached_first_page]
 
         if _data == [None] or _data is None:
-            print("No data available to convert to DataFrame. Returning None.")
+            logging.info("No data available to convert to DataFrame. Returning None.")
             return None
 
         combined_df = pd.concat(
@@ -463,6 +500,7 @@ class Mgnifier:
         )
         return client_v1
 
+    @require_endpoint_module
     def _get_request(self, given_params: dict) -> Optional[dict]:
         """
         Retrieve a single page of metadata using the synchronous API client.
@@ -478,11 +516,11 @@ class Mgnifier:
             Parsed response from the API, or None if the request failed.
         """
         with self._init_client() as client:
-            response = self._mpy_module.sync_detailed(
+            response = self._endpoint_module.sync_detailed(
                 client=client,
                 **given_params,
             )
-        print(f"Response status code: {response.status_code}")
+        logging.info(f"Response status code: {response.status_code}")
         if response.status_code == 200:
             return response.parsed.to_dict()
         else:
@@ -506,7 +544,7 @@ class Mgnifier:
         dict or None
             Parsed response from the API, or None if the request failed.
         """
-        return self._mpy_module.sync_detailed(
+        return self._endpoint_module.sync_detailed(
             client=client,
             **(params or self._params),
             **kwargs,
@@ -549,7 +587,7 @@ class Mgnifier:
                         )
                 else:
                     # else just skip invalid page numbers with warning
-                    print(
+                    logging.warning(
                         f"Invalid page number {p} skipped as > than {self._total_pages}."
                     )
                     _pages.remove(p)
@@ -561,7 +599,7 @@ class Mgnifier:
 
         # append cached first page if avail
         if 1 in _pages and self._cached_first_page is not None:
-            print("Page 1 already cached from preview, skipping...")
+            logging.info("Page 1 already cached from preview, skipping...")
             _pages.remove(1)
             self._results = [self._cached_first_page]
         else:
@@ -597,7 +635,7 @@ class Mgnifier:
         """coroutine function to get coroutine for each page"""
         # limiting concurrency to protect server
         async with semaphore:
-            return await self._mpy_module.asyncio_detailed(
+            return await self._endpoint_module.asyncio_detailed(
                 client=client,
                 **(params or self._params),
                 **kwargs,
@@ -667,7 +705,7 @@ class Mgnifier:
                         )
                 else:
                     # else just skip invalid page numbers with warning
-                    print(
+                    logging.warning(
                         f"Invalid page number {p} skipped as > than {self._total_pages}."
                     )
                     _pages.remove(p)
@@ -679,7 +717,7 @@ class Mgnifier:
 
         # append cached first page if avail
         if 1 in _pages and self._cached_first_page is not None:
-            print("Page 1 already cached from preview, skipping...")
+            logging.info("Page 1 already cached from preview, skipping...")
             _pages.remove(1)
             self._results = [self._cached_first_page]
         else:
@@ -700,6 +738,7 @@ class Mgnifier:
             self._results.append(page_result.parsed.to_dict()["items"])
 
     ## Help with workflow
+    @require_endpoint_module
     def _get_counts(self):
         """
         Internal method to estimate the number of pages and records available for the current query.
@@ -819,7 +858,7 @@ class Mgnifier:
             If invalid parameters are provided.
         """
         try:
-            kwargy = self._mpy_module._get_kwargs(**self._params)
+            kwargy = self._endpoint_module._get_kwargs(**self._params)
         except ValueError as e:
             raise ValueError(f"Invalid parameters provided: {e}") from None
         return kwargy
@@ -842,6 +881,7 @@ class Mgnifier:
         temp_params.update(kwargs)
         return temp_params
 
+    @require_endpoint_module
     def _build_url(
         self,
         params: Optional[dict[str, Any]] = None,
