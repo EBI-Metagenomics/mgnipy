@@ -10,6 +10,10 @@ from bigtree import (
 
 from mgnipy.V2.core import Mgnifier
 from mgnipy.V2.datasets import DatasetBuilder
+from mgnipy.V2.mgni_py_v2.api.studies import list_mgnify_study_analyses
+from mgnipy.V2.mgni_py_v2.api.analyses import (
+    list_analyses_for_assembly,
+)
 
 
 class ResourceProxy(Mgnifier):
@@ -23,6 +27,66 @@ class ResourceProxy(Mgnifier):
         **kwargs,
     ):
         super().__init__(resource=resource, params=params, **kwargs)
+
+
+class AnalysesProxy(Mgnifier):
+    def __init__(
+        self,
+        *,
+        study_accession: Optional[str] = None,
+        assembly_accession: Optional[str] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        if study_accession and not assembly_accession:
+            # init mgnifier
+            super().__init__(accession=study_accession, params=params, **kwargs)
+            # get the endpoint module
+            self.endpoint_module = list_mgnify_study_analyses
+
+        elif assembly_accession and not study_accession:
+            # init mgnifier
+            super().__init__(
+                accession=assembly_accession,
+                params=params,
+                **kwargs,
+            )
+            # get the endpoint module
+            self.endpoint_module = list_analyses_for_assembly
+        elif not study_accession:
+            # list all analyses endpoint (default, core)
+            super().__init__(resource="analyses", params=params, **kwargs)
+        else:
+            raise ValueError(
+                "Can provide either study_accession or assembly_accession, but not both."
+            )
+
+    def __getitem__(self, key) -> List[DatasetBuilder] | DatasetBuilder:
+        """TODO: docstring"""
+
+        df = self.to_pandas()
+        df_as_list = df.to_dict(orient="records")
+
+        # get dataset builder(s)
+        if isinstance(key, str) and self._accessions and key in self._accessions:
+            return DatasetBuilder(accession=key)
+        elif isinstance(key, int) and self._accessions:
+            return DatasetBuilder(accession=df_as_list[key]["accession"])
+        elif isinstance(key, slice) and self._accessions:
+            return [
+                DatasetBuilder(accession=record["accession"])
+                for record in df_as_list[key]
+            ]
+        elif self._accessions is None:
+            raise RuntimeError(
+                "No accessions available for indexing. "
+                "E.g., run get() first to retrieve metadata and accessions."
+            )
+        else:
+            raise KeyError(
+                f"Invalid key: {key}. "
+                "Key must be an integer index, a slice, or a valid accession string."
+            )
 
 
 class SamplesProxy(Mgnifier):
@@ -64,7 +128,7 @@ class StudiesProxy(Mgnifier):
         elif self._accessions is None:
             raise RuntimeError(
                 "No accessions available for indexing. "
-                "E.g., run preview() or get() first to retrieve metadata and accessions."
+                "E.g., run get() first to retrieve metadata and accessions."
             )
         else:
             raise KeyError(
@@ -106,8 +170,7 @@ class BiomesProxy(Mgnifier):
     def lineages(self) -> List[str]:
         if self._results is None:
             raise RuntimeError(
-                "No data available to get lineages. "
-                "Please run preview() or get() first."
+                "No data available to get lineages. " "Please run get() first."
             )
         return self.to_pandas()["lineage"].to_list()
 
@@ -123,8 +186,7 @@ class BiomesProxy(Mgnifier):
         """
         if self._results is None:
             raise RuntimeError(
-                "No data available to convert to tree. "
-                "Please run preview() or get() first."
+                "No data available to convert to tree. " "Please run get() first."
             )
         # TODO generate nodes first
         self._tree = Tree.from_list(self.lineages, sep=":")
@@ -176,35 +238,7 @@ class AssembliesProxy(Mgnifier):
         # TODO
         super().__init__(resource="assemblies", params=params, **kwargs)
 
-
-class AnalysesProxy(Mgnifier):
-    def __init__(
-        self,
-        *,
-        study_accession: Optional[str] = None,
-        assembly_accession: Optional[str] = None,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ):
-        if study_accession and not assembly_accession:
-            super().__init__(
-                resource="analyses", accession=study_accession, params=params, **kwargs
-            )
-        elif assembly_accession and not study_accession:
-            super().__init__(
-                resource="assemblies",
-                accession=assembly_accession,
-                params=params,
-                **kwargs,
-            )
-        elif not study_accession:
-            super().__init__(resource="analyses", params=params, **kwargs)
-        else:
-            raise ValueError(
-                "Can provide either study_accession or assembly_accession, but not both."
-            )
-
-    def __getitem__(self, key) -> List[DatasetBuilder] | DatasetBuilder:
+    def __getitem__(self, key) -> List[AnalysesProxy] | AnalysesProxy:
         """TODO: docstring"""
 
         df = self.to_pandas()
@@ -212,18 +246,18 @@ class AnalysesProxy(Mgnifier):
 
         # get dataset builder(s)
         if isinstance(key, str) and self._accessions and key in self._accessions:
-            return DatasetBuilder(accession=key)
+            return AnalysesProxy(assembly_accession=key)
         elif isinstance(key, int) and self._accessions:
-            return DatasetBuilder(accession=df_as_list[key]["accession"])
+            return AnalysesProxy(assembly_accession=df_as_list[key]["accession"])
         elif isinstance(key, slice) and self._accessions:
             return [
-                DatasetBuilder(accession=record["accession"])
+                AnalysesProxy(assembly_accession=record["accession"])
                 for record in df_as_list[key]
             ]
         elif self._accessions is None:
             raise RuntimeError(
                 "No accessions available for indexing. "
-                "E.g., run preview() or get() first to retrieve metadata and accessions."
+                "E.g., run get() first to retrieve metadata and accessions."
             )
         else:
             raise KeyError(
