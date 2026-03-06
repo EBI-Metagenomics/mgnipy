@@ -850,6 +850,10 @@ class Mgnifier:
         itertools.chain
             An iterator that yields individual metadata records from all pages.
         """
+        if self._results is None:
+            raise RuntimeError(
+                "No results available. Please run get() or aget() first."
+            )
         return itertools.chain.from_iterable(self._results)
 
     ## Help with checks
