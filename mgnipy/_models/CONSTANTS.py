@@ -1,10 +1,42 @@
 # mainly Enum constants for pydantic models
 from enum import Enum
 
+from pydantic import (
+    TypeAdapter,
+    ValidationError,
+)
+
 
 class SpecialEnum(Enum):
     def __str__(self):
         return str(self.value)
+
+    @classmethod
+    def as_list(cls):
+        return [field.value for field in cls]
+
+    @classmethod
+    def validate(cls, input):
+        try:
+            return TypeAdapter(cls).validate_python(input)
+        except ValidationError as e:
+            raise ValueError(f"Invalid {cls.__name__}: {input}") from e
+
+    @classmethod
+    def is_valid(cls, input):
+        try:
+            cls.validate(input)
+            return True
+        except ValueError:
+            return False
+
+    @classmethod
+    def as_one_str(cls, sep=","):
+        return sep.join(field.value for field in cls)
+
+    @classmethod
+    def starts_with(cls, input):
+        return any(field.value.startswith(input) for field in cls)
 
 
 class SupportedApiVersions(SpecialEnum):
@@ -29,15 +61,13 @@ class SupportedEndpoints(SpecialEnum):
 class StudiesPrefixes(SpecialEnum):
     MGYS = "MGYS"
     ERP = "ERP"
-    PRJEB = "PRJEB"
-    PRJNA = "PRJNA"
+    PRJ = "PRJ"
 
 
 class SamplesPrefixes(SpecialEnum):
     SRS = "SRS"
     ERS = "ERS"
-    SAMEA = "SAMEA"
-    SAMN = "SAMN"
+    SAM = "SAM"
 
 
 class AnalysesPrefixes(SpecialEnum):
@@ -53,8 +83,9 @@ class GenomesPrefixes(SpecialEnum):
     MGYG = "MGYG"
 
 
-class AssemblyPrefixes(SpecialEnum):
+class AssembliesPrefixes(SpecialEnum):
     ERZ = "ERZ"
+    GCA = "GCA"
 
 
 class BiomesPrefixes(SpecialEnum):
