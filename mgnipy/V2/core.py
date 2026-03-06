@@ -126,7 +126,6 @@ class Mgnifier:
         self._total_pages: Optional[int] = None
         self._cached_first_page: Optional[List] = None
         self._results: Optional[List[List[dict]]] = None
-        self._accessions: Optional[List[str]] = None
 
     def __iter__(self):
         """
@@ -164,7 +163,7 @@ class Mgnifier:
         if isinstance(key, (int, slice)):
             return results_list[key]
         # by accession
-        elif isinstance(key, str) and self._accessions and key in self._accessions:
+        elif isinstance(key, str) and key in self.accessions:
             return [record for record in results_list if record["accession"] == key]
         # else raise error
         else:
@@ -198,9 +197,6 @@ class Mgnifier:
             return self._build_url()
         elif name == "api_version":
             print("v2")
-        elif name == "accessions":
-            self._set_accessions_list()
-            return self._accessions
         else:
             try:
                 return self.__dict__[f"_{name}"]
@@ -273,6 +269,15 @@ class Mgnifier:
                 f"Resource must be one of {SupportedEndpoints.as_list()}."
             )
 
+    @property
+    def accessions(self) -> Optional[List[str]]:
+        if self.to_pandas() is None:
+            return None
+        elif "accession" in self.to_pandas().columns:
+            return self.to_pandas()["accession"].tolist()
+        else:
+            return None
+
     # methods
     @require_endpoint_module
     def list_parameters(self) -> list[str]:
@@ -319,7 +324,6 @@ class Mgnifier:
         self._total_pages = None
         self._cached_first_page = None
         self._results = None
-        self._accessions = None
 
         return self
 
@@ -402,9 +406,6 @@ class Mgnifier:
             # cache to result
             self._results = [self._cached_first_page]
 
-        # set accessions list for retrieved data if applicable
-        self._set_accessions_list()
-
         # return self.to_pandas(self._results)
 
     @require_endpoint_module
@@ -431,8 +432,6 @@ class Mgnifier:
             # cache to result
             self._results = [self._cached_first_page]
 
-        # set accessions list for retrieved data if applicable
-        self._set_accessions_list()
         # return self.to_pandas(self._results)
 
     def to_pandas(self, data: Optional[List[dict]] = None, **kwargs) -> pd.DataFrame:
@@ -806,22 +805,6 @@ class Mgnifier:
         )
 
     ## Help with data handling
-    def _set_accessions_list(self) -> Optional[List[str]]:
-        """
-        Set the list of accessions for the current resource, if available.
-
-        Returns
-        -------
-        list of str or None
-            List of accessions, or None if not available for the resource.
-        """
-        """helper function to set accessions list for the current mpy module"""
-        if self.to_pandas() is None:
-            self._accessions = None
-        elif "accession" in self.to_pandas().columns:
-            self._accessions = self.to_pandas()["accession"].tolist()
-        else:
-            self._accessions = None
 
     def _df_expand_nested(
         self, df: pd.DataFrame, cols: list[str] = None
