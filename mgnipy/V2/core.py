@@ -44,7 +44,6 @@ CORE_MODULES = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
-    # ^ list_mgnify_study_samples,  # all samples for given study
     SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
     SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
     # ^ list_genome_links_for_assembly,  # all genome links for given assembly
@@ -509,8 +508,7 @@ class Mgnifier:
         Mgnifier
             A new Mgnifier instance with the same resource and parameters but no cached results.
         """
-        new_mg = Mgnifier(
-            resource=self._resource,
+        new_mg = self.__class__(
             params=self._params,
         )
         new_mg.endpoint_module = self._endpoint_module
