@@ -154,7 +154,6 @@ class StudiesProxy(ResourceProxy):
 class BiomesProxy(ResourceProxy):
 
     def __init__(self, **kwargs):
-        self._tree = None
         super().__init__(resource="biomes", **kwargs)
 
     def __getitem__(self, key) -> List[StudiesProxy] | StudiesProxy:
@@ -186,8 +185,8 @@ class BiomesProxy(ResourceProxy):
         # accessions == lineages, since biomes dont have accessions
         return self.lineages
 
-    # biome-specific methods
-    def to_bigtree(self) -> Tree:
+    @property
+    def tree(self) -> Tree:
         """
         Convert the biomes metadata to a tree structure for visualization or analysis.
 
@@ -201,8 +200,7 @@ class BiomesProxy(ResourceProxy):
                 "No data available to convert to tree. " "Please run get() first."
             )
         # TODO generate nodes first
-        self._tree = Tree.from_list(self.lineages, sep=":")
-        return self._tree
+        return Tree.from_list(self.lineages, sep=":")
 
     def show_tree(
         self,
@@ -220,17 +218,13 @@ class BiomesProxy(ResourceProxy):
             "vprint",
         ] = "compact",
     ):
-        if self._tree is None:
-            # create tree if not already
-            self.to_bigtree()
-
         if method in ["compact", "show", "print"]:
             # TODO print_tree(self._tree)
-            self._tree.show()
+            self.tree.show()
         elif method in ["horizontal", "hshow", "h", "hprint"]:
-            self._tree.hshow()
+            self.tree.hshow()
         elif method in ["vertical", "vshow", "v", "vprint"]:
-            self._tree.vshow()
+            self.tree.vshow()
         else:
             raise ValueError(
                 f"Invalid method: {method}. "
@@ -269,5 +263,3 @@ DEFAULT_LINKED_PROXY_CONFIG = {
     SupportedEndpoints.GENOMES: None,
     SupportedEndpoints.ASSEMBLIES: AnalysesProxy,
 }
-
-DEFAULT_ASSEMBLIES_LINKED_PROXIES = {SupportedEndpoints.ASSEMBLIES: AnalysesProxy}
