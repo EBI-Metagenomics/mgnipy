@@ -926,4 +926,7 @@ class Mgnifier:
             incl_params.pop(k, None)
         start_url = os.path.join(self._base_url, _end_url)
         encoded_params = urlencode(incl_params, doseq=True)
-        return f"{start_url}/?{encoded_params}"
+        print(encoded_params)
+        if len(encoded_params) > 0:
+            return f"{start_url}/?{encoded_params}"
+        return start_url
