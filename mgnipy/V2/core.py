@@ -162,7 +162,7 @@ class Mgnifier:
         if isinstance(key, (int, slice)):
             return results_list[key]
         # by accession
-        elif isinstance(key, str) and key in self.accessions:
+        elif isinstance(key, str) and key in self.results_accessions:
             return [record for record in results_list if record["accession"] == key]
         # else raise error
         else:
@@ -269,7 +269,7 @@ class Mgnifier:
             )
 
     @property
-    def accessions(self) -> Optional[List[str]]:
+    def results_accessions(self) -> Optional[List[str]]:
         if self.to_pandas() is None:
             return None
         elif "accession" in self.to_pandas().columns:

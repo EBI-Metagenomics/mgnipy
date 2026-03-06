@@ -47,6 +47,10 @@ class ResourceProxy(Mgnifier):
     def linked_proxy_module(self):
         return self._linked_proxy_module
 
+    @property
+    def accession(self):
+        return self._params.get("accession", None)
+
     def __getitem__(self, key):
         """
         Get a linked proxy object based on the provided key.
@@ -58,18 +62,18 @@ class ResourceProxy(Mgnifier):
             results_list = list(self._unpageinate_results())
 
             # next proxy
-            if isinstance(key, str) and key in self.accessions:
+            if isinstance(key, str) and key in self.results_accessions:
                 return self.linked_proxy_module(accession=key)
-            elif isinstance(key, int) and self.accessions:
+            elif isinstance(key, int) and self.results_accessions:
                 return self.linked_proxy_module(
                     accession=results_list[key]["accession"]
                 )
-            elif isinstance(key, slice) and self.accessions:
+            elif isinstance(key, slice) and self.results_accessions:
                 return [
                     self.linked_proxy_module(accession=record["accession"])
                     for record in results_list[key]
                 ]
-            elif self.accessions is None:
+            elif self.results_accessions is None:
                 raise RuntimeError(
                     "No accessions available for indexing. "
                     "E.g., run get() first to retrieve metadata and accessions."
