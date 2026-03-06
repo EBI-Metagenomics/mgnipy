@@ -12,7 +12,7 @@ from typing import (
     Optional,
 )
 from urllib.parse import urlencode
-
+import itertools
 import pandas as pd
 from bigtree import (
     Tree,
@@ -46,8 +46,6 @@ CORE_MODULES = {
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
     # ^ list_mgnify_study_samples,  # all samples for given study
     SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
-    # ^ list_mgnify_study_analyses,  # all analyses for given study
-    # ^ list_analyses_for_assembly,  # all analyses for given assembly
     SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
     # ^ list_genome_links_for_assembly,  # all genome links for given assembly
     SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
@@ -139,8 +137,7 @@ class Mgnifier:
         Iterator[dict]
             An iterator that yields metadata records as dictionaries.
         """
-        df = self.to_pandas()  # TODO: work with the raw results instead of to df
-        return (dict(row) for _, row in df.iterrows())
+        return self._unpageinate_results()
 
     def __getitem__(self, key) -> List[dict] | dict:
         """
@@ -162,16 +159,13 @@ class Mgnifier:
         KeyError
             If the key is not a valid index, accession, or lineage.
         """
-
-        # TODO: work with the raw results instead of to df
-        df = self.to_pandas()
-        df_as_list = df.to_dict(orient="records")
+        results_list = list(self._unpageinate_results())
         # by index
         if isinstance(key, (int, slice)):
-            return df_as_list[key]
+            return results_list[key]
         # by accession
         elif isinstance(key, str) and self._accessions and key in self._accessions:
-            return df.query(f"accession == '{key}'").to_dict(orient="records")
+            return [record for record in results_list if record["accession"] == key]
         # else raise error
         else:
             raise KeyError(
@@ -856,6 +850,17 @@ class Mgnifier:
                 attr_df = pd.json_normalize(new_df[c])
                 new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
         return new_df
+
+    def _unpageinate_results(self) -> itertools.chain:
+        """
+        Unpaginate the results by flattening the list of pages into a single list of records.
+
+        Returns
+        -------
+        itertools.chain
+            An iterator that yields individual metadata records from all pages.
+        """
+        return itertools.chain.from_iterable(self._results)
 
     ## Help with checks
     def _check_kwargs(self) -> str:
