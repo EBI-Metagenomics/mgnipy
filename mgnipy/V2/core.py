@@ -295,37 +295,29 @@ class Mgnifier:
 
     def filter(
         self,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
+        **filters,
     ):
         """
         Update the parameters for the API call to filter results.
 
         Parameters
         ----------
-        params : dict, optional
-            Dictionary of parameters to update.
-        **kwargs : dict
-            Additional keyword arguments to include in the parameters.
+        **filters
+            Keyword arguments corresponding to the supported parameters for the current resource.
+            These will be used to filter the results returned by the API.
 
         Returns
         -------
-        None
+        Mgnifier
+            A new Mgnifier instance with updated parameters for filtering results.
         """
-
-        if params:
-            self._params.update(params)
-        if kwargs:
-            self._params.update(kwargs)
+        # make a copy of current instance
+        new_mg = self._clone()
+        # but with updates to params
+        new_mg._params.update(filters)
         # check new params are valid for endpoint
-        self._check_kwargs()
-        # reset results and metadata since params changed
-        self._count = None
-        self._total_pages = None
-        self._cached_first_page = None
-        self._results = None
-
-        return self
+        new_mg._check_kwargs()
+        return new_mg
 
     @require_endpoint_module
     def dry_run(self) -> None:
@@ -339,13 +331,13 @@ class Mgnifier:
         None
         """
         # verbose
-        logging.info("Planning the API call with params:")
+        print("Planning the API call with params:")
         # get the item count and total pages based on page_size if pagination, else set to 1
         self._get_counts()
-        logging.info(self._params)
+        print(self._params)
         # verbose
-        logging.info(f"Total pages to retrieve: {self._total_pages}")
-        logging.info(f"Total records to retrieve: {self._count}")
+        print(f"Total pages to retrieve: {self._total_pages}")
+        print(f"Total records to retrieve: {self._count}")
 
     @require_endpoint_module
     def preview(self) -> pd.DataFrame:
@@ -507,6 +499,23 @@ class Mgnifier:
             # TODO logs?
         )
         return client_v1
+
+    def _clone(self):
+        """
+        Create a clone of the current Mgnifier instance for immutability :) but with no cache
+
+        Returns
+        -------
+        Mgnifier
+            A new Mgnifier instance with the same resource and parameters but no cached results.
+        """
+        new_mg = Mgnifier(
+            resource=self._resource,
+            params=self._params,
+        )
+        new_mg.endpoint_module = self._endpoint_module
+
+        return new_mg
 
     @require_endpoint_module
     def _get_request(self, given_params: dict) -> Optional[dict]:
