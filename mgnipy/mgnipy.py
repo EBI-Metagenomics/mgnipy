@@ -6,6 +6,7 @@ from mgnipy.V2.metadata import (
     SamplesProxy,
     AnalysesProxy,
     GenomesProxy,
+    AssembliesProxy,
 )
 
 ENDPOINT_PROXIES = {
@@ -14,6 +15,7 @@ ENDPOINT_PROXIES = {
     SupportedEndpoints.SAMPLES: SamplesProxy,
     SupportedEndpoints.ANALYSES: AnalysesProxy,
     SupportedEndpoints.GENOMES: GenomesProxy,
+    SupportedEndpoints.ASSEMBLIES: AssembliesProxy,
 }
 
 
@@ -33,3 +35,7 @@ class MGnipy:
 
     def list_resources(self):
         return [endpoint.value for endpoint in SupportedEndpoints]
+
+    def describe_resources(self):
+        # TODO from the API docs
+        pass
