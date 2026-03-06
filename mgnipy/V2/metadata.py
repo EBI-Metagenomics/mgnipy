@@ -1,3 +1,4 @@
+import itertools
 from typing import (
     Any,
     List,
@@ -7,12 +8,20 @@ from typing import (
 from bigtree import (
     Tree,
 )
-
+from copy import deepcopy
 from mgnipy.V2.core import Mgnifier
 from mgnipy.V2.datasets import DatasetBuilder
-from mgnipy.V2.mgni_py_v2.api.studies import list_mgnify_study_analyses
+from mgnipy.V2.mgni_py_v2.api.studies import (
+    list_mgnify_study_analyses,
+    list_mgnify_study_samples,
+)
 from mgnipy.V2.mgni_py_v2.api.analyses import (
     list_analyses_for_assembly,
+)
+from mgnipy._models.CONSTANTS import (
+    SupportedEndpoints,
+    StudiesPrefixes,
+    AssembliesPrefixes,
 )
 
 
@@ -21,85 +30,117 @@ class ResourceProxy(Mgnifier):
 
     def __init__(
         self,
-        resource: str,
         *,
+        resource: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
+        # init mgnifier
         super().__init__(resource=resource, params=params, **kwargs)
 
+        if SupportedEndpoints.is_valid(resource):
+            self._linked_proxy_module = DEFAULT_LINKED_PROXY_CONFIG.get(
+                SupportedEndpoints(resource), None
+            )
 
-class AnalysesProxy(Mgnifier):
+    @property
+    def linked_proxy_module(self):
+        return self._linked_proxy_module
+
+    def __getitem__(self, key):
+        """
+        Get a linked proxy object based on the provided key.
+        The key can be an integer index, a slice, or a valid accession string (or lineage for biomes).
+        """
+
+        if self._linked_proxy_module is not None:
+
+            results_list = list(self._unpageinate_results())
+
+            # next proxy
+            if isinstance(key, str) and key in self.accessions:
+                return self.linked_proxy_module(accession=key)
+            elif isinstance(key, int) and self.accessions:
+                return self.linked_proxy_module(
+                    accession=results_list[key]["accession"]
+                )
+            elif isinstance(key, slice) and self.accessions:
+                return [
+                    self.linked_proxy_module(accession=record["accession"])
+                    for record in results_list[key]
+                ]
+            elif self.accessions is None:
+                raise RuntimeError(
+                    "No accessions available for indexing. "
+                    "E.g., run get() first to retrieve metadata and accessions."
+                )
+            else:
+                raise KeyError(
+                    f"Invalid key: {key}. "
+                    "Key must be an integer index, a slice, or a valid accession string."
+                )
+        else:
+            # to mgnifier's __getitem__
+            super().__getitem__(key)
+
+
+class AnalysesProxy(ResourceProxy):
     def __init__(
         self,
         *,
         study_accession: Optional[str] = None,
         assembly_accession: Optional[str] = None,
+        accession: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        if study_accession and not assembly_accession:
-            # init mgnifier
-            super().__init__(accession=study_accession, params=params, **kwargs)
-            # get the endpoint module
-            self.endpoint_module = list_mgnify_study_analyses
-
-        elif assembly_accession and not study_accession:
-            # init mgnifier
-            super().__init__(
-                accession=assembly_accession,
-                params=params,
-                **kwargs,
-            )
-            # get the endpoint module
-            self.endpoint_module = list_analyses_for_assembly
-        elif not study_accession:
-            # list all analyses endpoint (default, core)
-            super().__init__(resource="analyses", params=params, **kwargs)
-        else:
+        if study_accession and assembly_accession:
             raise ValueError(
-                "Can provide either study_accession or assembly_accession, but not both."
+                "Can provide either study_accession or assembly_accession, or neither, but not both."
             )
 
-    def __getitem__(self, key) -> List[DatasetBuilder] | DatasetBuilder:
-        """TODO: docstring"""
+        # give priority to accession
+        _one_acc = accession or study_accession or assembly_accession
 
-        df = self.to_pandas()
-        df_as_list = df.to_dict(orient="records")
+        # init mgnifier with accession
+        super().__init__(accession=_one_acc, params=params, **kwargs)
 
-        # get dataset builder(s)
-        if isinstance(key, str) and self._accessions and key in self._accessions:
-            return DatasetBuilder(accession=key)
-        elif isinstance(key, int) and self._accessions:
-            return DatasetBuilder(accession=df_as_list[key]["accession"])
-        elif isinstance(key, slice) and self._accessions:
-            return [
-                DatasetBuilder(accession=record["accession"])
-                for record in df_as_list[key]
-            ]
-        elif self._accessions is None:
-            raise RuntimeError(
-                "No accessions available for indexing. "
-                "E.g., run get() first to retrieve metadata and accessions."
-            )
-        else:
-            raise KeyError(
-                f"Invalid key: {key}. "
-                "Key must be an integer index, a slice, or a valid accession string."
-            )
+        # determine endpoint module based on given accession type
+        if StudiesPrefixes.starts_with(_one_acc):
+            # list all analyses for given study accession
+            self.endpoint_module = list_mgnify_study_analyses
+        elif AssembliesPrefixes.starts_with(_one_acc):
+            # list all analyses for given assembly accession
+            self.endpoint_module = list_analyses_for_assembly
+        elif _one_acc is None:
+            # if None then default to core list all analyses endpoint
+            super().__init__(resource="analyses", params=params, **kwargs)
+        else:  # if accession provided but doesn't match known prefixes
+            raise ValueError(f"Invalid accession: {_one_acc}. ")
 
 
-class SamplesProxy(Mgnifier):
+class SamplesProxy(ResourceProxy):
     def __init__(
         self,
         *,
+        accession: Optional[str] = None,
+        study_accession: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(resource="samples", params=params, **kwargs)
+        _one_acc = accession or study_accession
+
+        if _one_acc:  # TODO validate accession format
+            # init mgnifier
+            super().__init__(accession=_one_acc, params=params, **kwargs)
+            # get the endpoint module
+            self.endpoint_module = list_mgnify_study_samples
+        else:
+            # if no acc then default to core list all samples endpoint
+            super().__init__(resource="samples", params=params, **kwargs)
 
 
-class StudiesProxy(Mgnifier):
+class StudiesProxy(ResourceProxy):
 
     def __init__(
         self,
@@ -109,62 +150,28 @@ class StudiesProxy(Mgnifier):
     ):
         super().__init__(resource="studies", params=params, **kwargs)
 
-    def __getitem__(self, key) -> List[SamplesProxy] | SamplesProxy:
-        """TODO: docstring"""
 
-        df = self.to_pandas()
-        df_as_list = df.to_dict(orient="records")
-
-        # get dataset builder(s)
-        if isinstance(key, str) and self._accessions and key in self._accessions:
-            return SamplesProxy(accession=key)
-        elif isinstance(key, int) and self._accessions:
-            return SamplesProxy(accession=df_as_list[key]["accession"])
-        elif isinstance(key, slice) and self._accessions:
-            return [
-                SamplesProxy(accession=record["accession"])
-                for record in df_as_list[key]
-            ]
-        elif self._accessions is None:
-            raise RuntimeError(
-                "No accessions available for indexing. "
-                "E.g., run get() first to retrieve metadata and accessions."
-            )
-        else:
-            raise KeyError(
-                f"Invalid key: {key}. "
-                "Key must be an integer index, a slice, or a valid accession string."
-            )
-
-
-class BiomesProxy(Mgnifier):
+class BiomesProxy(ResourceProxy):
 
     def __init__(self, **kwargs):
         self._tree = None
         super().__init__(resource="biomes", **kwargs)
 
     def __getitem__(self, key) -> List[StudiesProxy] | StudiesProxy:
-        """TODO: docstring"""
-
-        df = self.to_pandas()
-        df_as_list = df.to_dict(orient="records")
-
-        # get dataset builder(s)
-        if isinstance(key, str) and key in self.lineages:
-            # TODO accept aliases for biome lineage e.g biome_name, biome
-            return StudiesProxy(biome_lineage=key)
-        elif isinstance(key, int) and self._accessions:
-            return StudiesProxy(biome_lineage=df_as_list[key]["lineage"])
-        elif isinstance(key, slice) and self._accessions:
-            return [
-                StudiesProxy(biome_lineage=record["lineage"])
-                for record in df_as_list[key]
-            ]
-        else:
-            raise KeyError(
-                f"Invalid key: {key}. "
-                "Key must be an integer index, a slice, or a valid lineage string."
+        # temporary override of unpageinate_results
+        def _unpageinate_results(self):
+            return itertools.chain.from_iterable(
+                [
+                    [
+                        deepcopy(item).update({"acccession": item.get("lineage", None)})
+                        or deepcopy(item)
+                        for item in sublist
+                    ]
+                    for sublist in self._results
+                ]
             )
+
+        super().__getitem__(key)
 
     @property
     def lineages(self) -> List[str]:
@@ -173,6 +180,11 @@ class BiomesProxy(Mgnifier):
                 "No data available to get lineages. " "Please run get() first."
             )
         return self.to_pandas()["lineage"].to_list()
+
+    @property
+    def accessions(self) -> List[str]:
+        # accessions == lineages, since biomes dont have accessions
+        return self.lineages
 
     # biome-specific methods
     def to_bigtree(self) -> Tree:
@@ -228,42 +240,14 @@ class BiomesProxy(Mgnifier):
             )
 
 
-class AssembliesProxy(Mgnifier):
+class AssembliesProxy(ResourceProxy):
     def __init__(
         self,
         *,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        # TODO
         super().__init__(resource="assemblies", params=params, **kwargs)
-
-    def __getitem__(self, key) -> List[AnalysesProxy] | AnalysesProxy:
-        """TODO: docstring"""
-
-        df = self.to_pandas()
-        df_as_list = df.to_dict(orient="records")
-
-        # get dataset builder(s)
-        if isinstance(key, str) and self._accessions and key in self._accessions:
-            return AnalysesProxy(assembly_accession=key)
-        elif isinstance(key, int) and self._accessions:
-            return AnalysesProxy(assembly_accession=df_as_list[key]["accession"])
-        elif isinstance(key, slice) and self._accessions:
-            return [
-                AnalysesProxy(assembly_accession=record["accession"])
-                for record in df_as_list[key]
-            ]
-        elif self._accessions is None:
-            raise RuntimeError(
-                "No accessions available for indexing. "
-                "E.g., run get() first to retrieve metadata and accessions."
-            )
-        else:
-            raise KeyError(
-                f"Invalid key: {key}. "
-                "Key must be an integer index, a slice, or a valid accession string."
-            )
 
 
 class GenomesProxy(Mgnifier):
@@ -275,3 +259,15 @@ class GenomesProxy(Mgnifier):
     ):
         # TODO
         super().__init__(resource="genomes", params=params, **kwargs)
+
+
+DEFAULT_LINKED_PROXY_CONFIG = {
+    SupportedEndpoints.BIOMES: StudiesProxy,
+    SupportedEndpoints.STUDIES: SamplesProxy,
+    SupportedEndpoints.SAMPLES: None,  # TODO: RunsProxy
+    SupportedEndpoints.ANALYSES: DatasetBuilder,
+    SupportedEndpoints.GENOMES: None,
+    SupportedEndpoints.ASSEMBLIES: AnalysesProxy,
+}
+
+DEFAULT_ASSEMBLIES_LINKED_PROXIES = {SupportedEndpoints.ASSEMBLIES: AnalysesProxy}
