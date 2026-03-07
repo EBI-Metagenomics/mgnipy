@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ENASampleFields(str, Enum):
     AGE = "age"
     ALTITUDE = "altitude"

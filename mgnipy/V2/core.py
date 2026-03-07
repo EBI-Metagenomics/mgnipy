@@ -1,37 +1,38 @@
 import asyncio
 import inspect
-import warnings
+import itertools
+import logging
 import os
+import warnings
 from copy import deepcopy
 from math import ceil
 from pathlib import Path
-from typing import Any, Literal, Optional, Callable
-from urllib.parse import urlencode
-import itertools
-import pandas as pd
-from bigtree import (
-    Tree,
+from typing import (
+    Any,
+    Callable,
+    Literal,
+    Optional,
 )
+from urllib.parse import urlencode
+
+import pandas as pd
 from tqdm import tqdm
 
 from mgnipy._models.config import MgnipyConfig
+from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.mgni_py_v2 import Client
+from mgnipy.V2.mgni_py_v2.api.analyses import (
+    list_assemblies,
+    list_mgnify_analyses,
+)
 from mgnipy.V2.mgni_py_v2.api.genomes import list_mgnify_genomes
 from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
+from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
 from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_studies,
-    list_mgnify_study_analyses,
-    list_mgnify_study_samples,
 )
-from mgnipy.V2.mgni_py_v2.api.analyses import (
-    list_mgnify_analyses,
-    list_assemblies,
-)
-from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
-import logging
 
 semaphore = get_semaphore()
 BASE_URL = MgnipyConfig().base_url
@@ -202,8 +203,8 @@ class Mgnifier:
         else:
             try:
                 return self.__dict__[f"_{name}"]
-            except:
-                raise KeyError(f"{name} is not a valid attribute of Mgnifier")
+            except KeyError as e:
+                raise KeyError(f"{name} is not a valid attribute of Mgnifier") from e
 
     def __str__(self):
         """
@@ -584,7 +585,9 @@ class Mgnifier:
                     f"{self._params}"
                 )
             else:
-                warnings.warn("Mgnifier.dry_run() not yet checked.", ResourceWarning)
+                warnings.warn(
+                    "Mgnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
+                )
                 self.preview()
 
         # prep page nums
@@ -702,7 +705,9 @@ class Mgnifier:
                     f"{self._params}"
                 )
             else:
-                warnings.warn("Mgnifier.dry_run() not yet checked.", ResourceWarning)
+                warnings.warn(
+                    "Mgnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
+                )
                 self.preview()
 
         # prep page nums

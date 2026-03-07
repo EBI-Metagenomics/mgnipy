@@ -1,39 +1,40 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    cast,
+)
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
-
-from ..types import UNSET, Unset
 from dateutil.parser import isoparse
-from typing import cast
-import datetime
+
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 if TYPE_CHECKING:
-  from ..models.genome_schema import GenomeSchema
-
-
-
+    from ..models.genome_schema import GenomeSchema
 
 
 T = TypeVar("T", bound="AdditionalContainedGenomeSchema")
 
 
-
 @_attrs_define
 class AdditionalContainedGenomeSchema:
-    """ 
-        Attributes:
-            genome (GenomeSchema): Simple schema for a Genome model.
-            updated_at (datetime.datetime | None):
-            run_accession (None | str | Unset): ENA accession of the run that produced this assembly
-            containment (float | None | Unset): Containment score for the genome within the assembly
-            cani (float | None | Unset): Containment Average Nucleotide Identity (cANI)
-     """
+    """
+    Attributes:
+        genome (GenomeSchema): Simple schema for a Genome model.
+        updated_at (datetime.datetime | None):
+        run_accession (None | str | Unset): ENA accession of the run that produced this assembly
+        containment (float | None | Unset): Containment score for the genome within the assembly
+        cani (float | None | Unset): Containment Average Nucleotide Identity (cANI)
+    """
 
     genome: GenomeSchema
     updated_at: datetime.datetime | None
@@ -42,12 +43,8 @@ class AdditionalContainedGenomeSchema:
     cani: float | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
-        from ..models.genome_schema import GenomeSchema
+
         genome = self.genome.to_dict()
 
         updated_at: None | str
@@ -74,13 +71,14 @@ class AdditionalContainedGenomeSchema:
         else:
             cani = self.cani
 
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "genome": genome,
-            "updated_at": updated_at,
-        })
+        field_dict.update(
+            {
+                "genome": genome,
+                "updated_at": updated_at,
+            }
+        )
         if run_accession is not UNSET:
             field_dict["run_accession"] = run_accession
         if containment is not UNSET:
@@ -90,16 +88,12 @@ class AdditionalContainedGenomeSchema:
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.genome_schema import GenomeSchema
+
         d = dict(src_dict)
         genome = GenomeSchema.from_dict(d.pop("genome"))
-
-
-
 
         def _parse_updated_at(data: object) -> datetime.datetime | None:
             if data is None:
@@ -109,15 +103,12 @@ class AdditionalContainedGenomeSchema:
                     raise TypeError()
                 updated_at_type_0 = isoparse(data)
 
-
-
                 return updated_at_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(datetime.datetime | None, data)
 
         updated_at = _parse_updated_at(d.pop("updated_at"))
-
 
         def _parse_run_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -128,7 +119,6 @@ class AdditionalContainedGenomeSchema:
 
         run_accession = _parse_run_accession(d.pop("run_accession", UNSET))
 
-
         def _parse_containment(data: object) -> float | None | Unset:
             if data is None:
                 return data
@@ -137,7 +127,6 @@ class AdditionalContainedGenomeSchema:
             return cast(float | None | Unset, data)
 
         containment = _parse_containment(d.pop("containment", UNSET))
-
 
         def _parse_cani(data: object) -> float | None | Unset:
             if data is None:
@@ -148,7 +137,6 @@ class AdditionalContainedGenomeSchema:
 
         cani = _parse_cani(d.pop("cani", UNSET))
 
-
         additional_contained_genome_schema = cls(
             genome=genome,
             updated_at=updated_at,
@@ -156,7 +144,6 @@ class AdditionalContainedGenomeSchema:
             containment=containment,
             cani=cani,
         )
-
 
         additional_contained_genome_schema.additional_properties = d
         return additional_contained_genome_schema

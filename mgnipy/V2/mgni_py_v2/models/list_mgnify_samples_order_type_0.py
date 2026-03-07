@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ListMgnifySamplesOrderType0(str, Enum):
     SAMPLE_TITLE = "sample_title"
     UPDATED_AT = "updated_at"

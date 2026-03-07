@@ -1,17 +1,24 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import (
+    Any,
+)
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
-from ...models.ninja_pagination_response_schema_m_gnify_analysis import NinjaPaginationResponseSchemaMGnifyAnalysis
-from ...types import UNSET, Unset
-from typing import cast
-
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
+from ...models.ninja_pagination_response_schema_m_gnify_analysis import (
+    NinjaPaginationResponseSchemaMGnifyAnalysis,
+)
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -19,11 +26,7 @@ def _get_kwargs(
     *,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> dict[str, Any]:
-    
-
-    
 
     params: dict[str, Any] = {}
 
@@ -36,26 +39,26 @@ def _get_kwargs(
         json_page_size = page_size
     params["page_size"] = json_page_size
 
-
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/assemblies/{accession}/analyses".format(accession=quote(str(accession), safe=""),),
+        "url": "/metagenomics/api/v2/assemblies/{accession}/analyses".format(
+            accession=quote(str(accession), safe=""),
+        ),
         "params": params,
     }
-
 
     return _kwargs
 
 
-
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> NinjaPaginationResponseSchemaMGnifyAnalysis | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> NinjaPaginationResponseSchemaMGnifyAnalysis | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaMGnifyAnalysis.from_dict(response.json())
-
-
+        response_200 = NinjaPaginationResponseSchemaMGnifyAnalysis.from_dict(
+            response.json()
+        )
 
         return response_200
 
@@ -65,7 +68,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysis]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysis]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -80,9 +85,8 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysis]:
-    """ List analyses for an assembly
+    """List analyses for an assembly
 
      Return MGnify analyses (MGYAs) that were generated from this assembly.
     Accessible at `/assemblies/{accession}/analyses`.
@@ -98,14 +102,12 @@ def sync_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaMGnifyAnalysis]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         accession=accession,
-page=page,
-page_size=page_size,
-
+        page=page,
+        page_size=page_size,
     )
 
     response = client.get_httpx_client().request(
@@ -114,15 +116,15 @@ page_size=page_size,
 
     return _build_response(client=client, response=response)
 
+
 def sync(
     accession: str,
     *,
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaMGnifyAnalysis | None:
-    """ List analyses for an assembly
+    """List analyses for an assembly
 
      Return MGnify analyses (MGYAs) that were generated from this assembly.
     Accessible at `/assemblies/{accession}/analyses`.
@@ -138,16 +140,15 @@ def sync(
 
     Returns:
         NinjaPaginationResponseSchemaMGnifyAnalysis
-     """
-
+    """
 
     return sync_detailed(
         accession=accession,
-client=client,
-page=page,
-page_size=page_size,
-
+        client=client,
+        page=page,
+        page_size=page_size,
     ).parsed
+
 
 async def asyncio_detailed(
     accession: str,
@@ -155,9 +156,8 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysis]:
-    """ List analyses for an assembly
+    """List analyses for an assembly
 
      Return MGnify analyses (MGYAs) that were generated from this assembly.
     Accessible at `/assemblies/{accession}/analyses`.
@@ -173,21 +173,18 @@ async def asyncio_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaMGnifyAnalysis]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         accession=accession,
-page=page,
-page_size=page_size,
-
+        page=page,
+        page_size=page_size,
     )
 
-    response = await client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
+
 
 async def asyncio(
     accession: str,
@@ -195,9 +192,8 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaMGnifyAnalysis | None:
-    """ List analyses for an assembly
+    """List analyses for an assembly
 
      Return MGnify analyses (MGYAs) that were generated from this assembly.
     Accessible at `/assemblies/{accession}/analyses`.
@@ -213,13 +209,13 @@ async def asyncio(
 
     Returns:
         NinjaPaginationResponseSchemaMGnifyAnalysis
-     """
+    """
 
-
-    return (await asyncio_detailed(
-        accession=accession,
-client=client,
-page=page,
-page_size=page_size,
-
-    )).parsed
+    return (
+        await asyncio_detailed(
+            accession=accession,
+            client=client,
+            page=page,
+            page_size=page_size,
+        )
+    ).parsed

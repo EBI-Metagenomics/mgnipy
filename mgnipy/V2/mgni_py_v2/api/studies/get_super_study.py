@@ -1,43 +1,41 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import (
+    Any,
+)
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.super_study_detail import SuperStudyDetail
-from typing import cast
-
+from ...types import (
+    Response,
+)
 
 
 def _get_kwargs(
     slug: str,
-
 ) -> dict[str, Any]:
-    
-
-    
-
-    
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/super-studies/{slug}".format(slug=quote(str(slug), safe=""),),
+        "url": "/metagenomics/api/v2/super-studies/{slug}".format(
+            slug=quote(str(slug), safe=""),
+        ),
     }
-
 
     return _kwargs
 
 
-
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> SuperStudyDetail | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> SuperStudyDetail | None:
     if response.status_code == 200:
         response_200 = SuperStudyDetail.from_dict(response.json())
-
-
 
         return response_200
 
@@ -47,7 +45,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[SuperStudyDetail]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[SuperStudyDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -60,9 +60,8 @@ def sync_detailed(
     slug: str,
     *,
     client: AuthenticatedClient | Client,
-
 ) -> Response[SuperStudyDetail]:
-    """ Get the detail of a single Super Study
+    """Get the detail of a single Super Study
 
      A Super Study is a collection of MGnify Studies all related to a single large initiative. They may
     also reference Genome Catalogues that were assembled from the Studies or as part of the Super Study
@@ -77,12 +76,10 @@ def sync_detailed(
 
     Returns:
         Response[SuperStudyDetail]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         slug=slug,
-
     )
 
     response = client.get_httpx_client().request(
@@ -91,13 +88,13 @@ def sync_detailed(
 
     return _build_response(client=client, response=response)
 
+
 def sync(
     slug: str,
     *,
     client: AuthenticatedClient | Client,
-
 ) -> SuperStudyDetail | None:
-    """ Get the detail of a single Super Study
+    """Get the detail of a single Super Study
 
      A Super Study is a collection of MGnify Studies all related to a single large initiative. They may
     also reference Genome Catalogues that were assembled from the Studies or as part of the Super Study
@@ -112,22 +109,20 @@ def sync(
 
     Returns:
         SuperStudyDetail
-     """
-
+    """
 
     return sync_detailed(
         slug=slug,
-client=client,
-
+        client=client,
     ).parsed
+
 
 async def asyncio_detailed(
     slug: str,
     *,
     client: AuthenticatedClient | Client,
-
 ) -> Response[SuperStudyDetail]:
-    """ Get the detail of a single Super Study
+    """Get the detail of a single Super Study
 
      A Super Study is a collection of MGnify Studies all related to a single large initiative. They may
     also reference Genome Catalogues that were assembled from the Studies or as part of the Super Study
@@ -142,27 +137,23 @@ async def asyncio_detailed(
 
     Returns:
         Response[SuperStudyDetail]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         slug=slug,
-
     )
 
-    response = await client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
+
 
 async def asyncio(
     slug: str,
     *,
     client: AuthenticatedClient | Client,
-
 ) -> SuperStudyDetail | None:
-    """ Get the detail of a single Super Study
+    """Get the detail of a single Super Study
 
      A Super Study is a collection of MGnify Studies all related to a single large initiative. They may
     also reference Genome Catalogues that were assembled from the Studies or as part of the Super Study
@@ -177,11 +168,11 @@ async def asyncio(
 
     Returns:
         SuperStudyDetail
-     """
+    """
 
-
-    return (await asyncio_detailed(
-        slug=slug,
-client=client,
-
-    )).parsed
+    return (
+        await asyncio_detailed(
+            slug=slug,
+            client=client,
+        )
+    ).parsed

@@ -1,19 +1,25 @@
 from http import HTTPStatus
-from typing import Any, cast
-from urllib.parse import quote
+from typing import (
+    Any,
+)
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
+from ...client import (
+    AuthenticatedClient,
+    Client,
+)
 from ...models.list_mgnify_studies_order_type_0 import ListMgnifyStudiesOrderType0
-from ...models.ninja_pagination_response_schema_m_gnify_study import NinjaPaginationResponseSchemaMGnifyStudy
+from ...models.ninja_pagination_response_schema_m_gnify_study import (
+    NinjaPaginationResponseSchemaMGnifyStudy,
+)
 from ...models.pipeline_versions import PipelineVersions
-from ...types import UNSET, Unset
-from typing import cast
-
+from ...types import (
+    UNSET,
+    Response,
+    Unset,
+)
 
 
 def _get_kwargs(
@@ -24,11 +30,7 @@ def _get_kwargs(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> dict[str, Any]:
-    
-
-    
 
     params: dict[str, Any] = {}
 
@@ -73,9 +75,7 @@ def _get_kwargs(
         json_page_size = page_size
     params["page_size"] = json_page_size
 
-
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
 
     _kwargs: dict[str, Any] = {
         "method": "get",
@@ -83,16 +83,16 @@ def _get_kwargs(
         "params": params,
     }
 
-
     return _kwargs
 
 
-
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> NinjaPaginationResponseSchemaMGnifyStudy | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> NinjaPaginationResponseSchemaMGnifyStudy | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaMGnifyStudy.from_dict(response.json())
-
-
+        response_200 = NinjaPaginationResponseSchemaMGnifyStudy.from_dict(
+            response.json()
+        )
 
         return response_200
 
@@ -102,7 +102,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[NinjaPaginationResponseSchemaMGnifyStudy]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[NinjaPaginationResponseSchemaMGnifyStudy]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -120,9 +122,8 @@ def sync_detailed(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaMGnifyStudy]:
-    """ List all studies analysed by MGnify
+    """List all studies analysed by MGnify
 
      MGnify studies inherit directly from studies (or projects) in ENA.
 
@@ -141,17 +142,15 @@ def sync_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaMGnifyStudy]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         order=order,
-biome_lineage=biome_lineage,
-has_analyses_from_pipeline=has_analyses_from_pipeline,
-search=search,
-page=page,
-page_size=page_size,
-
+        biome_lineage=biome_lineage,
+        has_analyses_from_pipeline=has_analyses_from_pipeline,
+        search=search,
+        page=page,
+        page_size=page_size,
     )
 
     response = client.get_httpx_client().request(
@@ -159,6 +158,7 @@ page_size=page_size,
     )
 
     return _build_response(client=client, response=response)
+
 
 def sync(
     *,
@@ -169,9 +169,8 @@ def sync(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaMGnifyStudy | None:
-    """ List all studies analysed by MGnify
+    """List all studies analysed by MGnify
 
      MGnify studies inherit directly from studies (or projects) in ENA.
 
@@ -190,19 +189,18 @@ def sync(
 
     Returns:
         NinjaPaginationResponseSchemaMGnifyStudy
-     """
-
+    """
 
     return sync_detailed(
         client=client,
-order=order,
-biome_lineage=biome_lineage,
-has_analyses_from_pipeline=has_analyses_from_pipeline,
-search=search,
-page=page,
-page_size=page_size,
-
+        order=order,
+        biome_lineage=biome_lineage,
+        has_analyses_from_pipeline=has_analyses_from_pipeline,
+        search=search,
+        page=page,
+        page_size=page_size,
     ).parsed
+
 
 async def asyncio_detailed(
     *,
@@ -213,9 +211,8 @@ async def asyncio_detailed(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaMGnifyStudy]:
-    """ List all studies analysed by MGnify
+    """List all studies analysed by MGnify
 
      MGnify studies inherit directly from studies (or projects) in ENA.
 
@@ -234,24 +231,21 @@ async def asyncio_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaMGnifyStudy]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         order=order,
-biome_lineage=biome_lineage,
-has_analyses_from_pipeline=has_analyses_from_pipeline,
-search=search,
-page=page,
-page_size=page_size,
-
+        biome_lineage=biome_lineage,
+        has_analyses_from_pipeline=has_analyses_from_pipeline,
+        search=search,
+        page=page,
+        page_size=page_size,
     )
 
-    response = await client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
+
 
 async def asyncio(
     *,
@@ -262,9 +256,8 @@ async def asyncio(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaMGnifyStudy | None:
-    """ List all studies analysed by MGnify
+    """List all studies analysed by MGnify
 
      MGnify studies inherit directly from studies (or projects) in ENA.
 
@@ -283,16 +276,16 @@ async def asyncio(
 
     Returns:
         NinjaPaginationResponseSchemaMGnifyStudy
-     """
+    """
 
-
-    return (await asyncio_detailed(
-        client=client,
-order=order,
-biome_lineage=biome_lineage,
-has_analyses_from_pipeline=has_analyses_from_pipeline,
-search=search,
-page=page,
-page_size=page_size,
-
-    )).parsed
+    return (
+        await asyncio_detailed(
+            client=client,
+            order=order,
+            biome_lineage=biome_lineage,
+            has_analyses_from_pipeline=has_analyses_from_pipeline,
+            search=search,
+            page=page,
+            page_size=page_size,
+        )
+    ).parsed

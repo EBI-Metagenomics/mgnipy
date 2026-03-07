@@ -1,12 +1,12 @@
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.metadata import (
-    BiomesProxy,
-    StudiesProxy,
-    SamplesProxy,
     AnalysesProxy,
-    GenomesProxy,
     AssembliesProxy,
+    BiomesProxy,
+    GenomesProxy,
+    SamplesProxy,
+    StudiesProxy,
 )
 
 ENDPOINT_PROXIES = {

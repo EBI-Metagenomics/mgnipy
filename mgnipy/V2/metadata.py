@@ -1,27 +1,27 @@
-import itertools
 from typing import (
     Any,
     List,
     Literal,
     Optional,
 )
+
 from bigtree import (
     Tree,
 )
-from copy import deepcopy
+
+from mgnipy._models.CONSTANTS import (
+    AssembliesPrefixes,
+    StudiesPrefixes,
+    SupportedEndpoints,
+)
 from mgnipy.V2.core import Mgnifier
 from mgnipy.V2.datasets import DatasetBuilder
-from mgnipy.V2.mgni_py_v2.api.studies import (
-    list_mgnify_study_analyses,
-    list_mgnify_study_samples,
-)
 from mgnipy.V2.mgni_py_v2.api.analyses import (
     list_analyses_for_assembly,
 )
-from mgnipy._models.CONSTANTS import (
-    SupportedEndpoints,
-    StudiesPrefixes,
-    AssembliesPrefixes,
+from mgnipy.V2.mgni_py_v2.api.studies import (
+    list_mgnify_study_analyses,
+    list_mgnify_study_samples,
 )
 
 
