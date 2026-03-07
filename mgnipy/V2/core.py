@@ -314,8 +314,6 @@ class Mgnifier:
         new_mg = self._clone()
         # but with updates to params
         new_mg._params.update(filters)
-        # check new params are valid for endpoint
-        new_mg._check_kwargs()
         return new_mg
 
     @require_endpoint_module

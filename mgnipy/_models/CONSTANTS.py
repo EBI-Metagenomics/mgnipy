@@ -35,8 +35,8 @@ class SpecialEnum(Enum):
         return sep.join(field.value for field in cls)
 
     @classmethod
-    def starts_with(cls, input):
-        return any(field.value.startswith(input) for field in cls)
+    def is_prefix_in(cls, input):
+        return any(input.startswith(field.value) for field in cls)
 
 
 class SupportedApiVersions(SpecialEnum):

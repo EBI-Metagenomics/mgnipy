@@ -92,35 +92,55 @@ class AnalysesProxy(ResourceProxy):
     def __init__(
         self,
         *,
-        study_accession: Optional[str] = None,
-        assembly_accession: Optional[str] = None,
+        # study_accession: Optional[str] = None,
+        # assembly_accession: Optional[str] = None,
         accession: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        if study_accession and assembly_accession:
-            raise ValueError(
-                "Can provide either study_accession or assembly_accession, or neither, but not both."
-            )
+        # if study_accession and assembly_accession:
+        #     raise ValueError(
+        #         "Can provide either study_accession or assembly_accession, or neither, but not both."
+        #     )
 
-        # give priority to accession
-        _one_acc = accession or study_accession or assembly_accession
-
-        # init mgnifier with accession
-        super().__init__(accession=_one_acc, params=params, **kwargs)
-
+        super().__init__(params=params, accession=accession, **kwargs)
         # determine endpoint module based on given accession type
-        if StudiesPrefixes.starts_with(_one_acc):
-            # list all analyses for given study accession
+        self._switch_endpoint_based_on_accession_prefix()
+
+    def _switch_endpoint_based_on_accession_prefix(self):
+        if self.accession is None:
+            self.resource = "analyses"
+        elif StudiesPrefixes.is_prefix_in(self.accession):
             self.endpoint_module = list_mgnify_study_analyses
-        elif AssembliesPrefixes.starts_with(_one_acc):
-            # list all analyses for given assembly accession
+        elif AssembliesPrefixes.is_prefix_in(self.accession):
             self.endpoint_module = list_analyses_for_assembly
-        elif _one_acc is None:
-            # if None then default to core list all analyses endpoint
-            super().__init__(resource="analyses", params=params, **kwargs)
-        else:  # if accession provided but doesn't match known prefixes
-            raise ValueError(f"Invalid accession: {_one_acc}. ")
+        else:
+            raise ValueError(f"Invalid accession: {self.accession}. ")
+
+    def filter(
+        self,
+        **filters,
+    ):
+        """
+        Update the parameters for the API call to filter results.
+
+        Parameters
+        ----------
+        **filters
+            Keyword arguments corresponding to the supported parameters for the current resource.
+            These will be used to filter the results returned by the API.
+
+        Returns
+        -------
+        Mgnifier
+            A new Mgnifier instance with updated parameters for filtering results.
+        """
+        # make a copy of current instance
+        new_mg = self._clone()
+        # but with updates to params
+        new_mg._params.update(filters)
+        new_mg._switch_endpoint_based_on_accession_prefix()
+        return new_mg
 
 
 class SamplesProxy(ResourceProxy):
@@ -160,21 +180,39 @@ class BiomesProxy(ResourceProxy):
     def __init__(self, **kwargs):
         super().__init__(resource="biomes", **kwargs)
 
-    def __getitem__(self, key) -> List[StudiesProxy] | StudiesProxy:
-        # temporary override of unpageinate_results
-        def _unpageinate_results(self):
-            return itertools.chain.from_iterable(
-                [
-                    [
-                        deepcopy(item).update({"acccession": item.get("lineage", None)})
-                        or deepcopy(item)
-                        for item in sublist
-                    ]
-                    for sublist in self._results
-                ]
-            )
+    def __getitem__(self, key) -> list[StudiesProxy] | StudiesProxy:
+        """
+        Get a linked proxy object based on the provided key.
+        The key can be an integer index, a slice, or a valid accession string (or lineage for biomes).
+        """
 
-        super().__getitem__(key)
+        if self._linked_proxy_module is not None:
+
+            results_list = list(self._unpageinate_results())
+
+            # next proxy
+            if isinstance(key, str) and key in self.lineages:
+                return self.linked_proxy_module(accession=key)
+            elif isinstance(key, int) and self.lineages:
+                return self.linked_proxy_module(accession=results_list[key]["lineage"])
+            elif isinstance(key, slice) and self.lineages:
+                return [
+                    self.linked_proxy_module(accession=record["lineage"])
+                    for record in results_list[key]
+                ]
+            elif self.lineages is None:
+                raise RuntimeError(
+                    "No lineages available for indexing. "
+                    "E.g., run get() first to retrieve."
+                )
+            else:
+                raise KeyError(
+                    f"Invalid key: {key}. "
+                    "Key must be an integer index, a slice, or a valid lineage string."
+                )
+        else:
+            # to mgnifier's __getitem__
+            super().__getitem__(key)
 
     @property
     def lineages(self) -> List[str]:
@@ -183,11 +221,6 @@ class BiomesProxy(ResourceProxy):
                 "No data available to get lineages. " "Please run get() first."
             )
         return self.to_pandas()["lineage"].to_list()
-
-    @property
-    def accessions(self) -> List[str]:
-        # accessions == lineages, since biomes dont have accessions
-        return self.lineages
 
     @property
     def tree(self) -> Tree:
@@ -248,7 +281,7 @@ class AssembliesProxy(ResourceProxy):
         super().__init__(resource="assemblies", params=params, **kwargs)
 
 
-class GenomesProxy(Mgnifier):
+class GenomesProxy(ResourceProxy):
     def __init__(
         self,
         *,
