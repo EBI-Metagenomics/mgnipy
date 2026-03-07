@@ -1,5 +1,7 @@
 from http import HTTPStatus
-from typing import Any
+from typing import (
+    Any,
+)
 from urllib.parse import quote
 
 import httpx
@@ -10,12 +12,15 @@ from ...client import (
     Client,
 )
 from ...models.m_gnify_sample_detail import MGnifySampleDetail
-from ...types import Response
+from ...types import (
+    Response,
+)
 
 
 def _get_kwargs(
     accession: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/metagenomics/api/v2/samples/{accession}".format(

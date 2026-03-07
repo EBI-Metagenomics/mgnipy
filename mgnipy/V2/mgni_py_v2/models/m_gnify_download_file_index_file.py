@@ -25,12 +25,12 @@ class MGnifyDownloadFileIndexFile:
     """
     Attributes:
         index_type (MGnifyDownloadFileIndexFileIndexType):
-        path (str):
+        path (str | Unset):
         relative_url (str | Unset): URL of the index file, relative to the DownloadFile it relates to.
     """
 
     index_type: MGnifyDownloadFileIndexFileIndexType
-    path: str
+    path: str | Unset = UNSET
     relative_url: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -46,9 +46,10 @@ class MGnifyDownloadFileIndexFile:
         field_dict.update(
             {
                 "index_type": index_type,
-                "path": path,
             }
         )
+        if path is not UNSET:
+            field_dict["path"] = path
         if relative_url is not UNSET:
             field_dict["relative_url"] = relative_url
 
@@ -59,7 +60,7 @@ class MGnifyDownloadFileIndexFile:
         d = dict(src_dict)
         index_type = MGnifyDownloadFileIndexFileIndexType(d.pop("index_type"))
 
-        path = d.pop("path")
+        path = d.pop("path", UNSET)
 
         relative_url = d.pop("relative_url", UNSET)
 

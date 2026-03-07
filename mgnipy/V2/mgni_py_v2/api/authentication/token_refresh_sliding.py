@@ -1,5 +1,7 @@
 from http import HTTPStatus
-from typing import Any
+from typing import (
+    Any,
+)
 
 import httpx
 
@@ -10,7 +12,9 @@ from ...client import (
 )
 from ...models.webin_token_refresh_request import WebinTokenRefreshRequest
 from ...models.webin_token_response import WebinTokenResponse
-from ...types import Response
+from ...types import (
+    Response,
+)
 
 
 def _get_kwargs(

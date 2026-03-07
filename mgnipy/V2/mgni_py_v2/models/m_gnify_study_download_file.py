@@ -35,8 +35,6 @@ class MGnifyStudyDownloadFile:
         long_description (str): Detailed description of the file
         path (str):
         alias (str):
-        index_file (Any | None):
-        parent_identifier (int | str):
         download_group (None | str | Unset): Group identifier for the download
         file_size_bytes (int | None | Unset):
         index_files (list[MGnifyDownloadFileIndexFile] | None | Unset):
@@ -49,8 +47,6 @@ class MGnifyStudyDownloadFile:
     long_description: str
     path: str
     alias: str
-    index_file: Any | None
-    parent_identifier: int | str
     download_group: None | str | Unset = UNSET
     file_size_bytes: int | None | Unset = UNSET
     index_files: list[MGnifyDownloadFileIndexFile] | None | Unset = UNSET
@@ -58,6 +54,7 @@ class MGnifyStudyDownloadFile:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+
         file_type = self.file_type.value
 
         download_type = self.download_type.value
@@ -69,12 +66,6 @@ class MGnifyStudyDownloadFile:
         path = self.path
 
         alias = self.alias
-
-        index_file: Any | None
-        index_file = self.index_file
-
-        parent_identifier: int | str
-        parent_identifier = self.parent_identifier
 
         download_group: None | str | Unset
         if isinstance(self.download_group, Unset):
@@ -112,8 +103,6 @@ class MGnifyStudyDownloadFile:
                 "long_description": long_description,
                 "path": path,
                 "alias": alias,
-                "index_file": index_file,
-                "parent_identifier": parent_identifier,
             }
         )
         if download_group is not UNSET:
@@ -145,18 +134,6 @@ class MGnifyStudyDownloadFile:
         path = d.pop("path")
 
         alias = d.pop("alias")
-
-        def _parse_index_file(data: object) -> Any | None:
-            if data is None:
-                return data
-            return cast(Any | None, data)
-
-        index_file = _parse_index_file(d.pop("index_file"))
-
-        def _parse_parent_identifier(data: object) -> int | str:
-            return cast(int | str, data)
-
-        parent_identifier = _parse_parent_identifier(d.pop("parent_identifier"))
 
         def _parse_download_group(data: object) -> None | str | Unset:
             if data is None:
@@ -211,8 +188,6 @@ class MGnifyStudyDownloadFile:
             long_description=long_description,
             path=path,
             alias=alias,
-            index_file=index_file,
-            parent_identifier=parent_identifier,
             download_group=download_group,
             file_size_bytes=file_size_bytes,
             index_files=index_files,

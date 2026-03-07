@@ -33,11 +33,9 @@ class MGnifyAnalysisDownloadFile:
         download_type (DownloadType):
         short_description (str): Brief description of the file
         long_description (str): Detailed description of the file
-        path (str):
         alias (str):
-        index_file (Any | None):
-        parent_identifier (int | str):
         download_group (None | str | Unset): Group identifier for the download
+        path (str | Unset):
         file_size_bytes (int | None | Unset):
         index_files (list[MGnifyDownloadFileIndexFile] | None | Unset):
         url (str | Unset):
@@ -47,17 +45,16 @@ class MGnifyAnalysisDownloadFile:
     download_type: DownloadType
     short_description: str
     long_description: str
-    path: str
     alias: str
-    index_file: Any | None
-    parent_identifier: int | str
     download_group: None | str | Unset = UNSET
+    path: str | Unset = UNSET
     file_size_bytes: int | None | Unset = UNSET
     index_files: list[MGnifyDownloadFileIndexFile] | None | Unset = UNSET
     url: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+
         file_type = self.file_type.value
 
         download_type = self.download_type.value
@@ -66,21 +63,15 @@ class MGnifyAnalysisDownloadFile:
 
         long_description = self.long_description
 
-        path = self.path
-
         alias = self.alias
-
-        index_file: Any | None
-        index_file = self.index_file
-
-        parent_identifier: int | str
-        parent_identifier = self.parent_identifier
 
         download_group: None | str | Unset
         if isinstance(self.download_group, Unset):
             download_group = UNSET
         else:
             download_group = self.download_group
+
+        path = self.path
 
         file_size_bytes: int | None | Unset
         if isinstance(self.file_size_bytes, Unset):
@@ -110,14 +101,13 @@ class MGnifyAnalysisDownloadFile:
                 "download_type": download_type,
                 "short_description": short_description,
                 "long_description": long_description,
-                "path": path,
                 "alias": alias,
-                "index_file": index_file,
-                "parent_identifier": parent_identifier,
             }
         )
         if download_group is not UNSET:
             field_dict["download_group"] = download_group
+        if path is not UNSET:
+            field_dict["path"] = path
         if file_size_bytes is not UNSET:
             field_dict["file_size_bytes"] = file_size_bytes
         if index_files is not UNSET:
@@ -142,21 +132,7 @@ class MGnifyAnalysisDownloadFile:
 
         long_description = d.pop("long_description")
 
-        path = d.pop("path")
-
         alias = d.pop("alias")
-
-        def _parse_index_file(data: object) -> Any | None:
-            if data is None:
-                return data
-            return cast(Any | None, data)
-
-        index_file = _parse_index_file(d.pop("index_file"))
-
-        def _parse_parent_identifier(data: object) -> int | str:
-            return cast(int | str, data)
-
-        parent_identifier = _parse_parent_identifier(d.pop("parent_identifier"))
 
         def _parse_download_group(data: object) -> None | str | Unset:
             if data is None:
@@ -166,6 +142,8 @@ class MGnifyAnalysisDownloadFile:
             return cast(None | str | Unset, data)
 
         download_group = _parse_download_group(d.pop("download_group", UNSET))
+
+        path = d.pop("path", UNSET)
 
         def _parse_file_size_bytes(data: object) -> int | None | Unset:
             if data is None:
@@ -209,11 +187,9 @@ class MGnifyAnalysisDownloadFile:
             download_type=download_type,
             short_description=short_description,
             long_description=long_description,
-            path=path,
             alias=alias,
-            index_file=index_file,
-            parent_identifier=parent_identifier,
             download_group=download_group,
+            path=path,
             file_size_bytes=file_size_bytes,
             index_files=index_files,
             url=url,

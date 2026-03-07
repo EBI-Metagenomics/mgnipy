@@ -1,5 +1,7 @@
 from http import HTTPStatus
-from typing import Any
+from typing import (
+    Any,
+)
 from urllib.parse import quote
 
 import httpx
@@ -9,8 +11,8 @@ from ...client import (
     AuthenticatedClient,
     Client,
 )
-from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_3506390em_gnify_functional_analysis_annotation_type import (
-    AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_c486b404m_gnify_functional_analysis_annotation_type import (
+    AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType,
 )
 from ...models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
     NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation,
@@ -24,11 +26,12 @@ from ...types import (
 
 def _get_kwargs(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType,
     *,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["page"] = page
@@ -85,7 +88,7 @@ def _build_response(
 
 def sync_detailed(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -97,7 +100,7 @@ def sync_detailed(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
@@ -126,7 +129,7 @@ def sync_detailed(
 
 def sync(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -138,7 +141,7 @@ def sync(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
@@ -162,7 +165,7 @@ def sync(
 
 async def asyncio_detailed(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -174,7 +177,7 @@ async def asyncio_detailed(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
@@ -201,7 +204,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     accession: str,
-    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAnalysisAnnotationType,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
@@ -213,7 +216,7 @@ async def asyncio(
 
     Args:
         accession (str):
-        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfType3506390EMGnifyFunctionalAna
+        annotation_type (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAna
             lysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
