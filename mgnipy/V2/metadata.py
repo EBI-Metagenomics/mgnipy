@@ -38,10 +38,12 @@ class ResourceProxy(Mgnifier):
         # init mgnifier
         super().__init__(resource=resource, params=params, **kwargs)
 
-        if SupportedEndpoints.is_valid(resource):
+        if SupportedEndpoints.is_valid(self._resource):
             self._linked_proxy_module = DEFAULT_LINKED_PROXY_CONFIG.get(
-                SupportedEndpoints(resource), None
+                SupportedEndpoints(self._resource), None
             )
+        else:
+            self._linked_proxy_module = None
 
     @property
     def linked_proxy_module(self):
@@ -57,7 +59,7 @@ class ResourceProxy(Mgnifier):
         The key can be an integer index, a slice, or a valid accession string (or lineage for biomes).
         """
 
-        if self._linked_proxy_module is not None:
+        if self.linked_proxy_module is not None:
 
             results_list = list(self._unpageinate_results())
 
@@ -103,14 +105,17 @@ class AnalysesProxy(ResourceProxy):
         #         "Can provide either study_accession or assembly_accession, or neither, but not both."
         #     )
 
-        super().__init__(params=params, accession=accession, **kwargs)
-        # determine endpoint module based on given accession type
-        self._switch_endpoint_based_on_accession_prefix()
+        super().__init__(
+            resource="analyses", params=params, accession=accession, **kwargs
+        )
+        if accession is not None:
+            # determine endpoint module based on given accession type
+            self._auto_endpoint_based_on_accession_prefix()
 
-    def _switch_endpoint_based_on_accession_prefix(self):
-        if self.accession is None:
-            self.resource = "analyses"
-        elif StudiesPrefixes.is_prefix_in(self.accession):
+    def _auto_endpoint_based_on_accession_prefix(self):
+        # if self.accession is None:
+        #     self.resource = "analyses"
+        if StudiesPrefixes.is_prefix_in(self.accession):
             self.endpoint_module = list_mgnify_study_analyses
         elif AssembliesPrefixes.is_prefix_in(self.accession):
             self.endpoint_module = list_analyses_for_assembly
@@ -139,7 +144,8 @@ class AnalysesProxy(ResourceProxy):
         new_mg = self._clone()
         # but with updates to params
         new_mg._params.update(filters)
-        new_mg._switch_endpoint_based_on_accession_prefix()
+        if "accession" in filters:
+            new_mg._auto_endpoint_based_on_accession_prefix()
         return new_mg
 
 
@@ -156,7 +162,9 @@ class SamplesProxy(ResourceProxy):
 
         if _one_acc:  # TODO validate accession format
             # init mgnifier
-            super().__init__(accession=_one_acc, params=params, **kwargs)
+            super().__init__(
+                resource="samples", accession=_one_acc, params=params, **kwargs
+            )
             # get the endpoint module
             self.endpoint_module = list_mgnify_study_samples
         else:
@@ -186,7 +194,7 @@ class BiomesProxy(ResourceProxy):
         The key can be an integer index, a slice, or a valid accession string (or lineage for biomes).
         """
 
-        if self._linked_proxy_module is not None:
+        if self.linked_proxy_module is not None:
 
             results_list = list(self._unpageinate_results())
 

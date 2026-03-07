@@ -5,12 +5,7 @@ import os
 from copy import deepcopy
 from math import ceil
 from pathlib import Path
-from typing import (
-    Any,
-    List,
-    Literal,
-    Optional,
-)
+from typing import Any, Literal, Optional, Callable
 from urllib.parse import urlencode
 import itertools
 import pandas as pd
@@ -107,8 +102,16 @@ class Mgnifier:
         # for client
         self._base_url: str = BASE_URL
         # if resource given, initiate endpoint module and supported params
-        # otherwise all None see resource.setter
-        self.resource = resource
+        self._resource: Optional[SupportedEndpoints] = resource
+        if self._resource:
+            self._endpoint_module: Callable = CORE_MODULES[SupportedEndpoints(resource)]
+            self._supported_kwargs: list[str] = self.list_parameters()
+            self._pagination_status: bool = self._get_pagination_status()
+        # otherwise initialize to None and require user to set resource or endpoint module before using
+        else:
+            self._endpoint_module = None
+            self._supported_kwargs = None
+            self._pagination_status = None
 
         # params as dict
         self._params: dict[str, Any] = params or {}
@@ -123,8 +126,8 @@ class Mgnifier:
         # results
         self._count: Optional[int] = None
         self._total_pages: Optional[int] = None
-        self._cached_first_page: Optional[List] = None
-        self._results: Optional[List[List[dict]]] = None
+        self._cached_first_page: Optional[list] = None
+        self._results: Optional[list[list[dict]]] = None
 
     def __iter__(self):
         """
@@ -137,7 +140,7 @@ class Mgnifier:
         """
         return self._unpageinate_results()
 
-    def __getitem__(self, key) -> List[dict] | dict:
+    def __getitem__(self, key) -> list[dict] | dict:
         """
         Allow indexing into the metadata records by integer index, accession, or lineage.
 
@@ -243,7 +246,7 @@ class Mgnifier:
         self._pagination_status = self._get_pagination_status()
         # autoupdate resource based on mgni_py_v2
         self._resource = os.path.basename(
-            os.path.dirname(self._endpoint_module.__file__)
+            os.path.dirname(self.endpoint_module.__file__)
         )
 
     @property
@@ -252,16 +255,17 @@ class Mgnifier:
 
     @resource.setter
     def resource(self, new_resource):
-        if SupportedEndpoints.is_valid(new_resource):
-            # set resource name
-            self._resource = new_resource
-            # get default endpoint module
-            self.endpoint_module = CORE_MODULES[SupportedEndpoints(new_resource)]
-        elif new_resource is None:
+        if new_resource is None:
             self._resource = None
             self._endpoint_module = None
             self._supported_kwargs = None
             self._pagination_status = None
+        elif SupportedEndpoints.is_valid(new_resource):
+            # set resource name
+            self._resource = new_resource
+            self.endpoint_module: Callable = CORE_MODULES[
+                SupportedEndpoints(new_resource)
+            ]
         else:
             raise ValueError(
                 f"Invalid resource: {new_resource}. "
@@ -269,7 +273,7 @@ class Mgnifier:
             )
 
     @property
-    def results_accessions(self) -> Optional[List[str]]:
+    def results_accessions(self) -> Optional[list[str]]:
         if self.to_pandas() is None:
             return None
         elif "accession" in self.to_pandas().columns:
@@ -289,7 +293,7 @@ class Mgnifier:
             List of supported keyword argument names.
         """
         """helper function to get supported kwargs for the current mpy module"""
-        sig = inspect.signature(self._endpoint_module._get_kwargs)
+        sig = inspect.signature(self.endpoint_module._get_kwargs)
         return list(sig.parameters.keys())
 
     def filter(
@@ -423,7 +427,7 @@ class Mgnifier:
 
         # return self.to_pandas(self._results)
 
-    def to_pandas(self, data: Optional[List[dict]] = None, **kwargs) -> pd.DataFrame:
+    def to_pandas(self, data: Optional[list[dict]] = None, **kwargs) -> pd.DataFrame:
         """
         Convert the current or provided metadata to a pandas DataFrame.
 
@@ -509,7 +513,8 @@ class Mgnifier:
         new_mg = self.__class__(
             params=self._params,
         )
-        new_mg.endpoint_module = self._endpoint_module
+        # will also set resource
+        new_mg.endpoint_module = self.endpoint_module
 
         return new_mg
 
@@ -529,7 +534,7 @@ class Mgnifier:
             Parsed response from the API, or None if the request failed.
         """
         with self._init_client() as client:
-            response = self._endpoint_module.sync_detailed(
+            response = self.endpoint_module.sync_detailed(
                 client=client,
                 **given_params,
             )
@@ -557,7 +562,7 @@ class Mgnifier:
         dict or None
             Parsed response from the API, or None if the request failed.
         """
-        return self._endpoint_module.sync_detailed(
+        return self.endpoint_module.sync_detailed(
             client=client,
             **(params or self._params),
             **kwargs,
@@ -648,7 +653,7 @@ class Mgnifier:
         """coroutine function to get coroutine for each page"""
         # limiting concurrency to protect server
         async with semaphore:
-            return await self._endpoint_module.asyncio_detailed(
+            return await self.endpoint_module.asyncio_detailed(
                 client=client,
                 **(params or self._params),
                 **kwargs,
@@ -870,7 +875,7 @@ class Mgnifier:
             If invalid parameters are provided.
         """
         try:
-            kwargy = self._endpoint_module._get_kwargs(**self._params)
+            kwargy = self.endpoint_module._get_kwargs(**self._params)
         except ValueError as e:
             raise ValueError(f"Invalid parameters provided: {e}") from None
         return kwargy
