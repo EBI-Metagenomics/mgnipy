@@ -14,7 +14,7 @@ from mgnipy._models.CONSTANTS import (
     StudiesPrefixes,
     SupportedEndpoints,
 )
-from mgnipy.V2.core import Mgnifier
+from mgnipy.V2.core import MGnifier
 from mgnipy.V2.datasets import DatasetBuilder
 from mgnipy.V2.mgni_py_v2.api.analyses import (
     list_analyses_for_assembly,
@@ -25,7 +25,7 @@ from mgnipy.V2.mgni_py_v2.api.studies import (
 )
 
 
-class ResourceProxy(Mgnifier):
+class ResourceProxy(MGnifier):
     """generic"""
 
     def __init__(
@@ -137,8 +137,8 @@ class AnalysesProxy(ResourceProxy):
 
         Returns
         -------
-        Mgnifier
-            A new Mgnifier instance with updated parameters for filtering results.
+        MGnifier
+            A new MGnifier instance with updated parameters for filtering results.
         """
         # make a copy of current instance
         new_mg = self._clone()

@@ -44,9 +44,9 @@ semaphore = get_semaphore()
 
 
 # init for each model
-class Mgnifier:
+class MGnifier:
     """
-    The Mgnipy Mgnifier class is a user-friendly interface for exploring study, sample and analysis metadata from the MGnify API.
+    The Mgnipy MGnifier class is a user-friendly interface for exploring study, sample and analysis metadata from the MGnify API.
 
     """
 
@@ -116,7 +116,7 @@ class Mgnifier:
 
     def __str__(self):
         return (
-            f"Mgnifier instance for MGnify {self._resource} metadata\n"
+            f"MGnifier instance for MGnify {self._resource} metadata\n"
             f"----------------------------------------\n"
             f"Base URL: {self._base_url}\n"
             f"API Version: {self._api_version}\n"
@@ -154,7 +154,7 @@ class Mgnifier:
         Previews the metadata of the first page of results as a DataFrame.
         """
         if self._cached_first_page is None:
-            print("Mgnifier.plan not yet checked. Running now...")
+            print("MGnifier.plan not yet checked. Running now...")
             self.plan()
 
         print(
@@ -243,7 +243,7 @@ class Mgnifier:
         # not allow to run this without preview/plan first?
         if self._total_pages is None:
             raise AssertionError(
-                "Please run Mgnifier.plan or .preview before"
+                "Please run MGnifier.plan or .preview before"
                 "deciding to collect metadata for params:\n"
                 f"{params}"
             )
@@ -319,7 +319,7 @@ class Mgnifier:
         )
 
 
-class Samplifier(Mgnifier):
+class Samplifier(MGnifier):
     """
     The Mgnipy Samplifier class is a user-friendly interface for exploring sample metadata from the MGnify API.
 
@@ -331,7 +331,7 @@ class Samplifier(Mgnifier):
         params: Optional[dict[str, Any]] = None,
         checkpoint_dir: Optional[Path] = None,
         checkpoint_freq: Optional[int] = None,
-        presearch: Optional[Mgnifier] = None,
+        presearch: Optional[MGnifier] = None,
         **kwargs,
     ):
         super().__init__(
@@ -347,20 +347,20 @@ class Samplifier(Mgnifier):
         self._presearch = presearch
         self._presearch_accessions: Optional[dict[str, str]] = None
         self._repeat_params: bool = False
-        if isinstance(self._presearch, Mgnifier):
+        if isinstance(self._presearch, MGnifier):
             if self._presearch.total_pages is None:
                 raise AssertionError(
-                    "the presearch Mgnifier must be planned or previewed first"
-                    "(Mgnifier.plan() or .preview()))"
+                    "the presearch MGnifier must be planned or previewed first"
+                    "(MGnifier.plan() or .preview()))"
                 )
 
             elif self._presearch.resource not in ["biomes", "studies"]:
                 raise ValueError(
-                    "the presearch Mgnifier must be of resource type 'biomes' or 'studies'"
+                    "the presearch MGnifier must be of resource type 'biomes' or 'studies'"
                 )
 
             elif self._presearch.total_pages == 0:
-                print("presearch Mgnifier has no results. Ignoring.")
+                print("presearch MGnifier has no results. Ignoring.")
                 self._presearch = None
 
             elif len(self._presearch.results) == self._presearch.total_pages:
@@ -387,10 +387,10 @@ class Samplifier(Mgnifier):
             else:
                 # ? TODO for each planned page of presearch will get samples
                 # TEMPORARY:
-                print("presearch Mgnifier has incomplete results. Ignoring.")
+                print("presearch MGnifier has incomplete results. Ignoring.")
                 self._presearch = None
         elif self._presearch is not None:
-            raise TypeError("presearch must be a Mgnifier instance or None")
+            raise TypeError("presearch must be a MGnifier instance or None")
 
         if "study_accession" in self._params:
             # add to presearch accessions..
@@ -484,7 +484,7 @@ class Samplifier(Mgnifier):
             # require planning before
             if self._total_pages is None:
                 raise AssertionError(
-                    "Please run Mgnifier.plan or .preview before" "deciding to collect"
+                    "Please run MGnifier.plan or .preview before" "deciding to collect"
                 )
 
             async def collect_one(acc) -> tuple[str, pd.DataFrame]:
