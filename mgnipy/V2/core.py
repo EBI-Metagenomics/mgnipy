@@ -14,11 +14,7 @@ from typing import (
     Optional,
 )
 from urllib.parse import urlencode
-import webbrowser
-import httpx
-from pydantic import HttpUrl
 import pandas as pd
-from sqlalchemy import alias
 from tqdm import tqdm
 
 from mgnipy._models.config import MgnipyConfig
@@ -36,9 +32,7 @@ from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
 from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_studies,
 )
-from mgnipy.V2.mgni_py_v2.models.m_gnify_analysis_with_annotations import (
-    MGnifyAnalysisWithAnnotations,
-)
+
 
 semaphore = get_semaphore()
 BASE_URL = MgnipyConfig().base_url
@@ -948,145 +942,3 @@ class MGnifier:
         if len(encoded_params) > 0:
             return f"{start_url}/?{encoded_params}"
         return start_url
-
-
-class MGazine(MGnifyAnalysisWithAnnotations):
-    """More so an extended data class"""
-
-    def __init__(self, **data):
-        super().__init__(
-            **data,
-        )
-        self.mgnifier_helper = MGnifier(accession=self.accession)
-        # self.mgnifier_helper.endpoint_module =
-        # for client
-        self._base_url: str = BASE_URL
-
-    @property
-    def downloads_dict(self) -> dict[str, dict]:
-        # TODO
-        return self.downloads
-
-    @property
-    def downloads_df(self) -> pd.DataFrame:
-        return pd.DataFrame([x.to_dict() for x in self.downloads])
-
-    @property
-    def list_downloads_files(self):
-        return {f.alias: f.url for f in self.downloads}
-
-    def _get_url_by_alias(
-        self, alias: str, df: Optional[pd.DataFrame] = None
-    ) -> Optional[str]:
-        df = df or self.downloads_df
-        try:
-            return df.query(f"alias == '{alias}'")["url"].values[0]
-        except RuntimeError:
-            raise KeyError(f"Issue getting download url for alias: {alias}")
-
-    def _get_alias_by_url(
-        self, url: HttpUrl, df: Optional[pd.DataFrame] = None
-    ) -> Optional[str]:
-        df = df or self.downloads_df
-        try:
-            return df.query(f"url == '{url}'")["alias"].values[0]
-        except RuntimeError:
-            raise KeyError(f"Issue getting alias for url: {url}")
-
-    def _get_type_by_alias(
-        self, alias: str, df: Optional[pd.DataFrame] = None
-    ) -> Optional[str]:
-        df = df or self.downloads_df
-        try:
-            return df.query(f"alias == '{alias}'")["file_type"].values[0]
-        except RuntimeError:
-            raise KeyError(f"Issue getting file type for alias: {alias}")
-
-    def _stream_tsv(self, url: str, sep: str = "\t", **pd_kwargs) -> pd.DataFrame:
-        return pd.read_csv(url, iterator=True, sep=sep, **pd_kwargs)
-
-    def _stream_html(self, url: str, **web_kwargs):
-        return webbrowser.open(url, **web_kwargs)
-
-    def _stream_txt(self, url: str, **kwargs):
-        with httpx.stream("GET", url, **kwargs) as response:
-            response.raise_for_status()
-            yield from response.iter_text()
-
-    def _get_streamer(
-        self, alias: Optional[str] = None, url: Optional[HttpUrl] = None, **kwargs
-    ):
-
-        if alias:
-            url = self._get_url_by_alias(alias)
-        elif url:
-            alias = self._get_alias_by_url(url)
-        else:
-            raise ValueError("Either alias OR url must be provided for streaming.")
-        # return stream based on file type
-        file_type = self._get_type_by_alias(alias)
-        if file_type == "tsv":
-            return self._stream_tsv(url, **kwargs)
-        elif file_type == "csv":
-            return self._stream_tsv(url, sep=",", **kwargs)
-        elif file_type == "html":
-            return lambda: self._stream_html(url, **kwargs)
-        elif file_type in ["txt", "fasta", "fastq"]:
-            return self._stream_txt(url, **kwargs)
-        else:
-            raise ValueError(f"Unsupported file type for streaming: {file_type}")
-
-    def streams(
-        self, *, alias: Optional[str] = None, url: Optional[HttpUrl] = None
-    ) -> dict[str, Callable]:
-        """kinda lazy loading"""
-
-        # init
-        aliases = []
-        if url and not alias:
-            aliases.append(self._get_alias_by_url(url))
-        elif alias and not url:
-            aliases.append(alias)
-        elif url and alias:
-            warnings.warn(
-                "Both alias and url provided, using alias to get url for streaming."
-            )
-            aliases.append(alias)
-        else:
-            aliases = self.downloads_df["alias"].tolist()
-
-        return {a: self._get_streamer(alias=a) for a in aliases}
-
-    def get(self, url: Optional[HttpUrl] = None, alias: Optional[str] = None):
-        """here this will get all or a specific dataset"""
-        with self._init_client() as client:
-            # make get request
-            response = client.get(url)
-            # validate
-            response.raise_for_status()
-            # return content as bytes
-            return response.content
-
-    # def download(self, url: str, filename: str):
-    #     with httpx.stream("GET", url) as response:
-    #         response.raise_for_status()
-    #         with open(filename, "wb") as f:
-    #             for chunk in response.iter_bytes():
-    #                 f.write(chunk)
-
-    ## HIDDEN HELPER METHODS
-    ## Help with requests
-    def _init_client(self):
-        """
-        Initialize and return a MGnify API client instance.
-
-        Returns
-        -------
-        Client
-            Configured MGnify API client.
-        """
-        client_v1 = Client(
-            base_url=str(self._base_url),
-            # TODO logs?
-        )
-        return client_v1
