@@ -18,7 +18,7 @@ dynamic = [
   "version",
 ]
 readme = "README.md"
-requires-python = ">=3.10" 
+requires-python = ">=3.10"
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
@@ -46,6 +46,7 @@ dev = [
     "black[jupyter]>=25.11.0",
     "isort>=6.1.0",
     "openapi-python-client>=0.17.3",
+    "pre-commit>=4.5.1",
     "pytest>=8.4.2",
     "ruff>=0.14.13",
 ]

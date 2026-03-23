@@ -1,0 +1,46 @@
+---
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.26
+    hooks:
+      - id: uv-lock # update lock
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v3.1.0"
+    hooks:
+      - id: prettier
+        additional_dependencies:
+          - prettier@3.6.2
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.7
+    hooks:
+      - id: ruff # Fixes issues (including unused imports)
+        args: ["--fix"]
+
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        #name: isort (python)
+        args:
+          [
+            "--profile",
+            "black",
+            "--split-on-trailing-comma",
+            "--force-grid-wrap",
+            "2",
+            "--use-parentheses",
+            "true",
+          ]
