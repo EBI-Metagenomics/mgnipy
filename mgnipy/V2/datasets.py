@@ -1,30 +1,28 @@
-import asyncio
 import warnings
+import webbrowser
+from pathlib import Path
 from typing import (
-    Any,
     Callable,
-    Literal,
     Optional,
 )
-import webbrowser
+
 import httpx
-from pydantic import HttpUrl, DirectoryPath
 import pandas as pd
-from tqdm import tqdm
+from pydantic import (
+    DirectoryPath,
+    HttpUrl,
+)
 
 from mgnipy._models.config import MgnipyConfig
-from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy._shared_helpers.async_helpers import get_semaphore
-from mgnipy._shared_helpers.pydantic_help import validate_gt_int
 from mgnipy.V2.mgni_py_v2 import Client
 from mgnipy.V2.mgni_py_v2.models.m_gnify_analysis_with_annotations import (
     MGnifyAnalysisWithAnnotations,
 )
 
-from mgnipy.V2.metadata import MGnifier
-from mgnipy.V2.mgni_py_v2.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations_661c2d6a as get_analysis_annotations,
-)
+# from mgnipy.V2.mgni_py_v2.api.analyses import (
+#     analysis_get_mgnify_analysis_with_annotations_661c2d6a as get_analysis_annotations,
+# )
 
 
 semaphore = get_semaphore()
@@ -62,8 +60,8 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         df = df or self.downloads_df
         try:
             return df.query(f"alias == '{alias}'")["url"].values[0]
-        except RuntimeError:
-            raise KeyError(f"Issue getting download url for alias: {alias}")
+        except RuntimeError as err:
+            raise KeyError(f"Issue getting download url for alias: {alias}") from err
 
     def _get_alias_by_url(
         self, url: HttpUrl, df: Optional[pd.DataFrame] = None
@@ -71,8 +69,8 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         df = df or self.downloads_df
         try:
             return df.query(f"url == '{url}'")["alias"].values[0]
-        except RuntimeError:
-            raise KeyError(f"Issue getting alias for url: {url}")
+        except RuntimeError as err:
+            raise KeyError(f"Issue getting alias for url: {url}") from err
 
     def _get_type_by_alias(
         self, alias: str, df: Optional[pd.DataFrame] = None
@@ -80,14 +78,16 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         df = df or self.downloads_df
         try:
             return df.query(f"alias == '{alias}'")["file_type"].values[0]
-        except RuntimeError:
-            raise KeyError(f"Issue getting file type for alias: {alias}")
+        except RuntimeError as err:
+            raise KeyError(f"Issue getting file type for alias: {alias}") from err
 
     def _prioritize_alias(
         self, alias: Optional[str], url: Optional[HttpUrl], required: bool = False
     ) -> tuple[str, HttpUrl]:
         if alias and url:
-            warnings.warn("Both `alias` and `url` provided, ignoring `url`.")
+            warnings.warn(
+                "Both `alias` and `url` provided, ignoring `url`.", stacklevel=2
+            )
             url = self._get_url_by_alias(alias)
         elif alias and not url:
             url = self._get_url_by_alias(alias)
@@ -156,11 +156,19 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         filename: Optional[str] = None,
     ):
 
+        # get alias/url
         _alias, _url = self._prioritize_alias(alias, url, required=True)
+
+        # make dir if not exists
+        to_dir = Path(to_dir)
+        to_dir.mkdir(parents=True, exist_ok=True)
+
+        # prep full path
+        filepath = to_dir / filename if filename else to_dir / _alias
 
         with httpx.stream("GET", _url) as response:
             response.raise_for_status()
-            with open(filename, "wb") as f:
+            with open(filepath, "wb") as f:
                 for chunk in response.iter_bytes():
                     f.write(chunk)
 
@@ -199,28 +207,28 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         return client_v1
 
 
-class DatasetBuilder(MGnifier):
+# class DatasetBuilder(MGnifier):
 
-    def __init__(
-        self,
-        accession: str,
-    ):
-        super().__init__(
-            accession=accession,
-        )
-        self.mpy_module = get_analysis_annotations
+#     def __init__(
+#         self,
+#         accession: str,
+#     ):
+#         super().__init__(
+#             accession=accession,
+#         )
+#         self.mpy_module = get_analysis_annotations
 
-    def __getitem__(self, key):
-        pass
+#     def __getitem__(self, key):
+#         pass
 
-    def __getattr__(seld, name):
-        if name == "annotations":
-            return self
-        else:
-            raise KeyError(f"DatasetBuilder object has no attribute {name}")
+#     def __getattr__(seld, name):
+#         if name == "annotations":
+#             return self
+#         else:
+#             raise KeyError(f"DatasetBuilder object has no attribute {name}")
 
-    def export(self):
-        pass
+#     def export(self):
+#         pass
 
 
 # should there be different dataset builders?
