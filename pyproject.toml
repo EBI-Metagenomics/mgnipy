@@ -25,6 +25,7 @@ classifiers = [
 ]
 license = "GPL-3.0-or-later" # https://choosealicense.com/licenses/gpl-3.0/
 dependencies = [
+    "aiofiles>=25.1.0",
     "anndata>=0.10.9",
     "async-lru>=2.1.0",
     "attrs>=25.4.0",
