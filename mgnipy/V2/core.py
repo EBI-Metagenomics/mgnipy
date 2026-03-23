@@ -14,6 +14,7 @@ from typing import (
     Optional,
 )
 from urllib.parse import urlencode
+
 import pandas as pd
 from tqdm import tqdm
 
@@ -32,7 +33,6 @@ from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
 from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_studies,
 )
-
 
 semaphore = get_semaphore()
 BASE_URL = MgnipyConfig().base_url
@@ -194,8 +194,10 @@ class MGnifier:
         AttributeError
             If the attribute does not exist.
         """
-        if name == "mgnipy_client":
-            return self._init_client()
+        if name == "httpx_client":
+            return self._init_client().get_httpx_client()
+        elif name == "httpx_aclient":
+            return self._init_client().get_httpx_async_client()
         elif name == "request_url":
             return self._build_url()
         elif name == "api_version":
