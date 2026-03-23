@@ -15,7 +15,7 @@ from mgnipy._models.CONSTANTS import (
     SupportedEndpoints,
 )
 from mgnipy.V2.core import MGnifier
-from mgnipy.V2.datasets import DatasetBuilder
+from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.mgni_py_v2.api.analyses import (
     list_analyses_for_assembly,
 )
@@ -304,7 +304,7 @@ DEFAULT_LINKED_PROXY_CONFIG = {
     SupportedEndpoints.BIOMES: StudiesProxy,
     SupportedEndpoints.STUDIES: SamplesProxy,
     SupportedEndpoints.SAMPLES: None,  # TODO: RunsProxy
-    SupportedEndpoints.ANALYSES: DatasetBuilder,
+    SupportedEndpoints.ANALYSES: MGazine,
     SupportedEndpoints.GENOMES: None,
     SupportedEndpoints.ASSEMBLIES: AnalysesProxy,
 }
