@@ -197,7 +197,7 @@ class MGnifier:
         if name == "httpx_client":
             return self._init_client().get_httpx_client()
         elif name == "httpx_aclient":
-            return self._init_client().get_httpx_async_client()
+            return self._init_client().get_async_httpx_client()
         elif name == "request_url":
             return self._build_url()
         elif name == "api_version":
