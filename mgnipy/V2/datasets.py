@@ -15,6 +15,7 @@ from pydantic import (
     DirectoryPath,
     HttpUrl,
 )
+from skbio.io import read
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm as tqdm_async
 
@@ -266,6 +267,8 @@ class MGazine(MGnifyAnalysisWithAnnotations):
 
         client = httpx_client or self._mgnifier_helper.httpx_client
 
+        # unzip if gzipped PICK UP HERE
+
         if chunksize is None:
             # load as whole
             with client.get(url, **httpx_kwargs) as response:
@@ -285,6 +288,97 @@ class MGazine(MGnifyAnalysisWithAnnotations):
                     yield chunk
         else:
             raise ValueError("`chunksize` must be a positive integer or None.")
+
+    def stream_fasta(self, url: str, **skbio_kwargs) -> Generator:
+        """
+        Streams a fasta file from a url and returns an iterator of tuples (header, sequence).
+
+        Parameters
+        ----------
+        url : str
+            The url of the fasta file to stream.
+        skbio_kwargs : dict, optional
+            Additional keyword arguments to pass to the skbio parsers.
+            https://scikit.bio/docs/latest/generated/skbio.io.format.fasta.html
+
+        Returns
+        -------
+        Generator[tuple[str, str], None, None]
+            An iterator of tuples (header, sequence).
+        """
+        return read(url, format="fasta", **skbio_kwargs)
+
+    def stream_gff(self, url: str, **skbio_kwargs) -> Generator:
+        """
+        Streams a gff file from a url and returns an iterator of parsed gff records.
+
+        Parameters
+        ----------
+        url : str
+            The url of the gff file to stream.
+        skbio_kwargs : dict, optional
+            Additional keyword arguments to pass to the skbio parser.
+            https://scikit.bio/docs/latest/generated/skbio.io.format.gff3.html
+
+        Returns
+        -------
+        Generator[skbio.io._gff3.GFF3Record, None, None]
+            "generator of tuple (seq_id of str type, skbio.metadata.IntervalMetadata)"
+        """
+        return read(url, format="gff3", **skbio_kwargs)
+
+    def stream_biom(self, url: str, **skbio_kwargs) -> Generator:
+        """
+        Streams a biom file from a url and returns an iterator of parsed biom records.
+
+        Parameters
+        ----------
+        url : str
+            The url of the biom file to stream.
+        skbio_kwargs : dict, optional
+            Additional keyword arguments to pass to the skbio parser.
+        Returns
+        -------
+        Generator[dict, None, None]
+            An iterator of parsed biom records as dictionaries.
+        """
+        return read(url, format="biom", **skbio_kwargs)
+
+    def stream_json(self, url: str, **httpx_kwargs) -> dict:
+        """
+        Streams a json file from a url and returns the parsed json as a dictionary.
+
+        Parameters
+        ----------
+        url : str
+            The url of the json file to stream.
+        httpx_kwargs : dict, optional
+            Additional keyword arguments to pass to the httpx client.
+        Returns
+        -------
+        dict
+            The parsed json as a dictionary.
+        """
+        pass
+        # TODO
+
+    def stream_tree(self, url: str, **httpx_kwargs) -> Generator:
+        """
+        Streams a tree file from a url and returns an iterator of parsed tree records.
+
+        Parameters
+        ----------
+        url : str
+            The url of the tree file to stream.
+        httpx_kwargs : dict, optional
+            Additional keyword arguments to pass to the httpx client.
+        Returns
+        -------
+        Generator[dict, None, None]
+            An iterator of parsed tree records as dictionaries.
+        """
+        pass
+        # TODO: newick?
 
     def _get_streamer(
         self,
@@ -335,10 +429,16 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             )
         elif file_type == "html":
             return lambda: self.stream_html(_url, **kwargs)
-        elif file_type in ["txt", "fasta", "fastq"]:
+        elif file_type in ["other", "txt"]:  # TODO: to constants
             return self.stream_txt(
                 _url, chunksize=chunksize, httpx_client=client, **kwargs
             )
+        elif file_type == "gff3":
+            return self.stream_gff(_url, **kwargs)
+        elif file_type == "biom":
+            return self.stream_biom(_url, **kwargs)
+        elif file_type == "fasta":
+            return self.stream_fasta(_url, **kwargs)
         else:
             raise ValueError(f"Unsupported file type for streaming: {file_type}")
 
@@ -596,15 +696,25 @@ class MGazine(MGnifyAnalysisWithAnnotations):
                     # flag and continue with downloads ..
                     print(f"Error occurred while downloading {f}: {e}")
 
-    def get(self, url: Optional[HttpUrl] = None, alias: Optional[str] = None):
-        """here this will get all or a specific dataset"""
-        with self._init_client() as client:
-            # make get request
-            response = client.get(url)
-            # validate
-            response.raise_for_status()
-            # return content as bytes
-            return response.content
+
+class MGazineCurator:
+
+    def __init__(
+        self,
+        *mgazines,
+    ):
+
+        if mgazines and all(isinstance(m, MGazine) for m in mgazines):
+            self.mgazines = mgazines
+        elif mgazines and all(isinstance(m, str) for m in mgazines):
+            self.mgazines = [MGazine(m) for m in mgazines]
+        else:
+            raise ValueError(
+                "Invalid input: all inputs must be either MGazine instances or accession strings."
+            )
+
+    def go_terms(self):
+        pass
 
 
 # class DatasetBuilder(MGnifier):
