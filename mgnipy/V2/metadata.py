@@ -149,6 +149,17 @@ class AnalysesProxy(ResourceProxy):
         return new_mg
 
 
+class RunsProxy(ResourceProxy):
+    def __init__(
+        self,
+        *,
+        accession: Optional[str] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        pass  # TODO
+
+
 class SamplesProxy(ResourceProxy):
     def __init__(
         self,
@@ -304,6 +315,7 @@ DEFAULT_LINKED_PROXY_CONFIG = {
     SupportedEndpoints.BIOMES: StudiesProxy,
     SupportedEndpoints.STUDIES: SamplesProxy,
     SupportedEndpoints.SAMPLES: None,  # TODO: RunsProxy
+    # TODO: SupportedEndpoints.RUNS: AnalysesProxy,
     SupportedEndpoints.ANALYSES: MGazine,
     SupportedEndpoints.GENOMES: None,
     SupportedEndpoints.ASSEMBLIES: AnalysesProxy,
