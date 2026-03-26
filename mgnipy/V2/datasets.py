@@ -1,6 +1,9 @@
 import asyncio
+import codecs
+import logging
 import warnings
 import webbrowser
+import zlib
 from pathlib import Path
 from typing import (
     Callable,
@@ -15,6 +18,7 @@ from pydantic import (
     DirectoryPath,
     HttpUrl,
 )
+from requests.exceptions import HTTPError
 from skbio.io import read
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm as tqdm_async
@@ -216,8 +220,10 @@ class MGazine(MGnifyAnalysisWithAnnotations):
                 )
             except pd.errors.ParserError:
                 continue  # Try next skiprows value
-            except Exception:
-                raise  # Re-raise any other error
+            except Exception as err:
+                raise RuntimeError(
+                    f"Error reading TSV from {url} with skiprows={skip}"
+                ) from err
         raise pd.errors.ParserError(
             f"Failed to parse {url} after skipping up to {max_skip} rows."
         )
@@ -239,6 +245,106 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             True if the url was opened successfully, False otherwise.
         """
         return webbrowser.open(url, **web_kwargs)
+
+    def _get_zipped_chunks(
+        self,
+        url: str,
+        chunksize: int = 65536,
+        httpx_client: Optional[httpx.Client] = None,
+        **httpx_kwargs,
+    ) -> Generator:
+        """
+        Streams a zipped file from a url and yields the unzipped chunks.
+        Adapted from: https://stream-unzip.docs.trade.gov.uk/get-started/
+
+        Parameters
+        ----------
+        url : str
+            The url of the zipped file to stream.
+        chunksize : int, optional
+            The number of bytes to include in each chunk. Default is 65536 (64KB).
+        httpx_client : Optional[httpx.Client], optional
+            An optional httpx.Client to use for the request. If not provided, a new client will be created using the mgnifier helper. Default is None.
+        httpx_kwargs : dict
+            Additional keyword arguments to pass to the httpx client.
+
+        Returns
+        -------
+        Generator[bytes, None, None]
+            An iterator of unzipped byte chunks.
+        """
+
+        client = httpx_client or self._mgnifier_helper.httpx_client
+
+        # Iterable that yields the bytes of a zip file
+        with client.stream("GET", url, **httpx_kwargs) as r:
+            yield from r.iter_bytes(chunk_size=chunksize)
+
+        # for file_name, file_size, unzipped_chunks in stream_unzip(zipped_chunks()):
+        #     # unzipped_chunks must be iterated to completion or UnfinishedIterationError will be raised
+        #     for chunk in unzipped_chunks:
+        #         print(chunk)
+
+    def stream_gzipped(
+        self,
+        url: str,
+        chunksize: Optional[int] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        decode: bool = False,
+        encoding: str = "utf-8",
+        errors: str = "replace",
+        **httpx_kwargs,
+    ) -> bytes | str | Generator[bytes, None, None] | Generator[str, None, None]:
+
+        client = httpx_client or self._mgnifier_helper.httpx_client
+
+        # Full download + full unzip
+        if chunksize is None:
+            r = client.get(url, timeout=None, **httpx_kwargs)
+            r.raise_for_status()
+            decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            data = decompressor.decompress(r.content) + decompressor.flush()
+            return data.decode(encoding, errors=errors) if decode else data
+
+        if not isinstance(chunksize, int) or chunksize <= 0:
+            raise ValueError("`chunksize` must be a positive integer or None.")
+
+        # Streaming unzip
+        def _iter() -> Generator[bytes, None, None] | Generator[str, None, None]:
+            decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            decoder = (
+                codecs.getincrementaldecoder(encoding)(errors=errors)
+                if decode
+                else None
+            )
+
+            with client.stream("GET", url, timeout=None, **httpx_kwargs) as r:
+                r.raise_for_status()
+                for chunk in r.iter_raw(chunk_size=chunksize):
+                    if not chunk:
+                        continue
+                    out = decompressor.decompress(chunk)
+                    if out:
+                        if decode:
+                            text = decoder.decode(out, final=False)
+                            if text:
+                                yield text
+                        else:
+                            yield out
+
+                tail = decompressor.flush()
+                if tail:
+                    if decode:
+                        text = decoder.decode(tail, final=False)
+                        if text:
+                            yield text
+
+                if decode:
+                    final_text = decoder.decode(b"", final=True)
+                    if final_text:
+                        yield final_text
+
+        return _iter()
 
     def stream_txt(
         self,
@@ -266,8 +372,6 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         """
 
         client = httpx_client or self._mgnifier_helper.httpx_client
-
-        # unzip if gzipped PICK UP HERE
 
         if chunksize is None:
             # load as whole
@@ -380,6 +484,32 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         pass
         # TODO: newick?
 
+    def _fix_inconsistent_cols(
+        self, fields: list[str], pad_to: int = 15
+    ) -> list[str] | None:
+        """
+        Fixes inconsistent columns in a list of strings.
+
+        Parameters
+        ----------
+        fields : list[str]
+            The list of strings to fix.
+        pad_to : int, optional
+            The number of columns to pad or truncate to. Default is 15.
+
+        Returns
+        -------
+        list[str] | None
+            The fixed list of strings, or None if the fields are invalid.
+        """
+        # pad to
+        if len(fields) < pad_to:
+            return fields + [""] * (pad_to - len(fields))
+        # truncate
+        if len(fields) > pad_to:
+            return fields[:pad_to]
+        return fields
+
     def _get_streamer(
         self,
         alias: Optional[str] = None,
@@ -420,9 +550,31 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         # return stream based on file type
         file_type = self._get_type_by_alias(_alias)
         if file_type == "tsv":
-            return self.stream_tsv(
-                _url, chunksize=chunksize, max_skip=max_skip, **kwargs
-            )
+            if _url.endswith(".gz") or _url.endswith(".gzip"):
+                logging.info(f"tsv file type ends with .gz: {_url}")
+                try:
+                    return self.stream_tsv(
+                        _url,
+                        chunksize=chunksize,
+                        max_skip=max_skip,
+                        compression="gzip",
+                        **kwargs,
+                    )
+                except pd.errors.ParserError as e:
+                    logging.debug(f"ParserError: {e}")
+                    return self.stream_tsv(
+                        _url,
+                        chunksize=chunksize,
+                        max_skip=max_skip,
+                        compression="gzip",
+                        engine="python",
+                        on_bad_lines=self._fix_inconsistent_cols,
+                        **kwargs,
+                    )
+            elif _url.endswith(".txt") or _url.endswith(".tsv"):
+                return self.stream_tsv(
+                    _url, chunksize=chunksize, max_skip=max_skip, **kwargs
+                )
         elif file_type == "csv":
             return self.stream_tsv(
                 _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
@@ -433,7 +585,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             return self.stream_txt(
                 _url, chunksize=chunksize, httpx_client=client, **kwargs
             )
-        elif file_type == "gff3":
+        elif file_type == "gff":
             return self.stream_gff(_url, **kwargs)
         elif file_type == "biom":
             return self.stream_biom(_url, **kwargs)
@@ -482,16 +634,25 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             aliases = [_alias]
         # return dict of alias: streamer_function
         client = self._mgnifier_helper.httpx_client
-        return {
-            a: self._get_streamer(
-                alias=a,
-                chunksize=chunksize,
-                httpx_client=client,
-                max_skip=max_skip,
-                **kwargs,
-            )
-            for a in aliases
-        }
+
+        # TODO: skip404 client error for now
+        streams = {}
+        for a in aliases:
+            try:
+                print(f"Setting up stream for alias: {a}")
+                streams[a] = self._get_streamer(
+                    alias=a,
+                    chunksize=chunksize,
+                    httpx_client=client,
+                    max_skip=max_skip,
+                    **kwargs,
+                )
+            except HTTPError as err:
+                # print(f"Error getting streamer for alias {a}, url {_url}: {err}")
+                logging.error(f"HTTP error for alias {a} and url {_url}: {err}")
+                continue  # skip this stream but continue with others
+
+        return streams
 
     def download(
         self,
