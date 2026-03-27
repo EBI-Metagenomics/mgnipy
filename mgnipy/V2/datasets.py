@@ -1,7 +1,9 @@
 import asyncio
+import io
 import logging
 import warnings
 import webbrowser
+import zlib
 from pathlib import Path
 from typing import (
     Callable,
@@ -12,6 +14,7 @@ from typing import (
 
 import aiofiles
 import httpx
+import ijson
 import pandas as pd
 from pydantic import (
     DirectoryPath,
@@ -347,7 +350,168 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         """
         return read(url, format="biom", **skbio_kwargs)
 
-    def stream_json(
+    def stream_gzipped(
+        self,
+        url: str,
+        chunksize: Optional[int] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        decode: bool = False,
+        encoding: str = "utf-8",
+        errors: str = "replace",
+        **httpx_kwargs,
+    ) -> bytes | str | io.BufferedReader | io.TextIOWrapper:
+        """
+        Streams a gzipped file from a url and returns a file-like object that can be read in chunks.
+        Written using GPT-5.3-Codex.
+        Uses httpx for streaming and zlib for decompression.
+
+        Parameters
+        ----------
+        url : str
+            The url of the gzipped file to stream.
+        chunksize : int, optional
+            The size of each chunk to read from the stream.
+        httpx_client : httpx.Client, optional
+            The httpx client to use for streaming.
+        decode : bool, default False
+            Whether to decode the decompressed bytes to a string.
+        encoding : str, default "utf-8"
+            The encoding to use for decoding bytes to a string.
+        errors : str, default "replace"
+            The error handling strategy for decoding bytes to a string.
+        **httpx_kwargs : dict
+            Additional keyword arguments to pass to the httpx client.
+
+        Returns
+        -------
+        bytes | str | io.BufferedReader | io.TextIOWrapper
+            A file-like object that can be read in chunks.
+            If `chunksize` is None, returns the full decompressed content as bytes,
+            or string based on `decode`.
+        """
+
+        # Pick caller-provided client, or fallback to the shared MGnifier client.
+        client = httpx_client or self._mgnifier_helper.httpx_client
+        logging.debug(
+            "stream_gzipped called url=%s chunksize=%s decode=%s",
+            url,
+            chunksize,
+            decode,
+        )
+
+        # Backward-compatible mode: no chunksize means full download into memory.
+        if chunksize is None:
+            logging.debug("Using full-download mode (chunksize=None)")
+            # Perform a normal blocking GET.
+            r = client.get(url, timeout=None, **httpx_kwargs)
+            # Raise if HTTP status is not 2xx.
+            r.raise_for_status()
+            # Create gzip-compatible streaming decompressor (16 + MAX_WBITS enables gzip header).
+            decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            # Decompress full payload bytes and flush remaining tail bytes.
+            data = decompressor.decompress(r.content) + decompressor.flush()
+            logging.debug(
+                "Full-download mode complete: compressed=%d decompressed=%d",
+                len(r.content),
+                len(data),
+            )
+            # Return text if decode=True, else raw bytes.
+            return data.decode(encoding, errors=errors) if decode else data
+
+        # Validate chunksize for streaming mode.
+        if not isinstance(chunksize, int) or chunksize <= 0:
+            raise ValueError("`chunksize` must be a positive integer or None.")
+
+        # Custom raw stream that adapts httpx streamed gzip bytes to a readable file-like object.
+        class _HTTPGzipRaw(io.RawIOBase):
+            def __init__(self):
+                # Open streaming HTTP response context.
+                self._cm = client.stream("GET", url, timeout=None, **httpx_kwargs)
+                # Enter context manually so this object controls lifecycle.
+                self._resp = self._cm.__enter__()
+                # Fail fast on non-2xx.
+                self._resp.raise_for_status()
+                # Iterate compressed bytes in fixed-size network chunks.
+                self._iter = self._resp.iter_raw(chunk_size=chunksize)
+                # Incremental gzip decompressor.
+                self._decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                # Internal decompressed byte buffer.
+                self._buf = bytearray()
+                # End-of-stream marker.
+                self._eof = False
+                # Track whether decompressor.flush() has been called.
+                self._flushed = False
+                logging.debug("Streaming HTTP/gzip reader initialized")
+
+            def readable(self) -> bool:
+                # Required by BufferedReader to know this raw stream supports reading.
+                return True
+
+            def _fill(self, need: int) -> None:
+                # Keep buffering until we have enough bytes or we hit EOF.
+                while len(self._buf) < need and not self._eof:
+                    try:
+                        # Pull next compressed network chunk.
+                        chunk = next(self._iter)
+                    except StopIteration:
+                        # Network stream finished; flush remaining decompressor tail once.
+                        if not self._flushed:
+                            tail = self._decomp.flush()
+                            if tail:
+                                self._buf.extend(tail)
+                            self._flushed = True
+                        # Mark EOF so future reads stop pulling.
+                        self._eof = True
+                        logging.debug("Reached end of HTTP stream")
+                        break
+
+                    # If chunk is non-empty, incrementally decompress and append output.
+                    if chunk:
+                        out = self._decomp.decompress(chunk)
+                        if out:
+                            self._buf.extend(out)
+
+            def readinto(self, b) -> int:
+                # If already closed, signal EOF.
+                if self.closed:
+                    return 0
+                # Create writable view into caller-provided buffer.
+                mv = memoryview(b)
+                # Ensure internal buffer has enough data for requested read.
+                self._fill(len(mv))
+                # Compute how many bytes we can actually return.
+                n = min(len(mv), len(self._buf))
+                # No bytes available means EOF.
+                if n <= 0:
+                    return 0
+                # Copy decompressed bytes into caller buffer.
+                mv[:n] = self._buf[:n]
+                # Remove consumed bytes from internal buffer.
+                del self._buf[:n]
+                # Return byte count copied.
+                return n
+
+            def close(self) -> None:
+                # Close HTTP stream context exactly once.
+                if not self.closed:
+                    try:
+                        self._cm.__exit__(None, None, None)
+                    finally:
+                        super().close()
+                        logging.debug("Streaming HTTP/gzip reader closed")
+
+        # Wrap raw stream in BufferedReader for efficient file-like reads.
+        raw = _HTTPGzipRaw()
+        buffered = io.BufferedReader(raw, buffer_size=chunksize)
+
+        # If decode requested, wrap bytes stream as text stream.
+        if decode:
+            return io.TextIOWrapper(buffered, encoding=encoding, errors=errors)
+
+        # Default return: binary buffered reader (works with ijson.kvitems).
+        return buffered
+
+    def stream_jsonl(
         self,
         url: str,
         orient: Optional[
@@ -357,7 +521,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         **pd_kwargs,
     ) -> dict:
         """
-        Streams a json file from a url and returns the parsed json as a dictionary.
+        Streams a jsonl file from a url and returns the parsed json as a dictionary.
 
         Parameters
         ----------
@@ -377,10 +541,65 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             The parsed json as a dictionary.
         """
 
-        if chunksize is not None:
-            return pd.read_json(url, orient=orient, chunksize=chunksize, **pd_kwargs)
+        return pd.read_json(
+            url, orient=orient, lines=True, chunksize=chunksize, **pd_kwargs
+        )
+
+    def stream_json(
+        self,
+        url: str,
+        chunksize: Optional[int] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        **httpx_kwargs,
+    ) -> dict | Generator:
+        """
+        Streams a json file from a url and returns the parsed json as a dictionary or an iterator of dictionaries if chunksize is specified.
+
+        Parameters
+        ----------
+        url : str
+            The url of the json file to stream.
+        chunksize : Optional[int], optional
+            The size of the chunks to read from the stream. Default is None.
+        **httpx_kwargs : dict
+            Additional keyword arguments to pass to the httpx client.
+        Returns
+        -------
+        dict | Generator
+            The parsed json as a dictionary, or an iterator of dictionaries if chunksize is specified.
+        """
+
+        client = httpx_client or self._mgnifier_helper.httpx_client
+
+        # normal full get and json parse
+        if chunksize is None and not (url.endswith(".gz") or url.endswith(".gzip")):
+            # If no chunksize and not gzipped, do a normal full GET and parse as JSON.
+            with client.get(url, **httpx_kwargs) as response:
+                response.raise_for_status()
+                return response.json()
+        # streaming json, not zipped
+        elif chunksize is not None and not (
+            url.endswith(".gz") or url.endswith(".gzip")
+        ):
+            # If chunksize specified and not gzipped, stream text and parse JSON objects one by one.
+            with client.stream("GET", url, **httpx_kwargs) as response:
+                response.raise_for_status()
+                for entry in ijson.kvitems(response.iter_text(), ""):
+                    yield entry
+        # gzipped json (with or without chunksize)
+        elif url.endswith(".gz") or url.endswith(".gzip"):
+            # If gzipped, use the stream_gzipped method to get a file-like object and parse JSON objects one by one.
+            with self.stream_gzipped(
+                url,
+                chunksize=chunksize,
+                httpx_client=client,
+                decode=True,
+                **httpx_kwargs,
+            ) as gzipped_stream:
+                for entry in ijson.kvitems(gzipped_stream, ""):
+                    yield entry
         else:
-            return pd.read_json(url, orient=orient, **pd_kwargs)
+            raise ValueError(f"Unsupported file type for URL: {url}")
 
     def stream_tree(self, url: str, **skbio_kwargs) -> Generator:
         """
@@ -509,14 +728,14 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         elif file_type == "tree":
             return self.stream_tree(_url, **kwargs)
         elif file_type == "json":
-            return self.stream_json(_url, chunksize=chunksize, **kwargs)
-        elif file_type == "other":
+            return self.stream_jsonl(
+                _url, orient="records", chunksize=chunksize, **kwargs
+            )
+        elif file_type == "other" and ".json" in _url:
             if _url.endswith("json.gz") or _url.endswith("json.gzip"):
                 return self.stream_json(
-                    _url, chunksize=chunksize, compression="gzip", **kwargs
+                    _url, chunksize=chunksize, httpx_client=client, **kwargs
                 )
-            elif ".json" in _url:
-                return self.stream_json(_url, chunksize=chunksize, **kwargs)
 
             logging.info(
                 f"{_alias} is only available for download "
@@ -796,12 +1015,13 @@ class MGazine(MGnifyAnalysisWithAnnotations):
                     # flag and continue with downloads ..
                     logging.error(f"Error occurred while downloading {f}: {e}")
 
-    async def download_all(
+    def download_all(
         self,
         to_dir: DirectoryPath,
         hide_progress: bool = False,
     ):
         """
+        TODO fix
         Downloads all files in the downloads to a specified directory.
 
         Parameters
@@ -820,31 +1040,35 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         """
 
         logging.debug("Initializing client once for all downloads")
-        with self._mgnifier_helper.httpx_aclient as client:
+        with self._mgnifier_helper.httpx_client as client:
+            aliases = list(self.url_dict.keys())
 
-            tasks = [
-                self.download(to_dir=to_dir, alias=a, httpx_client=client)
-                for a in self.url_dict
-            ]
-
-            # Overall progress bar
-            for f in tqdm_sync(
-                tasks,
-                total=len(tasks),
+            for alias in tqdm_sync(
+                aliases,
+                total=len(aliases),
                 desc="Overall Progress",
                 ascii=" >=",
                 disable=hide_progress,
             ):
                 try:
-                    await f
+                    self.download(
+                        to_dir=to_dir,
+                        alias=alias,
+                        httpx_client=client,
+                        hide_progress=hide_progress,
+                    )
                 except httpx.ConnectError as ce:
-                    # flag and continue with downloads
                     logging.error(
-                        f"Connection error occurred while downloading {f}: {ce}"
+                        "Connection error occurred while downloading %s: %s",
+                        alias,
+                        ce,
                     )
                 except Exception as e:
-                    # flag and continue with downloads ..
-                    logging.error(f"Error occurred while downloading {f}: {e}")
+                    logging.error(
+                        "Error occurred while downloading %s: %s",
+                        alias,
+                        e,
+                    )
 
 
 class MGazineCurator:
