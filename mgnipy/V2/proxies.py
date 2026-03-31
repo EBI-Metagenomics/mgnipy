@@ -90,7 +90,7 @@ class ResourceProxy(Mgnifier):
             super().__getitem__(key)
 
 
-class AnalysesProxy(ResourceProxy):
+class Analyses(ResourceProxy):
     def __init__(
         self,
         *,
@@ -149,7 +149,7 @@ class AnalysesProxy(ResourceProxy):
         return new_mg
 
 
-class SamplesProxy(ResourceProxy):
+class Samples(ResourceProxy):
     def __init__(
         self,
         *,
@@ -172,7 +172,7 @@ class SamplesProxy(ResourceProxy):
             super().__init__(resource="samples", params=params, **kwargs)
 
 
-class StudiesProxy(ResourceProxy):
+class Studies(ResourceProxy):
 
     def __init__(
         self,
@@ -183,12 +183,12 @@ class StudiesProxy(ResourceProxy):
         super().__init__(resource="studies", params=params, **kwargs)
 
 
-class BiomesProxy(ResourceProxy):
+class Biomes(ResourceProxy):
 
     def __init__(self, **kwargs):
         super().__init__(resource="biomes", **kwargs)
 
-    def __getitem__(self, key) -> list[StudiesProxy] | StudiesProxy:
+    def __getitem__(self, key) -> list[Studies] | Studies:
         """
         Get a linked proxy object based on the provided key.
         The key can be an integer index, a slice, or a valid accession string (or lineage for biomes).
@@ -279,7 +279,7 @@ class BiomesProxy(ResourceProxy):
             )
 
 
-class AssembliesProxy(ResourceProxy):
+class Assemblies(ResourceProxy):
     def __init__(
         self,
         *,
@@ -289,7 +289,7 @@ class AssembliesProxy(ResourceProxy):
         super().__init__(resource="assemblies", params=params, **kwargs)
 
 
-class GenomesProxy(ResourceProxy):
+class Genomes(ResourceProxy):
     def __init__(
         self,
         *,
@@ -301,10 +301,10 @@ class GenomesProxy(ResourceProxy):
 
 
 DEFAULT_LINKED_PROXY_CONFIG = {
-    SupportedEndpoints.BIOMES: StudiesProxy,
-    SupportedEndpoints.STUDIES: SamplesProxy,
-    SupportedEndpoints.SAMPLES: None,  # TODO: RunsProxy
+    SupportedEndpoints.BIOMES: Studies,
+    SupportedEndpoints.STUDIES: Samples,
+    SupportedEndpoints.SAMPLES: None,  # TODO: Runs
     SupportedEndpoints.ANALYSES: DatasetBuilder,
     SupportedEndpoints.GENOMES: None,
-    SupportedEndpoints.ASSEMBLIES: AnalysesProxy,
+    SupportedEndpoints.ASSEMBLIES: Analyses,
 }
