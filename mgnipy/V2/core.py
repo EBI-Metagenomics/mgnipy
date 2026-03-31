@@ -47,7 +47,7 @@ CORE_MODULES = {
 }
 
 
-class MGnifier:
+class Mgnifier:
     """
     MGnify API v2 metadata retriever and manager.
 
@@ -85,7 +85,7 @@ class MGnifier:
         **kwargs,
     ):
         """
-        Initialize a MGnifier instance for a specific MGnify resource.
+        Initialize a Mgnifier instance for a specific MGnify resource.
 
         Parameters
         ----------
@@ -194,10 +194,8 @@ class MGnifier:
         AttributeError
             If the attribute does not exist.
         """
-        if name == "httpx_client":
-            return self._init_client().get_httpx_client()
-        elif name == "httpx_aclient":
-            return self._init_client().get_async_httpx_client()
+        if name == "mgnipy_client":
+            return self._init_client()
         elif name == "request_url":
             return self._build_url()
         elif name == "api_version":
@@ -206,11 +204,11 @@ class MGnifier:
             try:
                 return self.__dict__[f"_{name}"]
             except KeyError as e:
-                raise KeyError(f"{name} is not a valid attribute of MGnifier") from e
+                raise KeyError(f"{name} is not a valid attribute of Mgnifier") from e
 
     def __str__(self):
         """
-        Return a string representation of the MGnifier instance, summarizing key configuration and state.
+        Return a string representation of the Mgnifier instance, summarizing key configuration and state.
 
         Returns
         -------
@@ -218,7 +216,7 @@ class MGnifier:
             Human-readable summary of the instance.
         """
         return (
-            f"MGnifier instance for resource: {self._resource}\n"
+            f"Mgnifier instance for resource: {self._resource}\n"
             f"----------------------------------------\n"
             f"Base URL: {self._base_url}\n"
             f"Parameters: {self._params}\n"
@@ -314,8 +312,8 @@ class MGnifier:
 
         Returns
         -------
-        MGnifier
-            A new MGnifier instance with updated parameters for filtering results.
+        Mgnifier
+            A new Mgnifier instance with updated parameters for filtering results.
         """
         # make a copy of current instance
         new_mg = self._clone()
@@ -506,12 +504,12 @@ class MGnifier:
 
     def _clone(self):
         """
-        Create a clone of the current MGnifier instance for immutability :) but with no cache
+        Create a clone of the current Mgnifier instance for immutability :) but with no cache
 
         Returns
         -------
-        MGnifier
-            A new MGnifier instance with the same resource and parameters but no cached results.
+        Mgnifier
+            A new Mgnifier instance with the same resource and parameters but no cached results.
         """
         new_mg = self.__class__(
             params=self._params,
@@ -582,13 +580,13 @@ class MGnifier:
         if self._total_pages is None:
             if strict:
                 raise AssertionError(
-                    "Please run MGnifier.dry_run() or .preview() before "
+                    "Please run Mgnifier.dry_run() or .preview() before "
                     "deciding to collect metadata for params:\n"
                     f"{self._params}"
                 )
             else:
                 warnings.warn(
-                    "MGnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
+                    "Mgnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
                 )
                 self.preview()
 
@@ -702,13 +700,13 @@ class MGnifier:
         if self._total_pages is None:
             if strict:
                 raise AssertionError(
-                    "Please run MGnifier.dry_run() or .preview() before "
+                    "Please run Mgnifier.dry_run() or .preview() before "
                     "deciding to collect metadata for params:\n"
                     f"{self._params}"
                 )
             else:
                 warnings.warn(
-                    "MGnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
+                    "Mgnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
                 )
                 self.preview()
 

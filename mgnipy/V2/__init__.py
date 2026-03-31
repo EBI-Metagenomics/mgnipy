@@ -1,4 +1,4 @@
-from .core import MGnifier
+from .core import Mgnifier
 from .metadata import (
     AnalysesProxy,
     BiomesProxy,
@@ -12,7 +12,7 @@ from .mgni_py_v2.client import (
 )
 
 __all__ = (
-    "MGnifier",
+    "Mgnifier",
     "BiomesProxy",
     "StudiesProxy",
     "SamplesProxy",

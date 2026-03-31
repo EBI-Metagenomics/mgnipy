@@ -14,8 +14,8 @@ from mgnipy._models.CONSTANTS import (
     StudiesPrefixes,
     SupportedEndpoints,
 )
-from mgnipy.V2.core import MGnifier
-from mgnipy.V2.datasets import MGazine
+from mgnipy.V2.core import Mgnifier
+from mgnipy.V2.datasets import DatasetBuilder
 from mgnipy.V2.mgni_py_v2.api.analyses import (
     list_analyses_for_assembly,
 )
@@ -25,7 +25,7 @@ from mgnipy.V2.mgni_py_v2.api.studies import (
 )
 
 
-class ResourceProxy(MGnifier):
+class ResourceProxy(Mgnifier):
     """generic"""
 
     def __init__(
@@ -137,8 +137,8 @@ class AnalysesProxy(ResourceProxy):
 
         Returns
         -------
-        MGnifier
-            A new MGnifier instance with updated parameters for filtering results.
+        Mgnifier
+            A new Mgnifier instance with updated parameters for filtering results.
         """
         # make a copy of current instance
         new_mg = self._clone()
@@ -147,17 +147,6 @@ class AnalysesProxy(ResourceProxy):
         if "accession" in filters:
             new_mg._auto_endpoint_based_on_accession_prefix()
         return new_mg
-
-
-class RunsProxy(ResourceProxy):
-    def __init__(
-        self,
-        *,
-        accession: Optional[str] = None,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ):
-        pass  # TODO
 
 
 class SamplesProxy(ResourceProxy):
@@ -315,8 +304,7 @@ DEFAULT_LINKED_PROXY_CONFIG = {
     SupportedEndpoints.BIOMES: StudiesProxy,
     SupportedEndpoints.STUDIES: SamplesProxy,
     SupportedEndpoints.SAMPLES: None,  # TODO: RunsProxy
-    # TODO: SupportedEndpoints.RUNS: AnalysesProxy,
-    SupportedEndpoints.ANALYSES: MGazine,
+    SupportedEndpoints.ANALYSES: DatasetBuilder,
     SupportedEndpoints.GENOMES: None,
     SupportedEndpoints.ASSEMBLIES: AnalysesProxy,
 }
