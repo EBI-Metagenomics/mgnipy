@@ -1,6 +1,6 @@
-# MGnipy
+# MGni.py
 
-MGni.py is a python wrapper for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/), supporting both version 1 and version 2. 
+MGni.py (pronounced MAG-nee-pie) python wrapper for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/), currently supports version 2 (soon to be released). 
 
 The python client libraries were auto-generated using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). Openapi-python-client provides data models and methods for the api reources and uses httpx and attr. 
 
@@ -14,15 +14,19 @@ pip install mgnipy \
 ```
 
 ## Usage
-You can use the `Mgnifier`s to find study, sample, analyses, genome accessions and associated metadata. 
+
+
+
+
+You can use the `MGnifier`s to find study, sample, analyses, genome accessions and associated metadata. 
 
 First instantiate the mgnifier. Search params can be provided as `params: Optional[dict]` or `kwargs`. To see the supported kwargs there is an attribute `Mgnigier.supported_kwargs` 
 
 ```python
-from mgnipy.V2 import StudiesMgnifier
+from mgnipy.V2 import StudiesMGnifier
 
 # init
-glass = StudiesMgnifier(
+glass = StudiesMGnifier(
     # GOLD ecosystem classification
     biomes_lineage="root:Host-associated:Plants:Rhizosphere", 
     search="tomato"
@@ -35,10 +39,10 @@ glass = StudiesMgnifier(
 print(glass)
 ```
 
-Then `.preview()` (lightweight) or `.plan()` (even lighterweight) the number of pages and records before collecting all their metadata :)
+Then `.preview()` (lightweight) or `.dry_run()` (even lighterweight) the number of pages and records before collecting all their metadata :)
 ```python
 # only prints some info
-glass.plan()
+glass.dry_run()
 
 # also returns the first page of results as a pd.DataFrame
 df = glass.preview()
@@ -53,7 +57,7 @@ import asyncio
 metadata = await df.get()
 ```
 
-You can also access `Mgnifier.accessions` and pass the accessions to the mgnipy dataset collectors 
+You can also access `MGnifier.accessions` and pass the accessions to the mgnipy dataset collectors 
 ```python
 from mgnipy.V2 import GoSlimCollector
 

@@ -9,6 +9,7 @@ from pydantic import (
 
 class SpecialEnum(Enum):
     def __str__(self):
+        """Return the value of the enum member as a string."""
         return str(self.value)
 
     @classmethod

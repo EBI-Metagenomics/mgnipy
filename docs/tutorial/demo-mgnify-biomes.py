@@ -13,7 +13,7 @@
 # ---
 
 # %% [markdown]
-# # What biomes are available in MGnify? 
+# # What biomes are available in MGnify?
 #
 # [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorial/demo-mgnify-biomes.ipynb)
 
@@ -23,35 +23,35 @@
 # #!pip install asyncio
 
 # %% [markdown]
-# In this notebook we visualize the [biome classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) of metagenome projects available on mgnify. 
+# In this notebook we visualize the [biome classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) of metagenome projects available on mgnify.
 #
-# We can use the BiomesMgnifier or MGnipy.
+# We can use the BiomesMGnifier or MGnipy.
 
 # %%
-from mgnipy.V2 import BiomesMgnifier
+from mgnipy.V2 import BiomesMGnifier
 
 # prepare url
-glass = BiomesMgnifier(
-    #biome_lineage="root:Host-associated:Plants:Rhizosphere",
+glass = BiomesMGnifier(
+    # biome_lineage="root:Host-associated:Plants:Rhizosphere",
     page_size=50,
-    max_depth=6, #max
+    max_depth=6,  # max
 )
 
 # what are the kwargs supported?
-#glass.supported_kwargs
+# glass.supported_kwargs
 
 # checkout url
-print(glass) #or glass.request_url
+print(glass)  # or glass.request_url
 
 # %% [markdown]
 # There is an optional intermediary step to `.plan()` or `.preview()` the first page of results before `.get()`ting all the result pages.
 
 # %%
-# checking 
+# checking
 glass.plan()
 
 # %% [markdown]
-# If happy with the plan, proceed with the async get requests. 
+# If happy with the plan, proceed with the async get requests.
 
 # %%
 import asyncio
@@ -75,7 +75,7 @@ glass.show_tree()
 # %% [markdown]
 # ## Or using `mgnipy.MGnipy`
 #
-# A more readable syntax with the same functionality :) 
+# A more readable syntax with the same functionality :)
 
 # %%
 from mgnipy import MGnipy
@@ -91,7 +91,7 @@ biomes.filter(
     biome_lineage="root:Host-associated:Plants:Rhizosphere",
 )
 
-# check it out 
+# check it out
 print(biomes)
 
 # %% [markdown]

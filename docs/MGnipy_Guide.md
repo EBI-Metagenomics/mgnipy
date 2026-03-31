@@ -10,9 +10,9 @@ The existing MGnipy API uses a procedural, explicit approach:
 
 ```python
 # Current API
-from mgnipy import Mgnifier
+from mgnipy import MGnifier
 
-mgnifier = Mgnifier(resource="analyses")
+mgnifier = MGnifier(resource="analyses")
 mgnifier.plan()  # Check what will be retrieved
 mgnifier.preview()  # See first page
 df = mgnifier.collect()  # Fetch all data
@@ -670,7 +670,7 @@ Create `MIGRATION.md`:
 
 | Old API | New API |
 |---------|---------|
-| `Mgnifier(resource="analyses")` | `mgnipy.analyses` |
+| `MGnifier(resource="analyses")` | `mgnipy.analyses` |
 | `.plan()` | Not needed (lazy) |
 | `.preview()` | `.limit(10).to_df()` |
 | `.collect()` | `.to_df()` |
@@ -682,9 +682,9 @@ Create `MIGRATION.md`:
 
 **Before:**
 ```python
-from mgnipy import Mgnifier
+from mgnipy import MGnifier
 
-mgnifier = Mgnifier(resource="analyses", biome="root:soil")
+mgnifier = MGnifier(resource="analyses", biome="root:soil")
 mgnifier.plan()
 df = mgnifier.collect()
 ```
@@ -701,7 +701,7 @@ df = client.analyses.filter(biome="root:soil").to_df()
 
 **Before:**
 ```python
-mgnifier = Mgnifier(resource="analyses")
+mgnifier = MGnifier(resource="analyses")
 mgnifier.plan()
 df = mgnifier.collect(limit=100)
 ```
@@ -717,7 +717,7 @@ df = client.analyses.limit(100).to_df()
 
 **Before:**
 ```python
-mgnifier = Mgnifier(
+mgnifier = MGnifier(
     resource="analyses",
     biome="root:soil",
     experiment_type="amplicon"
