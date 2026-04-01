@@ -1,10 +1,10 @@
 import asyncio
 import inspect
-import itertools
 import logging
 import os
 import warnings
 from copy import deepcopy
+from itertools import chain
 from math import ceil
 from pathlib import Path
 from typing import (
@@ -344,19 +344,20 @@ class MGnifier:
         print("Planning the API call with params:")
         print(self._params)
 
-        if not self._pagination_status:
+        if self._count is not None and self._total_pages is not None:
+            logging.info("Already have count and total_pages from previous dry run")
+        elif not self._pagination_status:
+            # if not pageinated only 1
             self._count = 1
             self._total_pages = 1
-
         else:
+            # small get request to get count and calc total pages
             response_dict = self._get_request(page_size=1)
-
             self._count = response_dict["count"]
             self._total_pages = ceil(
                 self._count / self._params.get("page_size", self._default_page_size)
             )
 
-        # verbose
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
 
@@ -385,13 +386,12 @@ class MGnifier:
 
         if not self._pagination_status:
             raise RuntimeError(
-                "Current resource does not support pagination. "
+                f"Current endpoint does not support pagination: {self.endpoint_module}. "
                 "Please check the documentation for supported parameters."
             )
 
         # get number of pages if not already
         if (self._count is None) or (self._total_pages is None):
-            # more verbose than _get_counts() alone
             self.dry_run()
 
         if not (isinstance(page_num, int) and 0 < page_num <= self._total_pages):
@@ -418,7 +418,7 @@ class MGnifier:
         self._results.update({page_num: page_items})
         return self._results.get(page_num, None)
 
-    @require_endpoint_module  # TODO
+    @require_endpoint_module
     def preview(self) -> pd.DataFrame:
         """
         Preview the first page of metadata for the current resource and parameters, without retrieving all pages.
@@ -436,31 +436,50 @@ class MGnifier:
         """
         # plan if not already
         if (self._count is None) or (self._total_pages is None):
-            # more verbose than _get_counts() alone
             self.dry_run()
 
-        if self._pagination_status:
-            # request specified page and cache
-            logging.info("Retrieving first page of results for preview...")
-            tmp_params = self._tmp_param_update(page=1)
+        if not self._pagination_status:
+            # then just get
+            response_dict = self._get_request()
+            self._results.update({1: response_dict})
+            return self.to_pandas()
 
-            self._get_page()
+        # otherwise
+        return self.to_pandas(data={1: self.page(1)})
 
-            response_dict = self._get_request(tmp_params)
-            # dealing with response
-            if response_dict is not None:
-                # cache previewed page ? maybe dont need this anymore
-                self._previewed_page = response_dict["items"]
-                # add to results
-                return self.to_pandas([self._previewed_page])
-        else:
-            response_dict = self._get_request(self._params)
-            if response_dict is not None:
-                self._previewed_page = [response_dict]
-                self._results.update({1: self._previewed_page})
-                return self.to_pandas([self._previewed_page])
-        raise RuntimeError("Failed to get response from MGnify API.")
+    def to_pandas(
+        self, data: Optional[dict[int, list[dict]]] = None, **kwargs
+    ) -> pd.DataFrame:
+        """
+        Convert the current or provided metadata to a pandas DataFrame.
 
+        Parameters
+        ----------
+        data : list of dict, optional
+            List of records to convert. If None, uses self._results or self._previewed_page.
+        **kwargs
+            Additional keyword arguments passed to pd.DataFrame.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame containing the metadata.
+
+        Raises
+        ------
+        RuntimeError
+            If no data is available to convert.
+        """
+
+        _data = data or self._results
+
+        if _data == {} or _data is None:
+            logging.info("No data available to convert to DataFrame. Returning None.")
+            return None
+
+        return pd.DataFrame(self._unpageinate_results(_data), **kwargs)
+
+    # PICK UP HERE
     @require_endpoint_module
     def get(
         self,
@@ -505,43 +524,6 @@ class MGnifier:
                 _ = self.preview()
             # cache to result
             self._results.update({1: self._previewed_page})
-
-    def to_pandas(
-        self, data: Optional[dict[int, list[dict]]] = None, **kwargs
-    ) -> pd.DataFrame:
-        """
-        Convert the current or provided metadata to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list of dict, optional
-            List of records to convert. If None, uses self._results or self._previewed_page.
-        **kwargs
-            Additional keyword arguments passed to pd.DataFrame.
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame containing the metadata.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-
-        _data = data or self._results or [self._previewed_page]
-
-        if _data == [None] or _data is None:
-            logging.info("No data available to convert to DataFrame. Returning None.")
-            return None
-
-        combined_df = pd.concat(
-            [self._df_expand_nested(pd.DataFrame(page)) for page in _data],
-            ignore_index=True,
-        )
-
-        return pd.DataFrame(combined_df, **kwargs)
 
     def to_json(self, file_path: Optional[Path] = None) -> str:
         """
@@ -646,6 +628,7 @@ class MGnifier:
             return None
         return response["items"]
 
+    # TODO
     def _collector(
         self,
         client: Client,
@@ -711,6 +694,7 @@ class MGnifier:
             )
             self._results.append(page_result.parsed.to_dict()["items"])
 
+    # TODO
     # @async_disk_lru_cache()
     async def _aget_page(
         self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
@@ -739,6 +723,7 @@ class MGnifier:
                 **kwargs,
             )
 
+    # TODO
     async def _acollector(
         self,
         client: Client,
@@ -882,20 +867,23 @@ class MGnifier:
                 new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
         return new_df
 
-    def _unpageinate_results(self) -> itertools.chain:
+    def _unpageinate_results(self, data: Optional[dict] = None) -> chain:
         """
-        Unpaginate the results by flattening the list of pages into a single list of records.
+        Unpaginate the results by flattening the dictionary of pages into a single list of records.
 
         Returns
         -------
-        itertools.chain
+        chain
             An iterator that yields individual metadata records from all pages.
         """
-        if self._results is None:
+        _data = data or self._results
+
+        if _data == {} or _data is None:
             raise RuntimeError(
-                "No results available. Please run get() or aget() first."
+                "No results available. "
+                "Please run preview(), get(), aget(), page() first."
             )
-        return itertools.chain.from_iterable(self._results)
+        return chain.from_iterable(_data.values())
 
     ## Help with checks
     def _check_kwargs(self) -> str:
