@@ -348,8 +348,25 @@ class MGnifier:
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
 
-    @require_endpoint_module  # TODO
+    @require_endpoint_module
     def page(self, page_num: int, client: Optional[Client] = None) -> pd.DataFrame:
+        """
+        Retrieve a specific page of metadata for the current resource and parameters.
+        This method allows the user to retrieve metadata one page at a time,
+        which can be useful for previewing data or for manual pagination control.
+
+        Parameters
+        ----------
+        page_num : int
+            The page number to retrieve (1-based index).
+        client : Client, optional
+            An optional MGnify API client instance to use for the request.
+            If None, a new client will be initialized.
+        Returns
+        -------
+        pd.DataFrame
+            A DataFrame containing the metadata from the specified page of results.
+        """
 
         if not self._pagination_status:
             raise RuntimeError(
@@ -362,9 +379,16 @@ class MGnifier:
             # more verbose than _get_counts() alone
             self.dry_run()
 
+        if not (isinstance(page_num, int) and 0 < page_num <= self._total_pages):
+            raise ValueError(
+                f"Invalid page number: {page_num}. "
+                "Pages must be positive integers "
+                f"not exceeding total pages {self._total_pages}."
+            )
+
         # check if alrady in results first
         if page_num in self._results:
-            logging.info(f"Page {page_num} already cached, retrieving from cache.")
+            logging.info(f"Page {page_num} already retrieved.")
             return self.to_pandas(self._results[page_num])
 
         # otherwise get page
@@ -373,9 +397,11 @@ class MGnifier:
             client=a_client,
             page=page_num,
         )
-        response_dict = self._page_dict(response)
-        if response_dict is not None:
-            self._results.update({page_num: response_dict["items"]})
+        # get out items
+        page_items = self._page_dict(response)
+        # add to results
+        self._results.update({page_num: page_items})
+        return self.to_pandas(page_items)
 
     @require_endpoint_module  # TODO
     def preview(self) -> pd.DataFrame:
