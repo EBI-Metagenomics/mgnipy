@@ -1,23 +1,30 @@
-from .core import MGnifier
-from .metadata import (
-    AnalysesProxy,
-    BiomesProxy,
-    GenomesProxy,
-    SamplesProxy,
-    StudiesProxy,
+from .core import Mgnifier
+from .proxies import (
+    Analyses,
+    Biomes,
+    Genomes,
+    Samples,
+    Studies,
 )
 from .mgni_py_v2.client import (
     AuthenticatedClient,
     Client,
 )
+from .proxies import (
+    Analyses,
+    Biomes,
+    Genomes,
+    Samples,
+    Studies,
+)
 
 __all__ = (
-    "MGnifier",
-    "BiomesProxy",
-    "StudiesProxy",
-    "SamplesProxy",
-    "AnalysesProxy",
-    "GenomesProxy",
+    "Mgnifier",
+    "Biomes",
+    "Studies",
+    "Samples",
+    "Analyses",
+    "Genomes",
     "Client",
     "AuthenticatedClient",
 )
