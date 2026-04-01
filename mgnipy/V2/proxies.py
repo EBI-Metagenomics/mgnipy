@@ -45,6 +45,9 @@ class ResourceProxy(Mgnifier):
         else:
             self._linked_proxy_module = None
 
+    def __call__(self, **kwargs):
+        return self.filter(**kwargs)
+
     @property
     def linked_proxy_module(self):
         return self._linked_proxy_module
