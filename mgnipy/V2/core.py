@@ -101,6 +101,7 @@ class MGnifier:
         """
         # for client
         self._base_url: str = BASE_URL
+        self._default_page_size: int = 25
         # if resource given, initiate endpoint module and supported params
         self._resource: Optional[SupportedEndpoints] = resource
         if self._resource:
@@ -341,15 +342,28 @@ class MGnifier:
         """
         # verbose
         print("Planning the API call with params:")
-        # get the item count and total pages based on page_size if pagination, else set to 1
-        self._get_counts()
         print(self._params)
+
+        if not self._pagination_status:
+            self._count = 1
+            self._total_pages = 1
+
+        else:
+            response_dict = self._get_request(page_size=1)
+
+            self._count = response_dict["count"]
+            self._total_pages = ceil(
+                self._count / self._params.get("page_size", self._default_page_size)
+            )
+
         # verbose
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
 
     @require_endpoint_module
-    def page(self, page_num: int, client: Optional[Client] = None) -> pd.DataFrame:
+    def page(
+        self, page_num: int, client: Optional[Client] = None
+    ) -> Optional[dict[int, list[dict]]]:
         """
         Retrieve a specific page of metadata for the current resource and parameters.
         This method allows the user to retrieve metadata one page at a time,
@@ -364,8 +378,9 @@ class MGnifier:
             If None, a new client will be initialized.
         Returns
         -------
-        pd.DataFrame
-            A DataFrame containing the metadata from the specified page of results.
+        Optional[dict[int, list[dict]]]
+            A dictionary containing the metadata from the specified page of results,
+            or None if the page is not found.
         """
 
         if not self._pagination_status:
@@ -389,7 +404,7 @@ class MGnifier:
         # check if alrady in results first
         if page_num in self._results:
             logging.info(f"Page {page_num} already retrieved.")
-            return self.to_pandas(self._results[page_num])
+            return self._results.get(page_num, None)
 
         # otherwise get page
         a_client = client or self._init_client()
@@ -398,10 +413,10 @@ class MGnifier:
             page=page_num,
         )
         # get out items
-        page_items = self._page_dict(response)
+        page_items = self._page_items(response)
         # add to results
         self._results.update({page_num: page_items})
-        return self.to_pandas(page_items)
+        return self._results.get(page_num, None)
 
     @require_endpoint_module  # TODO
     def preview(self) -> pd.DataFrame:
@@ -610,30 +625,26 @@ class MGnifier:
         # prep params
         request_params = {**(params or self._params), **kwargs}
 
+        # make sure page_size if pageinated
+        if self._pagination_status and "page_size" not in request_params:
+            request_params["page_size"] = self._default_page_size
+
         response = self.endpoint_module.sync_detailed(
             client=a_client,
             **request_params,
         )
-        response.raise_for_status()
-        return response
-
-    def _page_dict(self, response: mpy_Response) -> Optional[dict]:
-        """
-        Convert an API response to a dictionary if the response is successful.
-
-        Parameters
-        ----------
-        response
-            The API response object.
-
-        Returns
-        -------
-        dict or None
-            The parsed response as a dictionary if successful, or None if the request failed.
-        """
         logging.info(f"Response status code: {response.status_code}")
         if response.status_code == 200:
-            return response.parsed.to_dict()["items"]
+            return response.parsed.to_dict()
+
+    def _page_items(self, response: mpy_Response) -> Optional[dict]:
+        """
+        Extract the 'items' from the API response.
+        """
+        if response is None:
+            logging.warning("No response received from API.")
+            return None
+        return response["items"]
 
     def _collector(
         self,
@@ -827,44 +838,6 @@ class MGnifier:
             self._results.append(page_result.parsed.to_dict()["items"])
 
     ## Help with workflow
-    @require_endpoint_module
-    def _get_counts(self):
-        """
-        Internal method to estimate the number of pages and records available for the current query.
-
-        This method performs a minimal API call to set the total number of records and pages for the current resource and parameters.
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        RuntimeError
-            If the API call fails.
-        """
-
-        if self._pagination_status:
-            # default if not given
-            if "page_size" not in self._params:
-                # check page_size > 0 if provided, default 25
-                self._params["page_size"] = 25
-                tmp_params = self._tmp_param_update(page_size=1)
-            # check validity of given
-            else:
-                validate_gt_int(self._params["page_size"])
-                tmp_params = self._tmp_param_update(page_size=1)
-
-            # make tiny get request using mgni_py client
-            response_dict = self._get_request(params=tmp_params)
-            # YOU WERE HERE
-            # otherwise set
-            self._count = response_dict["count"]
-            self._total_pages = ceil(self._count / self._params["page_size"])
-        # not pagination
-        else:
-            self._count = 1
-            self._total_pages = 1
 
     def _get_pagination_status(self) -> bool:
         """
