@@ -14,10 +14,12 @@ class SpecialEnum(Enum):
 
     @classmethod
     def as_list(cls):
+        """Return a list of the values of all enum members."""
         return [field.value for field in cls]
 
     @classmethod
     def validate(cls, input):
+        """Validate the input against the enum values and return the corresponding enum member."""
         try:
             return TypeAdapter(cls).validate_python(input)
         except ValidationError as e:
@@ -25,6 +27,7 @@ class SpecialEnum(Enum):
 
     @classmethod
     def is_valid(cls, input):
+        """Check if the input is a valid value for the enum."""
         try:
             cls.validate(input)
             return True
@@ -33,10 +36,12 @@ class SpecialEnum(Enum):
 
     @classmethod
     def as_one_str(cls, sep=","):
+        """Return a string of all enum values joined by the specified separator."""
         return sep.join(field.value for field in cls)
 
     @classmethod
     def is_prefix_in(cls, input):
+        """Check if the input string starts with any of the enum values (used for accession prefixes)."""
         return any(input.startswith(field.value) for field in cls)
 
 
@@ -57,6 +62,9 @@ class SupportedEndpoints(SpecialEnum):
     #    MISCELLANEOUS = "miscellaneous"
     #    AUTHENTICATION = "authentication"
     BIOMES = "biomes"  # miscellaneous
+
+
+# class
 
 
 class StudiesPrefixes(SpecialEnum):
