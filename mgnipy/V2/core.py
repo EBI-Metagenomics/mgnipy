@@ -33,6 +33,7 @@ from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
 from mgnipy.V2.mgni_py_v2.api.studies import (
     list_mgnify_studies,
 )
+from mgnipy.V2.mgni_py_v2.types import Response as mpy_Response
 
 semaphore = get_semaphore()
 BASE_URL = MgnipyConfig().base_url
@@ -80,8 +81,6 @@ class Mgnifier:
             Literal["biomes", "studies", "samples", "genomes", "analyses", "assemblies"]
         ] = None,
         params: Optional[dict[str, Any]] = None,
-        # checkpoint_dir: Optional[Path] = None,
-        # checkpoint_freq: Optional[int] = None,
         **kwargs,
     ):
         """
@@ -120,15 +119,12 @@ class Mgnifier:
         if kwargs:
             self._params.update(kwargs)
 
-        # checkpointing
-        # self._checkpoint_dir: Optional[Path] = checkpoint_dir
-        # self._checkpoint_freq: int = checkpoint_freq or 3
-
         # results
         self._count: Optional[int] = None
         self._total_pages: Optional[int] = None
-        self._cached_first_page: Optional[list] = None
-        self._results: Optional[list[list[dict]]] = None
+        self._previewed_page: Optional[list] = None
+        # instead dict by page num, so can .page(<page_num>)
+        self._results: dict[int, list[dict]] = {}
 
     def __iter__(self):
         """
@@ -273,7 +269,7 @@ class Mgnifier:
                 f"Resource must be one of {SupportedEndpoints.as_list()}."
             )
 
-    @property
+    @property  # TODO
     def results_accessions(self) -> Optional[list[str]]:
         if self.to_pandas() is None:
             return None
@@ -322,6 +318,15 @@ class Mgnifier:
         return new_mg
 
     @require_endpoint_module
+    def explain(self):
+        """
+        Print URLs that would be called
+
+        TODO: should actually print multiple urls? for each page
+        """
+        return self._build_url()
+
+    @require_endpoint_module
     def dry_run(self) -> None:
         """
         Plan the API call by validating parameters and estimating the number of pages and records available.
@@ -341,15 +346,45 @@ class Mgnifier:
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
 
-    @require_endpoint_module
+    @require_endpoint_module  # TODO
+    def page(self, page_num: int, client: Optional[Client] = None) -> pd.DataFrame:
+
+        if not self._pagination_status:
+            raise RuntimeError(
+                "Current resource does not support pagination. "
+                "Please check the documentation for supported parameters."
+            )
+
+        # get number of pages if not already
+        if (self._count is None) or (self._total_pages is None):
+            # more verbose than _get_counts() alone
+            self.dry_run()
+
+        # check if alrady in results first
+        if page_num in self._results:
+            logging.info(f"Page {page_num} already cached, retrieving from cache.")
+            return self.to_pandas(self._results[page_num])
+
+        # otherwise get page
+        a_client = client or self._init_client()
+        response = self._get_request(
+            client=a_client,
+            page=page_num,
+        )
+        response_dict = self._page_dict(response)
+        if response_dict is not None:
+            self._results.update({page_num: response_dict["items"]})
+
+    @require_endpoint_module  # TODO
     def preview(self) -> pd.DataFrame:
         """
-        Preview the first page of metadata for the current resource and parameters, without retrieving all pages. This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
+        Preview the first page of metadata for the current resource and parameters, without retrieving all pages.
+        This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
 
         Returns
         -------
         pd.DataFrame
-            A DataFrame containing the metadata from the first page of results.
+            A DataFrame containing the metadata from the specified page of results.
 
         Raises
         ------
@@ -362,19 +397,25 @@ class Mgnifier:
             self.dry_run()
 
         if self._pagination_status:
-            # request first page and cache
+            # request specified page and cache
             logging.info("Retrieving first page of results for preview...")
             tmp_params = self._tmp_param_update(page=1)
+
+            self._get_page()
+
             response_dict = self._get_request(tmp_params)
             # dealing with response
             if response_dict is not None:
-                self._cached_first_page = response_dict["items"]
-                return self.to_pandas([self._cached_first_page])
+                # cache previewed page ? maybe dont need this anymore
+                self._previewed_page = response_dict["items"]
+                # add to results
+                return self.to_pandas([self._previewed_page])
         else:
             response_dict = self._get_request(self._params)
             if response_dict is not None:
-                self._cached_first_page = [response_dict]
-                return self.to_pandas([self._cached_first_page])
+                self._previewed_page = [response_dict]
+                self._results.update({1: self._previewed_page})
+                return self.to_pandas([self._previewed_page])
         raise RuntimeError("Failed to get response from MGnify API.")
 
     @require_endpoint_module
@@ -394,13 +435,9 @@ class Mgnifier:
             if (
                 (self._total_pages is None)
                 or (self._count is None)
-                or (self._cached_first_page is None)
+                or (self._previewed_page is None)
             ):
                 _ = self.preview()
-            # cache to result
-            self._results = [self._cached_first_page]
-
-        # return self.to_pandas(self._results)
 
     @require_endpoint_module
     async def aget(
@@ -420,22 +457,22 @@ class Mgnifier:
             if (
                 (self._total_pages is None)
                 or (self._count is None)
-                or (self._cached_first_page is None)
+                or (self._previewed_page is None)
             ):
                 _ = self.preview()
             # cache to result
-            self._results = [self._cached_first_page]
+            self._results.update({1: self._previewed_page})
 
-        # return self.to_pandas(self._results)
-
-    def to_pandas(self, data: Optional[list[dict]] = None, **kwargs) -> pd.DataFrame:
+    def to_pandas(
+        self, data: Optional[dict[int, list[dict]]] = None, **kwargs
+    ) -> pd.DataFrame:
         """
         Convert the current or provided metadata to a pandas DataFrame.
 
         Parameters
         ----------
         data : list of dict, optional
-            List of records to convert. If None, uses self._results or self._cached_first_page.
+            List of records to convert. If None, uses self._results or self._previewed_page.
         **kwargs
             Additional keyword arguments passed to pd.DataFrame.
 
@@ -450,7 +487,7 @@ class Mgnifier:
             If no data is available to convert.
         """
 
-        _data = data or self._results or [self._cached_first_page]
+        _data = data or self._results or [self._previewed_page]
 
         if _data == [None] or _data is None:
             logging.info("No data available to convert to DataFrame. Returning None.")
@@ -519,34 +556,11 @@ class Mgnifier:
 
         return new_mg
 
-    @require_endpoint_module
-    def _get_request(self, given_params: dict) -> Optional[dict]:
-        """
-        Retrieve a single page of metadata using the synchronous API client.
-
-        Parameters
-        ----------
-        given_params : dict
-            Parameters for the API call.
-
-        Returns
-        -------
-        dict or None
-            Parsed response from the API, or None if the request failed.
-        """
-        with self._init_client() as client:
-            response = self.endpoint_module.sync_detailed(
-                client=client,
-                **given_params,
-            )
-        logging.info(f"Response status code: {response.status_code}")
-        if response.status_code == 200:
-            return response.parsed.to_dict()
-        else:
-            return None
-
-    def _get_page(
-        self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
+    def _get_request(
+        self,
+        client: Optional[Client] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
     ) -> Optional[dict]:
         """
         Retrieve a single page of metadata using the synchronous API client.
@@ -563,11 +577,35 @@ class Mgnifier:
         dict or None
             Parsed response from the API, or None if the request failed.
         """
-        return self.endpoint_module.sync_detailed(
-            client=client,
-            **(params or self._params),
-            **kwargs,
+        # prep client
+        a_client = client or self._init_client()
+        # prep params
+        request_params = {**(params or self._params), **kwargs}
+
+        response = self.endpoint_module.sync_detailed(
+            client=a_client,
+            **request_params,
         )
+        response.raise_for_status()
+        return response
+
+    def _page_dict(self, response: mpy_Response) -> Optional[dict]:
+        """
+        Convert an API response to a dictionary if the response is successful.
+
+        Parameters
+        ----------
+        response
+            The API response object.
+
+        Returns
+        -------
+        dict or None
+            The parsed response as a dictionary if successful, or None if the request failed.
+        """
+        logging.info(f"Response status code: {response.status_code}")
+        if response.status_code == 200:
+            return response.parsed.to_dict()["items"]
 
     def _collector(
         self,
@@ -619,17 +657,17 @@ class Mgnifier:
             raise TypeError("pages must be a list of integers or None")
 
         # append cached first page if avail
-        if 1 in _pages and self._cached_first_page is not None:
+        if 1 in _pages and self._previewed_page is not None:
             logging.info("Page 1 already cached from preview, skipping...")
             _pages.remove(1)
-            self._results = [self._cached_first_page]
+            self._results = [self._previewed_page]
         else:
             self._results = []
 
         # gathering results as completed
         for page_num in tqdm(_pages, desc="Retrieving pages"):
             # awaiting each task as it completes and appending results
-            page_result = self._get_page(
+            page_result = self._get_request(
                 client=client, params=self._params, page=page_num
             )
             self._results.append(page_result.parsed.to_dict()["items"])
@@ -739,10 +777,10 @@ class Mgnifier:
             raise TypeError("pages must be a list of integers or None")
 
         # append cached first page if avail
-        if 1 in _pages and self._cached_first_page is not None:
+        if 1 in _pages and self._previewed_page is not None:
             logging.info("Page 1 already cached from preview, skipping...")
             _pages.remove(1)
-            self._results = [self._cached_first_page]
+            self._results = [self._previewed_page]
         else:
             self._results = []
 
@@ -790,14 +828,8 @@ class Mgnifier:
                 tmp_params = self._tmp_param_update(page_size=1)
 
             # make tiny get request using mgni_py client
-            response_dict = self._get_request(tmp_params)
-
-            # dealing with response
-            if response_dict is None:
-                raise RuntimeError(
-                    "Failed to get response from MGnify API:\n"
-                    f"{self._build_url(params=tmp_params)}"
-                )
+            response_dict = self._get_request(params=tmp_params)
+            # YOU WERE HERE
             # otherwise set
             self._count = response_dict["count"]
             self._total_pages = ceil(self._count / self._params["page_size"])
@@ -938,7 +970,7 @@ class Mgnifier:
             incl_params.pop(k, None)
         start_url = os.path.join(self._base_url, _end_url)
         encoded_params = urlencode(incl_params, doseq=True)
-        print(encoded_params)
+
         if len(encoded_params) > 0:
             return f"{start_url}/?{encoded_params}"
         return start_url
