@@ -1,23 +1,23 @@
 from .core import Mgnifier
-from .metadata import (
-    AnalysesProxy,
-    BiomesProxy,
-    GenomesProxy,
-    SamplesProxy,
-    StudiesProxy,
-)
 from .mgni_py_v2.client import (
     AuthenticatedClient,
     Client,
 )
+from .proxies import (
+    Analyses,
+    Biomes,
+    Genomes,
+    Samples,
+    Studies,
+)
 
 __all__ = (
     "Mgnifier",
-    "BiomesProxy",
-    "StudiesProxy",
-    "SamplesProxy",
-    "AnalysesProxy",
-    "GenomesProxy",
+    "Biomes",
+    "Studies",
+    "Samples",
+    "Analyses",
+    "Genomes",
     "Client",
     "AuthenticatedClient",
 )
