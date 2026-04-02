@@ -372,7 +372,7 @@ class MGnifier:
         print(f"Total records to retrieve: {self._count}")
 
     # preview the request(s) prior to making them (option 2)
-    def explain(self):
+    def explain(self, head: Optional[int] = None) -> None:
         """
         Print example URLs that would be called. Actual requests handled by client.
         """
@@ -384,7 +384,7 @@ class MGnifier:
             print(self._build_url())
         # Otherwise, print URLs for each page
         else:
-            for page in range(1, self._total_pages + 1):
+            for page in range(1, (head + 1 or self._total_pages + 1)):
                 print(self._build_url(params={**self._params, "page": page}))
 
     # preview the request(s) prior to making them (option 3)
