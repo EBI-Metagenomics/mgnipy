@@ -513,6 +513,7 @@ class MGnifier:
                     client, limit=limit, pages=pages, safety=safety
                 )
 
+    # now vieweing the retrieved
     def to_df(
         self, data: Optional[dict[int, list[dict]]] = None, **kwargs
     ) -> pd.DataFrame:
@@ -544,6 +545,35 @@ class MGnifier:
             return None
 
         return pd.DataFrame(self._unpageinate_results(_data), **kwargs)
+
+    def to_list(
+        self, data: Optional[dict[int, list[dict]]] = None
+    ) -> list[dict[str, Any]]:
+        """
+        Convert the current or provided metadata to a list of dictionaries.
+
+        Parameters
+        ----------
+        data : dict of int to list of dict, optional
+            The paginated data to convert. If None, uses self._results.
+
+        Returns
+        -------
+        list of dict
+            A list of metadata records as dictionaries.
+
+        Raises
+        ------
+        RuntimeError
+            If no data is available to convert.
+        """
+        _data = data or self._results
+
+        if _data == {} or _data is None:
+            logging.info("No data available to convert to list. Returning empty list.")
+            return []
+
+        return list(self._unpageinate_results(_data))
 
     ## Hidden helper methods
     def _init_client(self):
