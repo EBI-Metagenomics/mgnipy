@@ -221,7 +221,7 @@ class MGnifier:
             f"Parameters: {self._params}\n"
         )
 
-    # decorators
+    ## decorators
     def require_endpoint_module(func):
         def wrapper(self, *args, **kwargs):
             if self.endpoint_module is None:
@@ -232,7 +232,18 @@ class MGnifier:
 
         return wrapper
 
-    # setters
+    def require_pagination(func):
+        def wrapper(self, *args, **kwargs):
+            if not self._pagination_status:
+                raise RuntimeError(
+                    f"Current endpoint does not support pagination: {self.endpoint_module}. "
+                    "Please check the documentation for supported parameters."
+                )
+            return func(self, *args, **kwargs)
+
+        return wrapper
+
+    ## setters
     @property
     def endpoint_module(self):
         return self._endpoint_module
@@ -272,8 +283,16 @@ class MGnifier:
                 f"Resource must be one of {SupportedEndpoints.as_list()}."
             )
 
-    @property  # TODO
+    @property
     def results_accessions(self) -> Optional[list[str]]:
+        """
+        Get a list of accessions from the retrieved metadata results, if available.
+
+        Returns
+        -------
+        list of str or None
+            A list of accession strings if available, otherwise None.
+        """
         if self.to_pandas() is None:
             return None
         elif "accession" in self.to_pandas().columns:
@@ -281,7 +300,8 @@ class MGnifier:
         else:
             return None
 
-    # methods
+    ## user-facing methods (in order of probable use)
+    # help: what can filter by?
     @require_endpoint_module
     def list_parameters(self) -> list[str]:
         """
@@ -292,10 +312,10 @@ class MGnifier:
         list of str
             List of supported keyword argument names.
         """
-        """helper function to get supported kwargs for the current mpy module"""
         sig = inspect.signature(self.endpoint_module._get_kwargs)
         return list(sig.parameters.keys())
 
+    # choose to filter request or not
     def filter(
         self,
         **filters,
@@ -320,15 +340,7 @@ class MGnifier:
         new_mg._params.update(filters)
         return new_mg
 
-    @require_endpoint_module
-    def explain(self):
-        """
-        Print URLs that would be called
-
-        TODO: should actually print multiple urls? for each page
-        """
-        return self._build_url()
-
+    # preview the request(s) prior to making them (option 1)
     @require_endpoint_module
     def dry_run(self) -> None:
         """
@@ -361,7 +373,53 @@ class MGnifier:
         print(f"Total pages to retrieve: {self._total_pages}")
         print(f"Total records to retrieve: {self._count}")
 
+    # preview the request(s) prior to making them (option 2)
+    # TODO what request(s) with current params?
     @require_endpoint_module
+    def explain(self):
+        """
+        Print URLs that would be called
+
+        TODO: should actually print multiple urls? for each page
+        """
+        return self._build_url()
+
+    # preview the request(s) prior to making them (option 3)
+    @require_endpoint_module
+    def preview(self) -> pd.DataFrame:
+        """
+        Preview the first page of metadata for the current resource and parameters, without retrieving all pages.
+        This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
+
+        Returns
+        -------
+        pd.DataFrame
+            A DataFrame containing the metadata from the specified page of results.
+
+        Raises
+        ------
+        RuntimeError
+            If the API call fails or if no data is available to preview.
+        """
+
+        # already retrieved?
+        if self._is_in_results(1):
+            logging.info("Page 1 already retrieved, using cached results.")
+            return self.to_pandas(data={1: self._results[1]})
+
+        if not self._pagination_status:
+            # then just get and add to results
+            response_dict = self._get_request()
+            self._results.update({1: response_dict})
+            return self.to_pandas()
+
+        # otherwise, get first page and return as df
+        return self.to_pandas(data={1: self.page(1)})
+
+    # now actually getting stuff!! (was lazy**/building queryies up to this point- just previewing and planning)
+    # **however needed to make tiny requests to get counts, total pages, previews for paginated endpoints
+    @require_endpoint_module
+    @require_pagination
     def page(
         self, page_num: int, client: Optional[Client] = None
     ) -> Optional[dict[int, list[dict]]]:
@@ -384,25 +442,8 @@ class MGnifier:
             or None if the page is not found.
         """
 
-        if not self._pagination_status:
-            raise RuntimeError(
-                f"Current endpoint does not support pagination: {self.endpoint_module}. "
-                "Please check the documentation for supported parameters."
-            )
-
-        # get number of pages if not already
-        if (self._count is None) or (self._total_pages is None):
-            self.dry_run()
-
-        if not (isinstance(page_num, int) and 0 < page_num <= self._total_pages):
-            raise ValueError(
-                f"Invalid page number: {page_num}. "
-                "Pages must be positive integers "
-                f"not exceeding total pages {self._total_pages}."
-            )
-
         # check if alrady in results first
-        if page_num in self._results:
+        if self._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
             return self._results.get(page_num, None)
 
@@ -419,33 +460,22 @@ class MGnifier:
         return self._results.get(page_num, None)
 
     @require_endpoint_module
-    def preview(self) -> pd.DataFrame:
-        """
-        Preview the first page of metadata for the current resource and parameters, without retrieving all pages.
-        This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
-
-        Returns
-        -------
-        pd.DataFrame
-            A DataFrame containing the metadata from the specified page of results.
-
-        Raises
-        ------
-        RuntimeError
-            If the API call fails or if no data is available to preview.
-        """
-        # plan if not already
-        if (self._count is None) or (self._total_pages is None):
-            self.dry_run()
-
+    def get(
+        self,
+        limit: Optional[int] = None,
+        *,
+        pages: Optional[list[int]] = None,
+        safety: bool = True,
+    ):
+        """Getting all"""
         if not self._pagination_status:
-            # then just get
-            response_dict = self._get_request()
-            self._results.update({1: response_dict})
-            return self.to_pandas()
+            _ = self.preview()
 
-        # otherwise
-        return self.to_pandas(data={1: self.page(1)})
+        else:
+            # async request all pages and store results in self._results
+            with self._init_client() as client:
+                self._pages_collector(client, limit=limit, pages=pages, safety=safety)
+        # PICK UP HERE
 
     def to_pandas(
         self, data: Optional[dict[int, list[dict]]] = None, **kwargs
@@ -478,28 +508,6 @@ class MGnifier:
             return None
 
         return pd.DataFrame(self._unpageinate_results(_data), **kwargs)
-
-    # PICK UP HERE
-    @require_endpoint_module
-    def get(
-        self,
-        limit: Optional[int] = None,
-        *,
-        pages: Optional[list[int]] = None,
-        strict: bool = False,
-    ) -> pd.DataFrame:
-        """ """
-        if self._pagination_status:
-            # async request all pages and store results in self._results
-            with self._init_client() as client:
-                self._collector(client, limit=limit, pages=pages, strict=strict)
-        else:
-            if (
-                (self._total_pages is None)
-                or (self._count is None)
-                or (self._previewed_page is None)
-            ):
-                _ = self.preview()
 
     @require_endpoint_module
     async def aget(
@@ -588,7 +596,8 @@ class MGnifier:
         **kwargs,
     ) -> Optional[dict]:
         """
-        Retrieve a single page of metadata using the synchronous API client.
+        Retrieve a single get using the synchronous API client.
+        Handles pagination and not.
 
         Parameters
         ----------
@@ -628,71 +637,93 @@ class MGnifier:
             return None
         return response["items"]
 
-    # TODO
-    def _collector(
+    def _is_in_results(self, page_num: int) -> bool:
+        """
+        Check if results for a specific page number already exist in the results.
+
+        Parameters
+        ----------
+        page_num : int
+            The page number to check for existing results.
+
+        Returns
+        -------
+        bool
+            True if results for the specified page number exist, False otherwise.
+        """
+        # get number of pages if not already
+        if (self._count is None) or (self._total_pages is None):
+            self.dry_run()
+
+        if not (isinstance(page_num, int) and 0 < page_num <= self._total_pages):
+            raise ValueError(
+                f"Invalid page number: {page_num}. "
+                "Pages must be positive integers "
+                f"not exceeding total pages {self._total_pages}."
+            )
+
+        return page_num in self._results
+
+    @require_pagination
+    def _pages_collector(
         self,
         client: Client,
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
-        strict: bool = False,
+        safety: bool = True,
     ):
+        """
+        Collect metadata for all (or selected) pages and store results to self.results.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        limit : int, optional
+            Maximum number of records to retrieve. If None, retrieves all records.
+        pages : list of int, optional
+            List of page numbers to retrieve. If None, retrieves all pages.
+        safety : bool, default True
+            If True, raises an error if dry_run() or preview()
+            has not been run to check total pages and counts before collecting.
+        """
         # not allow to run this without preview/plan first?
-        if self._total_pages is None:
-            if strict:
-                raise AssertionError(
-                    "Please run MGnifier.dry_run() or .preview() before "
-                    "deciding to collect metadata for params:\n"
-                    f"{self._params}"
-                )
-            else:
-                warnings.warn(
-                    "MGnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
-                )
-                self.preview()
+        if safety and self._total_pages is None:
+            raise AssertionError(
+                "Please run .dry_run() or .preview() before "
+                "deciding to collect metadata for params:\n"
+                f"{self._params}"
+            )
 
         # prep page nums
-        if limit is not None:
-            validate_gt_int(limit)
-            # TODO exact limit when pageinated?
-            max_page = ceil(limit / self._params["page_size"])
-            _pages = list(range(1, min(max_page, self._total_pages) + 1))
-        elif isinstance(pages, list):
+        if isinstance(pages, list):
             _pages = deepcopy(pages)
-            for p in pages:
-                if not (isinstance(p, int) and 0 < p <= self._total_pages):
-                    if strict:
-                        raise ValueError(
-                            f"Invalid page number: {p}. "
-                            "Pages must be positive integers "
-                            f"not exceeding total pages {self._total_pages}."
-                        )
-                else:
-                    # else just skip invalid page numbers with warning
-                    logging.warning(
-                        f"Invalid page number {p} skipped as > than {self._total_pages}."
-                    )
-                    _pages.remove(p)
         elif pages is None:
             # init all pages if not provided
             _pages = list(range(1, self._total_pages + 1))
         else:
             raise TypeError("pages must be a list of integers or None")
 
-        # append cached first page if avail
-        if 1 in _pages and self._previewed_page is not None:
-            logging.info("Page 1 already cached from preview, skipping...")
-            _pages.remove(1)
-            self._results = [self._previewed_page]
-        else:
-            self._results = []
-
-        # gathering results as completed
-        for page_num in tqdm(_pages, desc="Retrieving pages"):
-            # awaiting each task as it completes and appending results
-            page_result = self._get_request(
-                client=client, params=self._params, page=page_num
+        if limit is not None:
+            # limit to number of records/items
+            # LIMITATION: since paginated cannot retrieve exact num sometimes
+            # check if int and over zero
+            validate_gt_int(limit)
+            # get max number of pages based on limit and page size
+            max_num_pages = ceil(
+                limit / (self._params.get("page_size", self._default_page_size))
             )
-            self._results.append(page_result.parsed.to_dict()["items"])
+            # filter out pages that are over the max
+            _pages = [p for p in _pages if p <= max_num_pages]
+
+        # get pages if not in results already
+        a_client = client or self._init_client()
+        for p in tqdm(_pages, desc="Retrieving pages"):
+            # skip if page already retrieved
+            if self._is_in_results(p):
+                logging.info(f"Page {p} already retrieved, skipping...")
+            else:
+                self.page(p, client=a_client)
 
     # TODO
     # @async_disk_lru_cache()
