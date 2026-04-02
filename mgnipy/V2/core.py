@@ -291,10 +291,10 @@ class MGnifier:
         list of str or None
             A list of accession strings if available, otherwise None.
         """
-        if self.to_pandas() is None:
+        if self.to_df() is None:
             return None
-        elif "accession" in self.to_pandas().columns:
-            return self.to_pandas()["accession"].tolist()
+        elif "accession" in self.to_df().columns:
+            return self.to_df()["accession"].tolist()
         else:
             return None
 
@@ -407,16 +407,16 @@ class MGnifier:
         # already retrieved?
         if self._is_in_results(1):
             logging.info("Page 1 already retrieved, using cached results.")
-            return self.to_pandas(data={1: self._results[1]})
+            return self.to_df(data={1: self._results[1]})
 
         if not self._pagination_status:
             # then just get and add to results
             response_dict = self._get_request()
             self._results.update({1: response_dict})
-            return self.to_pandas()
+            return self.to_df()
 
         # otherwise, get first page and return as df
-        return self.to_pandas(data={1: self.page(1)})
+        return self.to_df(data={1: self.page(1)})
 
     # now actually getting stuff!! (was lazy**/building queryies up to this point- just previewing and planning)
     # **however needed to make tiny requests to get counts, total pages, previews for paginated endpoints
@@ -513,7 +513,7 @@ class MGnifier:
                     client, limit=limit, pages=pages, safety=safety
                 )
 
-    def to_pandas(
+    def to_df(
         self, data: Optional[dict[int, list[dict]]] = None, **kwargs
     ) -> pd.DataFrame:
         """

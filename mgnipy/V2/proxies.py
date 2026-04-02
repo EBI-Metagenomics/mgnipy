@@ -242,7 +242,7 @@ class Biomes(ResourceProxy):
             raise RuntimeError(
                 "No data available to get lineages. " "Please run get() first."
             )
-        return self.to_pandas()["lineage"].to_list()
+        return self.to_df()["lineage"].to_list()
 
     @property
     def tree(self) -> Tree:
