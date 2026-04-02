@@ -2,7 +2,6 @@ import asyncio
 import inspect
 import logging
 import os
-import warnings
 from copy import deepcopy
 from itertools import chain
 from math import ceil
@@ -123,7 +122,6 @@ class MGnifier:
         # results
         self._count: Optional[int] = None
         self._total_pages: Optional[int] = None
-        self._previewed_page: Optional[list] = None
         # instead dict by page num, so can .page(<page_num>)
         self._results: dict[int, list[dict]] = {}
 
@@ -418,6 +416,8 @@ class MGnifier:
 
     # now actually getting stuff!! (was lazy**/building queryies up to this point- just previewing and planning)
     # **however needed to make tiny requests to get counts, total pages, previews for paginated endpoints
+
+    # getting specific page
     @require_endpoint_module
     @require_pagination
     def page(
@@ -459,6 +459,23 @@ class MGnifier:
         self._results.update({page_num: page_items})
         return self._results.get(page_num, None)
 
+    @require_pagination
+    async def apage(
+        self,
+        page_num: int,
+        client: Optional[Client] = None,
+    ) -> Optional[dict[int, list[dict]]]:
+        if self._is_in_results(page_num):
+            logging.info(f"Page {page_num} already retrieved.")
+            return self._results.get(page_num, None)
+
+        a_client = client or self._init_client()
+        response = await self._aget_request(client=a_client, page=page_num)
+        page_items = self._page_items(response)
+        self._results.update({page_num: page_items})
+        return self._results.get(page_num, None)
+
+    # get all pages (with option to filter which pages or how many records with limit)
     @require_endpoint_module
     def get(
         self,
@@ -472,10 +489,26 @@ class MGnifier:
             _ = self.preview()
 
         else:
-            # async request all pages and store results in self._results
             with self._init_client() as client:
                 self._pages_collector(client, limit=limit, pages=pages, safety=safety)
-        # PICK UP HERE
+
+    @require_endpoint_module
+    async def aget(
+        self,
+        limit: Optional[int] = None,
+        *,
+        pages: Optional[list[int]] = None,
+        safety: bool = True,
+    ):
+        """Getting all asynchronously"""
+        if not self._pagination_status:
+            _ = self.preview()
+
+        else:
+            async with self._init_client() as client:
+                await self._apages_collector(
+                    client, limit=limit, pages=pages, safety=safety
+                )
 
     def to_pandas(
         self, data: Optional[dict[int, list[dict]]] = None, **kwargs
@@ -508,52 +541,6 @@ class MGnifier:
             return None
 
         return pd.DataFrame(self._unpageinate_results(_data), **kwargs)
-
-    @require_endpoint_module
-    async def aget(
-        self,
-        limit: Optional[int] = None,
-        *,
-        pages: Optional[list[int]] = None,
-        strict: bool = False,
-    ) -> pd.DataFrame:
-        """handles pageinated (async) or not"""
-
-        if self._pagination_status:
-            # async request all pages and store results in self._results
-            async with self._init_client() as client:
-                await self._acollector(client, limit=limit, pages=pages, strict=strict)
-        else:
-            if (
-                (self._total_pages is None)
-                or (self._count is None)
-                or (self._previewed_page is None)
-            ):
-                _ = self.preview()
-            # cache to result
-            self._results.update({1: self._previewed_page})
-
-    def to_json(self, file_path: Optional[Path] = None) -> str:
-        """
-        Convert the current metadata to a JSON string or save it to a file.
-
-        Parameters
-        ----------
-        file_path : Path, optional
-            If provided, the JSON string will be saved to this file. If None, the JSON string is returned.
-
-        Returns
-        -------
-        str or None
-            The JSON string representation of the metadata, or None if saved to a file.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-        # TODO implement this method
-        pass
 
     ## HIDDEN HELPER METHODS
     ## Help with requests
@@ -589,6 +576,64 @@ class MGnifier:
 
         return new_mg
 
+    @require_endpoint_module
+    async def _semaphore_guarded_request(
+        self,
+        client: Client,
+        **request_params,
+    ):
+        """
+        Make an API request while respecting the concurrency
+        limits of the server using a semaphore.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        **request_params
+            Parameters for the API call.
+
+        Returns
+        -------
+        dict or None
+            Parsed response from the API, or None if the request failed.
+        """
+        # limiting concurrency to protect server
+        async with semaphore:
+            return await self.endpoint_module.asyncio_detailed(
+                client=client,
+                **(request_params or self._params),
+            )
+
+    def _build_request_params(
+        self, params: Optional[dict[str, Any]] = None, **kwargs
+    ) -> dict[str, Any]:
+        """
+        Build the parameters for the API request by combining the current parameters with
+        any additional parameters provided.
+
+        Parameters
+        ----------
+        params : dict, optional
+            Additional parameters to include in the API request.
+        **kwargs
+            Additional keyword arguments to include in the API request.
+
+        Returns
+        -------
+        dict
+            The combined parameters for the API request.
+        """
+        request_params = {**(params or self._params), **kwargs}
+        if self._pagination_status and "page_size" not in request_params:
+            request_params["page_size"] = self._default_page_size
+        return request_params
+
+    def _parse_response(self, response: mpy_Response) -> Optional[dict[str, Any]]:
+        logging.info(f"Response status code: {response.status_code}")
+        if response.status_code == 200:
+            return response.parsed.to_dict()
+
     def _get_request(
         self,
         client: Optional[Client] = None,
@@ -614,19 +659,47 @@ class MGnifier:
         # prep client
         a_client = client or self._init_client()
         # prep params
-        request_params = {**(params or self._params), **kwargs}
-
-        # make sure page_size if pageinated
-        if self._pagination_status and "page_size" not in request_params:
-            request_params["page_size"] = self._default_page_size
-
+        request_params = self._build_request_params(params, **kwargs)
+        # request
         response = self.endpoint_module.sync_detailed(
             client=a_client,
             **request_params,
         )
-        logging.info(f"Response status code: {response.status_code}")
-        if response.status_code == 200:
-            return response.parsed.to_dict()
+        return self._parse_response(response)
+
+    async def _aget_request(
+        self,
+        client: Optional[Client] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> Optional[dict]:
+        """
+        Retrieve a single get asynchronously using the asynchronous API client.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        params : dict, optional
+            Parameters for the API call.
+        **kwargs
+            Additional keyword arguments for the API call.
+
+        Returns
+        -------
+        dict or None
+            Parsed response from the API, or None if the request failed.
+        """
+        # prep client
+        a_client = client or self._init_client()
+        # prep params
+        request_params = self._build_request_params(params, **kwargs)
+        # request
+        response = await self._semaphore_guarded_request(
+            client=a_client,
+            **request_params,
+        )
+        return self._parse_response(response)
 
     def _page_items(self, response: mpy_Response) -> Optional[dict]:
         """
@@ -664,6 +737,64 @@ class MGnifier:
 
         return page_num in self._results
 
+    def _resolve_pages_to_collect(
+        self,
+        *,
+        limit: Optional[int] = None,
+        pages: Optional[list[int]] = None,
+        safety: bool = True,
+    ) -> list[int]:
+        """
+        Resolve the list of page numbers to collect based on the provided limit and pages parameters.
+
+        Parameters
+        ----------
+        limit : int, optional
+            Maximum number of records to retrieve. If None, retrieves all records.
+        pages : list of int, optional
+            List of page numbers to retrieve. If None, retrieves all pages.
+        safety : bool, default True
+            If True, raises an error if dry_run() or preview() has not been run to check total pages and counts before collecting.
+
+        Returns
+        -------
+        list of int
+            A list of page numbers to collect based on the provided parameters.
+        """
+
+        # not allow to run this without preview/plan first?
+        if safety and self._total_pages is None:
+            raise AssertionError(
+                "Please run .dry_run() or .preview() before deciding to collect metadata."
+            )
+
+        # prep page nums
+        if isinstance(pages, list):
+            resolved = deepcopy(pages)
+        elif pages is None:
+            # init all pages if not provided
+            resolved = list(range(1, self._total_pages + 1))
+        else:
+            raise TypeError("pages must be a list of integers or None")
+
+        # keep only valid page numbers
+        resolved = [
+            p for p in resolved if isinstance(p, int) and 0 < p <= self._total_pages
+        ]
+
+        if limit is not None:
+            # limit to number of records/items
+            # LIMITATION: since paginated cannot retrieve exact num sometimes
+            # check if int and over zero
+            validate_gt_int(limit)
+            max_num_pages = ceil(
+                limit / self._params.get("page_size", self._default_page_size)
+            )
+            # filter out pages that are over the max
+            resolved = [p for p in resolved if p <= max_num_pages]
+
+        return resolved
+
     @require_pagination
     def _pages_collector(
         self,
@@ -687,80 +818,27 @@ class MGnifier:
             If True, raises an error if dry_run() or preview()
             has not been run to check total pages and counts before collecting.
         """
-        # not allow to run this without preview/plan first?
-        if safety and self._total_pages is None:
-            raise AssertionError(
-                "Please run .dry_run() or .preview() before "
-                "deciding to collect metadata for params:\n"
-                f"{self._params}"
-            )
 
-        # prep page nums
-        if isinstance(pages, list):
-            _pages = deepcopy(pages)
-        elif pages is None:
-            # init all pages if not provided
-            _pages = list(range(1, self._total_pages + 1))
-        else:
-            raise TypeError("pages must be a list of integers or None")
-
-        if limit is not None:
-            # limit to number of records/items
-            # LIMITATION: since paginated cannot retrieve exact num sometimes
-            # check if int and over zero
-            validate_gt_int(limit)
-            # get max number of pages based on limit and page size
-            max_num_pages = ceil(
-                limit / (self._params.get("page_size", self._default_page_size))
-            )
-            # filter out pages that are over the max
-            _pages = [p for p in _pages if p <= max_num_pages]
+        collect_pages = self._resolve_pages_to_collect(
+            limit=limit, pages=pages, safety=safety
+        )
 
         # get pages if not in results already
         a_client = client or self._init_client()
-        for p in tqdm(_pages, desc="Retrieving pages"):
+        for p in tqdm(collect_pages, desc="Retrieving pages"):
             # skip if page already retrieved
             if self._is_in_results(p):
                 logging.info(f"Page {p} already retrieved, skipping...")
             else:
                 self.page(p, client=a_client)
 
-    # TODO
-    # @async_disk_lru_cache()
-    async def _aget_page(
-        self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
-    ):
-        """
-        Asynchronously retrieve a single page of metadata.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        params : dict, optional
-            Parameters for the API call.
-
-        Returns
-        -------
-        Response
-            The API response object for the requested page.
-        """
-        """coroutine function to get coroutine for each page"""
-        # limiting concurrency to protect server
-        async with semaphore:
-            return await self.endpoint_module.asyncio_detailed(
-                client=client,
-                **(params or self._params),
-                **kwargs,
-            )
-
-    # TODO
-    async def _acollector(
+    @require_pagination
+    async def _apages_collector(
         self,
         client: Client,
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
-        strict: bool = False,
+        safety: bool = True,
     ):
         """
         Asynchronously collect metadata for all (or selected) pages and store results.
@@ -773,85 +851,23 @@ class MGnifier:
             Maximum number of records to retrieve. If None, retrieves all records.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
-        strict : bool, default False
+        safety : bool, default True
             If True, raises an error if dry_run() or preview() has not been run.
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        AssertionError
-            If dry_run() or preview() has not been run and strict is True.
-        ValueError
-            If invalid page numbers are provided.
-        TypeError
-            If pages is not a list or None.
         """
-        # not allow to run this without preview/plan first?
-        if self._total_pages is None:
-            if strict:
-                raise AssertionError(
-                    "Please run MGnifier.dry_run() or .preview() before "
-                    "deciding to collect metadata for params:\n"
-                    f"{self._params}"
-                )
-            else:
-                warnings.warn(
-                    "MGnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
-                )
-                self.preview()
 
-        # prep page nums
-        if limit is not None:
-            validate_gt_int(limit)
-            # TODO exact limit when pageinated?
-            max_page = ceil(limit / self._params["page_size"])
-            _pages = list(range(1, min(max_page, self._total_pages) + 1))
-        elif isinstance(pages, list):
-            _pages = deepcopy(pages)
-            for p in pages:
-                if not (isinstance(p, int) and 0 < p <= self._total_pages):
-                    if strict:
-                        raise ValueError(
-                            f"Invalid page number: {p}. "
-                            "Pages must be positive integers "
-                            f"not exceeding total pages {self._total_pages}."
-                        )
-                else:
-                    # else just skip invalid page numbers with warning
-                    logging.warning(
-                        f"Invalid page number {p} skipped as > than {self._total_pages}."
-                    )
-                    _pages.remove(p)
-        elif pages is None:
-            # init all pages if not provided
-            _pages = list(range(1, self._total_pages + 1))
-        else:
-            raise TypeError("pages must be a list of integers or None")
-
-        # append cached first page if avail
-        if 1 in _pages and self._previewed_page is not None:
-            logging.info("Page 1 already cached from preview, skipping...")
-            _pages.remove(1)
-            self._results = [self._previewed_page]
-        else:
-            self._results = []
+        collect_pages = self._resolve_pages_to_collect(
+            limit=limit, pages=pages, safety=safety
+        )
 
         # creating async tasks
-        async_tasks = [
-            asyncio.create_task(
-                self._aget_page(client=client, params=self._params, page=page_num)
-            )
-            for page_num in _pages
-        ]
+        tasks = [asyncio.create_task(self.apage(p)) for p in collect_pages]
 
-        # gathering results as completed
-        for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
-            # awaiting each task as it completes and appending results
-            page_result = await task
-            self._results.append(page_result.parsed.to_dict()["items"])
+        for task in tqdm(
+            asyncio.as_completed(tasks), total=len(tasks), desc="Retrieving pages"
+        ):
+            await task
+
+    # PICK UP HERE
 
     ## Help with workflow
 
@@ -916,45 +932,6 @@ class MGnifier:
             )
         return chain.from_iterable(_data.values())
 
-    ## Help with checks
-    def _check_kwargs(self) -> str:
-        """
-        Validate the current parameters for the selected resource.
-
-        Returns
-        -------
-        str
-            Validated keyword arguments or raises an error if invalid.
-
-        Raises
-        ------
-        ValueError
-            If invalid parameters are provided.
-        """
-        try:
-            kwargy = self.endpoint_module._get_kwargs(**self._params)
-        except ValueError as e:
-            raise ValueError(f"Invalid parameters provided: {e}") from None
-        return kwargy
-
-    def _tmp_param_update(self, **kwargs) -> dict[str, Any]:
-        """
-        Return a copy of the current parameters, updated with any provided keyword arguments.
-
-        Parameters
-        ----------
-        **kwargs
-            Parameters to update or add.
-
-        Returns
-        -------
-        dict
-            Updated parameters dictionary.
-        """
-        temp_params = deepcopy(self._params)
-        temp_params.update(kwargs)
-        return temp_params
-
     @require_endpoint_module
     def _build_url(
         self,
@@ -962,7 +939,7 @@ class MGnifier:
         exclude: list[str] = None,
     ) -> str:
         """
-        Build a URL for the current resource and parameters (for logging/verbose output).
+        Build a URL for the current resource and parameters (for logging/verbose output only).
 
         Parameters
         ----------
@@ -974,17 +951,15 @@ class MGnifier:
         str
             The constructed URL.
         """
-        """build url for logging/verbose only"""
-
         exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
-
         params = params or self._params
-
         # check params are valid for endpoint
-        _kwargs: dict[str, Any] = self._check_kwargs()
+        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
+
         _end_url: str = _kwargs.get(
             "url", f"/metagenomics/api/v2/{self._resource}/"
         ).strip("/")
+
         incl_params = deepcopy(params)
         for k in exclude or []:
             incl_params.pop(k, None)
@@ -994,3 +969,27 @@ class MGnifier:
         if len(encoded_params) > 0:
             return f"{start_url}/?{encoded_params}"
         return start_url
+
+    # WIP
+
+    def to_json(self, file_path: Optional[Path] = None) -> str:
+        """
+        Convert the current metadata to a JSON string or save it to a file.
+
+        Parameters
+        ----------
+        file_path : Path, optional
+            If provided, the JSON string will be saved to this file. If None, the JSON string is returned.
+
+        Returns
+        -------
+        str or None
+            The JSON string representation of the metadata, or None if saved to a file.
+
+        Raises
+        ------
+        RuntimeError
+            If no data is available to convert.
+        """
+        # TODO implement this method
+        pass
