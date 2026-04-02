@@ -372,18 +372,22 @@ class MGnifier:
         print(f"Total records to retrieve: {self._count}")
 
     # preview the request(s) prior to making them (option 2)
-    # TODO what request(s) with current params?
-    @require_endpoint_module
     def explain(self):
         """
-        Print URLs that would be called
-
-        TODO: should actually print multiple urls? for each page
+        Print example URLs that would be called. Actual requests handled by client.
         """
-        return self._build_url()
+        # prep if not done already
+        if self._total_pages is None:
+            self.dry_run()
+        # if not paginated just print one url
+        if not self._get_pagination_status():
+            print(self._build_url())
+        # Otherwise, print URLs for each page
+        else:
+            for page in range(1, self._total_pages + 1):
+                print(self._build_url(params={**self._params, "page": page}))
 
     # preview the request(s) prior to making them (option 3)
-    @require_endpoint_module
     def preview(self) -> pd.DataFrame:
         """
         Preview the first page of metadata for the current resource and parameters, without retrieving all pages.
@@ -418,7 +422,6 @@ class MGnifier:
     # **however needed to make tiny requests to get counts, total pages, previews for paginated endpoints
 
     # getting specific page
-    @require_endpoint_module
     @require_pagination
     def page(
         self, page_num: int, client: Optional[Client] = None
@@ -542,8 +545,7 @@ class MGnifier:
 
         return pd.DataFrame(self._unpageinate_results(_data), **kwargs)
 
-    ## HIDDEN HELPER METHODS
-    ## Help with requests
+    ## Hidden helper methods
     def _init_client(self):
         """
         Initialize and return a MGnify API client instance.
@@ -558,6 +560,44 @@ class MGnifier:
             # TODO logs?
         )
         return client_v1
+
+    @require_endpoint_module
+    def _build_url(
+        self,
+        params: Optional[dict[str, Any]] = None,
+        exclude: list[str] = None,
+    ) -> str:
+        """
+        Build a URL for the current resource and parameters (for logging/verbose output only).
+
+        Parameters
+        ----------
+        params : dict, optional
+            Parameters to include in the URL. If None, uses self._params.
+
+        Returns
+        -------
+        str
+            The constructed URL.
+        """
+        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
+        params = params or self._params
+        # check params are valid for endpoint
+        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
+
+        _end_url: str = _kwargs.get(
+            "url", f"/metagenomics/api/v2/{self._resource}/"
+        ).strip("/")
+
+        incl_params = deepcopy(params)
+        for k in exclude or []:
+            incl_params.pop(k, None)
+        start_url = os.path.join(self._base_url, _end_url)
+        encoded_params = urlencode(incl_params, doseq=True)
+
+        if len(encoded_params) > 0:
+            return f"{start_url}/?{encoded_params}"
+        return start_url
 
     def _clone(self):
         """
@@ -867,10 +907,6 @@ class MGnifier:
         ):
             await task
 
-    # PICK UP HERE
-
-    ## Help with workflow
-
     def _get_pagination_status(self) -> bool:
         """
         Check if the current resource requires pagination based on its supported keyword arguments.
@@ -883,8 +919,6 @@ class MGnifier:
         return (
             "page" in self._supported_kwargs and "page_size" in self._supported_kwargs
         )
-
-    ## Help with data handling
 
     def _df_expand_nested(
         self, df: pd.DataFrame, cols: list[str] = None
@@ -932,46 +966,7 @@ class MGnifier:
             )
         return chain.from_iterable(_data.values())
 
-    @require_endpoint_module
-    def _build_url(
-        self,
-        params: Optional[dict[str, Any]] = None,
-        exclude: list[str] = None,
-    ) -> str:
-        """
-        Build a URL for the current resource and parameters (for logging/verbose output only).
-
-        Parameters
-        ----------
-        params : dict, optional
-            Parameters to include in the URL. If None, uses self._params.
-
-        Returns
-        -------
-        str
-            The constructed URL.
-        """
-        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
-        params = params or self._params
-        # check params are valid for endpoint
-        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
-
-        _end_url: str = _kwargs.get(
-            "url", f"/metagenomics/api/v2/{self._resource}/"
-        ).strip("/")
-
-        incl_params = deepcopy(params)
-        for k in exclude or []:
-            incl_params.pop(k, None)
-        start_url = os.path.join(self._base_url, _end_url)
-        encoded_params = urlencode(incl_params, doseq=True)
-
-        if len(encoded_params) > 0:
-            return f"{start_url}/?{encoded_params}"
-        return start_url
-
-    # WIP
-
+    # TODO
     def to_json(self, file_path: Optional[Path] = None) -> str:
         """
         Convert the current metadata to a JSON string or save it to a file.
