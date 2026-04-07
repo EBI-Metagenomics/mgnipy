@@ -23,6 +23,7 @@ repos:
     hooks:
       - id: ruff # Fixes issues (including unused imports)
         args: ["--fix"]
+        exclude: docs/
 
   - repo: https://github.com/psf/black
     rev: 25.1.0
@@ -44,3 +45,4 @@ repos:
             "--use-parentheses",
             "true",
           ]
+        exclude: docs/
