@@ -522,6 +522,7 @@ class MGnifier:
         *,
         pages: Optional[list[int]] = None,
         safety: bool = True,
+        hide_progress: bool = False,
     ):
         """Getting all"""
         if not self._pagination_status:
@@ -529,7 +530,13 @@ class MGnifier:
 
         else:
             with self._init_client() as client:
-                self._pages_collector(client, limit=limit, pages=pages, safety=safety)
+                self._pages_collector(
+                    client,
+                    limit=limit,
+                    pages=pages,
+                    safety=safety,
+                    hide_progress=hide_progress,
+                )
 
     @require_endpoint_module
     async def aget(
@@ -538,6 +545,7 @@ class MGnifier:
         *,
         pages: Optional[list[int]] = None,
         safety: bool = True,
+        hide_progress: bool = False,
     ):
         """Getting all asynchronously"""
         if not self._pagination_status:
@@ -546,7 +554,11 @@ class MGnifier:
         else:
             async with self._init_client() as client:
                 await self._apages_collector(
-                    client, limit=limit, pages=pages, safety=safety
+                    client,
+                    limit=limit,
+                    pages=pages,
+                    safety=safety,
+                    hide_progress=hide_progress,
                 )
 
     # now vieweing the retrieved
@@ -971,6 +983,7 @@ class MGnifier:
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
         safety: bool = True,
+        hide_progress: bool = False,
     ):
         """
         Collect metadata for all (or selected) pages and store results to self.results.
@@ -994,7 +1007,7 @@ class MGnifier:
 
         # get pages if not in results already
         a_client = client or self._init_client()
-        for p in tqdm(collect_pages, desc="Retrieving pages"):
+        for p in tqdm(collect_pages, desc="Retrieving pages", disable=hide_progress):
             # skip if page already retrieved
             if self._is_in_results(p):
                 logging.info(f"Page {p} already retrieved, skipping...")
@@ -1008,6 +1021,7 @@ class MGnifier:
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
         safety: bool = True,
+        hide_progress: bool = False,
     ):
         """
         Asynchronously collect metadata for all (or selected) pages and store results.
@@ -1032,7 +1046,10 @@ class MGnifier:
         tasks = [asyncio.create_task(self.apage(p)) for p in collect_pages]
 
         for task in tqdm(
-            asyncio.as_completed(tasks), total=len(tasks), desc="Retrieving pages"
+            asyncio.as_completed(tasks),
+            total=len(tasks),
+            desc="Retrieving pages",
+            disable=hide_progress,
         ):
             await task
 
