@@ -338,6 +338,29 @@ class MGnifier:
         new_mg._params.update(filters)
         return new_mg
 
+    @require_pagination
+    def page_size(self, n: int):
+        """
+        Set the page size for paginated API calls.
+
+        Parameters
+        ----------
+        n : int
+
+        Returns
+        -------
+        MGnifier
+            A new MGnifier instance with the updated page size parameter.
+        """
+        if not isinstance(n, int) or n <= 0:
+            raise ValueError("Page size must be a positive integer.")
+
+        # make a copy of current instance
+        new_mg = self._clone()
+        # but with updates to params
+        new_mg._params.update({"page_size": n})
+        return new_mg
+
     # preview the request(s) prior to making them (option 1)
     @require_endpoint_module
     def dry_run(self) -> None:
