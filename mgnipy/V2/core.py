@@ -5,7 +5,6 @@ import os
 from copy import deepcopy
 from itertools import chain
 from math import ceil
-from pathlib import Path
 from typing import (
     Any,
     Callable,
@@ -577,6 +576,69 @@ class MGnifier:
 
         return list(self._unpageinate_results(_data))
 
+    def to_json(
+        self,
+        data: Optional[dict[int, list[dict]]] = None,
+        orient: str = "records",
+        lines: bool = True,
+        **json_kwargs,
+    ) -> str:
+        """
+        Convert the current metadata to a JSON string or save it to a file.
+
+        Parameters
+        ----------
+        data : dict of int to list of dict, optional
+            The paginated data to convert. If None, uses self._results.
+        **json_kwargs
+            Additional keyword arguments passed to the JSON serialization function.
+
+        Returns
+        -------
+        str or None
+            The JSON string representation of the metadata, or None if no data is available.
+
+        Raises
+        ------
+        RuntimeError
+            If no data is available to convert.
+        """
+        return self.to_df(data).to_json(orient=orient, lines=lines, **json_kwargs)
+
+    def to_polars(
+        self, data: Optional[dict[int, list[dict]]] = None, **polars_kwargs
+    ) -> pl.DataFrame:
+        """
+        Convert the current metadata to a Polars DataFrame.
+
+        Parameters
+        ----------
+        data : dict of int to list of dict, optional
+            The paginated data to convert. If None, uses self._results.
+        **polars_kwargs
+            Additional keyword arguments passed to pl.DataFrame.
+
+        Returns
+        -------
+        pl.DataFrame
+            A Polars DataFrame containing the metadata.
+
+        Raises
+        ------
+        RuntimeError
+            If no data is available to convert.
+        """
+
+        _data = data or self._results
+
+        if _data == {} or _data is None:
+            logging.info(
+                "No data available to convert to polars DataFrame. Returning None."
+            )
+            return None
+
+        return pl.DataFrame(self._unpageinate_results(), **polars_kwargs)
+
     ## Hidden helper methods
     def _init_client(self):
         """
@@ -997,60 +1059,3 @@ class MGnifier:
                 "Please run preview(), get(), aget(), page() first."
             )
         return chain.from_iterable(_data.values())
-
-    # TODO
-    def to_json(self, file_path: Optional[Path] = None) -> str:
-        """
-        Convert the current metadata to a JSON string or save it to a file.
-
-        Parameters
-        ----------
-        file_path : Path, optional
-            If provided, the JSON string will be saved to this file. If None, the JSON string is returned.
-
-        Returns
-        -------
-        str or None
-            The JSON string representation of the metadata, or None if saved to a file.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-        # TODO implement this method
-        pass
-
-    def to_polars(
-        self, data: Optional[dict[int, list[dict]]] = None, **polars_kwargs
-    ) -> pl.DataFrame:
-        """
-        Convert the current metadata to a Polars DataFrame.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self._results.
-        **polars_kwargs
-            Additional keyword arguments passed to pl.DataFrame.
-
-        Returns
-        -------
-        pl.DataFrame
-            A Polars DataFrame containing the metadata.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-
-        _data = data or self._results
-
-        if _data == {} or _data is None:
-            logging.info(
-                "No data available to convert to polars DataFrame. Returning None."
-            )
-            return None
-
-        return pl.DataFrame(self._unpageinate_results(), **polars_kwargs)
