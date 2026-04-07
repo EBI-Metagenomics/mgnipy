@@ -384,7 +384,8 @@ class MGnifier:
             print(self._build_url())
         # Otherwise, print URLs for each page
         else:
-            for page in range(1, (head + 1 or self._total_pages + 1)):
+            head = head or self._total_pages
+            for page in range(1, head + 1):
                 print(self._build_url(params={**self._params, "page": page}))
 
     # preview the request(s) prior to making them (option 3)
