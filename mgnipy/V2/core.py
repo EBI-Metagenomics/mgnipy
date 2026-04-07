@@ -15,6 +15,7 @@ from typing import (
 from urllib.parse import urlencode
 
 import pandas as pd
+import polars as pl
 from tqdm import tqdm
 
 from mgnipy._models.config import MgnipyConfig
@@ -1019,3 +1020,37 @@ class MGnifier:
         """
         # TODO implement this method
         pass
+
+    def to_polars(
+        self, data: Optional[dict[int, list[dict]]] = None, **polars_kwargs
+    ) -> pl.DataFrame:
+        """
+        Convert the current metadata to a Polars DataFrame.
+
+        Parameters
+        ----------
+        data : dict of int to list of dict, optional
+            The paginated data to convert. If None, uses self._results.
+        **polars_kwargs
+            Additional keyword arguments passed to pl.DataFrame.
+
+        Returns
+        -------
+        pl.DataFrame
+            A Polars DataFrame containing the metadata.
+
+        Raises
+        ------
+        RuntimeError
+            If no data is available to convert.
+        """
+
+        _data = data or self._results
+
+        if _data == {} or _data is None:
+            logging.info(
+                "No data available to convert to polars DataFrame. Returning None."
+            )
+            return None
+
+        return pl.DataFrame(self._unpageinate_results(), **polars_kwargs)
