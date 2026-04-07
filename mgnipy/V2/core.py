@@ -419,6 +419,18 @@ class MGnifier:
         # otherwise, get first page and return as df
         return self.to_df(data={1: self.page(1)})
 
+    # alternatively preview get first
+    def first(self) -> pd.DataFrame:
+        """
+        Alias for preview() to get the first page of results.
+
+        Returns
+        -------
+        pd.DataFrame
+            A DataFrame containing the metadata from the first page of results.
+        """
+        return self.preview()
+
     # now actually getting stuff!! (was lazy**/building queryies up to this point- just previewing and planning)
     # **however needed to make tiny requests to get counts, total pages, previews for paginated endpoints
 
