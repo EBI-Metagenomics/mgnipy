@@ -16,7 +16,7 @@ from mgnipy._models.CONSTANTS import (
 )
 from mgnipy.V2.core import MGnifier
 from mgnipy.V2.datasets import MGazine
-from mgnipy.V2.mgni_py_v2.api.analyses import (
+from mgnipy.V2.mgni_py_v2.api.assemblies import (
     list_analyses_for_assembly,
 )
 from mgnipy.V2.mgni_py_v2.api.studies import (
@@ -64,7 +64,7 @@ class ResourceProxy(MGnifier):
 
         if self.linked_proxy_module is not None:
 
-            results_list = list(self._unpageinate_results())
+            results_list = list(self.to_list())
 
             # next proxy
             if isinstance(key, str) and key in self.results_accessions:
@@ -210,7 +210,7 @@ class Biomes(ResourceProxy):
 
         if self.linked_proxy_module is not None:
 
-            results_list = list(self._unpageinate_results())
+            results_list = list(self.to_list())
 
             # next proxy
             if isinstance(key, str) and key in self.lineages:

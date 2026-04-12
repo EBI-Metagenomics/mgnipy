@@ -28,12 +28,11 @@ from tqdm.asyncio import tqdm as tqdm_async
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy.V2.core import MGnifier
+from mgnipy.V2.mgni_py_v2.api.analyses import (
+    analysis_get_mgnify_analysis_with_annotations,
+)
 from mgnipy.V2.mgni_py_v2.models.m_gnify_analysis_with_annotations import (
     MGnifyAnalysisWithAnnotations,
-)
-
-from mgnipy.V2.mgni_py_v2.api.analyses import (  # isort:skip
-    analysis_get_mgnify_analysis_with_annotations_661c2d6a as get_analysis_annotations,
 )
 
 semaphore = get_semaphore()
@@ -47,7 +46,9 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         # mgnifier TODO handing private data
         self._mgnifier_helper = MGnifier(accession=accession)
         # set endpoint
-        self._mgnifier_helper.endpoint_module = get_analysis_annotations
+        self._mgnifier_helper.endpoint_module = (
+            analysis_get_mgnify_analysis_with_annotations
+        )
         # get the data
         self._mgnifier_helper.get()
         # init with the data
@@ -141,7 +142,10 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             raise KeyError(f"Issue getting file type for alias: {alias}") from err
 
     def _prioritize_alias(
-        self, alias: Optional[str], url: Optional[HttpUrl], required: bool = False
+        self,
+        alias: Optional[str],
+        url: Optional[HttpUrl],
+        required: bool = False,
     ) -> tuple[str, HttpUrl]:
         """
         Prioritizes alias over url. If both are provided, alias is used and url is ignored with a warning.
@@ -1100,7 +1104,7 @@ class MGazineCurator:
 #         super().__init__(
 #             accession=accession,
 #         )
-#         self.mpy_module = get_analysis_annotations
+#         self.mpy_module = analysis_get_mgnify_analysis_with_annotations
 
 #     def __getitem__(self, key):
 #         pass

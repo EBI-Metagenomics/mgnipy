@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from copy import deepcopy
 from math import ceil
 from typing import (
     TYPE_CHECKING,
@@ -9,7 +10,6 @@ from typing import (
     Optional,
 )
 
-import deepcopy
 from tqdm import tqdm
 
 from mgnipy._shared_helpers.async_helpers import get_semaphore

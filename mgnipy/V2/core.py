@@ -1,10 +1,7 @@
-from __future__ import annotations
-
 import inspect
 import os
 from copy import deepcopy
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
     Literal,
@@ -18,29 +15,53 @@ from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.mgni_py_v2 import Client
 from mgnipy.V2.mgni_py_v2.api.analyses import (
-    list_assemblies,
+    get_mgnify_analysis,
     list_mgnify_analyses,
 )
-from mgnipy.V2.mgni_py_v2.api.genomes import list_mgnify_genomes
+from mgnipy.V2.mgni_py_v2.api.assemblies import (
+    get_assembly,
+    list_assemblies,
+)
+from mgnipy.V2.mgni_py_v2.api.genomes import (
+    get_mgnify_genome,
+    list_mgnify_genomes,
+)
 from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
-from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
+from mgnipy.V2.mgni_py_v2.api.runs import (
+    get_analysed_run,
+    list_analysed_runs,
+)
+from mgnipy.V2.mgni_py_v2.api.samples import (
+    get_mgnify_sample,
+    list_mgnify_samples,
+)
 from mgnipy.V2.mgni_py_v2.api.studies import (
+    get_mgnify_study,
     list_mgnify_studies,
 )
-
-if TYPE_CHECKING:
-    from mgnipy.V2.query_executor import QueryExecutor
-    from mgnipy.V2.query_set import QuerySet
+from mgnipy.V2.query_executor import QueryExecutor
+from mgnipy.V2.query_set import QuerySet
 
 BASE_URL = MgnipyConfig().base_url
-CORE_MODULES = {
+LIST_ENDPOINTS = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
+    SupportedEndpoints.RUNS: list_analysed_runs,  # get all runs, filtering option or with sample acc
     SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
     SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
     # ^ list_genome_links_for_assembly,  # all genome links for given assembly
     SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
+}
+
+ACC_DETAIL_ENDPOINTS = {
+    SupportedEndpoints.BIOMES: list_mgnify_biomes,
+    SupportedEndpoints.STUDIES: get_mgnify_study,
+    SupportedEndpoints.SAMPLES: get_mgnify_sample,
+    SupportedEndpoints.RUNS: get_analysed_run,
+    SupportedEndpoints.ANALYSES: get_mgnify_analysis,
+    SupportedEndpoints.GENOMES: get_mgnify_genome,
+    SupportedEndpoints.ASSEMBLIES: get_assembly,
 }
 
 
@@ -57,6 +78,7 @@ class MGnifier:
                 "biomes",
                 "studies",
                 "samples",
+                "runs",
                 "genomes",
                 "analyses",
                 "assemblies",
@@ -70,7 +92,7 @@ class MGnifier:
 
         Parameters
         ----------
-        resource : {"biomes", "studies", "samples", "genomes", "analyses", "assemblies"}, optional
+        resource : {"biomes", "studies", "samples", "runs", "genomes", "analyses", "assemblies"}, optional
             The resource type to query. Defaults to "biomes".
         params : dict, optional
             Dictionary of parameters for the API call.
@@ -84,11 +106,6 @@ class MGnifier:
         # for client
         self._base_url: str = BASE_URL
         self._default_page_size: int = 25
-        # if resource given, initiate endpoint module and supported params
-        self._resource = resource
-        self._endpoint_module: Optional[Callable] = None
-        self._supported_kwargs: Optional[list[str]] = None
-        self._pagination_status: Optional[bool] = None
         # params as dict
         self._params: dict[str, Any] = params or {}
         # add kwargs to params if provided
@@ -98,11 +115,11 @@ class MGnifier:
         self._count: Optional[int] = None
         self._total_pages: Optional[int] = None
         self._results: dict[int, list[dict]] = {}
+        self._endpoint_module: Optional[Callable] = None
+        self._supported_kwargs: Optional[list[str]] = None
+        self._pagination_status: Optional[bool] = None
         # set endpoint module and supported kwargs if resource provided
-        if self._resource is not None:
-            self._endpoint_module = CORE_MODULES[SupportedEndpoints(resource)]
-            self._supported_kwargs = self.list_parameters()
-            self._pagination_status = self._get_pagination_status()
+        self._resolve_resource_endpoint(resource)
 
         # query set and executor
         self._executor = QueryExecutor(self)
@@ -247,18 +264,27 @@ class MGnifier:
 
     @resource.setter
     def resource(self, new_resource):
-        if new_resource is None:
+        self._resolve_resource_endpoint(new_resource)
+
+    def _resolve_resource_endpoint(self, resource: str):
+        if SupportedEndpoints.is_valid(resource):
+            # set resource name
+            self._resource = resource
+            if "accession" in self._params:
+                self._endpoint_module = ACC_DETAIL_ENDPOINTS[
+                    SupportedEndpoints(resource)
+                ]
+            else:
+                self.endpoint_module = LIST_ENDPOINTS[SupportedEndpoints(resource)]
+        # reset all
+        elif resource is None:
             self._resource = None
             self._endpoint_module = None
             self._supported_kwargs = None
             self._pagination_status = None
-        elif SupportedEndpoints.is_valid(new_resource):
-            # set resource name
-            self._resource = new_resource
-            self.endpoint_module = CORE_MODULES[SupportedEndpoints(new_resource)]
         else:
             raise ValueError(
-                f"Invalid resource: {new_resource}. "
+                f"Invalid resource: {resource}. "
                 f"Resource must be one of {SupportedEndpoints.as_list()}."
             )
 
