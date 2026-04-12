@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from typing import (
+    TYPE_CHECKING,
     Any,
     TypeVar,
     cast,
@@ -15,11 +16,16 @@ from ..types import (
     Unset,
 )
 
-T = TypeVar("T", bound="AnalysedRun")
+if TYPE_CHECKING:
+    from ..models.m_gnify_sample import MGnifySample
+    from ..models.m_gnify_study import MGnifyStudy
+
+
+T = TypeVar("T", bound="AnalysedRunDetail")
 
 
 @_attrs_define
-class AnalysedRun:
+class AnalysedRunDetail:
     """
     Attributes:
         experiment_type (str): Experiment type refers to the type of sequencing data that was analysed, e.g. amplicon
@@ -27,6 +33,8 @@ class AnalysedRun:
         accession (str):
         instrument_model (None | str):
         instrument_platform (None | str):
+        sample (MGnifySample | None):
+        study (MGnifyStudy | None):
         sample_accession (None | str | Unset): ENA accession of the sample associated with this run
         study_accession (None | str | Unset): ENA accession of the study associated with this run
     """
@@ -35,11 +43,16 @@ class AnalysedRun:
     accession: str
     instrument_model: None | str
     instrument_platform: None | str
+    sample: MGnifySample | None
+    study: MGnifyStudy | None
     sample_accession: None | str | Unset = UNSET
     study_accession: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.m_gnify_sample import MGnifySample
+        from ..models.m_gnify_study import MGnifyStudy
+
         experiment_type = self.experiment_type
 
         accession = self.accession
@@ -49,6 +62,18 @@ class AnalysedRun:
 
         instrument_platform: None | str
         instrument_platform = self.instrument_platform
+
+        sample: dict[str, Any] | None
+        if isinstance(self.sample, MGnifySample):
+            sample = self.sample.to_dict()
+        else:
+            sample = self.sample
+
+        study: dict[str, Any] | None
+        if isinstance(self.study, MGnifyStudy):
+            study = self.study.to_dict()
+        else:
+            study = self.study
 
         sample_accession: None | str | Unset
         if isinstance(self.sample_accession, Unset):
@@ -70,6 +95,8 @@ class AnalysedRun:
                 "accession": accession,
                 "instrument_model": instrument_model,
                 "instrument_platform": instrument_platform,
+                "sample": sample,
+                "study": study,
             }
         )
         if sample_accession is not UNSET:
@@ -81,6 +108,9 @@ class AnalysedRun:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.m_gnify_sample import MGnifySample
+        from ..models.m_gnify_study import MGnifyStudy
+
         d = dict(src_dict)
         experiment_type = d.pop("experiment_type")
 
@@ -100,6 +130,36 @@ class AnalysedRun:
 
         instrument_platform = _parse_instrument_platform(d.pop("instrument_platform"))
 
+        def _parse_sample(data: object) -> MGnifySample | None:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                sample_type_0 = MGnifySample.from_dict(data)
+
+                return sample_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(MGnifySample | None, data)
+
+        sample = _parse_sample(d.pop("sample"))
+
+        def _parse_study(data: object) -> MGnifyStudy | None:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                study_type_0 = MGnifyStudy.from_dict(data)
+
+                return study_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(MGnifyStudy | None, data)
+
+        study = _parse_study(d.pop("study"))
+
         def _parse_sample_accession(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -118,17 +178,19 @@ class AnalysedRun:
 
         study_accession = _parse_study_accession(d.pop("study_accession", UNSET))
 
-        analysed_run = cls(
+        analysed_run_detail = cls(
             experiment_type=experiment_type,
             accession=accession,
             instrument_model=instrument_model,
             instrument_platform=instrument_platform,
+            sample=sample,
+            study=study,
             sample_accession=sample_accession,
             study_accession=study_accession,
         )
 
-        analysed_run.additional_properties = d
-        return analysed_run
+        analysed_run_detail.additional_properties = d
+        return analysed_run_detail
 
     @property
     def additional_keys(self) -> list[str]:

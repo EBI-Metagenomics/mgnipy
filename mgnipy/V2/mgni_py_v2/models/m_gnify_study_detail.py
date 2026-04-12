@@ -13,6 +13,11 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
+from ..types import (
+    UNSET,
+    Unset,
+)
+
 if TYPE_CHECKING:
     from ..models.biome import Biome
     from ..models.m_gnify_study_detail_metadata import MGnifyStudyDetailMetadata
@@ -34,6 +39,7 @@ class MGnifyStudyDetail:
         downloads (list[MGnifyStudyDownloadFile]):
         metadata (MGnifyStudyDetailMetadata): Metadata associated with the study, a partial copy of the ENA Study
             record.
+        first_accession (None | str | Unset): Preferred ENA accession for the study (derived from ENA/INSDC accessions)
     """
 
     accession: str
@@ -43,6 +49,7 @@ class MGnifyStudyDetail:
     updated_at: datetime.datetime
     downloads: list[MGnifyStudyDownloadFile]
     metadata: MGnifyStudyDetailMetadata
+    first_accession: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -69,6 +76,12 @@ class MGnifyStudyDetail:
 
         metadata = self.metadata.to_dict()
 
+        first_accession: None | str | Unset
+        if isinstance(self.first_accession, Unset):
+            first_accession = UNSET
+        else:
+            first_accession = self.first_accession
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -82,6 +95,8 @@ class MGnifyStudyDetail:
                 "metadata": metadata,
             }
         )
+        if first_accession is not UNSET:
+            field_dict["first_accession"] = first_accession
 
         return field_dict
 
@@ -124,6 +139,15 @@ class MGnifyStudyDetail:
 
         metadata = MGnifyStudyDetailMetadata.from_dict(d.pop("metadata"))
 
+        def _parse_first_accession(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        first_accession = _parse_first_accession(d.pop("first_accession", UNSET))
+
         m_gnify_study_detail = cls(
             accession=accession,
             ena_accessions=ena_accessions,
@@ -132,6 +156,7 @@ class MGnifyStudyDetail:
             updated_at=updated_at,
             downloads=downloads,
             metadata=metadata,
+            first_accession=first_accession,
         )
 
         m_gnify_study_detail.additional_properties = d

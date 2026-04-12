@@ -26,19 +26,19 @@ T = TypeVar("T", bound="MGnifyAnalysis")
 class MGnifyAnalysis:
     """
     Attributes:
-        study_accession (str):
-        accession (str):
         experiment_type (str): Experiment type refers to the type of sequencing data that was analysed, e.g. amplicon
             reads or a metagenome assembly
+        study_accession (str):
+        accession (str):
         run (AnalysedRun | None):
         sample (MGnifySample | None):
         assembly (Assembly | None):
         pipeline_version (None | PipelineVersions):
     """
 
+    experiment_type: str
     study_accession: str
     accession: str
-    experiment_type: str
     run: AnalysedRun | None
     sample: MGnifySample | None
     assembly: Assembly | None
@@ -50,11 +50,11 @@ class MGnifyAnalysis:
         from ..models.assembly import Assembly
         from ..models.m_gnify_sample import MGnifySample
 
+        experiment_type = self.experiment_type
+
         study_accession = self.study_accession
 
         accession = self.accession
-
-        experiment_type = self.experiment_type
 
         run: dict[str, Any] | None
         if isinstance(self.run, AnalysedRun):
@@ -84,9 +84,9 @@ class MGnifyAnalysis:
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
+                "experiment_type": experiment_type,
                 "study_accession": study_accession,
                 "accession": accession,
-                "experiment_type": experiment_type,
                 "run": run,
                 "sample": sample,
                 "assembly": assembly,
@@ -103,11 +103,11 @@ class MGnifyAnalysis:
         from ..models.m_gnify_sample import MGnifySample
 
         d = dict(src_dict)
+        experiment_type = d.pop("experiment_type")
+
         study_accession = d.pop("study_accession")
 
         accession = d.pop("accession")
-
-        experiment_type = d.pop("experiment_type")
 
         def _parse_run(data: object) -> AnalysedRun | None:
             if data is None:
@@ -170,9 +170,9 @@ class MGnifyAnalysis:
         pipeline_version = _parse_pipeline_version(d.pop("pipeline_version"))
 
         m_gnify_analysis = cls(
+            experiment_type=experiment_type,
             study_accession=study_accession,
             accession=accession,
-            experiment_type=experiment_type,
             run=run,
             sample=sample,
             assembly=assembly,

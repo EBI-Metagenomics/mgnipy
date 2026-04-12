@@ -30,7 +30,6 @@ class PublicationAnnotations:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-
         sample_processing = []
         for sample_processing_item_data in self.sample_processing:
             sample_processing_item = sample_processing_item_data.to_dict()

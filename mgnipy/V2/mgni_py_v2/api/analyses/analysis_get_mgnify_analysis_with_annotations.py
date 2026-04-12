@@ -1,7 +1,5 @@
 from http import HTTPStatus
-from typing import (
-    Any,
-)
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -11,10 +9,8 @@ from ...client import (
     AuthenticatedClient,
     Client,
 )
-from ...models.assembly_detail import AssemblyDetail
-from ...types import (
-    Response,
-)
+from ...models.m_gnify_analysis_with_annotations import MGnifyAnalysisWithAnnotations
+from ...types import Response
 
 
 def _get_kwargs(
@@ -23,7 +19,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/assemblies/{accession}".format(
+        "url": "/metagenomics/api/v2/analyses/{accession}/annotations".format(
             accession=quote(str(accession), safe=""),
         ),
     }
@@ -33,9 +29,9 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AssemblyDetail | None:
+) -> MGnifyAnalysisWithAnnotations | None:
     if response.status_code == 200:
-        response_200 = AssemblyDetail.from_dict(response.json())
+        response_200 = MGnifyAnalysisWithAnnotations.from_dict(response.json())
 
         return response_200
 
@@ -47,7 +43,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AssemblyDetail]:
+) -> Response[MGnifyAnalysisWithAnnotations]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -59,11 +55,12 @@ def _build_response(
 def sync_detailed(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
-) -> Response[AssemblyDetail]:
-    """Get assembly by accession
+    client: AuthenticatedClient,
+) -> Response[MGnifyAnalysisWithAnnotations]:
+    """Get MGnify analysis by accession, with annotations and downloadable files
 
-     Get detailed information about a specific assembly.
+     MGnify analyses have annotations (taxonomic and functional assignments), and downloadable files
+    (outputs from the pipeline execution).
 
     Args:
         accession (str):
@@ -73,7 +70,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AssemblyDetail]
+        Response[MGnifyAnalysisWithAnnotations]
     """
 
     kwargs = _get_kwargs(
@@ -90,11 +87,12 @@ def sync_detailed(
 def sync(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
-) -> AssemblyDetail | None:
-    """Get assembly by accession
+    client: AuthenticatedClient,
+) -> MGnifyAnalysisWithAnnotations | None:
+    """Get MGnify analysis by accession, with annotations and downloadable files
 
-     Get detailed information about a specific assembly.
+     MGnify analyses have annotations (taxonomic and functional assignments), and downloadable files
+    (outputs from the pipeline execution).
 
     Args:
         accession (str):
@@ -104,7 +102,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AssemblyDetail
+        MGnifyAnalysisWithAnnotations
     """
 
     return sync_detailed(
@@ -116,11 +114,12 @@ def sync(
 async def asyncio_detailed(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
-) -> Response[AssemblyDetail]:
-    """Get assembly by accession
+    client: AuthenticatedClient,
+) -> Response[MGnifyAnalysisWithAnnotations]:
+    """Get MGnify analysis by accession, with annotations and downloadable files
 
-     Get detailed information about a specific assembly.
+     MGnify analyses have annotations (taxonomic and functional assignments), and downloadable files
+    (outputs from the pipeline execution).
 
     Args:
         accession (str):
@@ -130,7 +129,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AssemblyDetail]
+        Response[MGnifyAnalysisWithAnnotations]
     """
 
     kwargs = _get_kwargs(
@@ -145,11 +144,12 @@ async def asyncio_detailed(
 async def asyncio(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
-) -> AssemblyDetail | None:
-    """Get assembly by accession
+    client: AuthenticatedClient,
+) -> MGnifyAnalysisWithAnnotations | None:
+    """Get MGnify analysis by accession, with annotations and downloadable files
 
-     Get detailed information about a specific assembly.
+     MGnify analyses have annotations (taxonomic and functional assignments), and downloadable files
+    (outputs from the pipeline execution).
 
     Args:
         accession (str):
@@ -159,7 +159,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AssemblyDetail
+        MGnifyAnalysisWithAnnotations
     """
 
     return (

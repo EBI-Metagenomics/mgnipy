@@ -11,22 +11,22 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-    from ..models.assembly import Assembly
+    from ..models.analysed_run import AnalysedRun
 
 
-T = TypeVar("T", bound="NinjaPaginationResponseSchemaAssembly")
+T = TypeVar("T", bound="NinjaPaginationResponseSchemaAnalysedRun")
 
 
 @_attrs_define
-class NinjaPaginationResponseSchemaAssembly:
+class NinjaPaginationResponseSchemaAnalysedRun:
     """
     Attributes:
         count (int):
-        items (list[Assembly]):
+        items (list[AnalysedRun]):
     """
 
     count: int
-    items: list[Assembly]
+    items: list[AnalysedRun]
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -50,7 +50,7 @@ class NinjaPaginationResponseSchemaAssembly:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.assembly import Assembly
+        from ..models.analysed_run import AnalysedRun
 
         d = dict(src_dict)
         count = d.pop("count")
@@ -58,17 +58,17 @@ class NinjaPaginationResponseSchemaAssembly:
         items = []
         _items = d.pop("items")
         for items_item_data in _items:
-            items_item = Assembly.from_dict(items_item_data)
+            items_item = AnalysedRun.from_dict(items_item_data)
 
             items.append(items_item)
 
-        ninja_pagination_response_schema_assembly = cls(
+        ninja_pagination_response_schema_analysed_run = cls(
             count=count,
             items=items,
         )
 
-        ninja_pagination_response_schema_assembly.additional_properties = d
-        return ninja_pagination_response_schema_assembly
+        ninja_pagination_response_schema_analysed_run.additional_properties = d
+        return ninja_pagination_response_schema_analysed_run
 
     @property
     def additional_keys(self) -> list[str]:

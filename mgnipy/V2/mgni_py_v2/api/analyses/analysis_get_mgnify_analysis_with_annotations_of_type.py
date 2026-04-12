@@ -9,8 +9,11 @@ from ...client import (
     AuthenticatedClient,
     Client,
 )
-from ...models.ninja_pagination_response_schema_m_gnify_sample_with_metadata import (
-    NinjaPaginationResponseSchemaMGnifySampleWithMetadata,
+from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
+    AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
+)
+from ...models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
+    NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation,
 )
 from ...types import (
     UNSET,
@@ -21,6 +24,7 @@ from ...types import (
 
 def _get_kwargs(
     accession: str,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
@@ -41,8 +45,9 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/studies/{accession}/samples/".format(
+        "url": "/metagenomics/api/v2/analyses/{accession}/annotations/{annotation_type}".format(
             accession=quote(str(accession), safe=""),
+            annotation_type=quote(str(annotation_type), safe=""),
         ),
         "params": params,
     }
@@ -52,10 +57,12 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> NinjaPaginationResponseSchemaMGnifySampleWithMetadata | None:
+) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaMGnifySampleWithMetadata.from_dict(
-            response.json()
+        response_200 = (
+            NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation.from_dict(
+                response.json()
+            )
         )
 
         return response_200
@@ -68,7 +75,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]:
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -79,17 +86,20 @@ def _build_response(
 
 def sync_detailed(
     accession: str,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]:
-    """List Samples associated with this Study
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]:
+    """Get a named set of annotations for a MGnify analysis by accession.
 
-     List all samples associated with this study.
+     List the annotations of a given type for a MGnify analysis referred to by its accession.
 
     Args:
         accession (str):
+        annotation_type
+            (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -98,11 +108,12 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]
+        Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]
     """
 
     kwargs = _get_kwargs(
         accession=accession,
+        annotation_type=annotation_type,
         page=page,
         page_size=page_size,
     )
@@ -116,17 +127,20 @@ def sync_detailed(
 
 def sync(
     accession: str,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaMGnifySampleWithMetadata | None:
-    """List Samples associated with this Study
+) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
+    """Get a named set of annotations for a MGnify analysis by accession.
 
-     List all samples associated with this study.
+     List the annotations of a given type for a MGnify analysis referred to by its accession.
 
     Args:
         accession (str):
+        annotation_type
+            (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -135,11 +149,12 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaMGnifySampleWithMetadata
+        NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation
     """
 
     return sync_detailed(
         accession=accession,
+        annotation_type=annotation_type,
         client=client,
         page=page,
         page_size=page_size,
@@ -148,17 +163,20 @@ def sync(
 
 async def asyncio_detailed(
     accession: str,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]:
-    """List Samples associated with this Study
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]:
+    """Get a named set of annotations for a MGnify analysis by accession.
 
-     List all samples associated with this study.
+     List the annotations of a given type for a MGnify analysis referred to by its accession.
 
     Args:
         accession (str):
+        annotation_type
+            (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -167,11 +185,12 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]
+        Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]
     """
 
     kwargs = _get_kwargs(
         accession=accession,
+        annotation_type=annotation_type,
         page=page,
         page_size=page_size,
     )
@@ -183,17 +202,20 @@ async def asyncio_detailed(
 
 async def asyncio(
     accession: str,
+    annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
     *,
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaMGnifySampleWithMetadata | None:
-    """List Samples associated with this Study
+) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
+    """Get a named set of annotations for a MGnify analysis by accession.
 
-     List all samples associated with this study.
+     List the annotations of a given type for a MGnify analysis referred to by its accession.
 
     Args:
         accession (str):
+        annotation_type
+            (AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType):
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -202,12 +224,13 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaMGnifySampleWithMetadata
+        NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation
     """
 
     return (
         await asyncio_detailed(
             accession=accession,
+            annotation_type=annotation_type,
             client=client,
             page=page,
             page_size=page_size,

@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from typing import (
     Any,
     TypeVar,
+    cast,
 )
 
 from attrs import define as _attrs_define
@@ -26,12 +27,12 @@ class MGnifyDownloadFileIndexFile:
     Attributes:
         index_type (MGnifyDownloadFileIndexFileIndexType):
         path (str | Unset):
-        relative_url (str | Unset): URL of the index file, relative to the DownloadFile it relates to.
+        url (None | str | Unset): Full URL of the index file.
     """
 
     index_type: MGnifyDownloadFileIndexFileIndexType
     path: str | Unset = UNSET
-    relative_url: str | Unset = UNSET
+    url: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -39,7 +40,11 @@ class MGnifyDownloadFileIndexFile:
 
         path = self.path
 
-        relative_url = self.relative_url
+        url: None | str | Unset
+        if isinstance(self.url, Unset):
+            url = UNSET
+        else:
+            url = self.url
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -50,8 +55,8 @@ class MGnifyDownloadFileIndexFile:
         )
         if path is not UNSET:
             field_dict["path"] = path
-        if relative_url is not UNSET:
-            field_dict["relative_url"] = relative_url
+        if url is not UNSET:
+            field_dict["url"] = url
 
         return field_dict
 
@@ -62,12 +67,19 @@ class MGnifyDownloadFileIndexFile:
 
         path = d.pop("path", UNSET)
 
-        relative_url = d.pop("relative_url", UNSET)
+        def _parse_url(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        url = _parse_url(d.pop("url", UNSET))
 
         m_gnify_download_file_index_file = cls(
             index_type=index_type,
             path=path,
-            relative_url=relative_url,
+            url=url,
         )
 
         m_gnify_download_file_index_file.additional_properties = d

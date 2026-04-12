@@ -1,7 +1,5 @@
 from http import HTTPStatus
-from typing import (
-    Any,
-)
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -11,42 +9,19 @@ from ...client import (
     AuthenticatedClient,
     Client,
 )
-from ...models.ninja_pagination_response_schema_genome_assembly_link_schema import (
-    NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema,
-)
-from ...types import (
-    UNSET,
-    Response,
-    Unset,
-)
+from ...models.assembly_detail import AssemblyDetail
+from ...types import Response
 
 
 def _get_kwargs(
     accession: str,
-    *,
-    page: int | Unset = 1,
-    page_size: int | None | Unset = UNSET,
 ) -> dict[str, Any]:
-
-    params: dict[str, Any] = {}
-
-    params["page"] = page
-
-    json_page_size: int | None | Unset
-    if isinstance(page_size, Unset):
-        json_page_size = UNSET
-    else:
-        json_page_size = page_size
-    params["page_size"] = json_page_size
-
-    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/assemblies/{accession}/genome-links".format(
+        "url": "/metagenomics/api/v2/assemblies/{accession}".format(
             accession=quote(str(accession), safe=""),
         ),
-        "params": params,
     }
 
     return _kwargs
@@ -54,11 +29,9 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema | None:
+) -> AssemblyDetail | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema.from_dict(
-            response.json()
-        )
+        response_200 = AssemblyDetail.from_dict(response.json())
 
         return response_200
 
@@ -70,7 +43,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]:
+) -> Response[AssemblyDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -83,31 +56,24 @@ def sync_detailed(
     accession: str,
     *,
     client: AuthenticatedClient | Client,
-    page: int | Unset = 1,
-    page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]:
-    """List genome/MAG links for an assembly
+) -> Response[AssemblyDetail]:
+    """Get assembly by accession
 
-     Return genome links (e.g. MAG associations) for a specific assembly.
-    Accessible at `/assemblies/{accession}/genome-links`.
+     Get detailed information about a specific assembly.
 
     Args:
         accession (str):
-        page (int | Unset):  Default: 1.
-        page_size (int | None | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]
+        Response[AssemblyDetail]
     """
 
     kwargs = _get_kwargs(
         accession=accession,
-        page=page,
-        page_size=page_size,
     )
 
     response = client.get_httpx_client().request(
@@ -121,32 +87,25 @@ def sync(
     accession: str,
     *,
     client: AuthenticatedClient | Client,
-    page: int | Unset = 1,
-    page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema | None:
-    """List genome/MAG links for an assembly
+) -> AssemblyDetail | None:
+    """Get assembly by accession
 
-     Return genome links (e.g. MAG associations) for a specific assembly.
-    Accessible at `/assemblies/{accession}/genome-links`.
+     Get detailed information about a specific assembly.
 
     Args:
         accession (str):
-        page (int | Unset):  Default: 1.
-        page_size (int | None | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema
+        AssemblyDetail
     """
 
     return sync_detailed(
         accession=accession,
         client=client,
-        page=page,
-        page_size=page_size,
     ).parsed
 
 
@@ -154,31 +113,24 @@ async def asyncio_detailed(
     accession: str,
     *,
     client: AuthenticatedClient | Client,
-    page: int | Unset = 1,
-    page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]:
-    """List genome/MAG links for an assembly
+) -> Response[AssemblyDetail]:
+    """Get assembly by accession
 
-     Return genome links (e.g. MAG associations) for a specific assembly.
-    Accessible at `/assemblies/{accession}/genome-links`.
+     Get detailed information about a specific assembly.
 
     Args:
         accession (str):
-        page (int | Unset):  Default: 1.
-        page_size (int | None | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]
+        Response[AssemblyDetail]
     """
 
     kwargs = _get_kwargs(
         accession=accession,
-        page=page,
-        page_size=page_size,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -190,32 +142,25 @@ async def asyncio(
     accession: str,
     *,
     client: AuthenticatedClient | Client,
-    page: int | Unset = 1,
-    page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema | None:
-    """List genome/MAG links for an assembly
+) -> AssemblyDetail | None:
+    """Get assembly by accession
 
-     Return genome links (e.g. MAG associations) for a specific assembly.
-    Accessible at `/assemblies/{accession}/genome-links`.
+     Get detailed information about a specific assembly.
 
     Args:
         accession (str):
-        page (int | Unset):  Default: 1.
-        page_size (int | None | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema
+        AssemblyDetail
     """
 
     return (
         await asyncio_detailed(
             accession=accession,
             client=client,
-            page=page,
-            page_size=page_size,
         )
     ).parsed

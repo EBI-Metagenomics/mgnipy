@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType(
+class AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType(
     str, Enum
 ):
     PFAMS = "pfams"

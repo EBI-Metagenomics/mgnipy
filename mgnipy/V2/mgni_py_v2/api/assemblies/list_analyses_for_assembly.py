@@ -1,7 +1,5 @@
 from http import HTTPStatus
-from typing import (
-    Any,
-)
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -11,8 +9,8 @@ from ...client import (
     AuthenticatedClient,
     Client,
 )
-from ...models.ninja_pagination_response_schema_additional_contained_genome_schema import (
-    NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema,
+from ...models.ninja_pagination_response_schema_m_gnify_analysis import (
+    NinjaPaginationResponseSchemaMGnifyAnalysis,
 )
 from ...types import (
     UNSET,
@@ -43,7 +41,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/assemblies/{accession}/additional-contained-genomes".format(
+        "url": "/metagenomics/api/v2/assemblies/{accession}/analyses".format(
             accession=quote(str(accession), safe=""),
         ),
         "params": params,
@@ -54,12 +52,10 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema | None:
+) -> NinjaPaginationResponseSchemaMGnifyAnalysis | None:
     if response.status_code == 200:
-        response_200 = (
-            NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema.from_dict(
-                response.json()
-            )
+        response_200 = NinjaPaginationResponseSchemaMGnifyAnalysis.from_dict(
+            response.json()
         )
 
         return response_200
@@ -72,7 +68,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema]:
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysis]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -87,11 +83,11 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema]:
-    """List additional contained genomes for an assembly
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysis]:
+    """List analyses for an assembly
 
-     Return additional contained genomes (and their metrics) discovered for this assembly.
-    Accessible at `/assemblies/{accession}/additional-contained-genomes`.
+     Return MGnify analyses (MGYAs) that were generated from this assembly.
+    Accessible at `/assemblies/{accession}/analyses`.
 
     Args:
         accession (str):
@@ -103,7 +99,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema]
+        Response[NinjaPaginationResponseSchemaMGnifyAnalysis]
     """
 
     kwargs = _get_kwargs(
@@ -125,11 +121,11 @@ def sync(
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema | None:
-    """List additional contained genomes for an assembly
+) -> NinjaPaginationResponseSchemaMGnifyAnalysis | None:
+    """List analyses for an assembly
 
-     Return additional contained genomes (and their metrics) discovered for this assembly.
-    Accessible at `/assemblies/{accession}/additional-contained-genomes`.
+     Return MGnify analyses (MGYAs) that were generated from this assembly.
+    Accessible at `/assemblies/{accession}/analyses`.
 
     Args:
         accession (str):
@@ -141,7 +137,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema
+        NinjaPaginationResponseSchemaMGnifyAnalysis
     """
 
     return sync_detailed(
@@ -158,11 +154,11 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema]:
-    """List additional contained genomes for an assembly
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysis]:
+    """List analyses for an assembly
 
-     Return additional contained genomes (and their metrics) discovered for this assembly.
-    Accessible at `/assemblies/{accession}/additional-contained-genomes`.
+     Return MGnify analyses (MGYAs) that were generated from this assembly.
+    Accessible at `/assemblies/{accession}/analyses`.
 
     Args:
         accession (str):
@@ -174,7 +170,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema]
+        Response[NinjaPaginationResponseSchemaMGnifyAnalysis]
     """
 
     kwargs = _get_kwargs(
@@ -194,11 +190,11 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema | None:
-    """List additional contained genomes for an assembly
+) -> NinjaPaginationResponseSchemaMGnifyAnalysis | None:
+    """List analyses for an assembly
 
-     Return additional contained genomes (and their metrics) discovered for this assembly.
-    Accessible at `/assemblies/{accession}/additional-contained-genomes`.
+     Return MGnify analyses (MGYAs) that were generated from this assembly.
+    Accessible at `/assemblies/{accession}/analyses`.
 
     Args:
         accession (str):
@@ -210,7 +206,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema
+        NinjaPaginationResponseSchemaMGnifyAnalysis
     """
 
     return (

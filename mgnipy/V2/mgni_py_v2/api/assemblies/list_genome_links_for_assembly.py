@@ -9,8 +9,8 @@ from ...client import (
     AuthenticatedClient,
     Client,
 )
-from ...models.ninja_pagination_response_schema_m_gnify_sample_with_metadata import (
-    NinjaPaginationResponseSchemaMGnifySampleWithMetadata,
+from ...models.ninja_pagination_response_schema_genome_assembly_link_schema import (
+    NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema,
 )
 from ...types import (
     UNSET,
@@ -41,7 +41,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/studies/{accession}/samples/".format(
+        "url": "/metagenomics/api/v2/assemblies/{accession}/genome-links".format(
             accession=quote(str(accession), safe=""),
         ),
         "params": params,
@@ -52,9 +52,9 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> NinjaPaginationResponseSchemaMGnifySampleWithMetadata | None:
+) -> NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaMGnifySampleWithMetadata.from_dict(
+        response_200 = NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema.from_dict(
             response.json()
         )
 
@@ -68,7 +68,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]:
+) -> Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -80,13 +80,14 @@ def _build_response(
 def sync_detailed(
     accession: str,
     *,
-    client: AuthenticatedClient,
+    client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]:
-    """List Samples associated with this Study
+) -> Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]:
+    """List genome/MAG links for an assembly
 
-     List all samples associated with this study.
+     Return genome links (e.g. MAG associations) for a specific assembly.
+    Accessible at `/assemblies/{accession}/genome-links`.
 
     Args:
         accession (str):
@@ -98,7 +99,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]
+        Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]
     """
 
     kwargs = _get_kwargs(
@@ -117,13 +118,14 @@ def sync_detailed(
 def sync(
     accession: str,
     *,
-    client: AuthenticatedClient,
+    client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaMGnifySampleWithMetadata | None:
-    """List Samples associated with this Study
+) -> NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema | None:
+    """List genome/MAG links for an assembly
 
-     List all samples associated with this study.
+     Return genome links (e.g. MAG associations) for a specific assembly.
+    Accessible at `/assemblies/{accession}/genome-links`.
 
     Args:
         accession (str):
@@ -135,7 +137,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaMGnifySampleWithMetadata
+        NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema
     """
 
     return sync_detailed(
@@ -149,13 +151,14 @@ def sync(
 async def asyncio_detailed(
     accession: str,
     *,
-    client: AuthenticatedClient,
+    client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]:
-    """List Samples associated with this Study
+) -> Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]:
+    """List genome/MAG links for an assembly
 
-     List all samples associated with this study.
+     Return genome links (e.g. MAG associations) for a specific assembly.
+    Accessible at `/assemblies/{accession}/genome-links`.
 
     Args:
         accession (str):
@@ -167,7 +170,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[NinjaPaginationResponseSchemaMGnifySampleWithMetadata]
+        Response[NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema]
     """
 
     kwargs = _get_kwargs(
@@ -184,13 +187,14 @@ async def asyncio_detailed(
 async def asyncio(
     accession: str,
     *,
-    client: AuthenticatedClient,
+    client: AuthenticatedClient | Client,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-) -> NinjaPaginationResponseSchemaMGnifySampleWithMetadata | None:
-    """List Samples associated with this Study
+) -> NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema | None:
+    """List genome/MAG links for an assembly
 
-     List all samples associated with this study.
+     Return genome links (e.g. MAG associations) for a specific assembly.
+    Accessible at `/assemblies/{accession}/genome-links`.
 
     Args:
         accession (str):
@@ -202,7 +206,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        NinjaPaginationResponseSchemaMGnifySampleWithMetadata
+        NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema
     """
 
     return (

@@ -2,8 +2,9 @@
 
 from .additional_contained_genome_schema import AdditionalContainedGenomeSchema
 from .analysed_run import AnalysedRun
-from .analysis_get_mgnify_analysis_with_annotations_of_type_c486b404m_gnify_functional_analysis_annotation_type import (
-    AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType,
+from .analysed_run_detail import AnalysedRunDetail
+from .analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
+    AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
 )
 from .assembly import Assembly
 from .assembly_detail import AssemblyDetail
@@ -21,6 +22,7 @@ from .europe_pmc_annotation import EuropePmcAnnotation
 from .europe_pmc_annotation_group import EuropePmcAnnotationGroup
 from .europe_pmc_annotation_mention import EuropePmcAnnotationMention
 from .europe_pmc_annotation_tag import EuropePmcAnnotationTag
+from .experiment_types import ExperimentTypes
 from .genome_assembly_link_schema import GenomeAssemblyLinkSchema
 from .genome_catalogue_base import GenomeCatalogueBase
 from .genome_catalogue_base_catalogue_type import GenomeCatalogueBaseCatalogueType
@@ -88,6 +90,9 @@ from .m_gnify_study_download_file import MGnifyStudyDownloadFile
 from .ninja_pagination_response_schema_additional_contained_genome_schema import (
     NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema,
 )
+from .ninja_pagination_response_schema_analysed_run import (
+    NinjaPaginationResponseSchemaAnalysedRun,
+)
 from .ninja_pagination_response_schema_assembly import (
     NinjaPaginationResponseSchemaAssembly,
 )
@@ -146,6 +151,7 @@ from .order_by_filter_literalsample_title_sample_title_updated_at_updated_at_ord
 from .pipeline_versions import PipelineVersions
 from .publication_annotations import PublicationAnnotations
 from .publication_list_filters import PublicationListFilters
+from .run_list_filters import RunListFilters
 from .sample_list_filters import SampleListFilters
 from .schema import Schema
 from .study_list_filters import StudyListFilters
@@ -159,7 +165,8 @@ from .webin_token_response import WebinTokenResponse
 __all__ = (
     "AdditionalContainedGenomeSchema",
     "AnalysedRun",
-    "AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeC486B404MGnifyFunctionalAnalysisAnnotationType",
+    "AnalysedRunDetail",
+    "AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType",
     "Assembly",
     "AssemblyDetail",
     "AssemblyDetailMetadataType0",
@@ -176,6 +183,7 @@ __all__ = (
     "EuropePmcAnnotationGroup",
     "EuropePmcAnnotationMention",
     "EuropePmcAnnotationTag",
+    "ExperimentTypes",
     "GenomeAssemblyLinkSchema",
     "GenomeCatalogueBase",
     "GenomeCatalogueBaseCatalogueType",
@@ -225,6 +233,7 @@ __all__ = (
     "MGnifyStudyDetailMetadata",
     "MGnifyStudyDownloadFile",
     "NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema",
+    "NinjaPaginationResponseSchemaAnalysedRun",
     "NinjaPaginationResponseSchemaAssembly",
     "NinjaPaginationResponseSchemaBiome",
     "NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema",
@@ -247,6 +256,7 @@ __all__ = (
     "PipelineVersions",
     "PublicationAnnotations",
     "PublicationListFilters",
+    "RunListFilters",
     "SampleListFilters",
     "Schema",
     "StudyListFilters",

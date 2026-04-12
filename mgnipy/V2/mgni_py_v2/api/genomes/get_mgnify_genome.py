@@ -1,7 +1,5 @@
 from http import HTTPStatus
-from typing import (
-    Any,
-)
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -12,9 +10,7 @@ from ...client import (
     Client,
 )
 from ...models.genome_detail import GenomeDetail
-from ...types import (
-    Response,
-)
+from ...types import Response
 
 
 def _get_kwargs(
