@@ -60,7 +60,7 @@ class SupportedEndpoints(SpecialEnum):
     STUDIES = "studies"
     RUNS = "runs"
     #    PRIVATE_DATA = "private_data"
-    #    MISCELLANEOUS = "miscellaneous"
+    MISCELLANEOUS = "miscellaneous"
     #    AUTHENTICATION = "authentication"
     BIOMES = "biomes"  # miscellaneous
 

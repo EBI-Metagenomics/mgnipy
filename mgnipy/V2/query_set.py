@@ -157,7 +157,9 @@ class QuerySet:
             print(self.owner._build_url())
         # Otherwise, print URLs for each page
         else:
-            limit = head or self.owner._total_pages
+            limit = (
+                min(head, self.owner._total_pages) if head else self.owner._total_pages
+            )
             for page in range(1, limit + 1):
                 print(
                     self.owner._build_url(params={**self.owner._params, "page": page})
@@ -189,8 +191,8 @@ class QuerySet:
         Retrieve the first page of metadata for the current resource and parameters.
         Same as preview() but returns the raw dictionary instead of a DataFrame.
         """
-        self._exec.get_any_first()
-        return self._owner._results.get(1, [])
+        self.exec.get_any_first()
+        return self.owner._results.get(1, [])
 
     # viewing the retrieved
     def to_df(
@@ -333,3 +335,48 @@ class QuerySet:
             return self.to_df()["accession"].tolist()
         else:
             return None
+
+    @property
+    def results_biome_lineages(self) -> Optional[list[str]]:
+        """
+        Get a list of biome lineages from the retrieved metadata results, if available.
+
+        Returns
+        -------
+        list of str or None
+            A list of biome lineage strings if available, otherwise None.
+        """
+        if self.to_df() is None:
+            return None
+        elif "lineage" in self.to_df().columns:
+            return self.to_df()["lineage"].tolist()
+        elif "biome_lineage" in self.to_df().columns:
+            return self.to_df()["biome_lineage"].tolist()
+        elif "biome" in self.to_df().columns:
+            return self.to_df()["biome"].tolist()
+        elif "biome_name" in self.to_df().columns:
+            return self.to_df()["biome_name"].tolist()
+        else:
+            return None
+
+    def _resolve_results_accession_params(self, accession: int | str) -> dict:
+        if self.results_accessions is not None and isinstance(accession, int):
+            return {"accession": self.results_accessions[accession]}
+
+        if self.results_accessions is not None and accession in self.results_accessions:
+            return {"accession": accession}
+
+        if self.results_biome_lineages is not None and isinstance(accession, int):
+            return {"biome_lineage": self.results_biome_lineages[accession]}
+
+        if (
+            self.results_biome_lineages is not None
+            and accession in self.results_biome_lineages
+        ):
+            return {"biome_lineage": accession}
+
+        raise KeyError(
+            f"Invalid key: {accession}. "
+            "Key must be an integer index, or a valid accession string. "
+            "Accession must exist in`.results_accessions` or `.results_biome_lineages`."
+        )

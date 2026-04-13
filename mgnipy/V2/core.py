@@ -20,7 +20,9 @@ from mgnipy.V2.mgni_py_v2.api.analyses import (
 )
 from mgnipy.V2.mgni_py_v2.api.assemblies import (
     get_assembly,
+    list_analyses_for_assembly,
     list_assemblies,
+    list_genome_links_for_assembly,
 )
 from mgnipy.V2.mgni_py_v2.api.genomes import (
     get_mgnify_genome,
@@ -30,14 +32,18 @@ from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
 from mgnipy.V2.mgni_py_v2.api.runs import (
     get_analysed_run,
     list_analysed_runs,
+    list_runs_analyses,
 )
 from mgnipy.V2.mgni_py_v2.api.samples import (
     get_mgnify_sample,
     list_mgnify_samples,
+    list_sample_runs,
 )
 from mgnipy.V2.mgni_py_v2.api.studies import (
     get_mgnify_study,
     list_mgnify_studies,
+    list_mgnify_study_analyses,
+    list_mgnify_study_samples,
 )
 from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.query_set import QuerySet
@@ -56,12 +62,37 @@ LIST_ENDPOINTS = {
 
 ACC_DETAIL_ENDPOINTS = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,
+    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,
     SupportedEndpoints.STUDIES: get_mgnify_study,
     SupportedEndpoints.SAMPLES: get_mgnify_sample,
     SupportedEndpoints.RUNS: get_analysed_run,
     SupportedEndpoints.ANALYSES: get_mgnify_analysis,
     SupportedEndpoints.GENOMES: get_mgnify_genome,
     SupportedEndpoints.ASSEMBLIES: get_assembly,
+}
+
+SUPPORTED_RELATIONSHIPS = {
+    SupportedEndpoints.BIOMES: {SupportedEndpoints.STUDIES: list_mgnify_studies},
+    SupportedEndpoints.MISCELLANEOUS: {SupportedEndpoints.STUDIES: list_mgnify_studies},
+    SupportedEndpoints.STUDIES: {
+        SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,
+        SupportedEndpoints.SAMPLES: list_mgnify_study_samples,
+    },
+    SupportedEndpoints.SAMPLES: {SupportedEndpoints.RUNS: list_sample_runs},
+    SupportedEndpoints.RUNS: {SupportedEndpoints.ANALYSES: list_runs_analyses},
+    SupportedEndpoints.ASSEMBLIES: {
+        SupportedEndpoints.ANALYSES: list_analyses_for_assembly,
+        SupportedEndpoints.GENOMES: list_genome_links_for_assembly,
+    },
+}
+
+RESOURCE_ALIASES = {
+    "miscellaneous": "biomes",
+}
+
+IDENTITY_KEY_ALIASES = {
+    "lineage": "accession",
+    "biome_lineage": "accession",
 }
 
 
@@ -138,37 +169,46 @@ class MGnifier:
 
     def __getitem__(self, key) -> list[dict] | dict:
         """
-        Allow indexing into the metadata records by integer index, accession, or lineage.
+        Get detail by accession or get a slice of results by index. If key is an integer index or slice, return the corresponding record(s) from the results. If key is a string and matches an accession in the results, return the record(s) with that accession.
+        """
+        acc_param = self._qs._resolve_results_accession_params(key)
+        # if one
+        return self.get_detail(acc_param)
+
+    def get_detail(
+        self,
+        accession_param: dict[str, str],
+    ) -> dict | pd.DataFrame:
+        """
+        Get detailed metadata for a specific accession by calling the appropriate endpoint module.
 
         Parameters
         ----------
-        key : int, slice, or str
-            The key to index by. Can be an integer index, a slice,
-            a valid accession string, or a valid lineage string.
+        accession : str
+            The accession identifier for which to retrieve detailed metadata.
+        output_format : {"dict", "df"}, optional
+            The format of the output. Defaults to "dict".
 
         Returns
         -------
-        list of dict or dict
-            The metadata record(s) corresponding to the provided key.
+        dict | pd.DataFrame
+            A dictionary or DataFrame containing the detailed metadata for the specified accession.
 
         Raises
         ------
-        KeyError
-            If the key is not a valid index, accession, or lineage.
+        RuntimeError
+            If no endpoint module is set or if the API call fails.
         """
-        results_list = list(self._unpageinate_results())
-        # by index
-        if isinstance(key, (int, slice)):
-            return results_list[key]
-        # by accession
-        elif isinstance(key, str) and key in self.results_accessions:
-            return [record for record in results_list if record["accession"] == key]
-        # else raise error
-        else:
-            raise KeyError(
-                f"Invalid key: {key}. "
-                "Key must be an integer index, a slice, or a valid accession string."
-            )
+        new_mg = self.__class__(
+            **accession_param,
+        )
+
+        new_mg.endpoint_module = ACC_DETAIL_ENDPOINTS[
+            SupportedEndpoints(self._resource)
+        ]
+
+        print(new_mg._qs.first())
+        return new_mg
 
     def __getattr__(self, name: str):
         """
@@ -191,17 +231,45 @@ class MGnifier:
         """
         if name == "httpx_client":
             return self._init_client().get_httpx_client()
-        elif name == "httpx_aclient":
+        if name == "httpx_aclient":
             return self._init_client().get_async_httpx_client()
-        elif name == "request_url":
+        if name == "request_url":
             return self._build_url()
-        elif name == "api_version":
+        if name == "api_version":
             print("v2")
-        else:
-            try:
-                return self.__dict__[f"_{name}"]
-            except KeyError as e:
-                raise KeyError(f"{name} is not a valid attribute of MGnifier") from e
+        if SupportedEndpoints.is_valid(name):
+            if SupportedEndpoints(name) in SUPPORTED_RELATIONSHIPS.get(
+                SupportedEndpoints(self._resource), []
+            ):
+                acc_params = self._qs._resolve_results_accession_params(
+                    self.accession or self.lineage
+                )
+                mg = self._spawn(resource=name, **acc_params)
+                mg.endpoint_module = SUPPORTED_RELATIONSHIPS[
+                    SupportedEndpoints(self._resource)
+                ][SupportedEndpoints(name)]
+                return mg
+            else:
+                raise AttributeError(
+                    f"{name} is not a valid related resource for {self._resource}. "
+                    f"Supported related resources are: "
+                    f"{[res.value for res in SUPPORTED_RELATIONSHIPS.get(SupportedEndpoints(self._resource), [])]}"
+                )
+        try:
+            return self.__dict__[f"_{name}"]
+        except KeyError as e:
+            raise KeyError(f"{name} is not a valid attribute of MGnifier") from e
+
+    def __call__(self, **kwargs):
+        return self.filter(**kwargs)
+
+    @property
+    def accession(self):
+        return self._params.get("accession", None)
+
+    @property
+    def lineage(self):
+        return self._params.get("biome_lineage", None)
 
     def __str__(self):
         """
@@ -369,6 +437,9 @@ class MGnifier:
 
         return f"{start_url}/?{encoded_params}" if encoded_params else start_url
 
+    def _spawn(self, *, resource: Optional[str] = None, **params) -> "MGnifier":
+        return MGnifier(resource=resource or self._resource, **params)
+
     def _clone(self) -> "MGnifier":
         """
         Create a clone of the current MGnifier instance for immutability :) but with no cache
@@ -379,7 +450,8 @@ class MGnifier:
             A new MGnifier instance with the same resource and parameters but no cached results.
         """
         new_mg = self.__class__(
-            params=self._params,
+            # resource=self._resource,
+            **deepcopy(self._params),
         )
         # will also set resource
         new_mg.endpoint_module = self.endpoint_module
@@ -509,6 +581,10 @@ class MGnifier:
     @property
     def results_accessions(self) -> Optional[list[str]]:
         return self._qs.results_accessions
+
+    @property
+    def results_biome_lineages(self) -> Optional[list[str]]:
+        return self._qs.results_biome_lineages
 
     def to_df(self, data: Optional[dict[int, list[dict]]] = None, **kwargs):
         return self._qs.to_df(data=data, **kwargs)
