@@ -86,15 +86,6 @@ SUPPORTED_RELATIONSHIPS = {
     },
 }
 
-RESOURCE_ALIASES = {
-    "miscellaneous": "biomes",
-}
-
-IDENTITY_KEY_ALIASES = {
-    "lineage": "accession",
-    "biome_lineage": "accession",
-}
-
 
 class MGnifier:
     """
@@ -241,9 +232,10 @@ class MGnifier:
             if SupportedEndpoints(name) in SUPPORTED_RELATIONSHIPS.get(
                 SupportedEndpoints(self._resource), []
             ):
-                acc_params = self._qs._resolve_results_accession_params(
-                    self.accession or self.lineage
-                )
+                if self.accession:
+                    acc_params = {"accession": self.accession}
+                elif self.lineage:
+                    acc_params = {"biome_lineage": self.lineage}
                 mg = self._spawn(resource=name, **acc_params)
                 mg.endpoint_module = SUPPORTED_RELATIONSHIPS[
                     SupportedEndpoints(self._resource)
@@ -255,6 +247,8 @@ class MGnifier:
                     f"Supported related resources are: "
                     f"{[res.value for res in SUPPORTED_RELATIONSHIPS.get(SupportedEndpoints(self._resource), [])]}"
                 )
+        if name.startswith("__") and name.endswith("__"):
+            return self.__dict__.get(name)
         try:
             return self.__dict__[f"_{name}"]
         except KeyError as e:
@@ -280,11 +274,17 @@ class MGnifier:
         str
             Human-readable summary of the instance.
         """
+        cls = type(self)
+        class_path = f"{cls.__module__}.{cls.__qualname__}"
         return (
             f"MGnifier instance for resource: {self._resource}\n"
+            f"I.e., {class_path}\n"
             f"----------------------------------------\n"
             f"Base URL: {self._base_url}\n"
             f"Parameters: {self._params}\n"
+            f"Endpoint module: {self._endpoint_module.__name__ or 'None'}\n"
+            f"Example request URL: {self.request_url}\n"
+            f"Returns paginated results: {self._pagination_status}\n"
         )
 
     ## decorators

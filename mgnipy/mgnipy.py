@@ -5,6 +5,7 @@ from mgnipy.V2.proxies import (
     Assemblies,
     Biomes,
     Genomes,
+    Runs,
     Samples,
     Studies,
 )
@@ -13,6 +14,7 @@ ENDPOINT_PROXIES = {
     SupportedEndpoints.BIOMES: Biomes,
     SupportedEndpoints.STUDIES: Studies,
     SupportedEndpoints.SAMPLES: Samples,
+    SupportedEndpoints.RUNS: Runs,
     SupportedEndpoints.ANALYSES: Analyses,
     SupportedEndpoints.GENOMES: Genomes,
     SupportedEndpoints.ASSEMBLIES: Assemblies,

@@ -13,24 +13,6 @@ from mgnipy._models.CONSTANTS import (
     SupportedEndpoints,
 )
 from mgnipy.V2.core import MGnifier
-from mgnipy.V2.datasets import MGazine
-from mgnipy.V2.mgni_py_v2.api.studies import (
-    list_mgnify_study_samples,
-)
-
-SUPPORTED_RELATIONSHIPS = {
-    SupportedEndpoints.BIOMES: [SupportedEndpoints.STUDIES],
-    SupportedEndpoints.STUDIES: [
-        SupportedEndpoints.ANALYSES,
-        SupportedEndpoints.SAMPLES,
-    ],
-    SupportedEndpoints.SAMPLES: [SupportedEndpoints.RUNS],
-    SupportedEndpoints.RUNS: [SupportedEndpoints.ANALYSES],
-    SupportedEndpoints.ASSEMBLIES: [
-        SupportedEndpoints.ANALYSES,
-        SupportedEndpoints.GENOMES,
-    ],
-}
 
 
 class ResourceProxy(MGnifier):
@@ -50,66 +32,46 @@ class ResourceProxy(MGnifier):
             **kwargs,
         )
 
-    def __call__(self, **kwargs):
-        return self.filter(**kwargs)
-
-    @property
-    def accession(self):
-        return self._params.get("accession", None)
+    def _spawn(self, *, resource: Optional[str] = None, **params):
+        target_resource = resource or self.resource
+        proxy_cls = ENDPOINT_PROXIES[SupportedEndpoints(target_resource)]
+        # If no specialized proxy exists, keep generic behavior
+        if proxy_cls is ResourceProxy:
+            return ResourceProxy(resource=target_resource, **params)
+        return proxy_cls(**params)
 
 
 class Analyses(ResourceProxy):
     def __init__(
         self,
         *,
-        # study_accession: Optional[str] = None,
-        # assembly_accession: Optional[str] = None,
-        accession: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        # if study_accession and assembly_accession:
-        #     raise ValueError(
-        #         "Can provide either study_accession or assembly_accession, or neither, but not both."
-        #     )
 
-        super().__init__(
-            resource="analyses", params=params, accession=accession, **kwargs
-        )
+        super().__init__(resource="analyses", params=params, **kwargs)
 
 
 class Runs(ResourceProxy):
     def __init__(
         self,
         *,
-        accession: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        pass  # TODO
+
+        super().__init__(resource="runs", params=params, **kwargs)
 
 
 class Samples(ResourceProxy):
     def __init__(
         self,
         *,
-        accession: Optional[str] = None,
-        study_accession: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        _one_acc = accession or study_accession
 
-        if _one_acc:  # TODO validate accession format
-            # init mgnifier
-            super().__init__(
-                resource="samples", accession=_one_acc, params=params, **kwargs
-            )
-            # get the endpoint module
-            self.endpoint_module = list_mgnify_study_samples
-        else:
-            # if no acc then default to core list all samples endpoint
-            super().__init__(resource="samples", params=params, **kwargs)
+        super().__init__(resource="samples", params=params, **kwargs)
 
 
 class Studies(ResourceProxy):
@@ -202,11 +164,13 @@ class Genomes(ResourceProxy):
         super().__init__(resource="genomes", params=params, **kwargs)
 
 
-DEFAULT_LINKED_PROXY_CONFIG = {
-    SupportedEndpoints.BIOMES: Studies,
-    SupportedEndpoints.STUDIES: Samples,
-    SupportedEndpoints.SAMPLES: None,  # TODO: Runs
-    SupportedEndpoints.ANALYSES: MGazine,
-    SupportedEndpoints.GENOMES: None,
-    SupportedEndpoints.ASSEMBLIES: Analyses,
+ENDPOINT_PROXIES = {
+    SupportedEndpoints.BIOMES: Biomes,
+    SupportedEndpoints.STUDIES: Studies,
+    SupportedEndpoints.SAMPLES: Samples,
+    SupportedEndpoints.RUNS: Runs,
+    SupportedEndpoints.ANALYSES: Analyses,
+    SupportedEndpoints.GENOMES: Genomes,
+    SupportedEndpoints.ASSEMBLIES: Assemblies,
+    None: ResourceProxy,  # default proxy if no specific class is defined
 }
