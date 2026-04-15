@@ -14,8 +14,8 @@ from tqdm import tqdm
 
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy.V2.mgni_py_v2 import Client
-from mgnipy.V2.mgni_py_v2.types import Response as mpy_Response
+from mgnipy.emgapi_v2_client import Client
+from mgnipy.emgapi_v2_client.types import Response as mpy_Response
 
 if TYPE_CHECKING:
     from mgnipy.V2.core import MGnifier

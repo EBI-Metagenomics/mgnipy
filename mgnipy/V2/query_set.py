@@ -91,6 +91,8 @@ class QuerySet:
         new_mg = self._clone_owner()
         # but with updates to params
         new_mg._params.update(filters)
+        # update endpoint module based on new params
+        new_mg.endpoint_module = new_mg._resolve_endpoint_module()
         return QuerySet(new_mg)
 
     # @require_pagination

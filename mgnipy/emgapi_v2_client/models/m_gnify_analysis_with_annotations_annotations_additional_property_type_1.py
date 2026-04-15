@@ -32,7 +32,6 @@ class MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1:
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
-
             if isinstance(prop, list):
                 field_dict[prop_name] = []
                 for additional_property_type_0_item_data in prop:

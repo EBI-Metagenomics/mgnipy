@@ -1,8 +1,8 @@
-from .core import MGnifier
-from .mgni_py_v2.client import (
+from ..emgapi_v2_client.client import (
     AuthenticatedClient,
     Client,
 )
+from .core import MGnifier
 from .proxies import (
     Analyses,
     Biomes,

@@ -13,33 +13,33 @@ import pandas as pd
 
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy.V2.mgni_py_v2 import Client
-from mgnipy.V2.mgni_py_v2.api.analyses import (
+from mgnipy.emgapi_v2_client import Client
+from mgnipy.emgapi_v2_client.api.analyses import (
     get_mgnify_analysis,
     list_mgnify_analyses,
 )
-from mgnipy.V2.mgni_py_v2.api.assemblies import (
+from mgnipy.emgapi_v2_client.api.assemblies import (
     get_assembly,
     list_analyses_for_assembly,
     list_assemblies,
     list_genome_links_for_assembly,
 )
-from mgnipy.V2.mgni_py_v2.api.genomes import (
+from mgnipy.emgapi_v2_client.api.genomes import (
     get_mgnify_genome,
     list_mgnify_genomes,
 )
-from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
-from mgnipy.V2.mgni_py_v2.api.runs import (
+from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
+from mgnipy.emgapi_v2_client.api.runs import (
     get_analysed_run,
     list_analysed_runs,
     list_runs_analyses,
 )
-from mgnipy.V2.mgni_py_v2.api.samples import (
+from mgnipy.emgapi_v2_client.api.samples import (
     get_mgnify_sample,
     list_mgnify_samples,
     list_sample_runs,
 )
-from mgnipy.V2.mgni_py_v2.api.studies import (
+from mgnipy.emgapi_v2_client.api.studies import (
     get_mgnify_study,
     list_mgnify_studies,
     list_mgnify_study_analyses,
@@ -51,6 +51,7 @@ from mgnipy.V2.query_set import QuerySet
 BASE_URL = MgnipyConfig().base_url
 LIST_ENDPOINTS = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
+    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
     SupportedEndpoints.RUNS: list_analysed_runs,  # get all runs, filtering option or with sample acc
@@ -141,7 +142,7 @@ class MGnifier:
         self._supported_kwargs: Optional[list[str]] = None
         self._pagination_status: Optional[bool] = None
         # set endpoint module and supported kwargs if resource provided
-        self._resolve_resource_endpoint(resource)
+        self._resolve_resource(resource)
 
         # query set and executor
         self._executor = QueryExecutor(self)
@@ -156,7 +157,8 @@ class MGnifier:
         Iterator[dict]
             An iterator that yields metadata records as dictionaries.
         """
-        return self._unpageinate_results()
+        for acc in self.results_accessions or []:
+            yield self.get_detail(self._qs._resolve_results_accession_params(acc))
 
     def __getitem__(self, key) -> list[dict] | dict:
         """
@@ -321,7 +323,7 @@ class MGnifier:
         self._supported_kwargs = self.list_parameters()
         # update pagination status for new module
         self._pagination_status = self._get_pagination_status()
-        # autoupdate resource based on mgni_py_v2
+        # autoupdate resource based on emgapi_v2_client
         self._resource = os.path.basename(
             os.path.dirname(self.endpoint_module.__file__)
         )
@@ -332,18 +334,23 @@ class MGnifier:
 
     @resource.setter
     def resource(self, new_resource):
-        self._resolve_resource_endpoint(new_resource)
+        self._resolve_resource(new_resource)
 
-    def _resolve_resource_endpoint(self, resource: str):
+    def _resolve_endpoint_module(
+        self, params: Optional[dict[str, Any]] = None
+    ) -> Callable:
+        _params = params or self._params
+        if "accession" in _params:
+            return ACC_DETAIL_ENDPOINTS[SupportedEndpoints(self._resource)]
+        else:
+            return LIST_ENDPOINTS[SupportedEndpoints(self._resource)]
+
+    def _resolve_resource(self, resource: str):
         if SupportedEndpoints.is_valid(resource):
             # set resource name
             self._resource = resource
-            if "accession" in self._params:
-                self._endpoint_module = ACC_DETAIL_ENDPOINTS[
-                    SupportedEndpoints(resource)
-                ]
-            else:
-                self.endpoint_module = LIST_ENDPOINTS[SupportedEndpoints(resource)]
+            # set endpoint module based on resource and params
+            self.endpoint_module = self._resolve_endpoint_module()
         # reset all
         elif resource is None:
             self._resource = None

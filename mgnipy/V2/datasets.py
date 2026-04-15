@@ -27,13 +27,13 @@ from tqdm.asyncio import tqdm as tqdm_async
 
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
-from mgnipy.V2.core import MGnifier
-from mgnipy.V2.mgni_py_v2.api.analyses import (
+from mgnipy.emgapi_v2_client.api.analyses import (
     analysis_get_mgnify_analysis_with_annotations,
 )
-from mgnipy.V2.mgni_py_v2.models.m_gnify_analysis_with_annotations import (
+from mgnipy.emgapi_v2_client.models.m_gnify_analysis_with_annotations import (
     MGnifyAnalysisWithAnnotations,
 )
+from mgnipy.V2.core import MGnifier
 
 semaphore = get_semaphore()
 BASE_URL = MgnipyConfig().base_url

@@ -33,9 +33,9 @@ class MGnifyGenomeDownloadFile:
         download_type (DownloadType):
         short_description (str): Brief description of the file
         long_description (str): Detailed description of the file
-        path (str):
         alias (str):
         download_group (None | str | Unset): Group identifier for the download
+        path (str | Unset):
         file_size_bytes (int | None | Unset):
         index_file (DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset):
         parent_identifier (int | str | Unset):
@@ -46,9 +46,9 @@ class MGnifyGenomeDownloadFile:
     download_type: DownloadType
     short_description: str
     long_description: str
-    path: str
     alias: str
     download_group: None | str | Unset = UNSET
+    path: str | Unset = UNSET
     file_size_bytes: int | None | Unset = UNSET
     index_file: DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset = (
         UNSET
@@ -68,8 +68,6 @@ class MGnifyGenomeDownloadFile:
 
         long_description = self.long_description
 
-        path = self.path
-
         alias = self.alias
 
         download_group: None | str | Unset
@@ -77,6 +75,8 @@ class MGnifyGenomeDownloadFile:
             download_group = UNSET
         else:
             download_group = self.download_group
+
+        path = self.path
 
         file_size_bytes: int | None | Unset
         if isinstance(self.file_size_bytes, Unset):
@@ -118,12 +118,13 @@ class MGnifyGenomeDownloadFile:
                 "download_type": download_type,
                 "short_description": short_description,
                 "long_description": long_description,
-                "path": path,
                 "alias": alias,
             }
         )
         if download_group is not UNSET:
             field_dict["download_group"] = download_group
+        if path is not UNSET:
+            field_dict["path"] = path
         if file_size_bytes is not UNSET:
             field_dict["file_size_bytes"] = file_size_bytes
         if index_file is not UNSET:
@@ -148,8 +149,6 @@ class MGnifyGenomeDownloadFile:
 
         long_description = d.pop("long_description")
 
-        path = d.pop("path")
-
         alias = d.pop("alias")
 
         def _parse_download_group(data: object) -> None | str | Unset:
@@ -160,6 +159,8 @@ class MGnifyGenomeDownloadFile:
             return cast(None | str | Unset, data)
 
         download_group = _parse_download_group(d.pop("download_group", UNSET))
+
+        path = d.pop("path", UNSET)
 
         def _parse_file_size_bytes(data: object) -> int | None | Unset:
             if data is None:
@@ -227,9 +228,9 @@ class MGnifyGenomeDownloadFile:
             download_type=download_type,
             short_description=short_description,
             long_description=long_description,
-            path=path,
             alias=alias,
             download_group=download_group,
+            path=path,
             file_size_bytes=file_size_bytes,
             index_file=index_file,
             parent_identifier=parent_identifier,
