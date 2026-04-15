@@ -198,7 +198,10 @@ class QuerySet:
 
     # viewing the retrieved
     def to_df(
-        self, data: Optional[dict[int, list[dict]]] = None, **kwargs
+        self,
+        data: Optional[dict[int, list[dict]]] = None,
+        expand_nested_dicts: Optional[list[str] | bool] = False,
+        **kwargs,
     ) -> pd.DataFrame:
         """
         Convert the current or provided metadata to a pandas DataFrame.
@@ -207,6 +210,8 @@ class QuerySet:
         ----------
         data : list of dict, optional
             List of records to convert. If None, uses self._results or self._previewed_page.
+        expand_nested_dicts : list of str, optional
+            List of keys to expand into separate columns.
         **kwargs
             Additional keyword arguments passed to pd.DataFrame.
 
@@ -227,7 +232,18 @@ class QuerySet:
             logging.info("No data available to convert to DataFrame. Returning None.")
             return None
 
-        return pd.DataFrame(self._unpageinate_results(_data), **kwargs)
+        as_pandas = pd.DataFrame(self._unpageinate_results(_data), **kwargs)
+
+        if expand_nested_dicts is None or expand_nested_dicts is False:
+            return as_pandas
+
+        if isinstance(expand_nested_dicts, list):
+            return self._df_expand_nested(
+                as_pandas,
+                cols=expand_nested_dicts,
+            )
+        if expand_nested_dicts is True:  # TODO
+            return self._df_expand_nested(as_pandas)
 
     def to_list(
         self, data: Optional[dict[int, list[dict]]] = None
@@ -285,7 +301,9 @@ class QuerySet:
         RuntimeError
             If no data is available to convert.
         """
-        return self.to_df(data).to_json(orient=orient, lines=lines, **json_kwargs)
+        return self.to_df(data, expand_nested_dicts=False).to_json(
+            orient=orient, lines=lines, **json_kwargs
+        )
 
     def to_polars(
         self, data: Optional[dict[int, list[dict]]] = None, **polars_kwargs
