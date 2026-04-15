@@ -48,16 +48,16 @@ from mgnipy.emgapi_v2_client.api.studies import (
 from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.query_set import QuerySet
 
+# TODO constants
 BASE_URL = MgnipyConfig().base_url
 LIST_ENDPOINTS = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
-    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,
+    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
     SupportedEndpoints.RUNS: list_analysed_runs,  # get all runs, filtering option or with sample acc
     SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
     SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
-    # ^ list_genome_links_for_assembly,  # all genome links for given assembly
     SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
 }
 
@@ -72,6 +72,7 @@ ACC_DETAIL_ENDPOINTS = {
     SupportedEndpoints.ASSEMBLIES: get_assembly,
 }
 
+# I think this kinda follows the openapi "Links" on the right of the docs?
 SUPPORTED_RELATIONSHIPS = {
     SupportedEndpoints.BIOMES: {SupportedEndpoints.STUDIES: list_mgnify_studies},
     SupportedEndpoints.MISCELLANEOUS: {SupportedEndpoints.STUDIES: list_mgnify_studies},
@@ -116,7 +117,7 @@ class MGnifier:
         Parameters
         ----------
         resource : {"biomes", "studies", "samples", "runs", "genomes", "analyses", "assemblies"}, optional
-            The resource type to query. Defaults to "biomes".
+            The db resource to query. biomes == miscellaneous
         params : dict, optional
             Dictionary of parameters for the API call.
         checkpoint_dir : Path, optional
@@ -232,7 +233,7 @@ class MGnifier:
             print("v2")
         if SupportedEndpoints.is_valid(name):
             if SupportedEndpoints(name) in SUPPORTED_RELATIONSHIPS.get(
-                SupportedEndpoints(self._resource), []
+                SupportedEndpoints(self.resource), []
             ):
                 if self.accession:
                     acc_params = {"accession": self.accession}
@@ -240,14 +241,14 @@ class MGnifier:
                     acc_params = {"biome_lineage": self.lineage}
                 mg = self._spawn(resource=name, **acc_params)
                 mg.endpoint_module = SUPPORTED_RELATIONSHIPS[
-                    SupportedEndpoints(self._resource)
+                    SupportedEndpoints(self.resource)
                 ][SupportedEndpoints(name)]
                 return mg
             else:
                 raise AttributeError(
-                    f"{name} is not a valid related resource for {self._resource}. "
+                    f"{name} is not a valid related resource for {self.resource}. "
                     f"Supported related resources are: "
-                    f"{[res.value for res in SUPPORTED_RELATIONSHIPS.get(SupportedEndpoints(self._resource), [])]}"
+                    f"{[res.value for res in SUPPORTED_RELATIONSHIPS.get(self.resource, [])]}"
                 )
         if name.startswith("__") and name.endswith("__"):
             return self.__dict__.get(name)
@@ -323,10 +324,17 @@ class MGnifier:
         self._supported_kwargs = self.list_parameters()
         # update pagination status for new module
         self._pagination_status = self._get_pagination_status()
-        # autoupdate resource based on emgapi_v2_client
-        self._resource = os.path.basename(
-            os.path.dirname(self.endpoint_module.__file__)
+        # get key based on value .. not great but works for now
+        all_resource_to_endpoint = list(LIST_ENDPOINTS.items()) + list(
+            ACC_DETAIL_ENDPOINTS.items()
         )
+        for x in SUPPORTED_RELATIONSHIPS.values():
+            all_resource_to_endpoint.extend(list(x.items()))
+
+        for resource, module in all_resource_to_endpoint:
+            if module == new_module:
+                self._resource = resource.value
+                break
 
     @property
     def resource(self):
@@ -431,9 +439,13 @@ class MGnifier:
         params = params or self._params
         # check params are valid for endpoint
         _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
+        # resource based on emgapi_v2_client
+        emgapi_resource = os.path.basename(
+            os.path.dirname(self.endpoint_module.__file__)
+        )
 
         _end_url: str = _kwargs.get(
-            "url", f"/metagenomics/api/v2/{self._resource}/"
+            "url", f"/metagenomics/api/v2/{emgapi_resource}/"
         ).strip("/")
 
         incl_params = deepcopy(params)
