@@ -55,8 +55,8 @@ coverage.xml
 .pytest_cache/
 cover/
 
-openapi/mgni-py-v1/*
-openapi/mgni-py-v2/*
+openapi/emgapi-v1-client/*
+openapi/emgapi-v2-client/*
 reference/*
 
 *.ignore

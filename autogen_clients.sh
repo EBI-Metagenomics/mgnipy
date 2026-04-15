@@ -3,8 +3,8 @@
 # should have "MGnify API (emgapi_v1).yaml", config-v1.yaml, config-v2.yaml in FOLDER_PATH"
 
 FOLDER_PATH=${1:-"openapi"}
-PROJECT_NAME_ONE=${2:-"mgni-py-v1"}
-PROJECT_NAME_TWO=${3:-"mgni-py-v2"}
+PROJECT_NAME_ONE=${2:-"emgapi-v1-client"}
+PROJECT_NAME_TWO=${3:-"emgapi-v2-client"}
 
 # for v1
 # file downloaded from https://www.ebi.ac.uk/metagenomics/api/schema
@@ -25,7 +25,7 @@ openapi-python-client generate \
 # move the generated modules into mgnipy
 
 : '
-# build whls 
+# build whls
 cd "$FOLDER_PATH/$PROJECT_NAME_ONE"
 poetry build -f wheel -o ../dist/
 cd -
@@ -38,13 +38,13 @@ cd -
 for whl in "$FOLDER_PATH"/dist/*.whl; do
   uv add "$whl"
 done
-uv lock 
+uv lock
 uv sync
 '
 
 : '
 # also add the following to pyproject.toml to use the whl files instead
 [tool.uv.sources]
-mgni-py-v1 = { path = "openapi/dist/mgni_py_v1-1.0.0-py3-none-any.whl" }
-mgni-py-v2 = { path = "openapi/dist/mgni_py_v2-2.0.0-py3-none-any.whl" }
+emgapi-v1-client = { path = "openapi/dist/emgapi_v1_client-1.0.0-py3-none-any.whl" }
+emgapi-v2-client = { path = "openapi/dist/emgapi_v2_client-2.0.0-py3-none-any.whl" }
 '

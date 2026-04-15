@@ -3,8 +3,9 @@
 
 import os
 from importlib import metadata
+
 # compatibility with plotly6
-os.environ["PLOTLY_RENDERER"] = "notebook"  
+os.environ["PLOTLY_RENDERER"] = "notebook"
 # -- Project information -----------------------------------------------------
 
 project = "mgnipy"
@@ -25,7 +26,7 @@ extensions = [
     "sphinx_new_tab_link",  # each link opens in a new tab
     "myst_nb",  # Markdown and Jupyter Notebook support
     "sphinx_copybutton",  # add copy button to code blocks
-    "sphinx.ext.autosummary"
+    "sphinx.ext.autosummary",
 ]
 
 exclude_patterns = [
@@ -60,7 +61,7 @@ html_theme_options = {
 }
 html_js_files = [
     "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"
-] #plotly support
+]  # plotly support
 
 
 # -- Extensions configurations ---------------------------------------------------
@@ -71,16 +72,16 @@ autosummary_generate = True
 ## autodoc options
 
 autodoc_default_options = {
-    'members': True,
-    'undoc-members': False,
-    'private-members': False,  # Exclude _private attributes
-    'special-members': False,  # Exclude __special__ methods
-    'inherited-members': True,  # Exclude inherited members
-    'show-inheritance': True,  # Show class inheritance diagram
-    'member-order': 'bysource',  # Order members by source code order
+    "members": True,
+    "undoc-members": False,
+    "private-members": False,  # Exclude _private attributes
+    "special-members": False,  # Exclude __special__ methods
+    "inherited-members": True,  # Exclude inherited members
+    "show-inheritance": True,  # Show class inheritance diagram
+    "member-order": "bysource",  # Order members by source code order
 }
 
-autodoc_typehints = 'description'
+autodoc_typehints = "description"
 
 ## sphinx_new_tab_link
 new_tab_link_show_external_link_icon = True
@@ -120,8 +121,7 @@ if os.environ.get("READTHEDOCS") == "True":
     PROJECT_ROOT = Path(__file__).parent.parent
     print(f"PROJECT_ROOT: {PROJECT_ROOT}")
     PACKAGE_ROOT = PROJECT_ROOT / "mgnipy"
-    CLIENT_ROOT_V1 = PROJECT_ROOT / "openapi" / "mgni-py-v1" / "mgni_py_v1"
-    CLIENT_ROOT_V2 = PROJECT_ROOT / "openapi" / "mgni-py-v2" / "mgni_py_v2"
+    # CLIENT_ROOT_V2 = PROJECT_ROOT / "openapi" / "emgapi-v2-client" / "emgapi_v2_client"
 
     def run_apidoc(_):
         from sphinx.ext import apidoc
@@ -140,27 +140,19 @@ if os.environ.get("READTHEDOCS") == "True":
             ]
         )
 
-        apidoc.main([
-            "--force",
-            "--implicit-namespaces",
-            "--module-first",
-            "--separate",
-            "-o", str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v1"),
-            str(CLIENT_ROOT_V1),
-            str(CLIENT_ROOT_V1 / "*.c"),
-            str(CLIENT_ROOT_V1 / "*.so"),
-        ])
-
-        apidoc.main([
-            "--force",
-            "--implicit-namespaces",
-            "--module-first",
-            "--separate",
-            "-o", str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v2"),
-            str(CLIENT_ROOT_V2),
-            str(CLIENT_ROOT_V2 / "*.c"),
-            str(CLIENT_ROOT_V2 / "*.so"),
-        ])
+        # apidoc.main(
+        #     [
+        #         "--force",
+        #         "--implicit-namespaces",
+        #         "--module-first",
+        #         "--separate",
+        #         "-o",
+        #         str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v2"),
+        #         str(CLIENT_ROOT_V2),
+        #         str(CLIENT_ROOT_V2 / "*.c"),
+        #         str(CLIENT_ROOT_V2 / "*.so"),
+        #     ]
+        # )
 
     def setup(app):
         app.connect("builder-inited", run_apidoc)
