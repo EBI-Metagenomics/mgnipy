@@ -64,9 +64,19 @@ class QuerySet:
         """
         _data = data or self.owner._results
 
-        if _data == {} or _data is None:
+        if not _data:
             raise RuntimeError("No results available. Run preview/get/page first.")
-        return chain.from_iterable(_data.values())
+
+        def _page_to_records(page):
+            if page is None:
+                return []
+            if isinstance(page, list):
+                return page
+            if isinstance(page, dict):
+                return [page]
+            return [page]
+
+        return chain.from_iterable(_page_to_records(v) for v in _data.values())
 
     # choose to filter request or not
     def filter(
@@ -185,7 +195,7 @@ class QuerySet:
         """
 
         first = self.first()
-        return self.to_df(first)
+        return self.to_df({1: first})
 
     # alternatively preview get first
     def first(self) -> dict:
@@ -194,6 +204,14 @@ class QuerySet:
         Same as preview() but returns the raw dictionary instead of a DataFrame.
         """
         self.exec.get_any_first()
+        return self.owner._results.get(1, [])
+
+    async def afirst(self) -> dict:
+        """
+        Asynchronously retrieve the first page of metadata for the current resource and parameters.
+        Same as preview() but returns the raw dictionary instead of a DataFrame.
+        """
+        await self.exec.aget_any_first()
         return self.owner._results.get(1, [])
 
     # viewing the retrieved

@@ -1,9 +1,12 @@
 import inspect
+import logging
 import os
 from copy import deepcopy
 from typing import (
     Any,
+    AsyncIterator,
     Callable,
+    Iterator,
     Literal,
     Optional,
 )
@@ -149,7 +152,7 @@ class MGnifier:
         self._executor = QueryExecutor(self)
         self._qs = QuerySet(self)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator["MGnifier"]:
         """
         Allow iteration over the metadata records, yielding one record at a time.
 
@@ -158,15 +161,140 @@ class MGnifier:
         Iterator[dict]
             An iterator that yields metadata records as dictionaries.
         """
+        return self.iter_details()
+
+    def iter_details(self) -> Iterator["MGnifier"]:
+        """
+        Lazily iterate over child detail proxies.
+
+        Example
+        -------
+        for sample in samples.iter_details():
+            sample.get()
+        """
         for acc in self.results_accessions or []:
             yield self.get_detail(self._qs._resolve_results_accession_params(acc))
 
+    def collect_details(
+        self,
+        *,
+        fetch: bool = False,
+        by_accession: bool = False,
+    ) -> list["MGnifier"] | dict[str, "MGnifier"]:
+        """
+        Materialize child proxies into memory.
+
+        Parameters
+        ----------
+        fetch : bool
+            If True, call .get() on each child before storing.
+        by_accession : bool
+            If True, return dict keyed by child accession.
+
+        Example
+        -------
+        sample_proxies = samples.collect_details(fetch=True)
+        """
+        items: list[MGnifier] = []
+        for item in self.iter_details():
+            if fetch:
+                item.get()
+            items.append(item)
+
+        if by_accession:
+            return {
+                item.accession: item for item in items if item.accession is not None
+            }
+        return items
+
+    async def __aiter__(self) -> AsyncIterator["MGnifier"]:
+        """
+        Allow asynchronous iteration over the metadata records, yielding one record at a time.
+
+        Returns
+        -------
+        AsyncIterator[dict]
+            An asynchronous iterator that yields metadata records as dictionaries.
+        """
+        async for item in self.aiter_details():
+            yield item
+
+    async def aiter_details(self) -> AsyncIterator["MGnifier"]:
+        """
+        Lazily iterate over child detail proxies asynchronously.
+
+        Example
+        -------
+        async for sample in samples.aiter_details():
+            await sample.aget()
+        """
+        for acc in self.results_accessions or []:
+            yield await self.aget_detail(
+                self._qs._resolve_results_accession_params(acc)
+            )
+
+    async def acollect_details(
+        self,
+        *,
+        fetch: bool = False,
+        by_accession: bool = False,
+        concurrency: Optional[int] = None,
+        hide_progress: bool = False,
+    ) -> list["MGnifier"] | dict[str, "MGnifier"]:
+        """
+        Materialize child proxies asynchronously with bounded concurrency.
+
+        Parameters
+        ----------
+        fetch : bool
+            If True, call .aget() on each child before storing.
+        by_accession : bool
+            If True, return dict keyed by child accession.
+        concurrency : int
+            Maximum concurrent child detail operations.
+        hide_progress : bool
+            If True, hide progress bars.
+
+        Example
+        -------
+        sample_proxies = await samples.acollect_details(
+            fetch=True,
+            concurrency=8,
+        )
+        """
+        # prepare list of accession params for workers
+        acc_params = [
+            self._qs._resolve_results_accession_params(acc)
+            for acc in (self.results_accessions or [])
+        ]
+
+        # define worker to fetch detail for one accession param
+        async def _worker(accession_param):
+            child = await self.aget_detail(accession_param)
+            if fetch:
+                await child.aget()
+            return child
+
+        # run workers with concurrency limit
+        items = await self._executor.map_with_concurrency(
+            items=acc_params,
+            worker=_worker,
+            concurrency=concurrency,
+            hide_progress=hide_progress,
+        )
+
+        # return dict if by_accession else list
+        if by_accession:
+            return {x.accession: x for x in items if x.accession is not None}
+        return items
+
     def __getitem__(self, key) -> list[dict] | dict:
         """
-        Get detail by accession or get a slice of results by index. If key is an integer index or slice, return the corresponding record(s) from the results. If key is a string and matches an accession in the results, return the record(s) with that accession.
+        Get detail by accession or get a slice of results by index.
+        If key is an integer index or slice, return the corresponding record(s) from the results.
+        If key is a string and matches an accession in the results, return the record(s) with that accession.
         """
         acc_param = self._qs._resolve_results_accession_params(key)
-        # if one
         return self.get_detail(acc_param)
 
     def get_detail(
@@ -201,7 +329,22 @@ class MGnifier:
             SupportedEndpoints(self._resource)
         ]
 
-        print(new_mg._qs.first())
+        logging.info(new_mg._qs.first())
+        return new_mg
+
+    async def aget_detail(
+        self,
+        accession_param: dict[str, str],
+    ) -> dict | pd.DataFrame:
+        new_mg = self.__class__(
+            **accession_param,
+        )
+
+        new_mg.endpoint_module = ACC_DETAIL_ENDPOINTS[
+            SupportedEndpoints(self._resource)
+        ]
+
+        logging.info(await new_mg._qs.afirst())
         return new_mg
 
     def __getattr__(self, name: str):

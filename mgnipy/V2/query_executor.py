@@ -24,6 +24,8 @@ if TYPE_CHECKING:
 class QueryExecutor:
     def __init__(self, owner: "MGnifier"):
         self.owner = owner
+        # question: should this be shared across all instances of QueryExecutor or should each have their own?
+        # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
         self._semaphore = get_semaphore()
 
     async def _semaphore_guarded_request(
@@ -53,6 +55,49 @@ class QueryExecutor:
                 client=client,
                 **(request_params or self.owner._params),
             )
+
+    async def map_with_concurrency(
+        self,
+        items,
+        worker,
+        *,
+        concurrency: Optional[int] = None,
+        hide_progress: bool = False,
+    ):
+        """
+        Map a worker function over a list of items with controlled concurrency.
+        In plain English, it is a “process these things in parallel, but not too many at once” helper.
+
+        Example
+        -------
+        results = await self.map_with_concurrency(
+            items=pages,
+            worker=lambda p: self.apage(p, client),
+            concurrency=8,
+        )
+        """
+        # get semaphore for concurrency
+        semaphore = concurrency or self._semaphore
+
+        # helper to run worker with semaphore
+        async def _run_one(i, item):
+            async with semaphore:
+                return i, await worker(item)
+
+        # create tasks for all items
+        tasks = [asyncio.create_task(_run_one(i, item)) for i, item in enumerate(items)]
+        # collect results as they complete, preserving order
+        ordered = [None] * len(tasks)
+        # tqdm for progress bar
+        for task in tqdm(
+            asyncio.as_completed(tasks),
+            total=len(tasks),
+            desc="Processing",
+            disable=hide_progress,
+        ):
+            i, value = await task
+            ordered[i] = value
+        return ordered
 
     def _init_client(self) -> Client:
         """
@@ -196,6 +241,21 @@ class QueryExecutor:
         # otherwise, get first page
         else:
             self.page(1)
+
+    async def aget_any_first(self):
+        """
+        Asynchronously retrieve the first page of metadata for the current resource and parameters.
+
+        For unpaginated endpoints, this will retrieve all metadata which is just one. For paginated endpoints, this will retrieve just the first page of results.
+        """
+
+        if self.owner._is_in_results(1):
+            logging.info("First response already retrieved, using cached results.")
+        elif not self.owner._pagination_status:
+            response_dict = await self._aget_request()
+            self.owner._results.update({1: response_dict})
+        else:
+            await self.apage(1)
 
     def _page_items(self, response: mpy_Response) -> Optional[dict]:
         """
@@ -433,9 +493,7 @@ class QueryExecutor:
     ):
         """Getting all asynchronously"""
         if not self.owner._pagination_status:
-            response = await self._aget_request()
-            parsed = self._parse_response(response)
-            self.owner._results.update({1: parsed})
+            await self.aget_any_first()
             return
 
         async with self._init_client() as client:
