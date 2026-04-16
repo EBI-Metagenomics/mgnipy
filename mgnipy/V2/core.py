@@ -18,6 +18,7 @@ from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.emgapi_v2_client import Client
 from mgnipy.emgapi_v2_client.api.analyses import (
+    analysis_get_mgnify_analysis_with_annotations,
     get_mgnify_analysis,
     list_mgnify_analyses,
 )
@@ -88,6 +89,9 @@ SUPPORTED_RELATIONSHIPS = {
     SupportedEndpoints.ASSEMBLIES: {
         SupportedEndpoints.ANALYSES: list_analyses_for_assembly,
         SupportedEndpoints.GENOMES: list_genome_links_for_assembly,
+    },
+    SupportedEndpoints.ANALYSES: {
+        "annotations": analysis_get_mgnify_analysis_with_annotations
     },
 }
 
@@ -393,6 +397,16 @@ class MGnifier:
                     f"Supported related resources are: "
                     f"{[res.value for res in SUPPORTED_RELATIONSHIPS.get(self.resource, [])]}"
                 )
+
+        if name == "annotations" and "annotations" in SUPPORTED_RELATIONSHIPS.get(
+            SupportedEndpoints(self.resource)
+        ):  # TODO
+            mg = self._spawn(resource=self.resource, **{"accession": self.accession})
+            mg._endpoint_module = SUPPORTED_RELATIONSHIPS[
+                SupportedEndpoints(self.resource)
+            ]["annotations"]
+            return mg
+
         if name.startswith("__") and name.endswith("__"):
             return self.__dict__.get(name)
         try:
