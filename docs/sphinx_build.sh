@@ -1,5 +1,6 @@
 jupytext openapi-py-client/*.ipynb --sync
-jupytext tutorial/*.ipynb --sync
+jupytext tutorial/demo-mgnify-biomes.ipynb --sync
+jupytext tutorial/get_all_analyses_for_study.ipynb --sync
 
 sphinx-apidoc --force \
     --module-first  --remove-old -t _templates \

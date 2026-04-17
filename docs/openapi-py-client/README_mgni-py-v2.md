@@ -1,27 +1,28 @@
 # MGnify API_v2 python client submodule
 
-A client library for accessing version 2 of the MGnify API 
+A client library for accessing version 2 of the MGnify API
 
 <details>
-<summary style=color:lightgreen> 
-Expand for more info on how the client library was generated using 
+<summary style=color:lightgreen>
+Expand for more info on how the client library was generated using
 <code style=color:lightgreen>openapi-python-client</code>
 </summary>
 <h1></h1>
 
-`mgnipy.V2.mgni_py_v2` is a python library that was automatically generated from the MGnify API_v2 openapi.json url using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). An example of the command that was used:
+`mgnipy.emgapi_v2_client` is a python library that was automatically generated from the MGnify API_v2 openapi.json url using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). An example of the command that was used:
 
 ```shell
 openapi-python-client generate \
     --url https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json \
     --output-path "mgnipy/openapi/mgni-py-v2" \
     --config "config_v2.yaml" \
-    --overwrite 
+    --overwrite
 ```
 
 Specifically **_./autogen_clients.sh_** was used to generate the python client library `mgni-py-v2` using `openapi-python-client generate`
 
-Then the module dir was moved into mgnipy dir. 
+Then the module dir was moved into mgnipy dir.
+
 <h1></h1>
 </details>
 <br>
@@ -29,10 +30,11 @@ Then the module dir was moved into mgnipy dir.
 The rest of the readme was automatically generated and provided by openapi-python-client (with updates to the import paths):
 
 ## Usage
+
 First, create a client:
 
 ```python
-from mgnipy.V2.mgni_py_v2 import Client
+from mgnipy.emgapi_v2_client import Client
 
 client = Client(base_url="https://api.example.com")
 ```
@@ -40,7 +42,7 @@ client = Client(base_url="https://api.example.com")
 If the endpoints you're going to hit require authentication, use `AuthenticatedClient` instead:
 
 ```python
-from mgnipy.V2.mgni_py_v2 import AuthenticatedClient
+from mgnipy.emgapi_v2_client import AuthenticatedClient
 
 client = AuthenticatedClient(base_url="https://api.example.com", token="SuperSecretToken")
 ```
@@ -48,9 +50,9 @@ client = AuthenticatedClient(base_url="https://api.example.com", token="SuperSec
 Now call your endpoint and use your models:
 
 ```python
-from mgnipy.V2.mgni_py_v2.models import MyDataModel
-from mgnipy.V2.mgni_py_v2.api.my_tag import get_my_data_model
-from mgnipy.V2.mgni_py_v2.types import Response
+from mgnipy.emgapi_v2_client.models import MyDataModel
+from mgnipy.emgapi_v2_client.api.my_tag import get_my_data_model
+from mgnipy.emgapi_v2_client.types import Response
 
 with client as client:
     my_data: MyDataModel = get_my_data_model.sync(client=client)
@@ -61,9 +63,9 @@ with client as client:
 Or do the same thing with an async version:
 
 ```python
-from mgnipy.V2.mgni_py_v2.models import MyDataModel
-from mgnipy.V2.mgni_py_v2.api.my_tag import get_my_data_model
-from mgnipy.V2.mgni_py_v2.types import Response
+from mgnipy.emgapi_v2_client.models import MyDataModel
+from mgnipy.emgapi_v2_client.api.my_tag import get_my_data_model
+from mgnipy.emgapi_v2_client.types import Response
 
 async with client as client:
     my_data: MyDataModel = await get_my_data_model.asyncio(client=client)
@@ -74,7 +76,7 @@ By default, when you're calling an HTTPS API it will attempt to verify that SSL 
 
 ```python
 client = AuthenticatedClient(
-    base_url="https://internal_api.example.com", 
+    base_url="https://internal_api.example.com",
     token="SuperSecretToken",
     verify_ssl="/path/to/certificate_bundle.pem",
 )
@@ -84,29 +86,30 @@ You can also disable certificate validation altogether, but beware that **this i
 
 ```python
 client = AuthenticatedClient(
-    base_url="https://internal_api.example.com", 
-    token="SuperSecretToken", 
+    base_url="https://internal_api.example.com",
+    token="SuperSecretToken",
     verify_ssl=False
 )
 ```
 
 Things to know:
+
 1. Every path/method combo becomes a Python module with four functions:
-    1. `sync`: Blocking request that returns parsed data (if successful) or `None`
-    1. `sync_detailed`: Blocking request that always returns a `Request`, optionally with `parsed` set if the request was successful.
-    1. `asyncio`: Like `sync` but async instead of blocking
-    1. `asyncio_detailed`: Like `sync_detailed` but async instead of blocking
+   1. `sync`: Blocking request that returns parsed data (if successful) or `None`
+   1. `sync_detailed`: Blocking request that always returns a `Request`, optionally with `parsed` set if the request was successful.
+   1. `asyncio`: Like `sync` but async instead of blocking
+   1. `asyncio_detailed`: Like `sync_detailed` but async instead of blocking
 
 1. All path/query params, and bodies become method arguments.
 1. If your endpoint had any tags on it, the first tag will be used as a module name for the function (my_tag above)
-1. Any endpoint which did not have a tag will be in `mgnipy.V2.mgni_py_v2.api.default`
+1. Any endpoint which did not have a tag will be in `mgnipy.emgapi_v2_client.api.default`
 
 ## Advanced customizations
 
 There are more settings on the generated `Client` class which let you control more runtime behavior, check out the docstring on that class for more info. You can also customize the underlying `httpx.Client` or `httpx.AsyncClient` (depending on your use-case):
 
 ```python
-from mgnipy.V2.mgni_py_v2 import Client
+from mgnipy.emgapi_v2_client import Client
 
 def log_request(request):
     print(f"Request event hook: {request.method} {request.url} - Waiting for response")
@@ -127,7 +130,7 @@ You can even set the httpx client directly, but beware that this will override a
 
 ```python
 import httpx
-from mgnipy.V2.mgni_py_v2 import Client
+from mgnipy.emgapi_v2_client import Client
 
 client = Client(
     base_url="https://api.example.com",
@@ -137,15 +140,18 @@ client.set_httpx_client(httpx.Client(base_url="https://api.example.com", proxies
 ```
 
 ## Building / publishing this package
-This project uses [Poetry](https://python-poetry.org/) to manage dependencies  and packaging.  Here are the basics:
+
+This project uses [Poetry](https://python-poetry.org/) to manage dependencies and packaging. Here are the basics:
+
 1. Update the metadata in pyproject.toml (e.g. authors, version)
 1. If you're using a private repository, configure it with Poetry
-    1. `poetry config repositories.<your-repository-name> <url-to-your-repository>`
-    1. `poetry config http-basic.<your-repository-name> <username> <password>`
+   1. `poetry config repositories.<your-repository-name> <url-to-your-repository>`
+   1. `poetry config http-basic.<your-repository-name> <username> <password>`
 1. Publish the client with `poetry publish --build -r <your-repository-name>` or, if for public PyPI, just `poetry publish --build`
 
 If you want to install this client into another project without publishing it (e.g. for development) then:
+
 1. If that project **is using Poetry**, you can simply do `poetry add <path-to-this-client>` from that project
 1. If that project is not using Poetry:
-    1. Build a wheel with `poetry build -f wheel`
-    1. Install that wheel from the other project `pip install <path-to-wheel>`
+   1. Build a wheel with `poetry build -f wheel`
+   1. Install that wheel from the other project `pip install <path-to-wheel>`

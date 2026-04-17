@@ -512,7 +512,7 @@
     "# await studies.aget()\n",
     "\n",
     "# look at results\n",
-    "filtered_studies.to_pandas()"
+    "filtered_studies.to_df()"
    ]
   },
   {
@@ -750,7 +750,7 @@
     "# first_study_samples = studies[\"MGYS00010297\"]\n",
     "\n",
     "second_study_samples.get()\n",
-    "second_study_samples.to_pandas()"
+    "second_study_samples.to_df()"
    ]
   },
   {
@@ -1176,7 +1176,7 @@
     {
      "data": {
       "text/plain": [
-       "<module 'mgnipy.V2.mgni_py_v2.api.studies.list_mgnify_study_analyses' from '/Users/phanthanourak/github/mgnipy/mgnipy/V2/mgni_py_v2/api/studies/list_mgnify_study_analyses.py'>"
+       "<module 'mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses' from '/Users/phanthanourak/github/mgnipy/mgnipy/V2/mgni_py_v2/api/studies/list_mgnify_study_analyses.py'>"
       ]
      },
      "execution_count": 33,
@@ -1364,7 +1364,7 @@
     }
    ],
    "source": [
-    "a.to_pandas()"
+    "a.to_df()"
    ]
   },
   {

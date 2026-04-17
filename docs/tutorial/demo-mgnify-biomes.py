@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: mgnipy
+#     display_name: .venv
 #     language: python
 #     name: python3
 # ---
@@ -147,3 +147,15 @@ biomes.results[1][:5]
 
 # %% tags=["hide-output"]
 biomes.show_tree()
+
+# %%
+their_studies = biomes[5].studies
+
+# %%
+their_studies.explain(head=5)
+
+# %%
+their_studies.get()
+
+# %%
+study_detail = their_studies[0]
