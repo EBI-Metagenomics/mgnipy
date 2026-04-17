@@ -400,12 +400,15 @@ class MGnifier:
 
         if name == "annotations" and "annotations" in SUPPORTED_RELATIONSHIPS.get(
             SupportedEndpoints(self.resource)
-        ):  # TODO
+        ):  # TODO: fix mgazine
             mg = self._spawn(resource=self.resource, **{"accession": self.accession})
             mg._endpoint_module = SUPPORTED_RELATIONSHIPS[
                 SupportedEndpoints(self.resource)
             ]["annotations"]
             return mg
+
+            # mg = MGazine(accession=self.accession)
+            # return mg
 
         if name.startswith("__") and name.endswith("__"):
             return self.__dict__.get(name)
