@@ -1,5 +1,6 @@
 jupytext openapi-py-client/*.ipynb --sync
-jupytext tutorial/*.ipynb --sync
+jupytext tutorial/demo-mgnify-biomes.ipynb --sync
+jupytext tutorial/get_all_analyses_for_study.ipynb --sync
 
 sphinx-apidoc --force \
     --module-first  --remove-old -t _templates \
@@ -7,11 +8,7 @@ sphinx-apidoc --force \
 
 # sphinx-apidoc --force \
 #     --implicit-namespaces --module-first \
-#     -o reference/mgni-py-v1 ../openapi/mgni-py-v1/mgni_py_v1
-
-# sphinx-apidoc --force \
-#     --implicit-namespaces --module-first \
-#     -o reference/mgni-py-v2 ../openapi/mgni-py-v2/mgni_py_v2
+#     -o reference/emgapi-v2-client ../openapi/emgapi-v2-client/emgapi_v2_client
 
 # check index.md and conf.py files
 sphinx-build -n -W --keep-going -b html ./ ./_build/

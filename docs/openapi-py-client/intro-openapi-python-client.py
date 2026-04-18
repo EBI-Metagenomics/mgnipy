@@ -15,10 +15,10 @@
 # %% [markdown]
 # # Intro to `openapi-python-client`
 #
-# Understanding the python client libraries generated using `openapi-python-client`. For if you want to work with the `mgnipy.V1.mgni_py_v1` or `mgnipy.V2.mgni_py_v2` submodules directly.
+# Understanding the python client libraries generated using `openapi-python-client`. For if you want to work with the `mgnipy.V1.mgni_py_v1` or `mgnipy.emgapi_v2_client` submodules directly.
 #
 # <details>
-# <summary style=color:green> 
+# <summary style=color:green>
 # As stated in the README:
 # </summary>
 # <h1></h1>
@@ -52,7 +52,7 @@
 
 # %%
 # at minimum need
-# 1. the path 
+# 1. the path
 from mgnipy.V1.mgni_py_v1.api.studies import studies_list
 from mgnipy.V1.mgni_py_v1 import Client
 
@@ -62,14 +62,12 @@ from mgnipy.V1.mgni_py_v1.models import PaginatedStudyList
 from mgnipy.V1.mgni_py_v1.types import UNSET, Response
 
 # %% [markdown]
-# To instantiate the python client we really only need the base_url. However there are options for loggiing and other httpx args. 
+# To instantiate the python client we really only need the base_url. However there are options for loggiing and other httpx args.
 #
 # `mgnipy.V1.mgni_py_v1.Client` will take care of constructing and closing the httpx clients
 
 # %%
-example_client = Client(
-    base_url = "https://www.ebi.ac.uk/metagenomics/api/"
-)
+example_client = Client(base_url="https://www.ebi.ac.uk/metagenomics/api/")
 # check it out
 print(example_client)
 
@@ -88,7 +86,7 @@ print(example_client)
 # 3. `_build_response` to prepare as `Response` type
 # 4. In the `Response` is attribute `Response.parsed` which uses `_parse_response` to get response as json / dict
 #
-# The difference between with and sans `..._detailed()` is that with returns the whole response and sans only returns the parsed response. 
+# The difference between with and sans `..._detailed()` is that with returns the whole response and sans only returns the parsed response.
 #
 # -----
 #
@@ -98,18 +96,16 @@ print(example_client)
 # prep our search
 params = {
     "biome_name": "root:Host-associated:Plants:Rhizosphere",
-    #this is default num of results per page in mgnify
+    # this is default num of results per page in mgnify
     "page_size": 25,
-    #"search": UNSET 
+    # "search": UNSET
 }
 
 # make the sync call and store respone
 with example_client as client:
-    response = studies_list.sync_detailed(
-        client=client, **params
-    )
+    response = studies_list.sync_detailed(client=client, **params)
 
-# check 
+# check
 response.status_code
 
 # %% [markdown]

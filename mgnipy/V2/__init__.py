@@ -1,23 +1,23 @@
-from .core import MGnifier
-from .metadata import (
-    AnalysesProxy,
-    BiomesProxy,
-    GenomesProxy,
-    SamplesProxy,
-    StudiesProxy,
-)
-from .mgni_py_v2.client import (
+from ..emgapi_v2_client.client import (
     AuthenticatedClient,
     Client,
+)
+from .core import MGnifier
+from .proxies import (
+    Analyses,
+    Biomes,
+    Genomes,
+    Samples,
+    Studies,
 )
 
 __all__ = (
     "MGnifier",
-    "BiomesProxy",
-    "StudiesProxy",
-    "SamplesProxy",
-    "AnalysesProxy",
-    "GenomesProxy",
+    "Biomes",
+    "Studies",
+    "Samples",
+    "Analyses",
+    "Genomes",
     "Client",
     "AuthenticatedClient",
 )

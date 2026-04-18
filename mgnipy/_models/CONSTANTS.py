@@ -58,8 +58,9 @@ class SupportedEndpoints(SpecialEnum):
     PUBLICATIONS = "publications"
     SAMPLES = "samples"
     STUDIES = "studies"
+    RUNS = "runs"
     #    PRIVATE_DATA = "private_data"
-    #    MISCELLANEOUS = "miscellaneous"
+    MISCELLANEOUS = "miscellaneous"
     #    AUTHENTICATION = "authentication"
     BIOMES = "biomes"  # miscellaneous
 

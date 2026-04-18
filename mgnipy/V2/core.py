@@ -1,87 +1,121 @@
-import asyncio
 import inspect
-import itertools
 import logging
 import os
-import warnings
 from copy import deepcopy
-from math import ceil
-from pathlib import Path
 from typing import (
     Any,
+    AsyncIterator,
     Callable,
+    Iterator,
     Literal,
     Optional,
 )
 from urllib.parse import urlencode
 
 import pandas as pd
-from tqdm import tqdm
 
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy._shared_helpers.async_helpers import get_semaphore
-from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy.V2.mgni_py_v2 import Client
-from mgnipy.V2.mgni_py_v2.api.analyses import (
-    list_assemblies,
+from mgnipy.emgapi_v2_client import Client
+from mgnipy.emgapi_v2_client.api.analyses import (
+    analysis_get_mgnify_analysis_with_annotations,
+    get_mgnify_analysis,
     list_mgnify_analyses,
 )
-from mgnipy.V2.mgni_py_v2.api.genomes import list_mgnify_genomes
-from mgnipy.V2.mgni_py_v2.api.miscellaneous import list_mgnify_biomes
-from mgnipy.V2.mgni_py_v2.api.samples import list_mgnify_samples
-from mgnipy.V2.mgni_py_v2.api.studies import (
-    list_mgnify_studies,
+from mgnipy.emgapi_v2_client.api.assemblies import (
+    get_assembly,
+    list_analyses_for_assembly,
+    list_assemblies,
+    list_genome_links_for_assembly,
 )
+from mgnipy.emgapi_v2_client.api.genomes import (
+    get_mgnify_genome,
+    list_mgnify_genomes,
+)
+from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
+from mgnipy.emgapi_v2_client.api.runs import (
+    get_analysed_run,
+    list_analysed_runs,
+    list_runs_analyses,
+)
+from mgnipy.emgapi_v2_client.api.samples import (
+    get_mgnify_sample,
+    list_mgnify_samples,
+    list_sample_runs,
+)
+from mgnipy.emgapi_v2_client.api.studies import (
+    get_mgnify_study,
+    list_mgnify_studies,
+    list_mgnify_study_analyses,
+    list_mgnify_study_samples,
+)
+from mgnipy.V2.query_executor import QueryExecutor
+from mgnipy.V2.query_set import QuerySet
 
-semaphore = get_semaphore()
+# TODO constants
 BASE_URL = MgnipyConfig().base_url
-CORE_MODULES = {
+LIST_ENDPOINTS = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
+    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
+    SupportedEndpoints.RUNS: list_analysed_runs,  # get all runs, filtering option or with sample acc
     SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
     SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
-    # ^ list_genome_links_for_assembly,  # all genome links for given assembly
     SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
+}
+
+ACC_DETAIL_ENDPOINTS = {
+    SupportedEndpoints.BIOMES: list_mgnify_biomes,
+    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,
+    SupportedEndpoints.STUDIES: get_mgnify_study,
+    SupportedEndpoints.SAMPLES: get_mgnify_sample,
+    SupportedEndpoints.RUNS: get_analysed_run,
+    SupportedEndpoints.ANALYSES: get_mgnify_analysis,
+    SupportedEndpoints.GENOMES: get_mgnify_genome,
+    SupportedEndpoints.ASSEMBLIES: get_assembly,
+}
+
+# I think this kinda follows the openapi "Links" on the right of the docs?
+SUPPORTED_RELATIONSHIPS = {
+    SupportedEndpoints.BIOMES: {SupportedEndpoints.STUDIES: list_mgnify_studies},
+    SupportedEndpoints.MISCELLANEOUS: {SupportedEndpoints.STUDIES: list_mgnify_studies},
+    SupportedEndpoints.STUDIES: {
+        SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,
+        SupportedEndpoints.SAMPLES: list_mgnify_study_samples,
+    },
+    SupportedEndpoints.SAMPLES: {SupportedEndpoints.RUNS: list_sample_runs},
+    SupportedEndpoints.RUNS: {SupportedEndpoints.ANALYSES: list_runs_analyses},
+    SupportedEndpoints.ASSEMBLIES: {
+        SupportedEndpoints.ANALYSES: list_analyses_for_assembly,
+        SupportedEndpoints.GENOMES: list_genome_links_for_assembly,
+    },
+    SupportedEndpoints.ANALYSES: {
+        "annotations": analysis_get_mgnify_analysis_with_annotations
+    },
 }
 
 
 class MGnifier:
     """
-    MGnify API v2 metadata retriever and manager.
-
-    This class provides a unified interface for retrieving, previewing, and exporting metadata from the MGnify API v2 for various resources (biomes, studies, samples, analyses, genomes).
-
-    Attributes
-    ----------
-    base_url : str
-        The base URL for the MGnify API.
-    resource : str
-        The resource type (e.g., 'biomes', 'studies', 'samples', 'genomes', 'analyses').
-    endpoint_module : Callable
-        The function used to retrieve metadata for the selected resource.
-    params : dict
-        Parameters for the API call.
-    count : int or None
-        Total number of records available for the query.
-    total_pages : int or None
-        Total number of pages available for the query.
-    results : list or None
-        All results retrieved from the API.
-    accessions : list or None
-        List of accessions for the current resource, if available.
+    State owner and facade for users. Holds current resource, params, and results. Provides user-facing methods for filtering, getting, and outputting data.
     """
 
     def __init__(
         self,
         *,
         resource: Optional[
-            Literal["biomes", "studies", "samples", "genomes", "analyses", "assemblies"]
+            Literal[
+                "biomes",
+                "studies",
+                "samples",
+                "runs",
+                "genomes",
+                "analyses",
+                "assemblies",
+            ]
         ] = None,
         params: Optional[dict[str, Any]] = None,
-        # checkpoint_dir: Optional[Path] = None,
-        # checkpoint_freq: Optional[int] = None,
         **kwargs,
     ):
         """
@@ -89,8 +123,8 @@ class MGnifier:
 
         Parameters
         ----------
-        resource : {"biomes", "studies", "samples", "genomes", "analyses", "assemblies"}, optional
-            The resource type to query. Defaults to "biomes".
+        resource : {"biomes", "studies", "samples", "runs", "genomes", "analyses", "assemblies"}, optional
+            The db resource to query. biomes == miscellaneous
         params : dict, optional
             Dictionary of parameters for the API call.
         checkpoint_dir : Path, optional
@@ -102,35 +136,27 @@ class MGnifier:
         """
         # for client
         self._base_url: str = BASE_URL
-        # if resource given, initiate endpoint module and supported params
-        self._resource: Optional[SupportedEndpoints] = resource
-        if self._resource:
-            self._endpoint_module: Callable = CORE_MODULES[SupportedEndpoints(resource)]
-            self._supported_kwargs: list[str] = self.list_parameters()
-            self._pagination_status: bool = self._get_pagination_status()
-        # otherwise initialize to None and require user to set resource or endpoint module before using
-        else:
-            self._endpoint_module = None
-            self._supported_kwargs = None
-            self._pagination_status = None
-
+        self._default_page_size: int = 25
         # params as dict
         self._params: dict[str, Any] = params or {}
         # add kwargs to params if provided
         if kwargs:
             self._params.update(kwargs)
-
-        # checkpointing
-        # self._checkpoint_dir: Optional[Path] = checkpoint_dir
-        # self._checkpoint_freq: int = checkpoint_freq or 3
-
         # results
         self._count: Optional[int] = None
         self._total_pages: Optional[int] = None
-        self._cached_first_page: Optional[list] = None
-        self._results: Optional[list[list[dict]]] = None
+        self._results: dict[int, list[dict]] = {}
+        self._endpoint_module: Optional[Callable] = None
+        self._supported_kwargs: Optional[list[str]] = None
+        self._pagination_status: Optional[bool] = None
+        # set endpoint module and supported kwargs if resource provided
+        self._resolve_resource(resource)
 
-    def __iter__(self):
+        # query set and executor
+        self._executor = QueryExecutor(self)
+        self._qs = QuerySet(self)
+
+    def __iter__(self) -> Iterator["MGnifier"]:
         """
         Allow iteration over the metadata records, yielding one record at a time.
 
@@ -139,41 +165,191 @@ class MGnifier:
         Iterator[dict]
             An iterator that yields metadata records as dictionaries.
         """
-        return self._unpageinate_results()
+        return self.iter_details()
 
-    def __getitem__(self, key) -> list[dict] | dict:
+    def iter_details(self) -> Iterator["MGnifier"]:
         """
-        Allow indexing into the metadata records by integer index, accession, or lineage.
+        Lazily iterate over child detail proxies.
+
+        Example
+        -------
+        for sample in samples.iter_details():
+            sample.get()
+        """
+        for acc in self.results_accessions or []:
+            yield self.get_detail(self._qs._resolve_results_accession_params(acc))
+
+    def collect_details(
+        self,
+        *,
+        fetch: bool = False,
+        by_accession: bool = False,
+    ) -> list["MGnifier"] | dict[str, "MGnifier"]:
+        """
+        Materialize child proxies into memory.
 
         Parameters
         ----------
-        key : int, slice, or str
-            The key to index by. Can be an integer index, a slice,
-            a valid accession string, or a valid lineage string.
+        fetch : bool
+            If True, call .get() on each child before storing.
+        by_accession : bool
+            If True, return dict keyed by child accession.
+
+        Example
+        -------
+        sample_proxies = samples.collect_details(fetch=True)
+        """
+        items: list[MGnifier] = []
+        for item in self.iter_details():
+            if fetch:
+                item.get()
+            items.append(item)
+
+        if by_accession:
+            return {
+                item.accession: item for item in items if item.accession is not None
+            }
+        return items
+
+    async def __aiter__(self) -> AsyncIterator["MGnifier"]:
+        """
+        Allow asynchronous iteration over the metadata records, yielding one record at a time.
 
         Returns
         -------
-        list of dict or dict
-            The metadata record(s) corresponding to the provided key.
+        AsyncIterator[dict]
+            An asynchronous iterator that yields metadata records as dictionaries.
+        """
+        async for item in self.aiter_details():
+            yield item
+
+    async def aiter_details(self) -> AsyncIterator["MGnifier"]:
+        """
+        Lazily iterate over child detail proxies asynchronously.
+
+        Example
+        -------
+        async for sample in samples.aiter_details():
+            await sample.aget()
+        """
+        for acc in self.results_accessions or []:
+            yield await self.aget_detail(
+                self._qs._resolve_results_accession_params(acc)
+            )
+
+    async def acollect_details(
+        self,
+        *,
+        fetch: bool = False,
+        by_accession: bool = False,
+        concurrency: Optional[int] = None,
+        hide_progress: bool = False,
+    ) -> list["MGnifier"] | dict[str, "MGnifier"]:
+        """
+        Materialize child proxies asynchronously with bounded concurrency.
+
+        Parameters
+        ----------
+        fetch : bool
+            If True, call .aget() on each child before storing.
+        by_accession : bool
+            If True, return dict keyed by child accession.
+        concurrency : int
+            Maximum concurrent child detail operations.
+        hide_progress : bool
+            If True, hide progress bars.
+
+        Example
+        -------
+        sample_proxies = await samples.acollect_details(
+            fetch=True,
+            concurrency=8,
+        )
+        """
+        # prepare list of accession params for workers
+        acc_params = [
+            self._qs._resolve_results_accession_params(acc)
+            for acc in (self.results_accessions or [])
+        ]
+
+        # define worker to fetch detail for one accession param
+        async def _worker(accession_param):
+            child = await self.aget_detail(accession_param)
+            if fetch:
+                await child.aget()
+            return child
+
+        # run workers with concurrency limit
+        items = await self._executor.map_with_concurrency(
+            items=acc_params,
+            worker=_worker,
+            concurrency=concurrency,
+            hide_progress=hide_progress,
+        )
+
+        # return dict if by_accession else list
+        if by_accession:
+            return {x.accession: x for x in items if x.accession is not None}
+        return items
+
+    def __getitem__(self, key) -> list[dict] | dict:
+        """
+        Get detail by accession or get a slice of results by index.
+        If key is an integer index or slice, return the corresponding record(s) from the results.
+        If key is a string and matches an accession in the results, return the record(s) with that accession.
+        """
+        acc_param = self._qs._resolve_results_accession_params(key)
+        return self.get_detail(acc_param)
+
+    def get_detail(
+        self,
+        accession_param: dict[str, str],
+    ) -> dict | pd.DataFrame:
+        """
+        Get detailed metadata for a specific accession by calling the appropriate endpoint module.
+
+        Parameters
+        ----------
+        accession : str
+            The accession identifier for which to retrieve detailed metadata.
+        output_format : {"dict", "df"}, optional
+            The format of the output. Defaults to "dict".
+
+        Returns
+        -------
+        dict | pd.DataFrame
+            A dictionary or DataFrame containing the detailed metadata for the specified accession.
 
         Raises
         ------
-        KeyError
-            If the key is not a valid index, accession, or lineage.
+        RuntimeError
+            If no endpoint module is set or if the API call fails.
         """
-        results_list = list(self._unpageinate_results())
-        # by index
-        if isinstance(key, (int, slice)):
-            return results_list[key]
-        # by accession
-        elif isinstance(key, str) and key in self.results_accessions:
-            return [record for record in results_list if record["accession"] == key]
-        # else raise error
-        else:
-            raise KeyError(
-                f"Invalid key: {key}. "
-                "Key must be an integer index, a slice, or a valid accession string."
-            )
+        new_mg = self.__class__(
+            **accession_param,
+        )
+
+        new_mg.endpoint_module = ACC_DETAIL_ENDPOINTS[
+            SupportedEndpoints(self._resource)
+        ]
+
+        logging.info(new_mg._qs.first())
+        return new_mg
+
+    async def aget_detail(
+        self,
+        accession_param: dict[str, str],
+    ) -> dict | pd.DataFrame:
+        new_mg = self.__class__(
+            **accession_param,
+        )
+
+        new_mg.endpoint_module = ACC_DETAIL_ENDPOINTS[
+            SupportedEndpoints(self._resource)
+        ]
+
+        logging.info(await new_mg._qs.afirst())
+        return new_mg
 
     def __getattr__(self, name: str):
         """
@@ -196,17 +372,61 @@ class MGnifier:
         """
         if name == "httpx_client":
             return self._init_client().get_httpx_client()
-        elif name == "httpx_aclient":
+        if name == "httpx_aclient":
             return self._init_client().get_async_httpx_client()
-        elif name == "request_url":
+        if name == "request_url":
             return self._build_url()
-        elif name == "api_version":
+        if name == "api_version":
             print("v2")
-        else:
-            try:
-                return self.__dict__[f"_{name}"]
-            except KeyError as e:
-                raise KeyError(f"{name} is not a valid attribute of MGnifier") from e
+        if SupportedEndpoints.is_valid(name):
+            if SupportedEndpoints(name) in SUPPORTED_RELATIONSHIPS.get(
+                SupportedEndpoints(self.resource), []
+            ):
+                if self.accession:
+                    acc_params = {"accession": self.accession}
+                elif self.lineage:
+                    acc_params = {"biome_lineage": self.lineage}
+                mg = self._spawn(resource=name, **acc_params)
+                mg.endpoint_module = SUPPORTED_RELATIONSHIPS[
+                    SupportedEndpoints(self.resource)
+                ][SupportedEndpoints(name)]
+                return mg
+            else:
+                raise AttributeError(
+                    f"{name} is not a valid related resource for {self.resource}. "
+                    f"Supported related resources are: "
+                    f"{[res.value for res in SUPPORTED_RELATIONSHIPS.get(self.resource, [])]}"
+                )
+
+        if name == "annotations" and "annotations" in SUPPORTED_RELATIONSHIPS.get(
+            SupportedEndpoints(self.resource)
+        ):  # TODO: fix mgazine
+            mg = self._spawn(resource=self.resource, **{"accession": self.accession})
+            mg._endpoint_module = SUPPORTED_RELATIONSHIPS[
+                SupportedEndpoints(self.resource)
+            ]["annotations"]
+            return mg
+
+            # mg = MGazine(accession=self.accession)
+            # return mg
+
+        if name.startswith("__") and name.endswith("__"):
+            return self.__dict__.get(name)
+        try:
+            return self.__dict__[f"_{name}"]
+        except KeyError as e:
+            raise KeyError(f"{name} is not a valid attribute of MGnifier") from e
+
+    def __call__(self, **kwargs):
+        return self.filter(**kwargs)
+
+    @property
+    def accession(self):
+        return self._params.get("accession", None)
+
+    @property
+    def lineage(self):
+        return self._params.get("biome_lineage", None)
 
     def __str__(self):
         """
@@ -217,14 +437,20 @@ class MGnifier:
         str
             Human-readable summary of the instance.
         """
+        cls = type(self)
+        class_path = f"{cls.__module__}.{cls.__qualname__}"
         return (
             f"MGnifier instance for resource: {self._resource}\n"
+            f"I.e., {class_path}\n"
             f"----------------------------------------\n"
             f"Base URL: {self._base_url}\n"
             f"Parameters: {self._params}\n"
+            f"Endpoint module: {self._endpoint_module.__name__ or 'None'}\n"
+            f"Example request URL: {self.request_url}\n"
+            f"Returns paginated results: {self._pagination_status}\n"
         )
 
-    # decorators
+    ## decorators
     def require_endpoint_module(func):
         def wrapper(self, *args, **kwargs):
             if self.endpoint_module is None:
@@ -235,7 +461,18 @@ class MGnifier:
 
         return wrapper
 
-    # setters
+    def require_pagination(func):
+        def wrapper(self, *args, **kwargs):
+            if not self._pagination_status:
+                raise RuntimeError(
+                    f"Current endpoint does not support pagination: {self.endpoint_module}. "
+                    "Please check the documentation for supported parameters."
+                )
+            return func(self, *args, **kwargs)
+
+        return wrapper
+
+    ## setters
     @property
     def endpoint_module(self):
         return self._endpoint_module
@@ -247,10 +484,17 @@ class MGnifier:
         self._supported_kwargs = self.list_parameters()
         # update pagination status for new module
         self._pagination_status = self._get_pagination_status()
-        # autoupdate resource based on mgni_py_v2
-        self._resource = os.path.basename(
-            os.path.dirname(self.endpoint_module.__file__)
+        # get key based on value .. not great but works for now
+        all_resource_to_endpoint = list(LIST_ENDPOINTS.items()) + list(
+            ACC_DETAIL_ENDPOINTS.items()
         )
+        for x in SUPPORTED_RELATIONSHIPS.values():
+            all_resource_to_endpoint.extend(list(x.items()))
+
+        for resource, module in all_resource_to_endpoint:
+            if module == new_module:
+                self._resource = resource.value
+                break
 
     @property
     def resource(self):
@@ -258,33 +502,37 @@ class MGnifier:
 
     @resource.setter
     def resource(self, new_resource):
-        if new_resource is None:
+        self._resolve_resource(new_resource)
+
+    def _resolve_endpoint_module(
+        self, params: Optional[dict[str, Any]] = None
+    ) -> Callable:
+        _params = params or self._params
+        if "accession" in _params:
+            return ACC_DETAIL_ENDPOINTS[SupportedEndpoints(self._resource)]
+        else:
+            return LIST_ENDPOINTS[SupportedEndpoints(self._resource)]
+
+    def _resolve_resource(self, resource: str):
+        if SupportedEndpoints.is_valid(resource):
+            # set resource name
+            self._resource = resource
+            # set endpoint module based on resource and params
+            self.endpoint_module = self._resolve_endpoint_module()
+        # reset all
+        elif resource is None:
             self._resource = None
             self._endpoint_module = None
             self._supported_kwargs = None
             self._pagination_status = None
-        elif SupportedEndpoints.is_valid(new_resource):
-            # set resource name
-            self._resource = new_resource
-            self.endpoint_module: Callable = CORE_MODULES[
-                SupportedEndpoints(new_resource)
-            ]
         else:
             raise ValueError(
-                f"Invalid resource: {new_resource}. "
+                f"Invalid resource: {resource}. "
                 f"Resource must be one of {SupportedEndpoints.as_list()}."
             )
 
-    @property
-    def results_accessions(self) -> Optional[list[str]]:
-        if self.to_pandas() is None:
-            return None
-        elif "accession" in self.to_pandas().columns:
-            return self.to_pandas()["accession"].tolist()
-        else:
-            return None
-
-    # methods
+    ## user-facing methods (in order of probable use)
+    # help: what can filter by?
     @require_endpoint_module
     def list_parameters(self) -> list[str]:
         """
@@ -295,14 +543,117 @@ class MGnifier:
         list of str
             List of supported keyword argument names.
         """
-        """helper function to get supported kwargs for the current mpy module"""
         sig = inspect.signature(self.endpoint_module._get_kwargs)
         return list(sig.parameters.keys())
 
-    def filter(
+    def _is_in_results(self, page_num: int) -> bool:
+        """
+        Check if results for a specific page number already exist in the results.
+
+        Parameters
+        ----------
+        page_num : int
+            The page number to check for existing results.
+
+        Returns
+        -------
+        bool
+            True if results for the specified page number exist, False otherwise.
+        """
+        # get number of pages if not already
+        if (self._count is None) or (self._total_pages is None):
+            self._qs.dry_run()
+
+        if not (isinstance(page_num, int) and 0 < page_num <= self._total_pages):
+            raise ValueError(
+                f"Invalid page number: {page_num}. "
+                "Pages must be positive integers "
+                f"not exceeding total pages {self._total_pages}."
+            )
+
+        return page_num in self._results
+
+    # get all pages (with option to filter which pages or how many records with limit)
+
+    ## Helpers
+    @require_endpoint_module
+    def _build_url(
         self,
-        **filters,
-    ):
+        params: Optional[dict[str, Any]] = None,
+        exclude: list[str] = None,
+    ) -> str:
+        """
+        Build a URL for the current resource and parameters (for logging/verbose output only).
+
+        Parameters
+        ----------
+        params : dict, optional
+            Parameters to include in the URL. If None, uses self._params.
+
+        Returns
+        -------
+        str
+            The constructed URL.
+        """
+        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
+        params = params or self._params
+        # check params are valid for endpoint
+        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
+        # resource based on emgapi_v2_client
+        emgapi_resource = os.path.basename(
+            os.path.dirname(self.endpoint_module.__file__)
+        )
+
+        _end_url: str = _kwargs.get(
+            "url", f"/metagenomics/api/v2/{emgapi_resource}/"
+        ).strip("/")
+
+        incl_params = deepcopy(params)
+        for k in exclude:
+            incl_params.pop(k, None)
+        start_url = os.path.join(self._base_url, _end_url)
+        encoded_params = urlencode(incl_params, doseq=True)
+
+        return f"{start_url}/?{encoded_params}" if encoded_params else start_url
+
+    def _spawn(self, *, resource: Optional[str] = None, **params) -> "MGnifier":
+        return MGnifier(resource=resource or self._resource, **params)
+
+    def _clone(self) -> "MGnifier":
+        """
+        Create a clone of the current MGnifier instance for immutability :) but with no cache
+
+        Returns
+        -------
+        MGnifier
+            A new MGnifier instance with the same resource and parameters but no cached results.
+        """
+        new_mg = self.__class__(
+            # resource=self._resource,
+            **deepcopy(self._params),
+        )
+        # will also set resource
+        new_mg.endpoint_module = self.endpoint_module
+
+        return new_mg
+
+    def _get_pagination_status(self) -> bool:
+        """
+        Check if the current resource requires pagination based on its supported keyword arguments.
+
+        Returns
+        -------
+        bool
+            True if pagination, False otherwise.
+        """
+        return (
+            bool(self._supported_kwargs)
+            and "page" in self._supported_kwargs
+            and "page_size" in self._supported_kwargs
+        )
+
+    #### only preserve old mgnifier functionality
+    def filter(self, **filters):
         """
         Update the parameters for the API call to filter results.
 
@@ -317,14 +668,24 @@ class MGnifier:
         MGnifier
             A new MGnifier instance with updated parameters for filtering results.
         """
-        # make a copy of current instance
-        new_mg = self._clone()
-        # but with updates to params
-        new_mg._params.update(filters)
-        return new_mg
+        return self._qs.filter(**filters).owner
 
-    @require_endpoint_module
-    def dry_run(self) -> None:
+    def page_size(self, n: int):
+        """
+        Set the page size for paginated API calls.
+
+        Parameters
+        ----------
+        n : int
+
+        Returns
+        -------
+        MGnifier
+            A new MGnifier instance with the updated page size parameter.
+        """
+        return self._qs.page_size(n).owner
+
+    def dry_run(self):
         """
         Plan the API call by validating parameters and estimating the number of pages and records available.
         Prints the plan details for the user to review before executing the full data retrieval.
@@ -334,613 +695,90 @@ class MGnifier:
         -------
         None
         """
-        # verbose
-        print("Planning the API call with params:")
-        # get the item count and total pages based on page_size if pagination, else set to 1
-        self._get_counts()
-        print(self._params)
-        # verbose
-        print(f"Total pages to retrieve: {self._total_pages}")
-        print(f"Total records to retrieve: {self._count}")
+        self._qs.dry_run()
 
-    @require_endpoint_module
+    def explain(self, head: Optional[int] = None):
+        """
+        Print example URLs that would be called. Actual requests handled by client.
+        """
+        self._qs.explain(head=head)
+
     def preview(self) -> pd.DataFrame:
         """
-        Preview the first page of metadata for the current resource and parameters, without retrieving all pages. This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
+        Preview the first page of metadata for the current resource and parameters, without retrieving all pages.
+        This allows the user to quickly check the structure and content of the data before deciding to retrieve everything.
 
         Returns
         -------
         pd.DataFrame
-            A DataFrame containing the metadata from the first page of results.
+            A DataFrame containing the metadata from the specified page of results.
 
         Raises
         ------
         RuntimeError
             If the API call fails or if no data is available to preview.
         """
-        # plan if not already
-        if (self._count is None) or (self._total_pages is None):
-            # more verbose than _get_counts() alone
-            self.dry_run()
+        return self._qs.preview()
 
-        if self._pagination_status:
-            # request first page and cache
-            logging.info("Retrieving first page of results for preview...")
-            tmp_params = self._tmp_param_update(page=1)
-            response_dict = self._get_request(tmp_params)
-            # dealing with response
-            if response_dict is not None:
-                self._cached_first_page = response_dict["items"]
-                return self.to_pandas([self._cached_first_page])
-        else:
-            response_dict = self._get_request(self._params)
-            if response_dict is not None:
-                self._cached_first_page = [response_dict]
-                return self.to_pandas([self._cached_first_page])
-        raise RuntimeError("Failed to get response from MGnify API.")
+    def first(self) -> dict:
+        """
+        Alias for preview() to get the first item of first page of results.
 
-    @require_endpoint_module
+        Returns
+        -------
+        dict
+            The first item from the first page of results.
+        """
+        return self._qs.first()
+
     def get(
         self,
         limit: Optional[int] = None,
         *,
         pages: Optional[list[int]] = None,
-        strict: bool = False,
-    ) -> pd.DataFrame:
-        """ """
-        if self._pagination_status:
-            # async request all pages and store results in self._results
-            with self._init_client() as client:
-                self._collector(client, limit=limit, pages=pages, strict=strict)
-        else:
-            if (
-                (self._total_pages is None)
-                or (self._count is None)
-                or (self._cached_first_page is None)
-            ):
-                _ = self.preview()
-            # cache to result
-            self._results = [self._cached_first_page]
+        safety: bool = True,
+        hide_progress: bool = False,
+    ):
+        """Getting all"""
+        self._executor.get(
+            limit=limit, pages=pages, safety=safety, hide_progress=hide_progress
+        )
 
-        # return self.to_pandas(self._results)
-
-    @require_endpoint_module
     async def aget(
         self,
         limit: Optional[int] = None,
         *,
         pages: Optional[list[int]] = None,
-        strict: bool = False,
-    ) -> pd.DataFrame:
-        """handles pageinated (async) or not"""
-
-        if self._pagination_status:
-            # async request all pages and store results in self._results
-            async with self._init_client() as client:
-                await self._acollector(client, limit=limit, pages=pages, strict=strict)
-        else:
-            if (
-                (self._total_pages is None)
-                or (self._count is None)
-                or (self._cached_first_page is None)
-            ):
-                _ = self.preview()
-            # cache to result
-            self._results = [self._cached_first_page]
-
-        # return self.to_pandas(self._results)
-
-    def to_pandas(self, data: Optional[list[dict]] = None, **kwargs) -> pd.DataFrame:
-        """
-        Convert the current or provided metadata to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list of dict, optional
-            List of records to convert. If None, uses self._results or self._cached_first_page.
-        **kwargs
-            Additional keyword arguments passed to pd.DataFrame.
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame containing the metadata.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-
-        _data = data or self._results or [self._cached_first_page]
-
-        if _data == [None] or _data is None:
-            logging.info("No data available to convert to DataFrame. Returning None.")
-            return None
-
-        combined_df = pd.concat(
-            [self._df_expand_nested(pd.DataFrame(page)) for page in _data],
-            ignore_index=True,
-        )
-
-        return pd.DataFrame(combined_df, **kwargs)
-
-    def to_json(self, file_path: Optional[Path] = None) -> str:
-        """
-        Convert the current metadata to a JSON string or save it to a file.
-
-        Parameters
-        ----------
-        file_path : Path, optional
-            If provided, the JSON string will be saved to this file. If None, the JSON string is returned.
-
-        Returns
-        -------
-        str or None
-            The JSON string representation of the metadata, or None if saved to a file.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-        # TODO implement this method
-        pass
-
-    ## HIDDEN HELPER METHODS
-    ## Help with requests
-    def _init_client(self):
-        """
-        Initialize and return a MGnify API client instance.
-
-        Returns
-        -------
-        Client
-            Configured MGnify API client.
-        """
-        client_v1 = Client(
-            base_url=str(self._base_url),
-            # TODO logs?
-        )
-        return client_v1
-
-    def _clone(self):
-        """
-        Create a clone of the current MGnifier instance for immutability :) but with no cache
-
-        Returns
-        -------
-        MGnifier
-            A new MGnifier instance with the same resource and parameters but no cached results.
-        """
-        new_mg = self.__class__(
-            params=self._params,
-        )
-        # will also set resource
-        new_mg.endpoint_module = self.endpoint_module
-
-        return new_mg
-
-    @require_endpoint_module
-    def _get_request(self, given_params: dict) -> Optional[dict]:
-        """
-        Retrieve a single page of metadata using the synchronous API client.
-
-        Parameters
-        ----------
-        given_params : dict
-            Parameters for the API call.
-
-        Returns
-        -------
-        dict or None
-            Parsed response from the API, or None if the request failed.
-        """
-        with self._init_client() as client:
-            response = self.endpoint_module.sync_detailed(
-                client=client,
-                **given_params,
-            )
-        logging.info(f"Response status code: {response.status_code}")
-        if response.status_code == 200:
-            return response.parsed.to_dict()
-        else:
-            return None
-
-    def _get_page(
-        self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
-    ) -> Optional[dict]:
-        """
-        Retrieve a single page of metadata using the synchronous API client.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        params : dict, optional
-            Parameters for the API call.
-
-        Returns
-        -------
-        dict or None
-            Parsed response from the API, or None if the request failed.
-        """
-        return self.endpoint_module.sync_detailed(
-            client=client,
-            **(params or self._params),
-            **kwargs,
-        )
-
-    def _collector(
-        self,
-        client: Client,
-        limit: Optional[int] = None,
-        pages: Optional[list[int]] = None,
-        strict: bool = False,
+        safety: bool = True,
+        hide_progress: bool = False,
     ):
-        # not allow to run this without preview/plan first?
-        if self._total_pages is None:
-            if strict:
-                raise AssertionError(
-                    "Please run MGnifier.dry_run() or .preview() before "
-                    "deciding to collect metadata for params:\n"
-                    f"{self._params}"
-                )
-            else:
-                warnings.warn(
-                    "MGnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
-                )
-                self.preview()
-
-        # prep page nums
-        if limit is not None:
-            validate_gt_int(limit)
-            # TODO exact limit when pageinated?
-            max_page = ceil(limit / self._params["page_size"])
-            _pages = list(range(1, min(max_page, self._total_pages) + 1))
-        elif isinstance(pages, list):
-            _pages = deepcopy(pages)
-            for p in pages:
-                if not (isinstance(p, int) and 0 < p <= self._total_pages):
-                    if strict:
-                        raise ValueError(
-                            f"Invalid page number: {p}. "
-                            "Pages must be positive integers "
-                            f"not exceeding total pages {self._total_pages}."
-                        )
-                else:
-                    # else just skip invalid page numbers with warning
-                    logging.warning(
-                        f"Invalid page number {p} skipped as > than {self._total_pages}."
-                    )
-                    _pages.remove(p)
-        elif pages is None:
-            # init all pages if not provided
-            _pages = list(range(1, self._total_pages + 1))
-        else:
-            raise TypeError("pages must be a list of integers or None")
-
-        # append cached first page if avail
-        if 1 in _pages and self._cached_first_page is not None:
-            logging.info("Page 1 already cached from preview, skipping...")
-            _pages.remove(1)
-            self._results = [self._cached_first_page]
-        else:
-            self._results = []
-
-        # gathering results as completed
-        for page_num in tqdm(_pages, desc="Retrieving pages"):
-            # awaiting each task as it completes and appending results
-            page_result = self._get_page(
-                client=client, params=self._params, page=page_num
-            )
-            self._results.append(page_result.parsed.to_dict()["items"])
-
-    # @async_disk_lru_cache()
-    async def _aget_page(
-        self, client: Client, params: Optional[dict[str, Any]] = None, **kwargs
-    ):
-        """
-        Asynchronously retrieve a single page of metadata.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        params : dict, optional
-            Parameters for the API call.
-
-        Returns
-        -------
-        Response
-            The API response object for the requested page.
-        """
-        """coroutine function to get coroutine for each page"""
-        # limiting concurrency to protect server
-        async with semaphore:
-            return await self.endpoint_module.asyncio_detailed(
-                client=client,
-                **(params or self._params),
-                **kwargs,
-            )
-
-    async def _acollector(
-        self,
-        client: Client,
-        limit: Optional[int] = None,
-        pages: Optional[list[int]] = None,
-        strict: bool = False,
-    ):
-        """
-        Asynchronously collect metadata for all (or selected) pages and store results.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        limit : int, optional
-            Maximum number of records to retrieve. If None, retrieves all records.
-        pages : list of int, optional
-            List of page numbers to retrieve. If None, retrieves all pages.
-        strict : bool, default False
-            If True, raises an error if dry_run() or preview() has not been run.
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        AssertionError
-            If dry_run() or preview() has not been run and strict is True.
-        ValueError
-            If invalid page numbers are provided.
-        TypeError
-            If pages is not a list or None.
-        """
-        # not allow to run this without preview/plan first?
-        if self._total_pages is None:
-            if strict:
-                raise AssertionError(
-                    "Please run MGnifier.dry_run() or .preview() before "
-                    "deciding to collect metadata for params:\n"
-                    f"{self._params}"
-                )
-            else:
-                warnings.warn(
-                    "MGnifier.dry_run() not yet checked.", ResourceWarning, stacklevel=2
-                )
-                self.preview()
-
-        # prep page nums
-        if limit is not None:
-            validate_gt_int(limit)
-            # TODO exact limit when pageinated?
-            max_page = ceil(limit / self._params["page_size"])
-            _pages = list(range(1, min(max_page, self._total_pages) + 1))
-        elif isinstance(pages, list):
-            _pages = deepcopy(pages)
-            for p in pages:
-                if not (isinstance(p, int) and 0 < p <= self._total_pages):
-                    if strict:
-                        raise ValueError(
-                            f"Invalid page number: {p}. "
-                            "Pages must be positive integers "
-                            f"not exceeding total pages {self._total_pages}."
-                        )
-                else:
-                    # else just skip invalid page numbers with warning
-                    logging.warning(
-                        f"Invalid page number {p} skipped as > than {self._total_pages}."
-                    )
-                    _pages.remove(p)
-        elif pages is None:
-            # init all pages if not provided
-            _pages = list(range(1, self._total_pages + 1))
-        else:
-            raise TypeError("pages must be a list of integers or None")
-
-        # append cached first page if avail
-        if 1 in _pages and self._cached_first_page is not None:
-            logging.info("Page 1 already cached from preview, skipping...")
-            _pages.remove(1)
-            self._results = [self._cached_first_page]
-        else:
-            self._results = []
-
-        # creating async tasks
-        async_tasks = [
-            asyncio.create_task(
-                self._aget_page(client=client, params=self._params, page=page_num)
-            )
-            for page_num in _pages
-        ]
-
-        # gathering results as completed
-        for task in tqdm(asyncio.as_completed(async_tasks), total=len(async_tasks)):
-            # awaiting each task as it completes and appending results
-            page_result = await task
-            self._results.append(page_result.parsed.to_dict()["items"])
-
-    ## Help with workflow
-    @require_endpoint_module
-    def _get_counts(self):
-        """
-        Internal method to estimate the number of pages and records available for the current query.
-
-        This method performs a minimal API call to set the total number of records and pages for the current resource and parameters.
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        RuntimeError
-            If the API call fails.
-        """
-
-        if self._pagination_status:
-            # default if not given
-            if "page_size" not in self._params:
-                # check page_size > 0 if provided, default 25
-                self._params["page_size"] = 25
-                tmp_params = self._tmp_param_update(page_size=1)
-            # check validity of given
-            else:
-                validate_gt_int(self._params["page_size"])
-                tmp_params = self._tmp_param_update(page_size=1)
-
-            # make tiny get request using mgni_py client
-            response_dict = self._get_request(tmp_params)
-
-            # dealing with response
-            if response_dict is None:
-                raise RuntimeError(
-                    "Failed to get response from MGnify API:\n"
-                    f"{self._build_url(params=tmp_params)}"
-                )
-            # otherwise set
-            self._count = response_dict["count"]
-            self._total_pages = ceil(self._count / self._params["page_size"])
-        # not pagination
-        else:
-            self._count = 1
-            self._total_pages = 1
-
-    def _get_pagination_status(self) -> bool:
-        """
-        Check if the current resource requires pagination based on its supported keyword arguments.
-
-        Returns
-        -------
-        bool
-            True if pagination, False otherwise.
-        """
-        return (
-            "page" in self._supported_kwargs and "page_size" in self._supported_kwargs
+        """Getting all asynchronously"""
+        await self._executor.aget(
+            limit=limit, pages=pages, safety=safety, hide_progress=hide_progress
         )
 
-    ## Help with data handling
+    @property
+    def results_accessions(self) -> Optional[list[str]]:
+        return self._qs.results_accessions
 
-    def _df_expand_nested(
-        self, df: pd.DataFrame, cols: list[str] = None
-    ) -> pd.DataFrame:
-        """
-        Expand nested structures in the DataFrame into separate columns.
+    @property
+    def results_biome_lineages(self) -> Optional[list[str]]:
+        return self._qs.results_biome_lineages
 
-        Parameters
-        ----------
-        df : pd.DataFrame
-            The DataFrame to expand.
-        cols : list of str
-            List of column names to expand.
+    def to_df(self, data: Optional[dict[int, list[dict]]] = None, **kwargs):
+        return self._qs.to_df(data=data, **kwargs)
 
-        Returns
-        -------
-        pd.DataFrame
-            The expanded DataFrame.
-        """
+    def to_list(self, data: Optional[dict[int, list[dict]]] = None):
+        return self._qs.to_list(data=data)
 
-        cols = cols or ["metadata"]
+    def to_json(self, data: Optional[dict[int, list[dict]]] = None, **kwargs):
+        return self._qs.to_json(data=data, **kwargs)
 
-        new_df = df.copy()
-        for c in cols:
-            if c in new_df.columns:
-                attr_df = pd.json_normalize(new_df[c])
-                new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
-        return new_df
+    def to_polars(self, data: Optional[dict[int, list[dict]]] = None, **kwargs):
+        return self._qs.to_polars(data=data, **kwargs)
 
-    def _unpageinate_results(self) -> itertools.chain:
-        """
-        Unpaginate the results by flattening the list of pages into a single list of records.
+    def page(self, page_num: int, client: Optional[Client] = None):
+        return self._executor.page(page_num, client=client)
 
-        Returns
-        -------
-        itertools.chain
-            An iterator that yields individual metadata records from all pages.
-        """
-        if self._results is None:
-            raise RuntimeError(
-                "No results available. Please run get() or aget() first."
-            )
-        return itertools.chain.from_iterable(self._results)
-
-    ## Help with checks
-    def _check_kwargs(self) -> str:
-        """
-        Validate the current parameters for the selected resource.
-
-        Returns
-        -------
-        str
-            Validated keyword arguments or raises an error if invalid.
-
-        Raises
-        ------
-        ValueError
-            If invalid parameters are provided.
-        """
-        try:
-            kwargy = self.endpoint_module._get_kwargs(**self._params)
-        except ValueError as e:
-            raise ValueError(f"Invalid parameters provided: {e}") from None
-        return kwargy
-
-    def _tmp_param_update(self, **kwargs) -> dict[str, Any]:
-        """
-        Return a copy of the current parameters, updated with any provided keyword arguments.
-
-        Parameters
-        ----------
-        **kwargs
-            Parameters to update or add.
-
-        Returns
-        -------
-        dict
-            Updated parameters dictionary.
-        """
-        temp_params = deepcopy(self._params)
-        temp_params.update(kwargs)
-        return temp_params
-
-    @require_endpoint_module
-    def _build_url(
-        self,
-        params: Optional[dict[str, Any]] = None,
-        exclude: list[str] = None,
-    ) -> str:
-        """
-        Build a URL for the current resource and parameters (for logging/verbose output).
-
-        Parameters
-        ----------
-        params : dict, optional
-            Parameters to include in the URL. If None, uses self._params.
-
-        Returns
-        -------
-        str
-            The constructed URL.
-        """
-        """build url for logging/verbose only"""
-
-        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
-
-        params = params or self._params
-
-        # check params are valid for endpoint
-        _kwargs: dict[str, Any] = self._check_kwargs()
-        _end_url: str = _kwargs.get(
-            "url", f"/metagenomics/api/v2/{self._resource}/"
-        ).strip("/")
-        incl_params = deepcopy(params)
-        for k in exclude or []:
-            incl_params.pop(k, None)
-        start_url = os.path.join(self._base_url, _end_url)
-        encoded_params = urlencode(incl_params, doseq=True)
-        print(encoded_params)
-        if len(encoded_params) > 0:
-            return f"{start_url}/?{encoded_params}"
-        return start_url
+    async def apage(self, page_num: int, client: Optional[Client] = None):
+        return await self._executor.apage(page_num, client=client)
