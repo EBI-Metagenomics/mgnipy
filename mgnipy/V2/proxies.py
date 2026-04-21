@@ -12,9 +12,13 @@ from bigtree import (
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.core import MGnifier
 from mgnipy.V2.endpoints import SUPPORTED_RELATIONSHIPS
+from mgnipy.V2.results_handler import (
+    DetailNavigationMixin,
+    RelatedNavigationMixin,
+)
 
 
-class MGnifyList(MGnifier):
+class MGnifyList(MGnifier, DetailNavigationMixin):
     """generic"""
 
     def __init__(
@@ -34,7 +38,7 @@ class MGnifyList(MGnifier):
         self.resource = SupportedEndpoints.validate(resource)
 
 
-class MGnifyDetail(MGnifier):
+class MGnifyDetail(MGnifier, RelatedNavigationMixin):
     def __init__(
         self,
         *,

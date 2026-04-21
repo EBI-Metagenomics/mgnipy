@@ -34,7 +34,6 @@ from mgnipy.emgapi_v2_client.api.studies import (
 
 LIST_ENDPOINTS = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
-    #    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
     SupportedEndpoints.RUNS: list_analysed_runs,  # get all runs, filtering option or with sample acc
@@ -55,38 +54,44 @@ ACC_DETAIL_ENDPOINTS = {
 
 ALL_ENDPOINTS = LIST_ENDPOINTS | ACC_DETAIL_ENDPOINTS
 
+WITHIN_RESOURCE_RELATIONSHIPS = {
+    SupportedEndpoints.BIOMES: SupportedEndpoints.BIOME,
+    SupportedEndpoints.STUDIES: SupportedEndpoints.STUDY,
+    SupportedEndpoints.SAMPLES: SupportedEndpoints.SAMPLE,
+    SupportedEndpoints.RUNS: SupportedEndpoints.RUN,
+    SupportedEndpoints.ANALYSES: SupportedEndpoints.ANALYSIS,
+    SupportedEndpoints.GENOMES: SupportedEndpoints.GENOME,
+    SupportedEndpoints.ASSEMBLIES: SupportedEndpoints.ASSEMBLY,
+}
+
 # I think this kinda follows the openapi "Links" on the right of the docs?
-SUPPORTED_RELATIONSHIPS = {
+BETWEEN_RESOURCE_RELATIONSHIPS = {
+    # for a biome detail, can list all studies associated with that biome
     SupportedEndpoints.BIOME: {SupportedEndpoints.STUDIES: list_mgnify_studies},
+    # for a study detail,
     SupportedEndpoints.STUDY: {
+        # there is an endpoint to list all analyses associated with the study
         SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,
+        # also an endpoint to list all samples associated with the study
         SupportedEndpoints.SAMPLES: list_mgnify_study_samples,
     },
+    # for a sample detail, can list all runs associated with that sample
     SupportedEndpoints.SAMPLE: {SupportedEndpoints.RUNS: list_sample_runs},
+    # for a run detail, can list all analyses associated with that run
     SupportedEndpoints.RUN: {SupportedEndpoints.ANALYSES: list_runs_analyses},
+    # for an assembly detail,
     SupportedEndpoints.ASSEMBLY: {
+        # there is an endpoint to list all analyses associated with that assembly
         SupportedEndpoints.ANALYSES: list_analyses_for_assembly,
+        # also an endpoint to list all genomes linked to that assembly
         SupportedEndpoints.GENOMES: list_genome_links_for_assembly,
     },
+    # for an analysis detail, there is an endpoint to get the analysis with annotations
+    # or should the analysis detail already have annotations?
     SupportedEndpoints.ANALYSIS: {
         "annotations": analysis_get_mgnify_analysis_with_annotations
     },
 }
 
-OLD_SUPPORTED_RELATIONSHIPS = {
-    SupportedEndpoints.BIOMES: {SupportedEndpoints.STUDIES: list_mgnify_studies},
-    SupportedEndpoints.MISCELLANEOUS: {SupportedEndpoints.STUDIES: list_mgnify_studies},
-    SupportedEndpoints.STUDIES: {
-        SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,
-        SupportedEndpoints.SAMPLES: list_mgnify_study_samples,
-    },
-    SupportedEndpoints.SAMPLES: {SupportedEndpoints.RUNS: list_sample_runs},
-    SupportedEndpoints.RUNS: {SupportedEndpoints.ANALYSES: list_runs_analyses},
-    SupportedEndpoints.ASSEMBLIES: {
-        SupportedEndpoints.ANALYSES: list_analyses_for_assembly,
-        SupportedEndpoints.GENOMES: list_genome_links_for_assembly,
-    },
-    SupportedEndpoints.ANALYSES: {
-        "annotations": analysis_get_mgnify_analysis_with_annotations
-    },
-}
+
+# so basically an agent could update this based on openapi.json spec changes, and then the rest of the code should work without needing to change? maybe some edge cases but ideally this is how we can future proof against API changes

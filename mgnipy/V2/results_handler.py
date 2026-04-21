@@ -5,6 +5,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncIterator,
+    Callable,
     Iterator,
     Optional,
 )
@@ -13,10 +14,14 @@ import pandas as pd
 import polars as pl
 
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy.V2.endpoints import ACC_DETAIL_ENDPOINTS
 
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
+
+from mgnipy.V2.endpoints import (
+    BETWEEN_RESOURCE_RELATIONSHIPS,
+    WITHIN_RESOURCE_RELATIONSHIPS,
+)
 
 
 class ResultHandlerMixin:
@@ -254,47 +259,110 @@ class ResultHandlerMixin:
         else:
             return None
 
-    def _resolve_results_accession_params(self, accession: int | str) -> dict:
-        if self.results_accessions is not None and isinstance(accession, int):
-            return {"accession": self.results_accessions[accession]}
 
-        if self.results_accessions is not None and accession in self.results_accessions:
-            return {"accession": accession}
+class NavigationMixin:
+    def list_relationships(self) -> list[str]:
+        if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
+            return [WITHIN_RESOURCE_RELATIONSHIPS[self.resource].value]
+        elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
+            return [
+                endpoint.value
+                for endpoint in BETWEEN_RESOURCE_RELATIONSHIPS[self.resource]
+            ]
+        else:
+            return []
 
-        if self.results_biome_lineages is not None and isinstance(accession, int):
-            return {"biome_lineage": self.results_biome_lineages[accession]}
+    # def next_resource(self, name: Optional[str]) -> Optional[SupportedEndpoints]:
+    #     # PICK UP HERE!!
+    #     if name is None and self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
+    #         return WITHIN_RESOURCE_RELATIONSHIPS[self.resource]
 
+    #     _name = SupportedEndpoints.validate(name)
+    #     if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
+    #         return WITHIN_RESOURCE_RELATIONSHIPS[self.resource]
+    #     elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
+    #         _
+    #         return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource].get(name)
+    #     return None
+
+    def _resolve_access_param(self, key: int | str) -> dict:
+        # allow index-based access
+        if self.results_accessions is not None and isinstance(key, int):
+            return {"accession": self.results_accessions[key]}
+        if self.results_biome_lineages is not None and isinstance(key, int):
+            return {"biome_lineage": self.results_biome_lineages[key]}
+
+        # or by accession/biome_lineage string directly
+        if self.results_accessions is not None and key in self.results_accessions:
+            return {"accession": key}
         if (
             self.results_biome_lineages is not None
-            and accession in self.results_biome_lineages
+            and key in self.results_biome_lineages
         ):
-            return {"biome_lineage": accession}
+            return {"biome_lineage": key}
 
         raise KeyError(
-            f"Invalid key: {accession}. "
+            f"Invalid key: {key}. "
             "Key must be an integer index, or a valid accession string. "
             "Accession must exist in`.results_accessions` or `.results_biome_lineages`."
         )
 
+    def getting_next(
+        self, access_param: dict[str, str], fetch: bool = True
+    ) -> "QuerySet":
+        """
+        Independent of list vs detail resource, get next linked proxy for a specific accession.
 
-class DetailNavigationMixin:
+        Parameters
+        ----------
+        access_param : dict[str, str]
+            A dictionary containing the necessary parameter to identify the detail resource,
+            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        fetch : bool
+            Whether to immediately fetch the detail after creating the proxy.
 
-    def _detail_resource(self) -> SupportedEndpoints:
-        # Map list resources to singular detail resources.
-        mapping = {
-            SupportedEndpoints.STUDIES: SupportedEndpoints.STUDY,
-            SupportedEndpoints.SAMPLES: SupportedEndpoints.SAMPLE,
-            SupportedEndpoints.RUNS: SupportedEndpoints.RUN,
-            SupportedEndpoints.ANALYSES: SupportedEndpoints.ANALYSIS,
-            SupportedEndpoints.GENOMES: SupportedEndpoints.GENOME,
-            SupportedEndpoints.ASSEMBLIES: SupportedEndpoints.ASSEMBLY,
-        }
-        r = SupportedEndpoints.validate(self.resource)
-        return mapping.get(r, r)
 
-    def iter_details(self) -> Iterator["QuerySet"]:
+        Returns
+        -------
+        QuerySet
+            A proxy for the next resource.
+
+        Examples
+        -------
+        sample = samples.getting_next({"accession": "MGYS00001234"})
+        samples = study.getting_next({"accession": "MGYS00001234"})
+        """
+
+        detail_resource = self._detail_resource()
+        child = self._spawn(resource=detail_resource.value, **access_param)
+        child.endpoint_module = self._detail_module
+        if fetch:
+            child.get()
+        return child
+
+
+class DetailNavigationMixin(NavigationMixin):
+
+    def _detail_module(self) -> Callable:
+        if self.resource not in WITHIN_RESOURCE_RELATIONSHIPS:
+            raise AttributeError(
+                f"{self.resource.value} does not have a linked detail resource."
+            )
+        return WITHIN_RESOURCE_RELATIONSHIPS[self.resource]
+
+    def iter_details(self, fetch: bool = False) -> Iterator["QuerySet"]:
         """
         Lazily iterate over child detail proxies.
+
+        Parameters
+        ----------
+        fetch : bool
+            Whether to immediately fetch each detail after creating the proxy.
+
+        Returns
+        -------
+        Iterator of QuerySet
+            An iterator that yields child detail proxies.
 
         Example
         -------
@@ -302,7 +370,7 @@ class DetailNavigationMixin:
             sample.get()
         """
         for acc in self.results_accessions or []:
-            yield self.get_detail(self._resolve_results_accession_params(acc))
+            yield self.get_detail(self._resolve_access_param(acc), fetch=fetch)
 
     def collect_details(
         self,
@@ -310,23 +378,46 @@ class DetailNavigationMixin:
         fetch: bool = False,
         by_accession: bool = False,
     ) -> list["QuerySet"] | dict[str, "QuerySet"]:
+        """
+        Collect child detail proxies into a list or dict.
+
+        Parameters
+        ----------
+        fetch : bool
+            Whether to immediately fetch the details after creating the proxies.
+        by_accession : bool
+            Whether to return a dict keyed by accession instead of a list.
+
+        Returns
+        -------
+        list of QuerySet or dict of str to QuerySet
+            A list or dict of child detail proxies.
+
+        Example
+        -------
+        samples.collect_details(fetch=True, by_accession=True)
+
+
+        """
+
         items: list["QuerySet"] = []
-        for item in self.iter_details():
-            if fetch:
-                item.get()
+        for item in self.iter_details(fetch=fetch):
             items.append(item)
 
         if by_accession:
             return {x.accession: x for x in items if x.accession is not None}
         return items
 
+    def __iter__(self) -> Iterator["QuerySet"]:
+        return self.iter_details()
+
     async def __aiter__(self) -> AsyncIterator["QuerySet"]:
         async for item in self.aiter_details():
             yield item
 
-    async def aiter_details(self) -> AsyncIterator["QuerySet"]:
+    async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
         for acc in self.results_accessions or []:
-            yield await self.aget_detail(self._resolve_results_accession_params(acc))
+            yield await self.aget_detail(self._resolve_access_param(acc), fetch=fetch)
 
     async def acollect_details(
         self,
@@ -337,14 +428,11 @@ class DetailNavigationMixin:
         hide_progress: bool = False,
     ) -> list["QuerySet"] | dict[str, "QuerySet"]:
         acc_params = [
-            self._resolve_results_accession_params(acc)
-            for acc in (self.results_accessions or [])
+            self._resolve_access_param(acc) for acc in (self.results_accessions or [])
         ]
 
-        async def _worker(accession_param):
-            child = await self.aget_detail(accession_param)
-            if fetch:
-                await child.aget()
+        async def _worker(access_param):
+            child = await self.aget_detail(access_param, fetch=fetch)
             return child
 
         items = await self.exec.map_with_concurrency(
@@ -362,15 +450,67 @@ class DetailNavigationMixin:
             }
         return items
 
-    def __getitem__(self, key):
-        return self.get_detail(self._resolve_results_accession_params(key))
+    def __getitem__(self, key: int | str) -> "QuerySet":
+        """
+        Allow index or accession-based access to child details.
+        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
+        """
+        return self.get_detail(
+            self._resolve_access_param(key),
+            fetch=True,
+        )
 
-    def get_detail(self, accession_param: dict[str, str]) -> "QuerySet":
+    def get_detail(
+        self, access_param: dict[str, str], fetch: bool = True
+    ) -> "QuerySet":
+        """
+        Get a child detail proxy for a specific accession.
+
+        Parameters
+        ----------
+        access_param : dict[str, str]
+            A dictionary containing the necessary parameter to identify the detail resource,
+            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        fetch : bool
+            Whether to immediately fetch the detail after creating the proxy.
+
+
+        Returns
+        -------
+        QuerySet
+            A proxy for the child detail resource.
+
+        Example
+        -------
+        sample = samples.get_detail({"accession": "MGYS00001234"})
+        """
+
         detail_resource = self._detail_resource()
-        child = self._spawn(resource=detail_resource.value, **accession_param)
-        child.endpoint_module = ACC_DETAIL_ENDPOINTS[detail_resource]
+        child = self._spawn(resource=detail_resource.value, **access_param)
+        child.endpoint_module = self._detail_module
+        if fetch:
+            child.get()
         return child
 
-    async def aget_detail(self, accession_param: dict[str, str]) -> "QuerySet":
+    async def aget_detail(
+        self, access_param: dict[str, str], fetch: bool = True
+    ) -> "QuerySet":
         # Same behavior as sync variant; caller can await child.aget() later.
-        return self.get_detail(accession_param)
+        return self.get_detail(access_param, fetch=fetch)
+
+
+class RelatedNavigationMixin:
+
+    def _linked_resource_module(self, name: SupportedEndpoints) -> Callable:
+        list_endpoint_name = SupportedEndpoints.validate(name)
+        if list_endpoint_name not in BETWEEN_RESOURCE_RELATIONSHIPS[self.resource]:
+            raise AttributeError(
+                f"{self.resource.value} does not have a linked resource {name}."
+            )
+        return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][list_endpoint_name]
+
+    def __getattr__(self, name: str):
+        linked_resource_module = self._linked_resource_module(
+            SupportedEndpoints.validate(name)
+        )
+        return linked_resource_module()

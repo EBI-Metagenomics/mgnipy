@@ -56,4 +56,7 @@ class MGnipy:
 
     def describe_resources(self):
         # TODO from the API docs
+        # this should be prioritized more because it can be used
+        # by agents / skills?
+        # ALSO include a link to openapi.json spec (maybe a curl)
         pass
