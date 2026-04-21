@@ -339,7 +339,7 @@ class QueryExecutor:
         """
 
         # not allow to run this without preview/plan first?
-        if safety and self.qs._total_pages is None:
+        if safety and self.qs.total_pages is None:
             raise AssertionError(
                 "Please run .dry_run() or .preview() or .explain()before deciding to collect metadata."
             )
@@ -349,13 +349,13 @@ class QueryExecutor:
             resolved = deepcopy(pages)
         elif pages is None:
             # init all pages if not provided
-            resolved = list(range(1, self.qs._total_pages + 1))
+            resolved = list(range(1, self.qs.total_pages + 1))
         else:
             raise TypeError("pages must be a list of integers or None")
 
         # keep only valid page numbers
         resolved = [
-            p for p in resolved if isinstance(p, int) and 0 < p <= self.qs._total_pages
+            p for p in resolved if isinstance(p, int) and 0 < p <= self.qs.total_pages
         ]
 
         if limit is not None:
