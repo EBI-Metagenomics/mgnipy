@@ -53,16 +53,24 @@ class SupportedApiVersions(SpecialEnum):
 
 class SupportedEndpoints(SpecialEnum):
     ANALYSES = "analyses"
+    ANALYSIS = "analysis"
     ASSEMBLIES = "assemblies"
+    ASSEMBLY = "assembly"
     GENOMES = "genomes"
+    GENOME = "genome"
     PUBLICATIONS = "publications"
+    PUBLLICATION = "publication"
     SAMPLES = "samples"
+    SAMPLE = "sample"
     STUDIES = "studies"
+    STUDY = "study"
     RUNS = "runs"
+    RUN = "run"
     #    PRIVATE_DATA = "private_data"
     MISCELLANEOUS = "miscellaneous"
     #    AUTHENTICATION = "authentication"
     BIOMES = "biomes"  # miscellaneous
+    BIOME = "biome"
 
 
 # class

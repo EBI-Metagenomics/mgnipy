@@ -1,84 +1,244 @@
-from __future__ import annotations
-
+import inspect
 import logging
-from itertools import chain
+import os
+from copy import deepcopy
 from typing import (
-    TYPE_CHECKING,
     Any,
+    Callable,
+    Literal,
     Optional,
 )
+from urllib.parse import urlencode
 
 import pandas as pd
-import polars as pl
 
-if TYPE_CHECKING:
-    from mgnipy.V2.core import MGnifier
-    from mgnipy.V2.query_executor import QueryExecutor
+from mgnipy._models.config import MgnipyConfig
+from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy.emgapi_v2_client.api.analyses import (
+    analysis_get_mgnify_analysis_with_annotations,
+    list_mgnify_analyses,
+)
+from mgnipy.emgapi_v2_client.api.assemblies import (
+    get_assembly,
+    list_assemblies,
+)
+from mgnipy.emgapi_v2_client.api.genomes import (
+    get_mgnify_genome,
+    list_mgnify_genomes,
+)
+from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
+from mgnipy.emgapi_v2_client.api.runs import (
+    get_analysed_run,
+    list_analysed_runs,
+)
+from mgnipy.emgapi_v2_client.api.samples import (
+    get_mgnify_sample,
+    list_mgnify_samples,
+)
+from mgnipy.emgapi_v2_client.api.studies import (
+    get_mgnify_study,
+    list_mgnify_studies,
+)
+from mgnipy.V2.query_executor import QueryExecutor
+from mgnipy.V2.results_handler import (
+    DetailNavigationMixin,
+    ResultHandlerMixin,
+)
+
+BASE_URL = MgnipyConfig().base_url
+LIST_ENDPOINTS = {
+    SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
+    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,  # get all biomes, filtering option
+    SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
+    SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
+    SupportedEndpoints.RUNS: list_analysed_runs,  # get all runs, filtering option or with sample acc
+    SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
+    SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
+    SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
+}
+
+ACC_DETAIL_ENDPOINTS = {
+    SupportedEndpoints.BIOME: list_mgnify_biomes,
+    SupportedEndpoints.STUDY: get_mgnify_study,
+    SupportedEndpoints.SAMPLE: get_mgnify_sample,
+    SupportedEndpoints.RUN: get_analysed_run,
+    SupportedEndpoints.ANALYSIS: analysis_get_mgnify_analysis_with_annotations,  # get_mgnify_analysis,
+    SupportedEndpoints.GENOME: get_mgnify_genome,
+    SupportedEndpoints.ASSEMBLY: get_assembly,
+}
+
+ENDPOINTS = LIST_ENDPOINTS | ACC_DETAIL_ENDPOINTS
 
 
-class QuerySet:
-    def __init__(self, owner: MGnifier):
-        self.owner: MGnifier = owner
-        self.exec: QueryExecutor = owner._executor
+class QuerySet(ResultHandlerMixin, DetailNavigationMixin):
+    """
+    Plans, builds, validates and previews queries based on endpoint_module and params of the MGnifier owner.
+    Stores the request urls.
+    if mgnifier owner changes then the QuerySet should be re-instantiated to update the urls and other info.
+    """
 
-    def _clone_owner(self) -> MGnifier:
-        return self.owner._clone()
+    def __init__(
+        self,
+        resource: Literal[
+            "biomes",
+            "biome",
+            "studies",
+            "study",
+            "samples",
+            "sample",
+            "runs",
+            "run",
+            "genomes",
+            "genome",
+            "analyses",
+            "analysis",
+            "assemblies",
+            "assembly",
+        ],
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
 
-    # helpers
-    def _df_expand_nested(
-        self, df: pd.DataFrame, cols: list[str] = None
-    ) -> pd.DataFrame:
+        self._base_url: str = BASE_URL
+        self._resource = SupportedEndpoints.validate(resource)
+        # params as dict
+        self._params: dict[str, Any] = params or {}
+        # add kwargs to params if provided, prioritizing kwargs
+        if kwargs:
+            self._params.update(kwargs)
+
+        # default endpoint modules based on resource, can be overridden by owner
+        self._endpoint_module: Callable = ENDPOINTS[self._resource]
+
+        # check that params are valid for endpoint module
+        # check params are valid for endpoint
+        # self._endpoint_module._get_kwargs(**self._params)
+
+        self.exec: QueryExecutor = QueryExecutor(self)
+
+        self.count: Optional[int] = None
+        self.total_pages: Optional[int] = None
+        self.default_page_size: int = 25
+
+        # request_urls
+        self.request_urls: Optional[list[str]] = None
+
+        # results
+        self._results: dict[int, list[dict]] = {}
+
+    @property
+    def request_url(self) -> str:
         """
-        Expand nested structures in the DataFrame into separate columns.
+        Get the URL for the API request based on the current resource and parameters.
+        This is a single URL that represents the request for the current page of results.
+
+        Returns
+        -------
+        str
+            The constructed URL for the API request.
+        """
+        return self._build_request_url()
+
+    @property
+    def endpoint_module(self) -> Callable:
+        return self._endpoint_module
+
+    @endpoint_module.setter
+    def endpoint_module(self, value: Callable):
+        # clone the current instance but with updated endpoint module
+        self._endpoint_module = value
+        # check params are valid for new endpoint module
+        # self._endpoint_module._get_kwargs(**self._params)
+        # reset results and urls since endpoint module changed
+        self._results = {}
+        self.request_urls = None
+
+    @property
+    def params(self) -> dict[str, Any]:
+        return self._params
+
+    @params.setter
+    def params(self, new_params: dict[str, Any]):
+        self._params = new_params
+        # check that params are valid for endpoint module
+        self.endpoint_module._get_kwargs(**self._params)
+
+    @property
+    def results(self) -> dict[int, list[dict]]:
+        return self._results
+
+    @property
+    def resource(self) -> SupportedEndpoints:
+        return self._resource
+
+    @resource.setter
+    def resource(self, value: str):
+        self._resource = SupportedEndpoints.validate(value)
+        self.endpoint_module = ENDPOINTS[self._resource]
+        # check that params are valid for new endpoint module
+        self.endpoint_module._get_kwargs(**self._params)
+        # reset results and urls since resource changed
+        self._results = {}
+        self.request_urls = None
+
+    def _is_in_results(self, page_num: int) -> bool:
+        """
+        Check if results for a specific page number already exist in the results.
 
         Parameters
         ----------
-        df : pd.DataFrame
-            The DataFrame to expand.
-        cols : list of str
-            List of column names to expand.
+        page_num : int
+            The page number to check for existing results.
 
         Returns
         -------
-        pd.DataFrame
-            The expanded DataFrame.
+        bool
+            True if results for the specified page number exist, False otherwise.
         """
+        # get number of pages if not already
+        if (self.count is None) or (self.total_pages is None):
+            self.dry_run()
 
-        cols = cols or ["metadata"]
+        if not (isinstance(page_num, int) and 0 < page_num <= self.total_pages):
+            raise ValueError(
+                f"Invalid page number: {page_num}. "
+                "Pages must be positive integers "
+                f"not exceeding total pages {self.total_pages}."
+            )
 
-        new_df = df.copy()
-        for c in cols:
-            if c in new_df.columns:
-                attr_df = pd.json_normalize(new_df[c])
-                new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
-        return new_df
+        return page_num in self._results
 
-    def _unpageinate_results(self, data: Optional[dict] = None) -> chain:
+    # PARAM HANDLING
+    def _spawn(self, *, resource: Optional[str] = None, **params) -> "QuerySet":
         """
-        Unpaginate the results by flattening the dictionary of pages into a single list of records.
+        Spawn a new QuerySet instance for a related resource with given parameters.
 
         Returns
         -------
-        chain
-            An iterator that yields individual metadata records from all pages.
+        QuerySet
+            A new QuerySet instance with the same resource and parameters but no cached results.
+
         """
-        _data = data or self.owner._results
+        return QuerySet(resource=resource or self.resource, **params)
 
-        if not _data:
-            raise RuntimeError("No results available. Run preview/get/page first.")
+    def _clone(self, **param_overrides):
+        base_params = deepcopy(self.params)
 
-        def _page_to_records(page):
-            if page is None:
-                return []
-            if isinstance(page, list):
-                return page
-            if isinstance(page, dict):
-                return [page]
-            return [page]
+        if self.__class__.__name__ == "QuerySet":
+            return self.__class__(
+                resource=self.resource,
+                params=base_params,
+                **param_overrides,
+            )
 
-        return chain.from_iterable(_page_to_records(v) for v in _data.values())
+        # proxy subclasses already encode their own resource
+        param_overrides.pop("resource", None)
+        return self.__class__(
+            params=base_params,
+            **param_overrides,
+        )
 
-    # choose to filter request or not
     def filter(
         self,
         **filters,
@@ -94,19 +254,14 @@ class QuerySet:
 
         Returns
         -------
-        MGnifier
-            A new MGnifier instance with updated parameters for filtering results.
+        QuerySet
+            A new QuerySet instance with updated parameters for filtering results.
         """
-        # make a copy of current instance
-        new_mg = self._clone_owner()
-        # but with updates to params
-        new_mg._params.update(filters)
-        # update endpoint module based on new params
-        new_mg.endpoint_module = new_mg._resolve_endpoint_module()
-        return QuerySet(new_mg)
+        # make a copy of current instance but with updated params
+        new_qs = self._clone(**filters)
+        return new_qs
 
-    # @require_pagination
-    def page_size(self, n: int):
+    def page_size(self, n: int) -> "QuerySet":
         """
         Set the page size for paginated API calls.
 
@@ -116,17 +271,121 @@ class QuerySet:
 
         Returns
         -------
-        MGnifier
-            A new MGnifier instance with the updated page size parameter.
+        QuerySet
+            A new QuerySet instance with the updated page size parameter.
         """
         if not isinstance(n, int) or n <= 0:
             raise ValueError("Page size must be a positive integer.")
 
         # make a copy of current instance
-        new_mg = self._clone_owner()
-        # but with updates to params
-        new_mg._params.update({"page_size": n})
-        return QuerySet(new_mg)
+        new_qs = self._clone(page_size=n)
+        return new_qs
+
+    @property
+    def base_url(self) -> str:
+        return self._base_url
+
+    @property
+    def pagination_status(self) -> bool:
+        """
+        Check if the current resource requires pagination based on its supported keyword arguments.
+
+        Returns
+        -------
+        bool
+            True if pagination, False otherwise.
+        """
+        return (
+            "page" in self.list_supported_params()
+            and "page_size" in self.list_supported_params()
+        )
+
+    def list_supported_params(self) -> list[str]:
+        """
+        Lists supported keyword arguments for the endpoint module.
+
+        Returns
+        -------
+        list of str
+            List of supported keyword argument names.
+        """
+        sig = inspect.signature(self.endpoint_module._get_kwargs)
+        return list(sig.parameters.keys())
+
+    def _build_request_params(
+        self, params: Optional[dict[str, Any]] = None, **kwargs
+    ) -> dict[str, Any]:
+        """
+        Build the parameters for the API request by combining the current parameters with
+        any additional parameters provided.
+
+        Parameters
+        ----------
+        params : dict, optional
+            Additional parameters to include in the API request.
+        **kwargs
+            Additional keyword arguments to include in the API request.
+
+        Returns
+        -------
+        dict
+            The combined parameters for the API request.
+        """
+        # combine params with kwargs, with kwargs taking precedence
+        request_params = {**(params or self.params), **kwargs}
+        # if pagination and no page size set, add default page size
+        if self.pagination_status and "page_size" not in request_params:
+            request_params["page_size"] = self.default_page_size
+        return request_params
+
+    def _build_request_url(
+        self,
+        params: Optional[dict[str, Any]] = None,
+        exclude: list[str] = None,
+    ) -> str:
+        """
+        Build a URL for the current resource and parameters using
+        the endpoint module's URL template and the provided parameters.
+        (currently for logging/verbose output only).
+
+        Parameters
+        ----------
+        params : dict, optional
+            Parameters to include in the URL. If None, uses self.params.
+        exclude : list of str, optional
+            List of parameter names to exclude from the URL query string.
+            These are typically parameters that are not used for filtering in the API call,
+            such as 'accession' or 'pubmed_id'.
+
+        Returns
+        -------
+        str
+            The constructed URL.
+        """
+        # specific to api design, exclude params not used for filtering
+        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
+        params = params or self.params
+        # check params are valid for endpoint
+        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
+        # resource based on emgapi_v2_client
+        emgapi_resource = os.path.basename(
+            os.path.dirname(self.endpoint_module.__file__)
+        )
+
+        _end_url: str = _kwargs.get(
+            "url", f"/metagenomics/api/v2/{emgapi_resource}/"
+        ).strip("/")
+
+        url = os.path.join(self._base_url, _end_url)
+
+        # exclude params not for filtering from encoding
+        incl_params = deepcopy(params)
+        for k in exclude:
+            incl_params.pop(k, None)
+        # encode params for url
+        encoded_params = urlencode(incl_params, doseq=True)
+
+        return f"{url}/?{encoded_params}" if encoded_params else url
 
     # preview the request(s) prior to making them (option 1)
     def dry_run(self) -> None:
@@ -141,41 +400,57 @@ class QuerySet:
         """
         # verbose
         print("Planning the API call with params:")
-        print(self.owner._params)
+        print(self.params)
 
-        if self.owner._count is not None and self.owner._total_pages is not None:
+        if self.count is not None and self.total_pages is not None:
             logging.info("Already have count and total_pages from previous dry run")
-        elif not self.owner._pagination_status:
+        elif not self.pagination_status:
             # if not pageinated only 1
-            self.owner._count = 1
-            self.owner._total_pages = 1
+            self.count = 1
+            self.total_pages = 1
         else:
             # small get request to get count and calc total pages
             self.exec.get_pageinated_counts()
 
-        print(f"Total pages to retrieve: {self.owner._total_pages}")
-        print(f"Total records to retrieve: {self.owner._count}")
+        print(f"Total pages to retrieve: {self.total_pages}")
+        print(f"Total records to retrieve: {self.count}")
 
     # preview the request(s) prior to making them (option 2)
+    def list_urls(self) -> list[str]:
+        """
+        Generate and return a list of URLs for all the API requests that would be made to retrieve the data based on the current parameters.
+        This allows the user to see exactly which endpoints and query parameters will be used in the API calls before executing them.
+
+        Returns
+        -------
+        list of str
+            A list of URLs corresponding to each API request that would be made.
+        """
+        if self.request_urls is not None:
+            return self.request_urls
+
+        if not self.pagination_status:
+            self.request_urls = [self._build_request_url()]
+        else:
+            # ensure we have total_pages calculated
+            if self.total_pages is None:
+                self.dry_run()
+            self.request_urls = [
+                self._build_request_url(params={"page": page})
+                for page in range(1, self.total_pages + 1)
+            ]
+
+        return self.request_urls
+
     def explain(self, head: Optional[int] = None) -> None:
         """
         Print example URLs that would be called. Actual requests handled by client.
         """
-        # prep if not done already
-        if self.owner._total_pages is None:
-            self.dry_run()
-        # if not paginated just print one url
-        if not self.owner._get_pagination_status():
-            print(self.owner._build_url())
-        # Otherwise, print URLs for each page
-        else:
-            limit = (
-                min(head, self.owner._total_pages) if head else self.owner._total_pages
-            )
-            for page in range(1, limit + 1):
-                print(
-                    self.owner._build_url(params={**self.owner._params, "page": page})
-                )
+        _ = self.list_urls()  # ensure urls are generated
+        limit = min(head, self.total_pages) if head else self.total_pages
+
+        for url in self.list_urls()[:limit]:
+            print(url)
 
     # preview the request(s) prior to making them (option 3)
     def preview(self) -> pd.DataFrame:
@@ -204,7 +479,7 @@ class QuerySet:
         Same as preview() but returns the raw dictionary instead of a DataFrame.
         """
         self.exec.get_any_first()
-        return self.owner._results.get(1, [])
+        return self._results.get(1, [])
 
     async def afirst(self) -> dict:
         """
@@ -212,209 +487,30 @@ class QuerySet:
         Same as preview() but returns the raw dictionary instead of a DataFrame.
         """
         await self.exec.aget_any_first()
-        return self.owner._results.get(1, [])
+        return self._results.get(1, [])
 
-    # viewing the retrieved
-    def to_df(
-        self,
-        data: Optional[dict[int, list[dict]]] = None,
-        expand_nested_dicts: Optional[list[str] | bool] = False,
-        **kwargs,
-    ) -> pd.DataFrame:
+    # dunder methods
+    def __str__(self):
         """
-        Convert the current or provided metadata to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list of dict, optional
-            List of records to convert. If None, uses self._results or self._previewed_page.
-        expand_nested_dicts : list of str, optional
-            List of keys to expand into separate columns.
-        **kwargs
-            Additional keyword arguments passed to pd.DataFrame.
+        Return a string representation of the MGnifier instance, summarizing key configuration and state.
 
         Returns
         -------
-        pd.DataFrame
-            DataFrame containing the metadata.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
+        str
+            Human-readable summary of the instance.
         """
-
-        _data = data or self.owner._results
-
-        if _data == {} or _data is None:
-            logging.info("No data available to convert to DataFrame. Returning None.")
-            return None
-
-        as_pandas = pd.DataFrame(self._unpageinate_results(_data), **kwargs)
-
-        if expand_nested_dicts is None or expand_nested_dicts is False:
-            return as_pandas
-
-        if isinstance(expand_nested_dicts, list):
-            return self._df_expand_nested(
-                as_pandas,
-                cols=expand_nested_dicts,
-            )
-        if expand_nested_dicts is True:  # TODO
-            return self._df_expand_nested(as_pandas)
-
-    def to_list(
-        self, data: Optional[dict[int, list[dict]]] = None
-    ) -> list[dict[str, Any]]:
-        """
-        Convert the current or provided metadata to a list of dictionaries.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self._results.
-
-        Returns
-        -------
-        list of dict
-            A list of metadata records as dictionaries.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-        _data = data or self.owner._results
-
-        if _data == {} or _data is None:
-            logging.info("No data available to convert to list. Returning empty list.")
-            return []
-
-        return list(self._unpageinate_results(_data))
-
-    def to_json(
-        self,
-        data: Optional[dict[int, list[dict]]] = None,
-        orient: str = "records",
-        lines: bool = True,
-        **json_kwargs,
-    ) -> str:
-        """
-        Convert the current metadata to a JSON string or save it to a file.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self._results.
-        **json_kwargs
-            Additional keyword arguments passed to the JSON serialization function.
-
-        Returns
-        -------
-        str or None
-            The JSON string representation of the metadata, or None if no data is available.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-        return self.to_df(data, expand_nested_dicts=False).to_json(
-            orient=orient, lines=lines, **json_kwargs
+        cls = type(self)
+        class_path = f"{cls.__module__}.{cls.__qualname__}"
+        return (
+            f"MGnifier instance for resource: {self.resource}\n"
+            f"I.e., {class_path}\n"
+            f"----------------------------------------\n"
+            f"Base URL: {self._base_url}\n"
+            f"Parameters: {self.params}\n"
+            f"Endpoint module: {self.endpoint_module.__name__ or 'None'}\n"
+            f"Example request URL: {self._build_request_url()}\n"
+            f"Returns paginated results: {self.pagination_status}\n"
         )
 
-    def to_polars(
-        self, data: Optional[dict[int, list[dict]]] = None, **polars_kwargs
-    ) -> pl.DataFrame:
-        """
-        Convert the current metadata to a Polars DataFrame.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self._results.
-        **polars_kwargs
-            Additional keyword arguments passed to pl.DataFrame.
-
-        Returns
-        -------
-        pl.DataFrame
-            A Polars DataFrame containing the metadata.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-
-        _data = data or self.owner._results
-
-        if _data == {} or _data is None:
-            logging.info(
-                "No data available to convert to polars DataFrame. Returning None."
-            )
-            return None
-
-        return pl.DataFrame(self._unpageinate_results(_data), **polars_kwargs)
-
-    @property
-    def results_accessions(self) -> Optional[list[str]]:
-        """
-        Get a list of accessions from the retrieved metadata results, if available.
-
-        Returns
-        -------
-        list of str or None
-            A list of accession strings if available, otherwise None.
-        """
-        if self.to_df() is None:
-            return None
-        elif "accession" in self.to_df().columns:
-            return self.to_df()["accession"].tolist()
-        else:
-            return None
-
-    @property
-    def results_biome_lineages(self) -> Optional[list[str]]:
-        """
-        Get a list of biome lineages from the retrieved metadata results, if available.
-
-        Returns
-        -------
-        list of str or None
-            A list of biome lineage strings if available, otherwise None.
-        """
-        if self.to_df() is None:
-            return None
-        elif "lineage" in self.to_df().columns:
-            return self.to_df()["lineage"].tolist()
-        elif "biome_lineage" in self.to_df().columns:
-            return self.to_df()["biome_lineage"].tolist()
-        elif "biome" in self.to_df().columns:
-            return self.to_df()["biome"].tolist()
-        elif "biome_name" in self.to_df().columns:
-            return self.to_df()["biome_name"].tolist()
-        else:
-            return None
-
-    def _resolve_results_accession_params(self, accession: int | str) -> dict:
-        if self.results_accessions is not None and isinstance(accession, int):
-            return {"accession": self.results_accessions[accession]}
-
-        if self.results_accessions is not None and accession in self.results_accessions:
-            return {"accession": accession}
-
-        if self.results_biome_lineages is not None and isinstance(accession, int):
-            return {"biome_lineage": self.results_biome_lineages[accession]}
-
-        if (
-            self.results_biome_lineages is not None
-            and accession in self.results_biome_lineages
-        ):
-            return {"biome_lineage": accession}
-
-        raise KeyError(
-            f"Invalid key: {accession}. "
-            "Key must be an integer index, or a valid accession string. "
-            "Accession must exist in`.results_accessions` or `.results_biome_lineages`."
-        )
+    def __call__(self, **kwargs):
+        return self.filter(**kwargs)
