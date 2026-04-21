@@ -2,15 +2,22 @@ from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.proxies import (
     Analyses,
+    AnalysisDetail,
     Assemblies,
+    AssemblyDetail,
+    BiomeDetail,
     Biomes,
+    GenomeDetail,
     Genomes,
+    RunDetail,
     Runs,
+    SampleDetail,
     Samples,
     Studies,
+    StudyDetail,
 )
 
-ENDPOINT_PROXIES = {
+V2_ENDPOINT_LIST_PROXIES = {
     SupportedEndpoints.BIOMES: Biomes,
     SupportedEndpoints.STUDIES: Studies,
     SupportedEndpoints.SAMPLES: Samples,
@@ -19,6 +26,18 @@ ENDPOINT_PROXIES = {
     SupportedEndpoints.GENOMES: Genomes,
     SupportedEndpoints.ASSEMBLIES: Assemblies,
 }
+
+V2_ENDPOINT_DETAIL_PROXIES = {
+    SupportedEndpoints.BIOME: BiomeDetail,
+    SupportedEndpoints.STUDY: StudyDetail,
+    SupportedEndpoints.SAMPLE: SampleDetail,
+    SupportedEndpoints.RUN: RunDetail,
+    SupportedEndpoints.ANALYSIS: AnalysisDetail,
+    SupportedEndpoints.GENOME: GenomeDetail,
+    SupportedEndpoints.ASSEMBLY: AssemblyDetail,
+}
+
+V2_ENDPOINT_ALL_PROXIES = V2_ENDPOINT_LIST_PROXIES | V2_ENDPOINT_DETAIL_PROXIES
 
 
 class MGnipy:
@@ -29,11 +48,8 @@ class MGnipy:
         self._endpoints = self.list_resources()
 
     def __getattr__(self, name: str):
-        # TODO: better way to get diff objects??
-        if name in self._endpoints:
-            return ENDPOINT_PROXIES[SupportedEndpoints(name)]()
-        else:
-            return self.__dict__[f"_{name}"]
+        _end = SupportedEndpoints.validate(name)
+        return V2_ENDPOINT_ALL_PROXIES[_end]()
 
     def list_resources(self):
         return [endpoint.value for endpoint in SupportedEndpoints]

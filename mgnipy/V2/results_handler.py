@@ -13,39 +13,10 @@ import pandas as pd
 import polars as pl
 
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy.emgapi_v2_client.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations,
-)
-from mgnipy.emgapi_v2_client.api.assemblies import (
-    get_assembly,
-)
-from mgnipy.emgapi_v2_client.api.genomes import (
-    get_mgnify_genome,
-)
-from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
-from mgnipy.emgapi_v2_client.api.runs import (
-    get_analysed_run,
-)
-from mgnipy.emgapi_v2_client.api.samples import (
-    get_mgnify_sample,
-)
-from mgnipy.emgapi_v2_client.api.studies import (
-    get_mgnify_study,
-)
+from mgnipy.V2.endpoints import ACC_DETAIL_ENDPOINTS
 
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
-
-
-ACC_DETAIL_ENDPOINTS = {
-    SupportedEndpoints.BIOME: list_mgnify_biomes,
-    SupportedEndpoints.STUDY: get_mgnify_study,
-    SupportedEndpoints.SAMPLE: get_mgnify_sample,
-    SupportedEndpoints.RUN: get_analysed_run,
-    SupportedEndpoints.ANALYSIS: analysis_get_mgnify_analysis_with_annotations,  # get_mgnify_analysis,
-    SupportedEndpoints.GENOME: get_mgnify_genome,
-    SupportedEndpoints.ASSEMBLY: get_assembly,
-}
 
 
 class ResultHandlerMixin:

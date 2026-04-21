@@ -46,7 +46,7 @@ class SpecialEnum(Enum):
 
 
 class SupportedApiVersions(SpecialEnum):
-    # V1 = 'v1' # TODO: add support for v1 endpoints
+    # V1 = 'v1' # TODO: add support for v1 endpoints?
     V2 = "v2"
     LATEST = "latest"
 
@@ -66,8 +66,8 @@ class SupportedEndpoints(SpecialEnum):
     STUDY = "study"
     RUNS = "runs"
     RUN = "run"
-    #    PRIVATE_DATA = "private_data"
-    MISCELLANEOUS = "miscellaneous"
-    #    AUTHENTICATION = "authentication"
+    # MISCELLANEOUS = "miscellaneous"
     BIOMES = "biomes"  # miscellaneous
     BIOME = "biome"
+    #    PRIVATE_DATA = "private_data"
+    #    AUTHENTICATION = "authentication"

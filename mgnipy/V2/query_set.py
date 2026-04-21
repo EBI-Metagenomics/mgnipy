@@ -14,31 +14,7 @@ import pandas as pd
 
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy.emgapi_v2_client.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations,
-    list_mgnify_analyses,
-)
-from mgnipy.emgapi_v2_client.api.assemblies import (
-    get_assembly,
-    list_assemblies,
-)
-from mgnipy.emgapi_v2_client.api.genomes import (
-    get_mgnify_genome,
-    list_mgnify_genomes,
-)
-from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
-from mgnipy.emgapi_v2_client.api.runs import (
-    get_analysed_run,
-    list_analysed_runs,
-)
-from mgnipy.emgapi_v2_client.api.samples import (
-    get_mgnify_sample,
-    list_mgnify_samples,
-)
-from mgnipy.emgapi_v2_client.api.studies import (
-    get_mgnify_study,
-    list_mgnify_studies,
-)
+from mgnipy.V2.endpoints import ALL_ENDPOINTS as ENDPOINTS
 from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.results_handler import (
     DetailNavigationMixin,
@@ -46,28 +22,6 @@ from mgnipy.V2.results_handler import (
 )
 
 BASE_URL = MgnipyConfig().base_url
-LIST_ENDPOINTS = {
-    SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
-    SupportedEndpoints.MISCELLANEOUS: list_mgnify_biomes,  # get all biomes, filtering option
-    SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
-    SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
-    SupportedEndpoints.RUNS: list_analysed_runs,  # get all runs, filtering option or with sample acc
-    SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
-    SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
-    SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
-}
-
-ACC_DETAIL_ENDPOINTS = {
-    SupportedEndpoints.BIOME: list_mgnify_biomes,
-    SupportedEndpoints.STUDY: get_mgnify_study,
-    SupportedEndpoints.SAMPLE: get_mgnify_sample,
-    SupportedEndpoints.RUN: get_analysed_run,
-    SupportedEndpoints.ANALYSIS: analysis_get_mgnify_analysis_with_annotations,  # get_mgnify_analysis,
-    SupportedEndpoints.GENOME: get_mgnify_genome,
-    SupportedEndpoints.ASSEMBLY: get_assembly,
-}
-
-ENDPOINTS = LIST_ENDPOINTS | ACC_DETAIL_ENDPOINTS
 
 
 class QuerySet(ResultHandlerMixin, DetailNavigationMixin):
@@ -223,6 +177,23 @@ class QuerySet(ResultHandlerMixin, DetailNavigationMixin):
         return QuerySet(resource=resource or self.resource, **params)
 
     def _clone(self, **param_overrides):
+        """
+        'polymorphism-aware, immutable-style clone helper' to create a new instance of the same class with updated parameters.
+        This method is used internally to create new QuerySet instances with updated parameters while preserving the original instance's state.
+
+        Parameters
+        ----------
+        **param_overrides
+            Keyword arguments representing the parameters to override in the new instance.
+            These will be merged with the existing parameters, with the provided overrides taking precedence.
+
+        Returns
+        -------
+        QuerySet
+            A new instance of the same class with the updated parameters.
+        """
+
+        # make a copy of current instance but with updated params and same resource, endpoint module etc
         base_params = deepcopy(self.params)
 
         if self.__class__.__name__ == "QuerySet":
@@ -232,7 +203,7 @@ class QuerySet(ResultHandlerMixin, DetailNavigationMixin):
                 **param_overrides,
             )
 
-        # proxy subclasses already encode their own resource
+        # for proxy subclasses
         param_overrides.pop("resource", None)
         return self.__class__(
             params=base_params,

@@ -10,43 +10,8 @@ from bigtree import (
 )
 
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy.emgapi_v2_client.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations,
-)
-from mgnipy.emgapi_v2_client.api.assemblies import (
-    list_analyses_for_assembly,
-    list_genome_links_for_assembly,
-)
-from mgnipy.emgapi_v2_client.api.runs import (
-    list_runs_analyses,
-)
-from mgnipy.emgapi_v2_client.api.samples import (
-    list_sample_runs,
-)
-from mgnipy.emgapi_v2_client.api.studies import (
-    list_mgnify_studies,
-    list_mgnify_study_analyses,
-    list_mgnify_study_samples,
-)
 from mgnipy.V2.core import MGnifier
-
-# I think this kinda follows the openapi "Links" on the right of the docs?
-SUPPORTED_RELATIONSHIPS = {
-    SupportedEndpoints.BIOME: {SupportedEndpoints.STUDIES: list_mgnify_studies},
-    SupportedEndpoints.STUDY: {
-        SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,
-        SupportedEndpoints.SAMPLES: list_mgnify_study_samples,
-    },
-    SupportedEndpoints.SAMPLE: {SupportedEndpoints.RUNS: list_sample_runs},
-    SupportedEndpoints.RUN: {SupportedEndpoints.ANALYSES: list_runs_analyses},
-    SupportedEndpoints.ASSEMBLY: {
-        SupportedEndpoints.ANALYSES: list_analyses_for_assembly,
-        SupportedEndpoints.GENOMES: list_genome_links_for_assembly,
-    },
-    SupportedEndpoints.ANALYSIS: {
-        "annotations": analysis_get_mgnify_analysis_with_annotations
-    },
-}
+from mgnipy.V2.endpoints import SUPPORTED_RELATIONSHIPS
 
 
 class MGnifyList(MGnifier):
