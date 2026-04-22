@@ -215,7 +215,9 @@ class QuerySet(ResultHandlerMixin):
         # make a copy of current instance but with updated params and same resource, endpoint module etc
         base_params = deepcopy(self.params)
 
-        if self.__class__.__name__ == "QuerySet":
+        # Proxy subclasses hardcode their resource inside __init__ (no `resource` param),
+        # while QuerySet/MGnifier require it to be passed explicitly.
+        if "resource" in inspect.signature(self.__class__.__init__).parameters:
             return self.__class__(
                 resource=self.resource,
                 params=base_params,
