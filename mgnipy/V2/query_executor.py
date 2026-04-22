@@ -224,6 +224,7 @@ class QueryExecutor:
         # if not paginated
         elif not self.qs.pagination_status:
             # then just get and add to results
+            # pick up here
             response_dict = self._get_request()
             self.qs.results = {1: response_dict}
         # otherwise, get first page

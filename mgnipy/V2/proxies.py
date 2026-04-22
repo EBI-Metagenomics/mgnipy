@@ -11,8 +11,7 @@ from bigtree import (
 
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.core import MGnifier
-from mgnipy.V2.endpoints import SUPPORTED_RELATIONSHIPS
-from mgnipy.V2.results_handler import (
+from mgnipy.V2.mixins import (
     DetailNavigationMixin,
     RelatedNavigationMixin,
 )
@@ -38,6 +37,7 @@ class MGnifyList(MGnifier, DetailNavigationMixin):
         self.resource = SupportedEndpoints.validate(resource)
 
 
+# FIX THIS
 class MGnifyDetail(MGnifier, RelatedNavigationMixin):
     def __init__(
         self,
@@ -66,24 +66,8 @@ class MGnifyDetail(MGnifier, RelatedNavigationMixin):
         self.explain()  # TODO remove after testing
         self.get()
 
-    def list_relationships(self) -> list[str]:
-        return [endpoint.value for endpoint in SUPPORTED_RELATIONSHIPS[self.resource]]
-
     def describe_relationships(self):
         pass
-
-    def __getattr__(self, name: str):
-        if name in self._relationships:
-
-            _name = SupportedEndpoints.validate(name)
-
-            # init via clone
-            list_proxy = self._clone()
-
-            # init resource proxy
-            list_proxy.endpoint_module = SUPPORTED_RELATIONSHIPS[self.resource][_name]
-
-            return list_proxy
 
 
 class Analyses(MGnifyList):
@@ -141,7 +125,7 @@ class Biomes(MGnifyList):
             raise RuntimeError(
                 "No data available to get lineages. Please run get() first."
             )
-        return self.results_biome_lineages
+        return self.results_ids
 
     @property
     def tree(self) -> Tree:
@@ -209,6 +193,26 @@ class Genomes(MGnifyList):
         super().__init__(resource="genomes", params=params, **kwargs)
 
 
+class Publications(MGnifyList):
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(resource="publications", params=params, **kwargs)
+
+
+class Catalogues(MGnifyList):
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(resource="catalogues", params=params, **kwargs)
+
+
 class StudyDetail(MGnifyDetail):
     def __init__(
         self,
@@ -263,3 +267,19 @@ class BiomeDetail(MGnifyDetail):
         biome_lineage: str,
     ):
         super().__init__(resource="biome", biome_lineage=biome_lineage)
+
+
+class PublicationDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="publication", accession=accession)
+
+
+class CatalogueDetail(MGnifyDetail):
+    def __init__(
+        self,
+        catalogue_id: str,
+    ):
+        super().__init__(resource="catalogue", catalogue_id=catalogue_id)

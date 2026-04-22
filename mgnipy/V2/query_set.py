@@ -15,16 +15,35 @@ import pandas as pd
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.endpoints import ALL_ENDPOINTS as ENDPOINTS
-from mgnipy.V2.query_executor import QueryExecutor
-from mgnipy.V2.results_handler import (
-    DetailNavigationMixin,
+from mgnipy.V2.mixins import (
     ResultHandlerMixin,
 )
+from mgnipy.V2.query_executor import QueryExecutor
 
 BASE_URL = MgnipyConfig().base_url
+ID_PARAM = {
+    SupportedEndpoints.BIOMES: "biome_lineage",
+    SupportedEndpoints.BIOME: "biome_lineage",
+    SupportedEndpoints.STUDIES: "accession",
+    SupportedEndpoints.SAMPLES: "accession",
+    SupportedEndpoints.RUNS: "accession",
+    SupportedEndpoints.ANALYSES: "accession",
+    SupportedEndpoints.GENOMES: "accession",
+    SupportedEndpoints.ASSEMBLIES: "accession",
+    SupportedEndpoints.PUBLICATIONS: "pubmed_id",
+    SupportedEndpoints.CATALOGUES: "catalogue_id",
+    SupportedEndpoints.STUDY: "accession",
+    SupportedEndpoints.SAMPLE: "accession",
+    SupportedEndpoints.RUN: "accession",
+    SupportedEndpoints.ANALYSIS: "accession",
+    SupportedEndpoints.GENOME: "accession",
+    SupportedEndpoints.ASSEMBLY: "accession",
+    SupportedEndpoints.PUBLICATION: "pubmed_id",
+    SupportedEndpoints.CATALOGUE: "catalogue_id",
+}
 
 
-class QuerySet(ResultHandlerMixin, DetailNavigationMixin):
+class QuerySet(ResultHandlerMixin):
     """
     Plans, builds, validates and previews queries based on endpoint_module and params of the MGnifier owner.
     Stores the request urls.
@@ -485,3 +504,30 @@ class QuerySet(ResultHandlerMixin, DetailNavigationMixin):
 
     def __call__(self, **kwargs):
         return self.filter(**kwargs)
+
+    @property
+    def id_param_key(self) -> str:
+        try:
+            return ID_PARAM[self.resource]
+        except KeyError:
+            raise AttributeError(
+                f"Resource {self.resource} does not have a defined access identifier key."
+            ) from None
+
+    @property
+    def identifier(self) -> Optional[str]:
+        """
+        Get the identifier value from the parameters based on the resource type.
+        This is used for constructing URLs for related resources.
+
+        Returns
+        -------
+        str or None
+            The identifier value corresponding to the resource type, or None if not available.
+        """
+        try:
+            return self.params[self.id_param_key]
+        except KeyError:
+            raise AttributeError(
+                f"Identifier key '{self.id_param_key}' not found in parameters for resource '{self.resource}'."
+            ) from None

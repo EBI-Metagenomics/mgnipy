@@ -11,10 +11,16 @@ from mgnipy.emgapi_v2_client.api.assemblies import (
     list_genome_links_for_assembly,
 )
 from mgnipy.emgapi_v2_client.api.genomes import (
+    get_genome_catalogue,
     get_mgnify_genome,
+    list_genome_catalogues,
     list_mgnify_genomes,
 )
 from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
+from mgnipy.emgapi_v2_client.api.publications import (
+    get_mgnify_publication,
+    list_mgnify_publications,
+)
 from mgnipy.emgapi_v2_client.api.runs import (
     get_analysed_run,
     list_analysed_runs,
@@ -29,6 +35,7 @@ from mgnipy.emgapi_v2_client.api.studies import (
     get_mgnify_study,
     list_mgnify_studies,
     list_mgnify_study_analyses,
+    list_mgnify_study_publications,
     list_mgnify_study_samples,
 )
 
@@ -40,6 +47,8 @@ LIST_ENDPOINTS = {
     SupportedEndpoints.ANALYSES: list_mgnify_analyses,  # get all analyses, NO FILTERING OPTION, but with study or assem acc
     SupportedEndpoints.GENOMES: list_mgnify_genomes,  # listing all genomes, NO FILTERING OPTION but with assem acc
     SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
+    SupportedEndpoints.PUBLICATIONS: list_mgnify_publications,
+    SupportedEndpoints.CATALOGUES: list_genome_catalogues,  # not really a list endpoint but fits better here than acc detail
 }
 
 ACC_DETAIL_ENDPOINTS = {
@@ -50,6 +59,8 @@ ACC_DETAIL_ENDPOINTS = {
     SupportedEndpoints.ANALYSIS: get_mgnify_analysis,  # or with_annot?
     SupportedEndpoints.GENOME: get_mgnify_genome,
     SupportedEndpoints.ASSEMBLY: get_assembly,
+    SupportedEndpoints.PUBLICATION: get_mgnify_publication,
+    SupportedEndpoints.CATALOGUE: get_genome_catalogue,
 }
 
 ALL_ENDPOINTS = LIST_ENDPOINTS | ACC_DETAIL_ENDPOINTS
@@ -70,10 +81,12 @@ BETWEEN_RESOURCE_RELATIONSHIPS = {
     SupportedEndpoints.BIOME: {SupportedEndpoints.STUDIES: list_mgnify_studies},
     # for a study detail,
     SupportedEndpoints.STUDY: {
-        # there is an endpoint to list all analyses associated with the study
-        SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,
         # also an endpoint to list all samples associated with the study
         SupportedEndpoints.SAMPLES: list_mgnify_study_samples,
+        # there is an endpoint to list all analyses associated with the study
+        SupportedEndpoints.ANALYSES: list_mgnify_study_analyses,
+        # also one for publications
+        SupportedEndpoints.PUBLICATIONS: list_mgnify_study_publications,
     },
     # for a sample detail, can list all runs associated with that sample
     SupportedEndpoints.SAMPLE: {SupportedEndpoints.RUNS: list_sample_runs},
