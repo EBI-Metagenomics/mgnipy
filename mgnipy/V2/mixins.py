@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
 
 from mgnipy.V2.endpoints import (
+    ACC_DETAIL_ENDPOINTS,
     BETWEEN_RESOURCE_RELATIONSHIPS,
     WITHIN_RESOURCE_RELATIONSHIPS,
 )
@@ -28,7 +29,22 @@ class ResultHandlerMixin:
 
     @property
     def data(self) -> dict[int, list[dict[str, Any]]]:
+        """
+        results based on the current resource.
+        """
         return getattr(self, "_results", {}) or {}
+
+    @property
+    def id_param_key(self) -> str:
+        """
+        Get the key for the ID parameter based on the current resource.
+
+        Returns
+        -------
+        str
+            The key for the ID parameter.
+        """
+        return self.id_param_key
 
     # helpers
     def _df_expand_nested(
@@ -86,6 +102,7 @@ class ResultHandlerMixin:
         self,
         data: Optional[dict[int, list[dict]]] = None,
         expand_nested_dicts: Optional[list[str] | bool] = False,
+        rename_columns: Optional[dict[str, str]] = None,
         **kwargs,
     ) -> pd.DataFrame:
         """
@@ -97,6 +114,8 @@ class ResultHandlerMixin:
             List of records to convert. If None, uses self._results or self._previewed_page.
         expand_nested_dicts : list of str, optional
             List of keys to expand into separate columns.
+        rename_columns : dict of str to str, optional
+            A dictionary mapping old column names to new column names.
         **kwargs
             Additional keyword arguments passed to pd.DataFrame.
 
@@ -113,10 +132,14 @@ class ResultHandlerMixin:
 
         _data = data or self.data
 
+        _rename_columns = rename_columns or {"lineage": "biome_lineage"}
+
         if _data == {} or _data is None:
             return None
 
-        as_pandas = pd.DataFrame(self._unpageinate_results(_data), **kwargs)
+        as_pandas = pd.DataFrame(self._unpageinate_results(_data), **kwargs).rename(
+            columns=_rename_columns
+        )
 
         if expand_nested_dicts is None or expand_nested_dicts is False:
             return as_pandas
@@ -220,7 +243,7 @@ class ResultHandlerMixin:
         return pl.DataFrame(self._unpageinate_results(_data), **polars_kwargs)
 
     @property
-    def results_accessions(self) -> Optional[list[str]]:
+    def results_ids(self) -> Optional[list[str]]:
         """
         Get a list of accessions from the retrieved metadata results, if available.
 
@@ -231,36 +254,38 @@ class ResultHandlerMixin:
         """
         if self.to_df() is None:
             return None
-        elif "accession" in self.to_df().columns:
-            return self.to_df()["accession"].tolist()
-        else:
-            return None
-
-    @property
-    def results_biome_lineages(self) -> Optional[list[str]]:
-        """
-        Get a list of biome lineages from the retrieved metadata results, if available.
-
-        Returns
-        -------
-        list of str or None
-            A list of biome lineage strings if available, otherwise None.
-        """
-        if self.to_df() is None:
-            return None
-        elif "lineage" in self.to_df().columns:
-            return self.to_df()["lineage"].tolist()
-        elif "biome_lineage" in self.to_df().columns:
-            return self.to_df()["biome_lineage"].tolist()
-        elif "biome" in self.to_df().columns:
-            return self.to_df()["biome"].tolist()
-        elif "biome_name" in self.to_df().columns:
-            return self.to_df()["biome_name"].tolist()
+        elif self.id_param_key in self.to_df().columns:
+            return self.to_df()[self.id_param_key].tolist()
         else:
             return None
 
 
 class NavigationMixin:
+
+    @property
+    def resource(self) -> SupportedEndpoints:
+        """from parent"""
+        return getattr(self, "resource", None) or None
+
+    @property
+    def id_param_key(self) -> str:
+        """
+        Forward the key for the ID parameter based on the current resource from parent.
+
+        Returns
+        -------
+        str
+            The key for the ID parameter.
+        """
+        return self.id_param_key
+
+    @property
+    def results_ids(self) -> Optional[list[str]]:
+        """
+        Forward the results ids based on the current resource from parent.
+        """
+        return self.results_ids
+
     def list_relationships(self) -> list[str]:
         if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
             return [WITHIN_RESOURCE_RELATIONSHIPS[self.resource].value]
@@ -272,43 +297,55 @@ class NavigationMixin:
         else:
             return []
 
-    # def next_resource(self, name: Optional[str]) -> Optional[SupportedEndpoints]:
-    #     # PICK UP HERE!!
-    #     if name is None and self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
-    #         return WITHIN_RESOURCE_RELATIONSHIPS[self.resource]
-
-    #     _name = SupportedEndpoints.validate(name)
-    #     if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
-    #         return WITHIN_RESOURCE_RELATIONSHIPS[self.resource]
-    #     elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
-    #         _
-    #         return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource].get(name)
-    #     return None
+    def next_resource(self, name: Optional[str] = None) -> SupportedEndpoints:
+        """
+        Get the next resource endpoint based on the relationship name
+        or just list the first or only endpoint.
+        """
+        if name is not None and name in self.list_relationships():
+            return SupportedEndpoints.validate(name)
+        if name is not None and name not in self.list_relationships():
+            raise AttributeError(
+                f"{self.resource.value} does not have a linked resource {name}."
+            )
+        if name is None and len(self.list_relationships()) > 0:
+            return SupportedEndpoints.validate(self.list_relationships()[0])
+        raise AttributeError(
+            f"{self.resource.value} does not have any linked resources."
+        )
 
     def _resolve_access_param(self, key: int | str) -> dict:
         # allow index-based access
-        if self.results_accessions is not None and isinstance(key, int):
-            return {"accession": self.results_accessions[key]}
-        if self.results_biome_lineages is not None and isinstance(key, int):
-            return {"biome_lineage": self.results_biome_lineages[key]}
-
-        # or by accession/biome_lineage string directly
-        if self.results_accessions is not None and key in self.results_accessions:
-            return {"accession": key}
-        if (
-            self.results_biome_lineages is not None
-            and key in self.results_biome_lineages
-        ):
-            return {"biome_lineage": key}
+        if self.results_ids is not None and isinstance(key, int):
+            return {self.id_param_key: self.results_ids[key]}
+        # or by accession/biome_lineage/ids string directly
+        if self.results_ids is not None and key in self.results_ids:
+            return {self.id_param_key: key}
 
         raise KeyError(
             f"Invalid key: {key}. "
-            "Key must be an integer index, or a valid accession string. "
-            "Accession must exist in`.results_accessions` or `.results_biome_lineages`."
+            "Key must be an integer index, or a valid id string. "
+            "Accession/id/biome_lineage must exist in`.results_ids`"
         )
 
-    def getting_next(
-        self, access_param: dict[str, str], fetch: bool = True
+    def next_resource_module(self, name: Optional[str] = None) -> Callable:
+        # get SupportedEndpoint of next resource
+        next_resource = self.next_resource(name)
+        # then get the endpoint function for that resource
+        if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
+            return ACC_DETAIL_ENDPOINTS[next_resource]
+        elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
+            return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][next_resource]
+        else:
+            raise AttributeError(
+                f"{self.resource.value} does not have any linked resources."
+            )
+
+    def get_next(
+        self,
+        access_param: dict[str, str],
+        resource_name: Optional[str] = None,
+        fetch: bool = True,
     ) -> "QuerySet":
         """
         Independent of list vs detail resource, get next linked proxy for a specific accession.
@@ -318,6 +355,8 @@ class NavigationMixin:
         access_param : dict[str, str]
             A dictionary containing the necessary parameter to identify the detail resource,
             such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        resource_name : Optional[str]
+            The name of the resource to get the next instance of. If None, will use the first or only linked resource.
         fetch : bool
             Whether to immediately fetch the detail after creating the proxy.
 
@@ -333,22 +372,26 @@ class NavigationMixin:
         samples = study.getting_next({"accession": "MGYS00001234"})
         """
 
-        detail_resource = self._detail_resource()
-        child = self._spawn(resource=detail_resource.value, **access_param)
-        child.endpoint_module = self._detail_module
+        next_resource = self.next_resource(resource_name).value
+        next_module = self.next_resource_module(resource_name)
+
+        child = self._clone(resource=next_resource, **access_param)
+        child.endpoint_module = next_module
         if fetch:
-            child.get()
+            child.get(safety=False)
         return child
+
+    async def aget_next(
+        self,
+        access_param: dict[str, str],
+        resource_name: Optional[str] = None,
+        fetch: bool = True,
+    ) -> "QuerySet":
+        """Async version of get_next."""
+        return self.get_next(access_param, resource_name=resource_name, fetch=fetch)
 
 
 class DetailNavigationMixin(NavigationMixin):
-
-    def _detail_module(self) -> Callable:
-        if self.resource not in WITHIN_RESOURCE_RELATIONSHIPS:
-            raise AttributeError(
-                f"{self.resource.value} does not have a linked detail resource."
-            )
-        return WITHIN_RESOURCE_RELATIONSHIPS[self.resource]
 
     def iter_details(self, fetch: bool = False) -> Iterator["QuerySet"]:
         """
@@ -370,7 +413,7 @@ class DetailNavigationMixin(NavigationMixin):
             sample.get()
         """
         for acc in self.results_accessions or []:
-            yield self.get_detail(self._resolve_access_param(acc), fetch=fetch)
+            yield self.get_next(self._resolve_access_param(acc), fetch=fetch)
 
     def collect_details(
         self,
@@ -417,7 +460,7 @@ class DetailNavigationMixin(NavigationMixin):
 
     async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
         for acc in self.results_accessions or []:
-            yield await self.aget_detail(self._resolve_access_param(acc), fetch=fetch)
+            yield await self.aget_next(self._resolve_access_param(acc), fetch=fetch)
 
     async def acollect_details(
         self,
@@ -432,7 +475,7 @@ class DetailNavigationMixin(NavigationMixin):
         ]
 
         async def _worker(access_param):
-            child = await self.aget_detail(access_param, fetch=fetch)
+            child = await self.aget_next(access_param, fetch=fetch)
             return child
 
         items = await self.exec.map_with_concurrency(
@@ -455,62 +498,26 @@ class DetailNavigationMixin(NavigationMixin):
         Allow index or accession-based access to child details.
         Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
         """
-        return self.get_detail(
+        return self.get_next(
             self._resolve_access_param(key),
             fetch=True,
         )
 
-    def get_detail(
-        self, access_param: dict[str, str], fetch: bool = True
-    ) -> "QuerySet":
+
+class RelatedNavigationMixin(NavigationMixin):
+
+    @property
+    def identifier(self) -> Optional[list[str]]:
         """
-        Get a child detail proxy for a specific accession.
-
-        Parameters
-        ----------
-        access_param : dict[str, str]
-            A dictionary containing the necessary parameter to identify the detail resource,
-            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
-        fetch : bool
-            Whether to immediately fetch the detail after creating the proxy.
-
-
-        Returns
-        -------
-        QuerySet
-            A proxy for the child detail resource.
-
-        Example
-        -------
-        sample = samples.get_detail({"accession": "MGYS00001234"})
+        identifier from parent, could be accessions, biome_lineages, or catalogue_ids depending on resource type.
         """
-
-        detail_resource = self._detail_resource()
-        child = self._spawn(resource=detail_resource.value, **access_param)
-        child.endpoint_module = self._detail_module
-        if fetch:
-            child.get()
-        return child
-
-    async def aget_detail(
-        self, access_param: dict[str, str], fetch: bool = True
-    ) -> "QuerySet":
-        # Same behavior as sync variant; caller can await child.aget() later.
-        return self.get_detail(access_param, fetch=fetch)
-
-
-class RelatedNavigationMixin:
-
-    def _linked_resource_module(self, name: SupportedEndpoints) -> Callable:
-        list_endpoint_name = SupportedEndpoints.validate(name)
-        if list_endpoint_name not in BETWEEN_RESOURCE_RELATIONSHIPS[self.resource]:
-            raise AttributeError(
-                f"{self.resource.value} does not have a linked resource {name}."
-            )
-        return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][list_endpoint_name]
+        return self.results_ids
 
     def __getattr__(self, name: str):
-        linked_resource_module = self._linked_resource_module(
-            SupportedEndpoints.validate(name)
-        )
-        return linked_resource_module()
+        # if is a supported relationship
+        if name in self.list_relationships():
+            return self.get_next(
+                self._resolve_access_param(self.identifier),
+                resource_name=name,
+                fetch=False,
+            )
