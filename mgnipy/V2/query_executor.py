@@ -18,15 +18,27 @@ from mgnipy.emgapi_v2_client import Client
 from mgnipy.emgapi_v2_client.types import Response as mpy_Response
 
 if TYPE_CHECKING:
-    from mgnipy.V2.core import MGnifier
+    from mgnipy.V2.query_set import QuerySet
 
 
 class QueryExecutor:
-    def __init__(self, owner: "MGnifier"):
-        self.owner = owner
+    def __init__(self, query_set: "QuerySet"):
+        self.qs = query_set
+
         # question: should this be shared across all instances of QueryExecutor or should each have their own?
         # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
         self._semaphore = get_semaphore()
+
+    def require_pagination(func):
+        def wrapper(self, *args, **kwargs):
+            if not self.qs.pagination_status:
+                raise RuntimeError(
+                    f"Current endpoint does not support pagination: {self.qs.endpoint_module}. "
+                    "Please check the documentation for supported parameters."
+                )
+            return func(self, *args, **kwargs)
+
+        return wrapper
 
     async def _semaphore_guarded_request(
         self,
@@ -51,9 +63,9 @@ class QueryExecutor:
         """
         # limiting concurrency to protect server
         async with self._semaphore:
-            return await self.owner.endpoint_module.asyncio_detailed(
+            return await self.qs.endpoint_module.asyncio_detailed(
                 client=client,
-                **(request_params or self.owner._params),
+                **(request_params or self.qs.params),
             )
 
     async def map_with_concurrency(
@@ -109,33 +121,9 @@ class QueryExecutor:
             Configured MGnify API client.
         """
         return Client(
-            base_url=str(self.owner._base_url),
+            base_url=str(self.qs._base_url),
             # TODO logs?
         )
-
-    def _build_request_params(
-        self, params: Optional[dict[str, Any]] = None, **kwargs
-    ) -> dict[str, Any]:
-        """
-        Build the parameters for the API request by combining the current parameters with
-        any additional parameters provided.
-
-        Parameters
-        ----------
-        params : dict, optional
-            Additional parameters to include in the API request.
-        **kwargs
-            Additional keyword arguments to include in the API request.
-
-        Returns
-        -------
-        dict
-            The combined parameters for the API request.
-        """
-        request_params = {**(params or self.owner._params), **kwargs}
-        if self.owner._pagination_status and "page_size" not in request_params:
-            request_params["page_size"] = self.owner._default_page_size
-        return request_params
 
     def _parse_response(self, response: mpy_Response) -> Optional[dict[str, Any]]:
         logging.info(f"Response status code: {response.status_code}")
@@ -168,9 +156,9 @@ class QueryExecutor:
         # prep client
         a_client = client or self._init_client()
         # prep params
-        request_params = self._build_request_params(params, **kwargs)
+        request_params = self.qs._build_request_params(params, **kwargs)
         # request
-        response = self.owner.endpoint_module.sync_detailed(
+        response = self.qs.endpoint_module.sync_detailed(
             client=a_client,
             **request_params,
         )
@@ -202,7 +190,7 @@ class QueryExecutor:
         # prep client
         a_client = client or self._init_client()
         # prep params
-        request_params = self._build_request_params(params, **kwargs)
+        request_params = self.qs._build_request_params(params, **kwargs)
         # request
         response = await self._semaphore_guarded_request(
             client=a_client,
@@ -210,6 +198,7 @@ class QueryExecutor:
         )
         return self._parse_response(response)
 
+    @require_pagination
     def get_pageinated_counts(self):
         """
         Make a small get request with page_size=1 to determine if the endpoint is paginated and to get the total count of records.
@@ -217,10 +206,9 @@ class QueryExecutor:
 
         # small get request to get count and calc total pages
         response_dict = self._get_request(page_size=1)
-        self.owner._count = response_dict["count"]
-        self.owner._total_pages = ceil(
-            self.owner._count
-            / self.owner._params.get("page_size", self.owner._default_page_size)
+        self.qs.count = response_dict["count"]
+        self.qs.total_pages = ceil(
+            self.qs.count / self.qs.params.get("page_size", self.qs.default_page_size)
         )
 
     def get_any_first(self):
@@ -231,13 +219,14 @@ class QueryExecutor:
         """
 
         # already retrieved?
-        if self.owner._is_in_results(1):
+        if self.qs._is_in_results(1):
             logging.info("First response already retrieved, using cached results.")
         # if not paginated
-        elif not self.owner._pagination_status:
+        elif not self.qs.pagination_status:
             # then just get and add to results
+            # pick up here
             response_dict = self._get_request()
-            self.owner._results.update({1: response_dict})
+            self.qs.results = {1: response_dict}
         # otherwise, get first page
         else:
             self.page(1)
@@ -249,14 +238,15 @@ class QueryExecutor:
         For unpaginated endpoints, this will retrieve all metadata which is just one. For paginated endpoints, this will retrieve just the first page of results.
         """
 
-        if self.owner._is_in_results(1):
+        if self.qs._is_in_results(1):
             logging.info("First response already retrieved, using cached results.")
-        elif not self.owner._pagination_status:
+        elif not self.qs.pagination_status:
             response_dict = await self._aget_request()
-            self.owner._results.update({1: response_dict})
+            self.qs.results = {1: response_dict}
         else:
             await self.apage(1)
 
+    @require_pagination
     def _page_items(self, response: mpy_Response) -> Optional[dict]:
         """
         Extract the 'items' from the API response.
@@ -267,7 +257,7 @@ class QueryExecutor:
         return response.get("items", None)
 
     # getting specific page
-    # @require_pagination
+    @require_pagination
     def page(
         self, page_num: int, client: Optional[Client] = None
     ) -> Optional[dict[int, list[dict]]]:
@@ -291,9 +281,9 @@ class QueryExecutor:
         """
 
         # check if alrady in results first
-        if self.owner._is_in_results(page_num):
+        if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
-            return self.owner._results.get(page_num, None)
+            return self.qs.results.get(page_num, None)
 
         # otherwise get page
         a_client = client or self._init_client()
@@ -304,25 +294,26 @@ class QueryExecutor:
         # get out items
         page_items = self._page_items(response)
         # add to results
-        self.owner._results.update({page_num: page_items})
+        self.qs._results.update({page_num: page_items})
         return page_items
 
-    # @require_pagination
+    @require_pagination
     async def apage(
         self,
         page_num: int,
         client: Optional[Client] = None,
     ) -> Optional[dict[int, list[dict]]]:
-        if self.owner._is_in_results(page_num):
+        if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
-            return self.owner._results.get(page_num, None)
+            return self.qs.results.get(page_num, None)
 
         a_client = client or self._init_client()
         response = await self._aget_request(client=a_client, page=page_num)
         page_items = self._page_items(response)
-        self.owner._results.update({page_num: page_items})
+        self.qs._results.update({page_num: page_items})
         return page_items
 
+    @require_pagination
     def _resolve_pages_to_collect(
         self,
         *,
@@ -349,7 +340,7 @@ class QueryExecutor:
         """
 
         # not allow to run this without preview/plan first?
-        if safety and self.owner._total_pages is None:
+        if safety and self.qs.total_pages is None:
             raise AssertionError(
                 "Please run .dry_run() or .preview() or .explain()before deciding to collect metadata."
             )
@@ -359,15 +350,13 @@ class QueryExecutor:
             resolved = deepcopy(pages)
         elif pages is None:
             # init all pages if not provided
-            resolved = list(range(1, self.owner._total_pages + 1))
+            resolved = list(range(1, self.qs.total_pages + 1))
         else:
             raise TypeError("pages must be a list of integers or None")
 
         # keep only valid page numbers
         resolved = [
-            p
-            for p in resolved
-            if isinstance(p, int) and 0 < p <= self.owner._total_pages
+            p for p in resolved if isinstance(p, int) and 0 < p <= self.qs.total_pages
         ]
 
         if limit is not None:
@@ -376,15 +365,14 @@ class QueryExecutor:
             # check if int and over zero
             validate_gt_int(limit)
             max_num_pages = ceil(
-                limit
-                / self.owner._params.get("page_size", self.owner._default_page_size)
+                limit / self.qs.params.get("page_size", self.qs.default_page_size)
             )
             # filter out pages that are over the max
             resolved = [p for p in resolved if p <= max_num_pages]
 
         return resolved
 
-    # @require_pagination
+    @require_pagination
     def _collect_pages(
         self,
         client: Client,
@@ -417,12 +405,12 @@ class QueryExecutor:
         a_client = client or self._init_client()
         for p in tqdm(collect_pages, desc="Retrieving pages", disable=hide_progress):
             # skip if page already retrieved
-            if self.owner._is_in_results(p):
+            if self.qs._is_in_results(p):
                 logging.info(f"Page {p} already retrieved, skipping...")
             else:
                 self.page(p, client=a_client)
 
-    # @require_pagination
+    @require_pagination
     async def _acollect_pages(
         self,
         client: Client,
@@ -470,7 +458,7 @@ class QueryExecutor:
         hide_progress: bool = False,
     ):
         """Getting all"""
-        if not self.owner._pagination_status:
+        if not self.qs.pagination_status:
             self.get_any_first()
             return
 
@@ -492,7 +480,7 @@ class QueryExecutor:
         hide_progress: bool = False,
     ):
         """Getting all asynchronously"""
-        if not self.owner._pagination_status:
+        if not self.qs.pagination_status:
             await self.aget_any_first()
             return
 
@@ -504,3 +492,11 @@ class QueryExecutor:
                 safety=safety,
                 hide_progress=hide_progress,
             )
+
+    def __getattr__(self, name: str):
+        if name == "httpx_client":
+            return self._init_client().get_httpx_client()
+        if name == "httpx_aclient":
+            return self._init_client().get_async_httpx_client()
+        if name == "api_version":
+            print("v2")

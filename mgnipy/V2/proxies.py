@@ -9,19 +9,21 @@ from bigtree import (
     Tree,
 )
 
-from mgnipy._models.CONSTANTS import (
-    SupportedEndpoints,
-)
+from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.core import MGnifier
+from mgnipy.V2.mixins import (
+    DetailNavigationMixin,
+    RelatedNavigationMixin,
+)
 
 
-class ResourceProxy(MGnifier):
+class MGnifyList(MGnifier, DetailNavigationMixin):
     """generic"""
 
     def __init__(
         self,
+        resource: str,
         *,
-        resource: Optional[str] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
@@ -32,16 +34,43 @@ class ResourceProxy(MGnifier):
             **kwargs,
         )
 
-    def _spawn(self, *, resource: Optional[str] = None, **params):
-        target_resource = resource or self.resource
-        proxy_cls = ENDPOINT_PROXIES[SupportedEndpoints(target_resource)]
-        # If no specialized proxy exists, keep generic behavior
-        if proxy_cls is ResourceProxy:
-            return ResourceProxy(resource=target_resource, **params)
-        return proxy_cls(**params)
+        self.resource = SupportedEndpoints.validate(resource)
 
 
-class Analyses(ResourceProxy):
+# FIX THIS
+class MGnifyDetail(MGnifier, RelatedNavigationMixin):
+    def __init__(
+        self,
+        *,
+        resource: Optional[str] = None,
+        accession: Optional[str] = None,
+        biome_lineage: Optional[str] = None,
+    ):
+
+        self._relationships = self.list_relationships()
+
+        if accession and biome_lineage:
+            raise ValueError("Cannot specify both accession and biome_lineage.")
+        elif accession:
+            self.accession = accession
+            super().__init__(resource=resource, accession=accession)
+        elif biome_lineage:
+            self.lineage = biome_lineage
+            super().__init__(
+                resource=resource,
+                biome_lineage=biome_lineage,
+            )
+        else:
+            raise ValueError("Must specify either accession or biome_lineage.")
+
+        self.explain()  # TODO remove after testing
+        self.get()
+
+    def describe_relationships(self):
+        pass
+
+
+class Analyses(MGnifyList):
     def __init__(
         self,
         *,
@@ -52,7 +81,7 @@ class Analyses(ResourceProxy):
         super().__init__(resource="analyses", params=params, **kwargs)
 
 
-class Runs(ResourceProxy):
+class Runs(MGnifyList):
     def __init__(
         self,
         *,
@@ -63,7 +92,7 @@ class Runs(ResourceProxy):
         super().__init__(resource="runs", params=params, **kwargs)
 
 
-class Samples(ResourceProxy):
+class Samples(MGnifyList):
     def __init__(
         self,
         *,
@@ -74,7 +103,7 @@ class Samples(ResourceProxy):
         super().__init__(resource="samples", params=params, **kwargs)
 
 
-class Studies(ResourceProxy):
+class Studies(MGnifyList):
 
     def __init__(
         self,
@@ -85,7 +114,7 @@ class Studies(ResourceProxy):
         super().__init__(resource="studies", params=params, **kwargs)
 
 
-class Biomes(ResourceProxy):
+class Biomes(MGnifyList):
 
     def __init__(self, **kwargs):
         super().__init__(resource="biomes", **kwargs)
@@ -96,7 +125,7 @@ class Biomes(ResourceProxy):
             raise RuntimeError(
                 "No data available to get lineages. Please run get() first."
             )
-        return self.results_biome_lineages
+        return self.results_ids
 
     @property
     def tree(self) -> Tree:
@@ -143,7 +172,7 @@ class Biomes(ResourceProxy):
             )
 
 
-class Assemblies(ResourceProxy):
+class Assemblies(MGnifyList):
     def __init__(
         self,
         *,
@@ -153,7 +182,7 @@ class Assemblies(ResourceProxy):
         super().__init__(resource="assemblies", params=params, **kwargs)
 
 
-class Genomes(ResourceProxy):
+class Genomes(MGnifyList):
     def __init__(
         self,
         *,
@@ -164,13 +193,93 @@ class Genomes(ResourceProxy):
         super().__init__(resource="genomes", params=params, **kwargs)
 
 
-ENDPOINT_PROXIES = {
-    SupportedEndpoints.BIOMES: Biomes,
-    SupportedEndpoints.STUDIES: Studies,
-    SupportedEndpoints.SAMPLES: Samples,
-    SupportedEndpoints.RUNS: Runs,
-    SupportedEndpoints.ANALYSES: Analyses,
-    SupportedEndpoints.GENOMES: Genomes,
-    SupportedEndpoints.ASSEMBLIES: Assemblies,
-    None: ResourceProxy,  # default proxy if no specific class is defined
-}
+class Publications(MGnifyList):
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(resource="publications", params=params, **kwargs)
+
+
+class Catalogues(MGnifyList):
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(resource="catalogues", params=params, **kwargs)
+
+
+class StudyDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="study", accession=accession)
+
+
+class SampleDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="sample", accession=accession)
+
+
+class RunDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="run", accession=accession)
+
+
+class AnalysisDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="analysis", accession=accession)
+
+
+class GenomeDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="genome", accession=accession)
+
+
+class AssemblyDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="assembly", accession=accession)
+
+
+class BiomeDetail(MGnifyDetail):
+    def __init__(
+        self,
+        biome_lineage: str,
+    ):
+        super().__init__(resource="biome", biome_lineage=biome_lineage)
+
+
+class PublicationDetail(MGnifyDetail):
+    def __init__(
+        self,
+        accession: str,
+    ):
+        super().__init__(resource="publication", accession=accession)
+
+
+class CatalogueDetail(MGnifyDetail):
+    def __init__(
+        self,
+        catalogue_id: str,
+    ):
+        super().__init__(resource="catalogue", catalogue_id=catalogue_id)

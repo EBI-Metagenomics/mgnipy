@@ -46,57 +46,29 @@ class SpecialEnum(Enum):
 
 
 class SupportedApiVersions(SpecialEnum):
-    # V1 = 'v1' # TODO: add support for v1 endpoints
+    # V1 = 'v1' # TODO: add support for v1 endpoints?
     V2 = "v2"
     LATEST = "latest"
 
 
 class SupportedEndpoints(SpecialEnum):
     ANALYSES = "analyses"
+    ANALYSIS = "analysis"
     ASSEMBLIES = "assemblies"
+    ASSEMBLY = "assembly"
     GENOMES = "genomes"
+    GENOME = "genome"
     PUBLICATIONS = "publications"
+    PUBLICATION = "publication"
     SAMPLES = "samples"
+    SAMPLE = "sample"
     STUDIES = "studies"
+    STUDY = "study"
     RUNS = "runs"
-    #    PRIVATE_DATA = "private_data"
-    MISCELLANEOUS = "miscellaneous"
-    #    AUTHENTICATION = "authentication"
+    RUN = "run"
     BIOMES = "biomes"  # miscellaneous
-
-
-# class
-
-
-class StudiesPrefixes(SpecialEnum):
-    MGYS = "MGYS"
-    ERP = "ERP"
-    PRJ = "PRJ"
-
-
-class SamplesPrefixes(SpecialEnum):
-    SRS = "SRS"
-    ERS = "ERS"
-    SAM = "SAM"
-
-
-class AnalysesPrefixes(SpecialEnum):
-    MGYA = "MGYA"
-
-
-class RunsPrefixes(SpecialEnum):
-    SRR = "SRR"
-    ERR = "ERR"
-
-
-class GenomesPrefixes(SpecialEnum):
-    MGYG = "MGYG"
-
-
-class AssembliesPrefixes(SpecialEnum):
-    ERZ = "ERZ"
-    GCA = "GCA"
-
-
-class BiomesPrefixes(SpecialEnum):
-    ROOT = "root"
+    BIOME = "biome"
+    CATALOGUES = "catalogues"
+    CATALOGUE = "catalogue"
+    #    PRIVATE_DATA = "private_data"
+    #    AUTHENTICATION = "authentication"
