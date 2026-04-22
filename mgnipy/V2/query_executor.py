@@ -340,10 +340,13 @@ class QueryExecutor:
         """
 
         # not allow to run this without preview/plan first?
-        if safety and self.qs.total_pages is None:
-            raise AssertionError(
-                "Please run .dry_run() or .preview() or .explain()before deciding to collect metadata."
-            )
+        if self.qs.total_pages is None:
+            if safety:
+                raise AssertionError(
+                    "Total pages is unknown. Please run .dry_run() or .preview() or .explain() before collecting metadata."
+                )
+            else:
+                self.get_any_first()
 
         # prep page nums
         if isinstance(pages, list):
