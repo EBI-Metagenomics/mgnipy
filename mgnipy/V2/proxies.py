@@ -22,6 +22,7 @@ from mgnipy.V2.endpoints import (
     PARENT_CHILD_RESOURCES,
     WITHIN_RESOURCE_RELATIONSHIPS,
 )
+from mgnipy.V2.mixins import BiomesTreeMixin
 
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
@@ -264,44 +265,32 @@ class MGnifyDetail(MGnifier):
         config: Optional[MgnipyConfig] = None,
         **kwargs,
     ):
+        self._config = config
 
-        # UGH IM DUMb PICK UP HERE
-        super().__init__(
-            resource=resource,
-            config=config,
-            **{self.id_param_key: id},
-            **kwargs,
-        )
-
-        self.supported_relationships = self.list_relationships()
+        # init MGnifier without id first
+        super().__init__(resource=resource, config=self._config, **kwargs)
+        # then add it to param
+        self._params.update({self.id_param_key: id})
 
     def _next_rel_module(self, name: str) -> SupportedEndpoints:
         """
         Get the next resource name based on the relationship name
         """
-        if name in self.supported_relationships:
+        if name in self.list_relationships():
             return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][
                 SupportedEndpoints.validate(name)
             ]
 
         raise AttributeError(f"{self.resource} does not have linked resource: {name!r}")
 
-    # PICK UP HERE
-    @property
-    def identifier(self) -> Optional[list[str]]:
-        """
-        identifier from parent, could be accessions, biome_lineages, or catalogue_ids depending on resource type.
-        """
-        return self.results_ids
-
     def __getattr__(self, name: str):
         # if is a supported relationship
-        if name in self.supported_relationships:
+        if name in self.list_relationships():
 
             access_param = self._resolve_id_param(self.identifier)
 
             return self.get_list(
-                resource_name=name,
+                resource=name,
                 access_param=access_param,
                 fetch=False,
             )
@@ -347,7 +336,7 @@ class MGnifyDetail(MGnifier):
         samples = study.get_list("samples", {"accession": "MGYS00001234"})
         """
 
-        child = self._clone(resource=resource, **access_param)
+        child = MGnifyList(resource=resource, config=self._config, **access_param)
         child.endpoint_module = self._next_rel_module(resource)
         if explain:
             child.explain()
@@ -395,7 +384,7 @@ class MGnifyDetail(MGnifier):
         samples = await study.aget_list("samples", {"accession": "MGYS00001234"})
         """
 
-        child = self._clone(resource=resource, **access_param)
+        child = self._clone(resource=resource, config=self._config, **access_param)
         child.endpoint_module = self._next_rel_module(resource)
         if explain:
             child.explain()
@@ -449,7 +438,7 @@ class Studies(MGnifyList):
         super().__init__(resource="studies", **kwargs)
 
 
-class Biomes(MGnifyList):
+class Biomes(MGnifyList, BiomesTreeMixin):
 
     def __init__(self, **kwargs):
         super().__init__(resource="biomes", **kwargs)
@@ -567,70 +556,126 @@ class StudyDetail(MGnifyDetail):
 class SampleDetail(MGnifyDetail):
     def __init__(
         self,
-        accession: str,
+        id: Optional[str] = None,
+        *,
+        accession: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="sample", accession=accession, **kwargs)
+
+        super().__init__(
+            resource="sample",
+            id=id or accession,
+            **kwargs,
+        )
 
 
 class RunDetail(MGnifyDetail):
     def __init__(
         self,
-        accession: str,
+        id: Optional[str] = None,
+        *,
+        accession: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="run", accession=accession, **kwargs)
+
+        super().__init__(
+            resource="run",
+            id=id or accession,
+            **kwargs,
+        )
 
 
 class AnalysisDetail(MGnifyDetail):
     def __init__(
         self,
-        accession: str,
+        id: Optional[str] = None,
+        *,
+        accession: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="analysis", accession=accession, **kwargs)
+
+        super().__init__(
+            resource="analysis",
+            id=id or accession,
+            **kwargs,
+        )
 
 
 class GenomeDetail(MGnifyDetail):
     def __init__(
         self,
-        accession: str,
+        id: Optional[str] = None,
+        *,
+        accession: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="genome", accession=accession, **kwargs)
+
+        super().__init__(
+            resource="genome",
+            id=id or accession,
+            **kwargs,
+        )
 
 
 class AssemblyDetail(MGnifyDetail):
     def __init__(
         self,
-        accession: str,
+        id: Optional[str] = None,
+        *,
+        accession: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="assembly", accession=accession, **kwargs)
+
+        super().__init__(
+            resource="assembly",
+            id=id or accession,
+            **kwargs,
+        )
 
 
-class BiomeDetail(MGnifyDetail):
+class BiomeDetail(MGnifyDetail, BiomesTreeMixin):
     def __init__(
         self,
-        biome_lineage: str,
+        id: Optional[str] = None,
+        *,
+        biome_lineage: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="biome", biome_lineage=biome_lineage, **kwargs)
+
+        super().__init__(
+            resource="biome",
+            id=id or biome_lineage,
+            **kwargs,
+        )
 
 
 class PublicationDetail(MGnifyDetail):
     def __init__(
         self,
-        accession: str,
+        id: Optional[str] = None,
+        *,
+        pubmed_id: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="publication", accession=accession, **kwargs)
+
+        super().__init__(
+            resource="publication",
+            id=id or pubmed_id,
+            **kwargs,
+        )
 
 
 class CatalogueDetail(MGnifyDetail):
     def __init__(
         self,
-        catalogue_id: str,
+        id: Optional[str] = None,
+        *,
+        catalogue_id: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(resource="catalogue", catalogue_id=catalogue_id, **kwargs)
+
+        super().__init__(
+            resource="catalogue",
+            id=id or catalogue_id,
+            **kwargs,
+        )

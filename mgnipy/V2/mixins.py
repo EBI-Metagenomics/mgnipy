@@ -4,11 +4,15 @@ from itertools import chain
 from typing import (
     TYPE_CHECKING,
     Any,
+    Literal,
     Optional,
 )
 
 import pandas as pd
 import polars as pl
+from bigtree import (
+    Tree,
+)
 
 if TYPE_CHECKING:
     pass
@@ -218,3 +222,54 @@ class ResultsHandlerMixin:
             return None
 
         return pl.DataFrame(self._unpageinate_results(_data), **polars_kwargs)
+
+
+class BiomesTreeMixin:
+
+    @property
+    def lineages(self) -> list[str]:
+        return getattr(self, "results_ids", []) or []
+
+    @property
+    def tree(self) -> Tree:
+        """
+        Convert the biomes metadata to a tree structure for visualization or analysis.
+
+        Returns
+        -------
+        Tree
+            A tree representation of the biomes and their relationships.
+        """
+        # TODO generate nodes first
+        return Tree.from_list(self.lineages, sep=":")
+
+    def show_tree(
+        self,
+        method: Literal[
+            "compact",
+            "show",
+            "print",
+            "horizontal",
+            "hshow",
+            "h",
+            "hprint",
+            "vertical",
+            "vshow",
+            "v",
+            "vprint",
+        ] = "compact",
+    ):
+        if method in ["compact", "show", "print"]:
+            # TODO print_tree(self._tree)
+            self.tree.show()
+        elif method in ["horizontal", "hshow", "h", "hprint"]:
+            self.tree.hshow()
+        elif method in ["vertical", "vshow", "v", "vprint"]:
+            self.tree.vshow()
+        else:
+            raise ValueError(
+                f"Invalid method: {method}. "
+                "Supported methods: 'compact', 'show', 'print', "
+                "'horizontal', 'hshow', 'h', 'hprint', "
+                "'vertical', 'vshow', 'v', 'vprint'."
+            )
