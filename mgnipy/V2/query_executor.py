@@ -507,60 +507,10 @@ class QueryExecutor:
                 hide_progress=hide_progress,
             )
 
-    # FIGURE OUT HERE
-    def get_next(
-        self,
-        access_param: dict[str, str],
-        resource_name: Optional[str] = None,
-        fetch: bool = True,
-    ) -> "QuerySet":
-        """
-        Independent of list vs detail resource, get next linked proxy for a specific accession.
-
-        Parameters
-        ----------
-        access_param : dict[str, str]
-            A dictionary containing the necessary parameter to identify the detail resource,
-            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
-        resource_name : Optional[str]
-            The name of the resource to get the next instance of. If None, will use the first or only linked resource.
-        fetch : bool
-            Whether to immediately fetch the detail after creating the proxy.
-
-
-        Returns
-        -------
-        QuerySet
-            A proxy for the next resource.
-
-        Examples
-        -------
-        sample = samples.getting_next({"accession": "MGYS00001234"})
-        samples = study.getting_next({"accession": "MGYS00001234"})
-        """
-
-        next_resource = self.next_resource(resource_name).value
-        next_module = self.next_resource_module(resource_name)
-
-        child = self._clone(resource=next_resource, **access_param)
-        child.endpoint_module = next_module
-        if fetch:
-            child.get(safety=False)
-        return child
-
-    async def aget_next(
-        self,
-        access_param: dict[str, str],
-        resource_name: Optional[str] = None,
-        fetch: bool = True,
-    ) -> "QuerySet":
-        """Async version of get_next."""
-        return self.get_next(access_param, resource_name=resource_name, fetch=fetch)
-
     def __getattr__(self, name: str):
         if name == "httpx_client":
             return self._init_client().get_httpx_client()
         if name == "httpx_aclient":
             return self._init_client().get_async_httpx_client()
         if name == "api_version":
-            print("v2")
+            print(self.config.api_version)

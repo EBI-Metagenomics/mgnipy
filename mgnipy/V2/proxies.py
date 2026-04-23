@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from typing import (
+    TYPE_CHECKING,
     Any,
     AsyncIterator,
     Iterator,
@@ -19,7 +22,9 @@ from mgnipy.V2.endpoints import (
     PARENT_CHILD_RESOURCES,
     WITHIN_RESOURCE_RELATIONSHIPS,
 )
-from mgnipy.V2.query_set import QuerySet
+
+if TYPE_CHECKING:
+    from mgnipy.V2.query_set import QuerySet
 
 
 class MGnifyList(MGnifier):
@@ -27,7 +32,17 @@ class MGnifyList(MGnifier):
 
     def __init__(
         self,
-        resource: str,
+        resource: Literal[
+            "biomes",
+            "studies",
+            "samples",
+            "runs",
+            "genomes",
+            "analyses",
+            "assemblies",
+            "publications",
+            "catalogues",
+        ],
         *,
         config: Optional[dict] = None,
         params: Optional[dict[str, Any]] = None,
@@ -41,8 +56,9 @@ class MGnifyList(MGnifier):
             **kwargs,
         )
 
-        self.resource = SupportedEndpoints.validate(resource)
+        self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
 
+    @property
     def _next_rel_module(self) -> SupportedEndpoints:
         """
         Get the next resource name based on the relationship name
@@ -51,14 +67,16 @@ class MGnifyList(MGnifier):
         if len(self.list_relationships) == 0:
             raise AttributeError(f"{self.resource} does not have any linked resources.")
 
-        child_resource = PARENT_CHILD_RESOURCES.get(self.resource)
-
         # quick check
-        assert [
-            child_resource
-        ] == self.list_relationships(), f"Should only be be parent to detail endpoint: {child_resource}, but got {self.list_relationships()}"
+        # quick check
+        assert [self.child_resource] == self.list_relationships(), (
+            "Should only be be parent to detail endpoint: "
+            f"{self.child_resource}, but got {self.list_relationships()}"
+        )
 
-        detail_endpoint = WITHIN_RESOURCE_RELATIONSHIPS[self.resource][child_resource]
+        detail_endpoint = WITHIN_RESOURCE_RELATIONSHIPS[self.resource][
+            self.child_resource
+        ]
         return detail_endpoint
 
     def iter_details(self, fetch: bool = False) -> Iterator["QuerySet"]:
@@ -81,7 +99,7 @@ class MGnifyList(MGnifier):
             sample.get()
         """
         for acc in self.results_ids or []:
-            yield self.get_next(self._resolve_access_param(acc), fetch=fetch)
+            yield self.get_detail(self._resolve_id_param(acc), fetch=fetch)
 
     def collect_details(
         self,
@@ -128,7 +146,7 @@ class MGnifyList(MGnifier):
 
     async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
         for acc in self.results_accessions or []:
-            yield await self.aget_next(self._resolve_access_param(acc), fetch=fetch)
+            yield await self.aget_detail(self._resolve_id_param(acc), fetch=fetch)
 
     async def acollect_details(
         self,
@@ -139,11 +157,11 @@ class MGnifyList(MGnifier):
         hide_progress: bool = False,
     ) -> list["QuerySet"] | dict[str, "QuerySet"]:
         acc_params = [
-            self._resolve_access_param(acc) for acc in (self.results_accessions or [])
+            self._resolve_id_param(acc) for acc in (self.results_accessions or [])
         ]
 
         async def _worker(access_param):
-            child = await self.aget_next(access_param, fetch=fetch)
+            child = await self.aget_detail(access_param, fetch=fetch)
             return child
 
         items = await self.exec.map_with_concurrency(
@@ -166,23 +184,88 @@ class MGnifyList(MGnifier):
         Allow index or accession-based access to child details.
         Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
         """
-        return self.get_next(
-            self._resolve_access_param(key),
+        return self.get_detail(
+            self._resolve_id_param(key),
             fetch=True,
         )
 
+    def get_detail(
+        self,
+        access_param: dict[str, str],
+        fetch: bool = True,
+    ) -> "QuerySet":
+        """
+        Get detail proxy for a specific accession/pubmed_id/catalogue_id.
 
-# FIX THIS
+        Parameters
+        ----------
+        access_param : dict[str, str]
+            A dictionary containing the necessary parameter to identify the detail resource,
+            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        resource_name : Optional[str]
+            The name of the resource to get the next instance of. If None, will use the first or only linked resource.
+        fetch : bool
+            Whether to immediately fetch the detail after creating the proxy.
+
+
+        Returns
+        -------
+        QuerySet
+            A proxy for the next resource.
+
+        Examples
+        -------
+        sample = samples.get_detail({"accession": "MGYS00001234"})
+        """
+
+        child = self._clone(resource=self.child_resource, **access_param)
+        child.endpoint_module = self._next_rel_module
+        if fetch:
+            child.get(safety=False)
+        return child
+
+    async def aget_detail(
+        self,
+        access_param: dict[str, str],
+        fetch: bool = True,
+    ) -> "QuerySet":
+        """
+        Async version of get_detail.
+        Get detail proxy for a specific accession/pubmed_id/catalogue_id.
+
+        Examples
+        -------
+        sample = await samples.aget_detail({"accession": "MGYS00001234"})
+        """
+        child = self._clone(resource=self.child_resource, **access_param)
+        child.endpoint_module = self._next_rel_module
+        if fetch:
+            await child.aget(safety=False)
+        return child
+
+
 class MGnifyDetail(MGnifier):
+    """waht"""
+
     def __init__(
         self,
-        *,
-        resource: Optional[str] = None,
+        resource: Literal[
+            "biome",
+            "study",
+            "sample",
+            "run",
+            "genome",
+            "analysis",
+            "assembly",
+            "publication",
+            "catalogue",
+        ],
         id: str,
         config: Optional[MgnipyConfig] = None,
         **kwargs,
     ):
 
+        # UGH IM DUMb PICK UP HERE
         super().__init__(
             resource=resource,
             config=config,
@@ -190,16 +273,18 @@ class MGnifyDetail(MGnifier):
             **kwargs,
         )
 
+        self.supported_relationships = self.list_relationships()
+
     def _next_rel_module(self, name: str) -> SupportedEndpoints:
         """
         Get the next resource name based on the relationship name
         """
-        if name in self.list_relationships():
+        if name in self.supported_relationships:
             return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][
                 SupportedEndpoints.validate(name)
             ]
 
-        raise AttributeError(f"{self.resource} does not have any linked resources.")
+        raise AttributeError(f"{self.resource} does not have linked resource: {name!r}")
 
     # PICK UP HERE
     @property
@@ -211,12 +296,112 @@ class MGnifyDetail(MGnifier):
 
     def __getattr__(self, name: str):
         # if is a supported relationship
-        if name in self.list_relationships():
-            return self.get_next(
-                self._resolve_access_param(self.identifier),
+        if name in self.supported_relationships:
+
+            access_param = self._resolve_id_param(self.identifier)
+
+            return self.get_list(
                 resource_name=name,
+                access_param=access_param,
                 fetch=False,
             )
+
+    def get_list(
+        self,
+        resource: Literal[
+            "biomes",
+            "studies",
+            "samples",
+            "runs",
+            "genomes",
+            "analyses",
+            "assemblies",
+            "publications",
+            "catalogues",
+        ],
+        access_param: dict[str, str],
+        fetch: bool = True,
+        explain: bool = False,
+    ) -> "QuerySet":
+        """
+        Get list proxy for a specific accession/pubmed_id/catalogue_id detail.
+
+        Parameters
+        ----------
+        resource : str
+            Valid child resource name e.g. in list_relationships(), such as "samples" for a study detail, or "analyses" for a run detail.
+        access_param : dict[str, str]
+            A dictionary containing the necessary parameter to identify the detail resource,
+            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        fetch : bool
+            Whether to immediately fetch the detail after creating the proxy.
+        explain : bool
+            Whether to print example URLs that would be called.
+        Returns
+        -------
+        QuerySet
+            A proxy for the next resource.
+
+        Examples
+        -------
+        samples = study.get_list("samples", {"accession": "MGYS00001234"})
+        """
+
+        child = self._clone(resource=resource, **access_param)
+        child.endpoint_module = self._next_rel_module(resource)
+        if explain:
+            child.explain()
+        if fetch:
+            child.get(safety=False)
+        return child
+
+    async def aget_list(
+        self,
+        resource: Literal[
+            "biomes",
+            "studies",
+            "samples",
+            "runs",
+            "genomes",
+            "analyses",
+            "assemblies",
+            "publications",
+            "catalogues",
+        ],
+        access_param: dict[str, str],
+        fetch: bool = True,
+        explain: bool = False,
+    ) -> "QuerySet":
+        """
+        Get list proxy for a specific accession/pubmed_id/catalogue_id detail.
+
+        Parameters
+        ----------
+        resource : str
+            Valid child resource name e.g. in list_relationships(), such as "samples" for a study detail, or "analyses" for a run detail.
+        access_param : dict[str, str]
+            A dictionary containing the necessary parameter to identify the detail resource,
+            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        fetch : bool
+            Whether to immediately fetch the detail after creating the proxy.
+
+        Returns
+        -------
+        QuerySet
+            A proxy for the next resource.
+
+        Examples
+        -------
+        samples = await study.aget_list("samples", {"accession": "MGYS00001234"})
+        """
+
+        child = self._clone(resource=resource, **access_param)
+        child.endpoint_module = self._next_rel_module(resource)
+        if explain:
+            child.explain()
+        if fetch:
+            await child.aget(safety=False)
+        return child
 
 
 class Analyses(MGnifyList):

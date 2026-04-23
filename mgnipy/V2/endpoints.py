@@ -83,7 +83,7 @@ WITHIN_RESOURCE_RELATIONSHIPS: dict[
     SupportedEndpoints, dict[SupportedEndpoints, callable]
 ] = {
     parent: {child: DETAIL_ENDPOINTS_BY_ID[child]}
-    for child, parent in PARENT_CHILD_RESOURCES.items()
+    for parent, child in PARENT_CHILD_RESOURCES.items()
 }
 
 # I think this kinda follows the openapi "Links" on the right of the docs?

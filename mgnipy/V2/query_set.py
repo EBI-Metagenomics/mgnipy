@@ -556,20 +556,26 @@ class QuerySet(ResultsHandlerMixin):
                 f"Identifier key '{self.id_param_key}' not found in parameters for resource '{self.resource}'."
             ) from None
 
-    # RELATIONSHIP HANDLING
-    def list_relationships(self) -> list[str]:
-        if self.resource in ALL_SUPPORTED_RELATIONSHIPS:
-            return [
-                endpoint.value
-                for endpoint in ALL_SUPPORTED_RELATIONSHIPS[self.resource]
-            ]
-        else:
-            return []
+    def _resolve_id_param(self, key: int | str) -> dict:
+        """
+        Resolve the identifier parameter for a related resource based on the provided key,
+        which can be either an index or a string identifier.
+        This method checks if the key is a valid index in the results or a valid identifier string,
+        and returns the corresponding parameter dictionary for accessing the related resource.
 
-    def describe_relationships(self):
-        pass  # TODO
+        Parameters
+        ----------
+        key : int or str
+            An integer index referring to the position in the results, or a string identifier (such as
+            an accession or biome lineage) that exists in the results.
 
-    def _resolve_access_param(self, key: int | str) -> dict:
+        Returns
+        -------
+        dict
+            A dictionary containing the identifier parameter key and its corresponding value,
+            which can be used to access the related resource.
+            For example, {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        """
         # allow index-based access
         if self.results_ids is not None and isinstance(key, int):
             return {self.id_param_key: self.results_ids[key]}
@@ -582,6 +588,19 @@ class QuerySet(ResultsHandlerMixin):
             "Key must be an integer index, or a valid id string. "
             "Accession/id/biome_lineage must exist in`.results_ids`"
         )
+
+    # RELATIONSHIP HANDLING
+    def list_relationships(self) -> list[str]:
+        if self.resource in ALL_SUPPORTED_RELATIONSHIPS:
+            return [
+                endpoint.value
+                for endpoint in ALL_SUPPORTED_RELATIONSHIPS[self.resource]
+            ]
+        else:
+            return []
+
+    def describe_relationships(self):
+        pass  # TODO
 
     def get_next(
         self,
