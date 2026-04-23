@@ -234,24 +234,13 @@ class QuerySet(ResultsHandlerMixin):
             A new instance of the same class with the updated parameters.
         """
 
-        # make a copy of current instance but with updated params and same resource, endpoint module etc
-        base_params = deepcopy(self.params)
-
-        # Proxy subclasses hardcode their resource inside __init__ (no `resource` param),
-        # while QuerySet/MGnifier require it to be passed explicitly.
-        if "resource" in inspect.signature(self.__class__.__init__).parameters:
-            return self.__class__(
-                resource=self.resource,
-                params=base_params,
-                **param_overrides,
-            )
-
-        # for proxy subclasses
-        param_overrides.pop("resource", None)
-        return self.__class__(
-            params=base_params,
+        new_qs = self.__class__(
+            resource=self.resource,
+            params=self.params,
             **param_overrides,
         )
+        new_qs.endpoint_module = self.endpoint_module
+        return new_qs
 
     def filter(
         self,
@@ -378,9 +367,9 @@ class QuerySet(ResultsHandlerMixin):
         """
         # specific to api design, exclude params not used for filtering
         exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
-        params = params or self.params
+        _params = deepcopy(params or self.params)
         # check params are valid for endpoint
-        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
+        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**_params)
         # resource based on emgapi_v2_client
         emgapi_resource = os.path.basename(
             os.path.dirname(self.endpoint_module.__file__)
@@ -393,7 +382,7 @@ class QuerySet(ResultsHandlerMixin):
         url = os.path.join(self._base_url, _end_url)
 
         # exclude params not for filtering from encoding
-        incl_params = deepcopy(params)
+        incl_params = deepcopy(_params)
         for k in exclude:
             incl_params.pop(k, None)
         # encode params for url
@@ -442,17 +431,18 @@ class QuerySet(ResultsHandlerMixin):
         """
         if self.request_urls is not None:
             return self.request_urls
-
         if not self.pagination_status:
             self.request_urls = [self._build_request_url()]
         else:
             # ensure we have total_pages calculated
             if self.total_pages is None:
                 self.dry_run()
-            self.request_urls = [
-                self._build_request_url(params={"page": page})
-                for page in range(1, self.total_pages + 1)
-            ]
+
+            self.request_urls = []
+            for page in range(1, self.total_pages + 1):
+                _parm = deepcopy(self.params)
+                _parm.update({"page": page})
+                self.request_urls.append(self._build_request_url(params=_parm))
 
         return self.request_urls
 
@@ -586,7 +576,7 @@ class QuerySet(ResultsHandlerMixin):
         raise KeyError(
             f"Invalid key: {key}. "
             "Key must be an integer index, or a valid id string. "
-            "Accession/id/biome_lineage must exist in`.results_ids`"
+            f"Accession/id/biome_lineage must exist in`.results_ids`: {self.results_ids}"
         )
 
     # RELATIONSHIP HANDLING
@@ -601,43 +591,3 @@ class QuerySet(ResultsHandlerMixin):
 
     def describe_relationships(self):
         pass  # TODO
-
-    def get_next(
-        self,
-        access_param: dict[str, str],
-        resource_name: Optional[str] = None,
-        fetch: bool = True,
-    ) -> "QuerySet":
-        """
-        Independent of list vs detail resource, get next linked proxy for a specific accession.
-
-            Parameters
-            ----------
-            access_param : dict[str, str]
-                A dictionary containing the necessary parameter to identify the detail resource,
-                such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
-            resource_name : Optional[str]
-                The name of the resource to get the next instance of. If None, will use the first or only linked resource.
-            fetch : bool
-                Whether to immediately fetch the detail after creating the proxy.
-
-
-            Returns
-            -------
-            QuerySet
-                A proxy for the next resource.
-
-            Examples
-            -------
-            sample = samples.getting_next({"accession": "MGYS00001234"})
-            samples = study.getting_next({"accession": "MGYS00001234"})
-        """
-
-        next_resource = self.next_resource(resource_name).value
-        next_module = self.next_resource_module(resource_name)
-
-        child = self._clone(resource=next_resource, **access_param)
-        child.endpoint_module = next_module
-        if fetch:
-            child.get(safety=False)
-        return child
