@@ -15,12 +15,8 @@ import pandas as pd
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.endpoints import (
-    ACC_DETAIL_ENDPOINTS,
-)
-from mgnipy.V2.endpoints import ALL_ENDPOINTS as ENDPOINTS
-from mgnipy.V2.endpoints import (
-    BETWEEN_RESOURCE_RELATIONSHIPS,
-    WITHIN_RESOURCE_RELATIONSHIPS,
+    ALL_ENDPOINTS,
+    ALL_SUPPORTED_RELATIONSHIPS,
 )
 from mgnipy.V2.mixins import (
     ResultsHandlerMixin,
@@ -91,7 +87,7 @@ class QuerySet(ResultsHandlerMixin):
             self._params.update(kwargs)
 
         # default endpoint modules based on resource, can be overridden by owner
-        self._endpoint_module: Callable = ENDPOINTS[self._resource]
+        self._endpoint_module: Callable = ALL_ENDPOINTS[self._resource]
 
         # check that params are valid for endpoint module
         # check params are valid for endpoint
@@ -174,7 +170,7 @@ class QuerySet(ResultsHandlerMixin):
     @resource.setter
     def resource(self, value: str):
         self._resource = SupportedEndpoints.validate(value)
-        self.endpoint_module = ENDPOINTS[self._resource]
+        self.endpoint_module = ALL_ENDPOINTS[self._resource]
         # check that params are valid for new endpoint module
         self.endpoint_module._get_kwargs(**self._params)
         # reset results and urls since resource changed
@@ -562,43 +558,16 @@ class QuerySet(ResultsHandlerMixin):
 
     # RELATIONSHIP HANDLING
     def list_relationships(self) -> list[str]:
-        if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
-            return [WITHIN_RESOURCE_RELATIONSHIPS[self.resource].value]
-        elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
+        if self.resource in ALL_SUPPORTED_RELATIONSHIPS:
             return [
                 endpoint.value
-                for endpoint in BETWEEN_RESOURCE_RELATIONSHIPS[self.resource]
+                for endpoint in ALL_SUPPORTED_RELATIONSHIPS[self.resource]
             ]
         else:
             return []
 
-    def _get_next_rel_resource(self, name: Optional[str] = None) -> SupportedEndpoints:
-        """
-        Get the next resource name based on the relationship name
-        or just list the first or only endpoint.
-        """
-        if name is not None and name in self.list_relationships():
-            return SupportedEndpoints.validate(name)
-        if name is not None and name not in self.list_relationships():
-            raise AttributeError(
-                f"{self.resource} does not have a linked resource {name}."
-            )
-        if name is None and len(self.list_relationships()) > 0:
-            return SupportedEndpoints.validate(self.list_relationships()[0])
-        raise AttributeError(f"{self.resource} does not have any linked resources.")
-
-    def next_rel_module(self, name: Optional[str] = None) -> Callable:
-        # get SupportedEndpoint of next resource
-        next_resource = self._get_next_rel_resource(name)
-        # then get the endpoint function for that resource
-        if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
-            return ACC_DETAIL_ENDPOINTS[next_resource]
-        elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
-            return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][next_resource]
-        else:
-            raise AttributeError(
-                f"{self.resource.value} does not have any linked resources."
-            )
+    def describe_relationships(self):
+        pass  # TODO
 
     def _resolve_access_param(self, key: int | str) -> dict:
         # allow index-based access

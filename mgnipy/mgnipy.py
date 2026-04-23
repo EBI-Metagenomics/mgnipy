@@ -48,8 +48,30 @@ class MGnipy:
         self._endpoints = self.list_resources()
 
     def __getattr__(self, name: str):
-        _end = SupportedEndpoints.validate(name)
-        return V2_ENDPOINT_ALL_PROXIES[_end]()
+        endpoint = SupportedEndpoints.validate(name)
+
+        if endpoint in V2_ENDPOINT_LIST_PROXIES:
+
+            list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
+
+            def _list_factory(**kwargs):
+                return list_cls(config=self._config.model_dump(mode="json"), **kwargs)
+
+            return _list_factory
+
+        if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
+            detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
+
+            # Return a callable so required args like accession/biome_lineage
+            # are provided when user calls MG.study(...), MG.biome(...), etc.
+            def _detail_factory(**kwargs):
+                return detail_cls(config=self._config.model_dump(mode="json"), **kwargs)
+
+            return _detail_factory
+
+        raise AttributeError(
+            f"{type(self).__name__} has no endpoint attribute {name!r}"
+        )
 
     def list_resources(self):
         return [endpoint.value for endpoint in SupportedEndpoints]

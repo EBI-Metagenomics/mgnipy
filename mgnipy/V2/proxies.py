@@ -1,5 +1,7 @@
 from typing import (
     Any,
+    AsyncIterator,
+    Iterator,
     List,
     Literal,
     Optional,
@@ -9,21 +11,25 @@ from bigtree import (
     Tree,
 )
 
+from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.core import MGnifier
-from mgnipy.V2.mixins import (
-    DetailNavigationMixin,
-    RelatedNavigationMixin,
+from mgnipy.V2.endpoints import (
+    BETWEEN_RESOURCE_RELATIONSHIPS,
+    PARENT_CHILD_RESOURCES,
+    WITHIN_RESOURCE_RELATIONSHIPS,
 )
+from mgnipy.V2.query_set import QuerySet
 
 
-class MGnifyList(MGnifier, DetailNavigationMixin):
+class MGnifyList(MGnifier):
     """generic"""
 
     def __init__(
         self,
         resource: str,
         *,
+        config: Optional[dict] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
@@ -31,43 +37,186 @@ class MGnifyList(MGnifier, DetailNavigationMixin):
         super().__init__(
             resource=resource,
             params=params,
+            config=config,
             **kwargs,
         )
 
         self.resource = SupportedEndpoints.validate(resource)
 
+    def _next_rel_module(self) -> SupportedEndpoints:
+        """
+        Get the next resource name based on the relationship name
+        """
+        # check
+        if len(self.list_relationships) == 0:
+            raise AttributeError(f"{self.resource} does not have any linked resources.")
+
+        child_resource = PARENT_CHILD_RESOURCES.get(self.resource)
+
+        # quick check
+        assert [
+            child_resource
+        ] == self.list_relationships(), f"Should only be be parent to detail endpoint: {child_resource}, but got {self.list_relationships()}"
+
+        detail_endpoint = WITHIN_RESOURCE_RELATIONSHIPS[self.resource][child_resource]
+        return detail_endpoint
+
+    def iter_details(self, fetch: bool = False) -> Iterator["QuerySet"]:
+        """
+        Lazily iterate over child detail proxies.
+
+        Parameters
+        ----------
+        fetch : bool
+            Whether to immediately fetch each detail after creating the proxy.
+
+        Returns
+        -------
+        Iterator of QuerySet
+            An iterator that yields child detail proxies.
+
+        Example
+        -------
+        for sample in samples.iter_details():
+            sample.get()
+        """
+        for acc in self.results_ids or []:
+            yield self.get_next(self._resolve_access_param(acc), fetch=fetch)
+
+    def collect_details(
+        self,
+        *,
+        fetch: bool = False,
+        by_accession: bool = False,
+    ) -> list["QuerySet"] | dict[str, "QuerySet"]:
+        """
+        Collect child detail proxies into a list or dict.
+
+        Parameters
+        ----------
+        fetch : bool
+            Whether to immediately fetch the details after creating the proxies.
+        by_accession : bool
+            Whether to return a dict keyed by accession instead of a list.
+
+        Returns
+        -------
+        list of QuerySet or dict of str to QuerySet
+            A list or dict of child detail proxies.
+
+        Example
+        -------
+        samples.collect_details(fetch=True, by_accession=True)
+
+
+        """
+
+        items: list["QuerySet"] = []
+        for item in self.iter_details(fetch=fetch):
+            items.append(item)
+
+        if by_accession:
+            return {x.accession: x for x in items if x.accession is not None}
+        return items
+
+    def __iter__(self) -> Iterator["QuerySet"]:
+        return self.iter_details()
+
+    async def __aiter__(self) -> AsyncIterator["QuerySet"]:
+        async for item in self.aiter_details():
+            yield item
+
+    async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
+        for acc in self.results_accessions or []:
+            yield await self.aget_next(self._resolve_access_param(acc), fetch=fetch)
+
+    async def acollect_details(
+        self,
+        *,
+        fetch: bool = False,
+        by_accession: bool = False,
+        concurrency: Optional[int] = None,
+        hide_progress: bool = False,
+    ) -> list["QuerySet"] | dict[str, "QuerySet"]:
+        acc_params = [
+            self._resolve_access_param(acc) for acc in (self.results_accessions or [])
+        ]
+
+        async def _worker(access_param):
+            child = await self.aget_next(access_param, fetch=fetch)
+            return child
+
+        items = await self.exec.map_with_concurrency(
+            items=acc_params,
+            worker=_worker,
+            concurrency=concurrency,
+            hide_progress=hide_progress,
+        )
+
+        if by_accession:
+            return {
+                x.accession: x
+                for x in items
+                if x is not None and x.accession is not None
+            }
+        return items
+
+    def __getitem__(self, key: int | str) -> "QuerySet":
+        """
+        Allow index or accession-based access to child details.
+        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
+        """
+        return self.get_next(
+            self._resolve_access_param(key),
+            fetch=True,
+        )
+
 
 # FIX THIS
-class MGnifyDetail(MGnifier, RelatedNavigationMixin):
+class MGnifyDetail(MGnifier):
     def __init__(
         self,
         *,
         resource: Optional[str] = None,
-        accession: Optional[str] = None,
-        biome_lineage: Optional[str] = None,
+        id: str,
+        config: Optional[MgnipyConfig] = None,
+        **kwargs,
     ):
 
-        self._relationships = self.list_relationships()
+        super().__init__(
+            resource=resource,
+            config=config,
+            **{self.id_param_key: id},
+            **kwargs,
+        )
 
-        if accession and biome_lineage:
-            raise ValueError("Cannot specify both accession and biome_lineage.")
-        elif accession:
-            self.accession = accession
-            super().__init__(resource=resource, accession=accession)
-        elif biome_lineage:
-            self.lineage = biome_lineage
-            super().__init__(
-                resource=resource,
-                biome_lineage=biome_lineage,
+    def _next_rel_module(self, name: str) -> SupportedEndpoints:
+        """
+        Get the next resource name based on the relationship name
+        """
+        if name in self.list_relationships():
+            return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][
+                SupportedEndpoints.validate(name)
+            ]
+
+        raise AttributeError(f"{self.resource} does not have any linked resources.")
+
+    # PICK UP HERE
+    @property
+    def identifier(self) -> Optional[list[str]]:
+        """
+        identifier from parent, could be accessions, biome_lineages, or catalogue_ids depending on resource type.
+        """
+        return self.results_ids
+
+    def __getattr__(self, name: str):
+        # if is a supported relationship
+        if name in self.list_relationships():
+            return self.get_next(
+                self._resolve_access_param(self.identifier),
+                resource_name=name,
+                fetch=False,
             )
-        else:
-            raise ValueError("Must specify either accession or biome_lineage.")
-
-        self.explain()  # TODO remove after testing
-        self.get()
-
-    def describe_relationships(self):
-        pass
 
 
 class Analyses(MGnifyList):
@@ -75,10 +224,11 @@ class Analyses(MGnifyList):
         self,
         *,
         params: Optional[dict[str, Any]] = None,
+        config: Optional[MgnipyConfig] = None,
         **kwargs,
     ):
 
-        super().__init__(resource="analyses", params=params, **kwargs)
+        super().__init__(resource="analyses", params=params, config=config, **kwargs)
 
 
 class Runs(MGnifyList):
@@ -86,10 +236,11 @@ class Runs(MGnifyList):
         self,
         *,
         params: Optional[dict[str, Any]] = None,
+        config: Optional[MgnipyConfig] = None,
         **kwargs,
     ):
 
-        super().__init__(resource="runs", params=params, **kwargs)
+        super().__init__(resource="runs", params=params, config=config, **kwargs)
 
 
 class Samples(MGnifyList):
@@ -97,21 +248,20 @@ class Samples(MGnifyList):
         self,
         *,
         params: Optional[dict[str, Any]] = None,
+        config: Optional[MgnipyConfig] = None,
         **kwargs,
     ):
 
-        super().__init__(resource="samples", params=params, **kwargs)
+        super().__init__(resource="samples", params=params, config=config, **kwargs)
 
 
 class Studies(MGnifyList):
 
     def __init__(
         self,
-        *,
-        params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(resource="studies", params=params, **kwargs)
+        super().__init__(resource="studies", **kwargs)
 
 
 class Biomes(MGnifyList):
@@ -216,70 +366,86 @@ class Catalogues(MGnifyList):
 class StudyDetail(MGnifyDetail):
     def __init__(
         self,
-        accession: str,
+        id: Optional[str] = None,
+        *,
+        accession: Optional[str] = None,
+        **kwargs,
     ):
-        super().__init__(resource="study", accession=accession)
+
+        super().__init__(
+            resource="study",
+            id=id or accession,
+            **kwargs,
+        )
 
 
 class SampleDetail(MGnifyDetail):
     def __init__(
         self,
         accession: str,
+        **kwargs,
     ):
-        super().__init__(resource="sample", accession=accession)
+        super().__init__(resource="sample", accession=accession, **kwargs)
 
 
 class RunDetail(MGnifyDetail):
     def __init__(
         self,
         accession: str,
+        **kwargs,
     ):
-        super().__init__(resource="run", accession=accession)
+        super().__init__(resource="run", accession=accession, **kwargs)
 
 
 class AnalysisDetail(MGnifyDetail):
     def __init__(
         self,
         accession: str,
+        **kwargs,
     ):
-        super().__init__(resource="analysis", accession=accession)
+        super().__init__(resource="analysis", accession=accession, **kwargs)
 
 
 class GenomeDetail(MGnifyDetail):
     def __init__(
         self,
         accession: str,
+        **kwargs,
     ):
-        super().__init__(resource="genome", accession=accession)
+        super().__init__(resource="genome", accession=accession, **kwargs)
 
 
 class AssemblyDetail(MGnifyDetail):
     def __init__(
         self,
         accession: str,
+        **kwargs,
     ):
-        super().__init__(resource="assembly", accession=accession)
+        super().__init__(resource="assembly", accession=accession, **kwargs)
 
 
 class BiomeDetail(MGnifyDetail):
     def __init__(
         self,
         biome_lineage: str,
+        **kwargs,
     ):
-        super().__init__(resource="biome", biome_lineage=biome_lineage)
+        super().__init__(resource="biome", biome_lineage=biome_lineage, **kwargs)
 
 
 class PublicationDetail(MGnifyDetail):
     def __init__(
         self,
         accession: str,
+        **kwargs,
     ):
-        super().__init__(resource="publication", accession=accession)
+        super().__init__(resource="publication", accession=accession, **kwargs)
 
 
 class CatalogueDetail(MGnifyDetail):
     def __init__(
         self,
         catalogue_id: str,
+        **kwargs,
     ):
-        super().__init__(resource="catalogue", catalogue_id=catalogue_id)
+        super().__init__(resource="catalogue", catalogue_id=catalogue_id, **kwargs)

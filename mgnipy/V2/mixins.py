@@ -4,8 +4,6 @@ from itertools import chain
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncIterator,
-    Iterator,
     Optional,
 )
 
@@ -13,7 +11,7 @@ import pandas as pd
 import polars as pl
 
 if TYPE_CHECKING:
-    from mgnipy.V2.query_set import QuerySet
+    pass
 
 
 class ResultsHandlerMixin:
@@ -220,135 +218,3 @@ class ResultsHandlerMixin:
             return None
 
         return pl.DataFrame(self._unpageinate_results(_data), **polars_kwargs)
-
-
-class DetailNavigationMixin:
-
-    def iter_details(self, fetch: bool = False) -> Iterator["QuerySet"]:
-        """
-        Lazily iterate over child detail proxies.
-
-        Parameters
-        ----------
-        fetch : bool
-            Whether to immediately fetch each detail after creating the proxy.
-
-        Returns
-        -------
-        Iterator of QuerySet
-            An iterator that yields child detail proxies.
-
-        Example
-        -------
-        for sample in samples.iter_details():
-            sample.get()
-        """
-        for acc in self.results_accessions or []:
-            yield self.get_next(self._resolve_access_param(acc), fetch=fetch)
-
-    def collect_details(
-        self,
-        *,
-        fetch: bool = False,
-        by_accession: bool = False,
-    ) -> list["QuerySet"] | dict[str, "QuerySet"]:
-        """
-        Collect child detail proxies into a list or dict.
-
-        Parameters
-        ----------
-        fetch : bool
-            Whether to immediately fetch the details after creating the proxies.
-        by_accession : bool
-            Whether to return a dict keyed by accession instead of a list.
-
-        Returns
-        -------
-        list of QuerySet or dict of str to QuerySet
-            A list or dict of child detail proxies.
-
-        Example
-        -------
-        samples.collect_details(fetch=True, by_accession=True)
-
-
-        """
-
-        items: list["QuerySet"] = []
-        for item in self.iter_details(fetch=fetch):
-            items.append(item)
-
-        if by_accession:
-            return {x.accession: x for x in items if x.accession is not None}
-        return items
-
-    def __iter__(self) -> Iterator["QuerySet"]:
-        return self.iter_details()
-
-    async def __aiter__(self) -> AsyncIterator["QuerySet"]:
-        async for item in self.aiter_details():
-            yield item
-
-    async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
-        for acc in self.results_accessions or []:
-            yield await self.aget_next(self._resolve_access_param(acc), fetch=fetch)
-
-    async def acollect_details(
-        self,
-        *,
-        fetch: bool = False,
-        by_accession: bool = False,
-        concurrency: Optional[int] = None,
-        hide_progress: bool = False,
-    ) -> list["QuerySet"] | dict[str, "QuerySet"]:
-        acc_params = [
-            self._resolve_access_param(acc) for acc in (self.results_accessions or [])
-        ]
-
-        async def _worker(access_param):
-            child = await self.aget_next(access_param, fetch=fetch)
-            return child
-
-        items = await self.exec.map_with_concurrency(
-            items=acc_params,
-            worker=_worker,
-            concurrency=concurrency,
-            hide_progress=hide_progress,
-        )
-
-        if by_accession:
-            return {
-                x.accession: x
-                for x in items
-                if x is not None and x.accession is not None
-            }
-        return items
-
-    def __getitem__(self, key: int | str) -> "QuerySet":
-        """
-        Allow index or accession-based access to child details.
-        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
-        """
-        return self.get_next(
-            self._resolve_access_param(key),
-            fetch=True,
-        )
-
-
-class RelatedNavigationMixin:
-
-    @property
-    def identifier(self) -> Optional[list[str]]:
-        """
-        identifier from parent, could be accessions, biome_lineages, or catalogue_ids depending on resource type.
-        """
-        return self.results_ids
-
-    def __getattr__(self, name: str):
-        # if is a supported relationship
-        if name in self.list_relationships():
-            return self.get_next(
-                self._resolve_access_param(self.identifier),
-                resource_name=name,
-                fetch=False,
-            )
