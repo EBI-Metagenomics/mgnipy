@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
 
 
-class ResultHandlerMixin:
+class ResultsHandlerMixin:
 
     @property
     def data(self) -> dict[int, list[dict[str, Any]]]:
@@ -24,18 +24,6 @@ class ResultHandlerMixin:
         results based on the current resource.
         """
         return getattr(self, "_results", {}) or {}
-
-    # @property
-    # def id_param_key(self) -> str:
-    #     """
-    #     Get the key for the ID parameter based on the current resource.
-
-    #     Returns
-    #     -------
-    #     str
-    #         The key for the ID parameter.
-    #     """
-    #     return self.id_param_key
 
     # helpers
     def _df_expand_nested(
@@ -232,23 +220,6 @@ class ResultHandlerMixin:
             return None
 
         return pl.DataFrame(self._unpageinate_results(_data), **polars_kwargs)
-
-    @property
-    def results_ids(self) -> Optional[list[str]]:
-        """
-        Get a list of accessions from the retrieved metadata results, if available.
-
-        Returns
-        -------
-        list of str or None
-            A list of accession strings if available, otherwise None.
-        """
-        if self.to_df() is None:
-            return None
-        elif self.id_param_key in self.to_df().columns:
-            return self.to_df()[self.id_param_key].tolist()
-        else:
-            return None
 
 
 class DetailNavigationMixin:

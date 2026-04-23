@@ -23,7 +23,7 @@ from mgnipy.V2.endpoints import (
     WITHIN_RESOURCE_RELATIONSHIPS,
 )
 from mgnipy.V2.mixins import (
-    ResultHandlerMixin,
+    ResultsHandlerMixin,
 )
 from mgnipy.V2.query_executor import QueryExecutor
 
@@ -49,7 +49,7 @@ ID_PARAM = {
 }
 
 
-class QuerySet(ResultHandlerMixin):
+class QuerySet(ResultsHandlerMixin):
     """
     Plans, builds, validates and previews queries based on endpoint_module and params of the MGnifier owner.
     Stores the request urls.
@@ -149,6 +149,23 @@ class QuerySet(ResultHandlerMixin):
     @property
     def results(self) -> dict[int, list[dict]]:
         return self._results
+
+    @property
+    def results_ids(self) -> Optional[list[str]]:
+        """
+        Get a list of accessions from the retrieved metadata results, if available.
+
+        Returns
+        -------
+        list of str or None
+            A list of accession strings if available, otherwise None.
+        """
+        if self.to_df() is None:
+            return None
+        elif self.id_param_key in self.to_df().columns:
+            return self.to_df()[self.id_param_key].tolist()
+        else:
+            return None
 
     @property
     def resource(self) -> SupportedEndpoints:
