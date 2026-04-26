@@ -4,18 +4,17 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncIterator,
+    Callable,
+    ClassVar,
     Iterator,
-    List,
     Literal,
     Optional,
 )
 
-from bigtree import (
-    Tree,
-)
-
 from mgnipy._models.config import MgnipyConfig
-from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy._models.CONSTANTS import (
+    SupportedEndpoints,
+)
 from mgnipy.V2.core import MGnifier
 from mgnipy.V2.endpoints import (
     BETWEEN_RESOURCE_RELATIONSHIPS,
@@ -27,52 +26,85 @@ from mgnipy.V2.mixins import BiomesTreeMixin
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
 
+ListResource = Literal[
+    "biomes",
+    "studies",
+    "samples",
+    "runs",
+    "analyses",
+    "genomes",
+    "assemblies",
+    "publications",
+    "catalogues",
+]
+
+DetailResource = Literal[
+    "biome",
+    "study",
+    "sample",
+    "run",
+    "analysis",
+    "genome",
+    "assembly",
+    "publication",
+    "catalogue",
+]
+
 
 class MGnifyList(MGnifier):
-    """generic"""
+    RESOURCE: ClassVar[Optional[ListResource]] = None
 
     def __init__(
         self,
-        resource: Literal[
-            "biomes",
-            "studies",
-            "samples",
-            "runs",
-            "genomes",
-            "analyses",
-            "assemblies",
-            "publications",
-            "catalogues",
-        ],
         *,
         config: Optional[dict] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        # init mgnifier
+        # Accept accidental "resource" in kwargs, but do not expose it in signature
+        passed_resource = kwargs.pop("resource", None)
+        resolved_resource = self.RESOURCE or passed_resource
+
+        if resolved_resource is None:
+            raise TypeError(
+                "`resource` is required for base MGnifyList; "
+                "use a concrete subclass like Analyses/Runs/... "
+                f"or pass a resource param: {ListResource!r}"
+            )
+
+        if self.RESOURCE is not None and passed_resource not in (
+            None,
+            self.RESOURCE,
+        ):
+            raise ValueError(
+                f"Conflicting resource: expected {self.RESOURCE!r}, got {passed_resource!r}"
+            )
+
         super().__init__(
-            resource=resource,
+            resource=resolved_resource,
             params=params,
             config=config,
             **kwargs,
         )
-
         self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
 
     @property
-    def _next_rel_module(self) -> SupportedEndpoints:
+    def _next_rel_module(self) -> Callable:
         """
-        Get the next resource name based on the relationship name
+        Get the next relationship module for the child resource.
+        This is used to determine which API endpoint the child proxy should use.
         """
         # check
-        if len(self.list_relationships) == 0:
+        if len(self.list_relationships()) == 0:
             raise AttributeError(f"{self.resource} does not have any linked resources.")
 
         # quick check
-        # quick check
-        assert [self.child_resource] == self.list_relationships(), (
+        assert (
+            len(self.list_relationships()) == 1
+            and self.child_resource.value == self.list_relationships()[0]
+        ), (
             "Should only be be parent to detail endpoint: "
-            f"{self.child_resource}, but got {self.list_relationships()}"
+            f"{self.child_resource!r}, but got {self.list_relationships()[0]!r}"
         )
 
         detail_endpoint = WITHIN_RESOURCE_RELATIONSHIPS[self.resource][
@@ -146,7 +178,7 @@ class MGnifyList(MGnifier):
             yield item
 
     async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
-        for acc in self.results_accessions or []:
+        for acc in self.results_ids or []:
             yield await self.aget_detail(self._resolve_id_param(acc), fetch=fetch)
 
     async def acollect_details(
@@ -157,9 +189,7 @@ class MGnifyList(MGnifier):
         concurrency: Optional[int] = None,
         hide_progress: bool = False,
     ) -> list["QuerySet"] | dict[str, "QuerySet"]:
-        acc_params = [
-            self._resolve_id_param(acc) for acc in (self.results_accessions or [])
-        ]
+        acc_params = [self._resolve_id_param(acc) for acc in (self.results_ids or [])]
 
         async def _worker(access_param):
             child = await self.aget_detail(access_param, fetch=fetch)
@@ -219,7 +249,13 @@ class MGnifyList(MGnifier):
         sample = samples.get_detail({"accession": "MGYS00001234"})
         """
 
-        child = self._clone(resource=self.child_resource, **access_param)
+        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)
+        if not detail_cls:
+            raise ValueError(
+                f"Unsupported child resource for detail: {self.child_resource}"
+            )
+
+        child = detail_cls(**access_param)
         child.endpoint_module = self._next_rel_module
         if fetch:
             child.get(safety=False)
@@ -238,7 +274,12 @@ class MGnifyList(MGnifier):
         -------
         sample = await samples.aget_detail({"accession": "MGYS00001234"})
         """
-        child = self._clone(resource=self.child_resource, **access_param)
+        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)
+        if not detail_cls:
+            raise ValueError(
+                f"Unsupported child resource for detail: {self.child_resource}"
+            )
+        child = detail_cls(**access_param)
         child.endpoint_module = self._next_rel_module
         if fetch:
             await child.aget(safety=False)
@@ -246,29 +287,35 @@ class MGnifyList(MGnifier):
 
 
 class MGnifyDetail(MGnifier):
-    """waht"""
+    RESOURCE: ClassVar[Optional[DetailResource]] = None
 
     def __init__(
         self,
-        resource: Literal[
-            "biome",
-            "study",
-            "sample",
-            "run",
-            "genome",
-            "analysis",
-            "assembly",
-            "publication",
-            "catalogue",
-        ],
         id: str,
         config: Optional[MgnipyConfig] = None,
         **kwargs,
     ):
-        self._config = config
+
+        passed_resource = kwargs.pop("resource", None)
+        resolved_resource = self.RESOURCE or passed_resource
+
+        if resolved_resource is None:
+            raise TypeError(
+                "`resource` is required for base MGnifyDetail; "
+                "init a concrete subclass like Biome/Study/Sample... "
+                f"or pass as a resource param: {DetailResource!r}"
+            )
+
+        if self.RESOURCE is not None and passed_resource not in (
+            None,
+            self.RESOURCE,
+        ):
+            raise ValueError(
+                f"Conflicting resource: expected {self.RESOURCE!r}, got {passed_resource!r}"
+            )
 
         # init MGnifier without id first
-        super().__init__(resource=resource, config=self._config, **kwargs)
+        super().__init__(resource=resolved_resource, config=config, **kwargs)
         # then add it to param
         self._params.update({self.id_param_key: id})
 
@@ -336,7 +383,10 @@ class MGnifyDetail(MGnifier):
         samples = study.get_list("samples", {"accession": "MGYS00001234"})
         """
 
-        child = MGnifyList(resource=resource, config=self._config, **access_param)
+        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))
+        if not proxy_cls:
+            raise ValueError(f"Unsupported resource: {resource}")
+        child = proxy_cls(config=self.config.model_dump(mode="json"), **access_param)
         child.endpoint_module = self._next_rel_module(resource)
         if explain:
             child.explain()
@@ -384,7 +434,10 @@ class MGnifyDetail(MGnifier):
         samples = await study.aget_list("samples", {"accession": "MGYS00001234"})
         """
 
-        child = self._clone(resource=resource, config=self._config, **access_param)
+        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))
+        if not proxy_cls:
+            raise ValueError(f"Unsupported resource: {resource}")
+        child = proxy_cls(config=self.config.model_dump(mode="json"), **access_param)
         child.endpoint_module = self._next_rel_module(resource)
         if explain:
             child.explain()
@@ -394,6 +447,8 @@ class MGnifyDetail(MGnifier):
 
 
 class Analyses(MGnifyList):
+    RESOURCE: ClassVar[Literal["analyses"]] = "analyses"
+
     def __init__(
         self,
         *,
@@ -402,10 +457,13 @@ class Analyses(MGnifyList):
         **kwargs,
     ):
 
-        super().__init__(resource="analyses", params=params, config=config, **kwargs)
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Runs(MGnifyList):
+
+    RESOURCE: ClassVar[Literal["runs"]] = "runs"
+
     def __init__(
         self,
         *,
@@ -414,268 +472,293 @@ class Runs(MGnifyList):
         **kwargs,
     ):
 
-        super().__init__(resource="runs", params=params, config=config, **kwargs)
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Samples(MGnifyList):
+    RESOURCE: ClassVar[Literal["samples"]] = "samples"
+
     def __init__(
         self,
         *,
         params: Optional[dict[str, Any]] = None,
-        config: Optional[MgnipyConfig] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
-        super().__init__(resource="samples", params=params, config=config, **kwargs)
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Studies(MGnifyList):
 
+    RESOURCE: ClassVar[Literal["studies"]] = "studies"
+
     def __init__(
         self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
-        super().__init__(resource="studies", **kwargs)
+
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Biomes(MGnifyList, BiomesTreeMixin):
+    RESOURCE: ClassVar[Literal["biomes"]] = "biomes"
 
-    def __init__(self, **kwargs):
-        super().__init__(resource="biomes", **kwargs)
-
-    @property
-    def lineages(self) -> List[str]:
-        if self._results is None:
-            raise RuntimeError(
-                "No data available to get lineages. Please run get() first."
-            )
-        return self.results_ids
-
-    @property
-    def tree(self) -> Tree:
-        """
-        Convert the biomes metadata to a tree structure for visualization or analysis.
-
-        Returns
-        -------
-        Tree
-            A tree representation of the biomes and their relationships.
-        """
-        # TODO generate nodes first
-        return Tree.from_list(self.lineages, sep=":")
-
-    def show_tree(
+    def __init__(
         self,
-        method: Literal[
-            "compact",
-            "show",
-            "print",
-            "horizontal",
-            "hshow",
-            "h",
-            "hprint",
-            "vertical",
-            "vshow",
-            "v",
-            "vprint",
-        ] = "compact",
+        *,
+        params: Optional[dict[str, Any]] = None,
+        config: Optional[dict] = None,
+        **kwargs,
     ):
-        if method in ["compact", "show", "print"]:
-            # TODO print_tree(self._tree)
-            self.tree.show()
-        elif method in ["horizontal", "hshow", "h", "hprint"]:
-            self.tree.hshow()
-        elif method in ["vertical", "vshow", "v", "vprint"]:
-            self.tree.vshow()
-        else:
-            raise ValueError(
-                f"Invalid method: {method}. "
-                "Supported methods: 'compact', 'show', 'print', "
-                "'horizontal', 'hshow', 'h', 'hprint', "
-                "'vertical', 'vshow', 'v', 'vprint'."
-            )
+
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Assemblies(MGnifyList):
+    RESOURCE: ClassVar[Literal["assemblies"]] = "assemblies"
+
     def __init__(
         self,
         *,
         params: Optional[dict[str, Any]] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
-        super().__init__(resource="assemblies", params=params, **kwargs)
+
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Genomes(MGnifyList):
+    RESOURCE: ClassVar[Literal["genomes"]] = "genomes"
+
     def __init__(
         self,
         *,
         params: Optional[dict[str, Any]] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
-        # TODO
-        super().__init__(resource="genomes", params=params, **kwargs)
+
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Publications(MGnifyList):
+    RESOURCE: ClassVar[Literal["publications"]] = "publications"
+
     def __init__(
         self,
         *,
         params: Optional[dict[str, Any]] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
-        super().__init__(resource="publications", params=params, **kwargs)
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class Catalogues(MGnifyList):
+    RESOURCE: ClassVar[Literal["catalogues"]] = "catalogues"
+
     def __init__(
         self,
         *,
         params: Optional[dict[str, Any]] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
-        super().__init__(resource="catalogues", params=params, **kwargs)
+        super().__init__(params=params, config=config, **kwargs)
 
 
 class StudyDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["study"]] = "study"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
         accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="study",
             id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class SampleDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["sample"]] = "sample"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
         accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="sample",
             id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class RunDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["run"]] = "run"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
         accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="run",
             id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class AnalysisDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["analysis"]] = "analysis"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
         accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="analysis",
             id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class GenomeDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["genome"]] = "genome"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
         accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="genome",
             id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class AssemblyDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["assembly"]] = "assembly"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
         accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="assembly",
             id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class BiomeDetail(MGnifyDetail, BiomesTreeMixin):
+    RESOURCE: ClassVar[Literal["biome"]] = "biome"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
-        biome_lineage: Optional[str] = None,
+        accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="biome",
-            id=id or biome_lineage,
+            id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class PublicationDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["publication"]] = "publication"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
-        pubmed_id: Optional[str] = None,
+        accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="publication",
-            id=id or pubmed_id,
+            id=id or accession,
+            config=config,
             **kwargs,
         )
 
 
 class CatalogueDetail(MGnifyDetail):
+    RESOURCE: ClassVar[Literal["catalogue"]] = "catalogue"
+
     def __init__(
         self,
         id: Optional[str] = None,
         *,
-        catalogue_id: Optional[str] = None,
+        accession: Optional[str] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            resource="catalogue",
-            id=id or catalogue_id,
+            id=id or accession,
+            config=config,
             **kwargs,
         )
+
+
+V2_ENDPOINT_LIST_PROXIES = {
+    SupportedEndpoints.ANALYSES: Analyses,
+    SupportedEndpoints.RUNS: Runs,
+    SupportedEndpoints.SAMPLES: Samples,
+    SupportedEndpoints.STUDIES: Studies,
+    SupportedEndpoints.BIOMES: Biomes,
+    SupportedEndpoints.ASSEMBLIES: Assemblies,
+    SupportedEndpoints.GENOMES: Genomes,
+}
+
+V2_ENDPOINT_DETAIL_PROXIES = {
+    SupportedEndpoints.ANALYSIS: AnalysisDetail,
+    SupportedEndpoints.RUN: RunDetail,
+    SupportedEndpoints.SAMPLE: SampleDetail,
+    SupportedEndpoints.STUDY: StudyDetail,
+    SupportedEndpoints.BIOME: BiomeDetail,
+    SupportedEndpoints.ASSEMBLY: AssemblyDetail,
+    SupportedEndpoints.GENOME: GenomeDetail,
+}

@@ -205,17 +205,31 @@ class QuerySet(ResultsHandlerMixin):
         return page_num in self._results
 
     # PARAM HANDLING
-    def _spawn(self, *, resource: Optional[str] = None, **params) -> "QuerySet":
+    def _spawn(
+        self,
+        *,
+        target_resource: Optional[str] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> "QuerySet":
         """
         Spawn a new QuerySet instance for a related resource with given parameters.
 
         Returns
         -------
         QuerySet
-            A new QuerySet instance with the same resource and parameters but no cached results.
+            A new QuerySet instance with other resource and parameters.
 
         """
-        return QuerySet(resource=resource or self.resource, **params)
+
+        merged_params = {**(params or {}), **kwargs}
+        resource_override = merged_params.pop("resource", None)
+
+        return QuerySet(
+            resource=target_resource or resource_override or self.resource,
+            config=self.config,
+            params=merged_params,
+        )
 
     def _clone(self, **param_overrides):
         """
@@ -233,13 +247,20 @@ class QuerySet(ResultsHandlerMixin):
         QuerySet
             A new instance of the same class with the updated parameters.
         """
+        merged_params = {**self.params, **param_overrides}
+        resource_override = merged_params.pop("resource", None)
+
+        target_resource = (
+            getattr(self, "RESOURCE", None) or resource_override or self.resource
+        )
 
         new_qs = self.__class__(
-            resource=self.resource,
-            params=self.params,
-            **param_overrides,
+            resource=target_resource,
+            config=self.config.model_dump(mode="json"),
+            params=merged_params,
         )
         new_qs.endpoint_module = self.endpoint_module
+
         return new_qs
 
     def filter(

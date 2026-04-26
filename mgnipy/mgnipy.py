@@ -1,43 +1,9 @@
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.proxies import (
-    Analyses,
-    AnalysisDetail,
-    Assemblies,
-    AssemblyDetail,
-    BiomeDetail,
-    Biomes,
-    GenomeDetail,
-    Genomes,
-    RunDetail,
-    Runs,
-    SampleDetail,
-    Samples,
-    Studies,
-    StudyDetail,
+    V2_ENDPOINT_DETAIL_PROXIES,
+    V2_ENDPOINT_LIST_PROXIES,
 )
-
-V2_ENDPOINT_LIST_PROXIES = {
-    SupportedEndpoints.BIOMES: Biomes,
-    SupportedEndpoints.STUDIES: Studies,
-    SupportedEndpoints.SAMPLES: Samples,
-    SupportedEndpoints.RUNS: Runs,
-    SupportedEndpoints.ANALYSES: Analyses,
-    SupportedEndpoints.GENOMES: Genomes,
-    SupportedEndpoints.ASSEMBLIES: Assemblies,
-}
-
-V2_ENDPOINT_DETAIL_PROXIES = {
-    SupportedEndpoints.BIOME: BiomeDetail,
-    SupportedEndpoints.STUDY: StudyDetail,
-    SupportedEndpoints.SAMPLE: SampleDetail,
-    SupportedEndpoints.RUN: RunDetail,
-    SupportedEndpoints.ANALYSIS: AnalysisDetail,
-    SupportedEndpoints.GENOME: GenomeDetail,
-    SupportedEndpoints.ASSEMBLY: AssemblyDetail,
-}
-
-V2_ENDPOINT_ALL_PROXIES = V2_ENDPOINT_LIST_PROXIES | V2_ENDPOINT_DETAIL_PROXIES
 
 
 class MGnipy:

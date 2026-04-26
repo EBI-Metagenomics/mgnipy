@@ -4,7 +4,6 @@ from typing import (
     Optional,
 )
 
-from mgnipy._models.config import MgnipyConfig
 from mgnipy.V2.query_set import QuerySet
 
 
@@ -37,7 +36,7 @@ class MGnifier(QuerySet):
             "catalogue",
         ],
         *,
-        config: Optional[MgnipyConfig] = None,
+        config: Optional[dict] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
