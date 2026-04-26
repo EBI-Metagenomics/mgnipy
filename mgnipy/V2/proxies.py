@@ -88,6 +88,29 @@ class MGnifyList(MGnifier):
         )
         self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
 
+    def __call__(self, **kwargs) -> "MGnifyList":
+        """
+        Allow calling the list proxy to create a new instance with updated params.
+        This is useful for refining the query with new parameters without having to re-specify the resource or config.
+
+        Examples
+        -------
+        # Example 1: Using call to update params
+        gut_studies = MG.studies(search="gut")
+        # Example 2: Using params
+        cancer_studies = MG.studies(params={"search": "cancer"})
+
+        Note
+        ----
+        if "params" is included in kwargs, it will be used as the new params.
+        Otherwise, all kwargs will be treated as params.
+        """
+        params = kwargs.pop("params", None) or {}
+        # Merge with params, giving precedence to kwargs
+        params.update(kwargs)
+
+        return self.__class__(config=self.config.model_dump(mode="json"), params=params)
+
     @property
     def _next_rel_module(self) -> Callable:
         """

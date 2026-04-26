@@ -19,11 +19,7 @@ class MGnipy:
         if endpoint in V2_ENDPOINT_LIST_PROXIES:
 
             list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
-
-            def _list_factory(**kwargs):
-                return list_cls(config=self._config.model_dump(mode="json"), **kwargs)
-
-            return _list_factory
+            return list_cls(config=self._config.model_dump(mode="json"))
 
         if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
             detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
