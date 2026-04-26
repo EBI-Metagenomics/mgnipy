@@ -716,13 +716,13 @@ class BiomeDetail(MGnifyDetail, BiomesTreeMixin):
         self,
         id: Optional[str] = None,
         *,
-        accession: Optional[str] = None,
+        biome_lineage: Optional[str] = None,
         config: Optional[dict] = None,
         **kwargs,
     ):
 
         super().__init__(
-            id=id or accession,
+            id=id or biome_lineage,
             config=config,
             **kwargs,
         )
