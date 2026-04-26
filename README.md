@@ -1,76 +1,132 @@
 # MGni.py
 
-MGni.py (pronounced MAG-nee-pie) python wrapper for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/), currently supports version 2 (soon to be released). 
+MGni.py (pronounced MAG-nee-pie) is a Python wrapper for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/). It provides a high-level, Pythonic interface to query metagenomics data and metadata from the MGnify database.
 
-The python client libraries were auto-generated using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). Openapi-python-client provides data models and methods for the api reources and uses httpx and attr. 
+The Python client libraries were auto-generated using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) and provide data models and methods for API resources using `httpx` and `attrs`.
+
+## Features
+
+- **Simple, Pythonic API** — Query studies, samples, analyses, and genomes with intuitive syntax
+- **Async-ready** — Built on `httpx` with async/await support for efficient I/O
+- **Data export** — Multiple output formats including pandas DataFrames and AnnData objects
+- **Caching** — Automatic caching to reduce redundant API calls
+- **Filtering & search** — Powerful filtering with support for custom parameters
+- **Biome hierarchy** — Navigate the GOLD ecosystem classification system
 
 ## Installation
 
+### From PyPI (stable)
+
 ```bash
-# TestPypi
+pip install mgnipy
+```
+
+### From TestPyPI (development)
+
+```bash
 pip install mgnipy \
 --index-url https://test.pypi.org/simple/ \
 --extra-index-url https://pypi.org/simple
 ```
 
-## Usage
+### Development installation
 
+```bash
+git clone https://github.com/EBI-Metagenomics/mgnipy.git
+cd mgnipy
+uv sync --all-groups  # or: pip install -e ".[dev,docs]"
+```
 
+## Quick Start
 
-
-You can use the `MGnifier`s to find study, sample, analyses, genome accessions and associated metadata. 
-
-First instantiate the mgnifier. Search params can be provided as `params: Optional[dict]` or `kwargs`. To see the supported kwargs there is an attribute `Mgnigier.supported_kwargs` 
+### Initialize and explore
 
 ```python
-from mgnipy.V2 import StudiesMGnifier
+from mgnipy import MGnipy
 
-# init
-glass = StudiesMGnifier(
-    # GOLD ecosystem classification
-    biomes_lineage="root:Host-associated:Plants:Rhizosphere", 
+# Create the main client
+mg = MGnipy()
+
+# See available endpoints
+print(mg.list_resources())
+```
+
+### Query studies with filtering
+
+```python
+# Search for studies by biome and keyword
+studies = mg.studies(
+    biomes_lineage="root:Host-associated:Plants:Rhizosphere",
     search="tomato"
 )
 
-# to see supported kwargs, uncomment
-#print(glass.supported_kwargs)
+# Preview requests before fetching
+print(studies.explain())
+# or preview first page as df
+df = studies.preview()
 
-# checkout the built request url, not sent yet
-print(glass)
+# Get all results (async here but also sync option)
+import asyncio
+asyncio.run(studies.aget())
 ```
 
-Then `.preview()` (lightweight) or `.dry_run()` (even lighterweight) the number of pages and records before collecting all their metadata :)
+### Multiple output formats
+
 ```python
-# only prints some info
-glass.dry_run()
+pd_df = studies.to_df()
 
-# also returns the first page of results as a pd.DataFrame
-df = glass.preview()
+# As polars DataFrame
+pl_df = studies.to_polars()
+
+# as json
+results_json = studies.to_json()
 ```
 
-Now that you ahve confirmed that this is the metadta that you want then collect it:
-(currently in memory)
+## Configuration
+
 ```python
-import asyncio 
+from mgnipy import MGnipy
 
-# returns as a pandas df, or asyncio.run()
-metadata = await df.get()
+mg = MGnipy(
+    headers={"User-Agent": "my-app/1.0"},
+    # Optional: authentication
+    auth=("username", "password")
+)
 ```
 
-You can also access `MGnifier.accessions` and pass the accessions to the mgnipy dataset collectors 
-```python
-from mgnipy.V2 import GoSlimCollector
+## Available Endpoints
 
-# init 
-bottle = GoSlimCollector(accessions=glass.accessions)
-```
+- Studies — Browse and filter metagenomic studies
+- Samples — Query sample metadata
+- Runs — Access sequencing run information
+- Assemblies — Genome assembly data
+- Genomes — Genome-level information
+- Analyses — Analysis results and annotations
+- And more... — Use `mg.list_resources()` to see all available endpoints
 
-## Additional documentation
+## Documentation
 
 - [MGnify API Docs](https://www.ebi.ac.uk/metagenomics/api/docs/)
 - [openapi-python-client](https://github.com/openapi-generators/openapi-python-client)
+- [package docs]()
 
 ## Development
+
+### Code quality
+
+```bash
+# Format and sort imports
+black mgnipy
+isort mgnipy
+
+# Lint
+ruff check mgnipy
+
+# Run tests
+pytest mgnipy tests
+```
+
+### Contributing
 
 see [Contributing.md](Contributing.md)
 
@@ -78,4 +134,6 @@ see [Contributing.md](Contributing.md)
 
 TODO
 
+## Citation
 
+TODO

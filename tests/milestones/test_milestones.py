@@ -41,25 +41,26 @@ class TestM1_CLI:
         def main(): ...
     """
 
+    @pytest.mark.xfail(strict=True, reason="cli.py does not exist yet")
     def test_current_state_no_cli_module(self):
         """Right now, importing mgnipy.cli raises ModuleNotFoundError."""
         with pytest.raises((ModuleNotFoundError, ImportError)):
             importlib.import_module("mgnipy.cli")
 
-    @pytest.mark.xfail(strict=True, reason="cli.py does not exist yet")
     def test_after_fix_cli_importable(self):
         mod = importlib.import_module("mgnipy.cli")
         assert hasattr(mod, "main"), "mgnipy.cli must expose a main() function"
         assert callable(mod.main)
 
-    @pytest.mark.xfail(strict=True, reason="cli.py does not exist yet")
     def test_after_fix_entry_point_runs(self):
         result = subprocess.run(
             [sys.executable, "-m", "mgnipy.cli", "--help"],
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0, f"cli --help exited {result.returncode}: {result.stderr}"
+        assert (
+            result.returncode == 0
+        ), f"cli --help exited {result.returncode}: {result.stderr}"
 
 
 # ---------------------------------------------------------------------------
@@ -81,8 +82,8 @@ class TestM2_ConfigFlow:
     be used by the proxy when it makes API calls.
     """
 
-    def test_current_state_default_config_used(self):
-        """Proxy always uses the default base URL regardless of what MGnipy was given."""
+    @pytest.mark.xfail(strict=True, reason="MGnipy now passes config to proxy")
+    def test_config_used(self):
         from mgnipy import MGnipy
         from mgnipy._models.config import MgnipyConfig
 
@@ -92,22 +93,21 @@ class TestM2_ConfigFlow:
         client = MGnipy(base_url=custom_url)
         proxy = client.studies
 
-        # Currently the proxy ignores the custom URL and uses the default
-        assert str(proxy._base_url) == str(default_url), (
-            "Current behaviour: proxy silently uses default URL even when client was "
+        assert str(proxy.base_url) == str(default_url), (
+            "proxy silently uses default URL even when client was "
             "constructed with a custom base_url."
+            f"\nClient base_url: {custom_url}, Proxy base_url: {proxy.base_url}"
         )
 
-    @pytest.mark.xfail(strict=True, reason="config is not yet passed to proxies")
-    def test_after_fix_custom_base_url_flows_to_proxy(self):
+    def test_custom_base_url_flows_to_proxy(self):
         from mgnipy import MGnipy
 
         custom_url = "https://custom.example.com"
         client = MGnipy(base_url=custom_url)
         proxy = client.studies
-        assert str(proxy._base_url) == custom_url
+        assert str(proxy.base_url).strip("/") == str(custom_url).strip("/")
 
-    def test_after_fix_default_url_still_works(self):
+    def test_default_url_still_works(self):
         """Default URL works regardless of fix — this is a regression guard."""
         from mgnipy import MGnipy
         from mgnipy._models.config import MgnipyConfig
@@ -138,18 +138,19 @@ class TestM3_PytestScope:
         testpaths = ["tests", "mgnipy/_shared_helpers", "mgnipy/mgnipy.py"]
     """
 
+    @pytest.mark.xfail(strict=True, reason="testpaths not yet configured")
     def test_current_state_testpaths_not_set(self):
         """pyproject.toml does not yet have a testpaths restriction."""
         pyproject = Path(__file__).parents[2] / "pyproject.toml"
         content = pyproject.read_text()
-        assert "testpaths" not in content, (
-            "testpaths is already set — check if M3 has been applied."
-        )
+        assert (
+            "testpaths" not in content
+        ), "testpaths is already set — check if M3 has been applied."
 
-    @pytest.mark.xfail(strict=True, reason="testpaths not yet configured")
     def test_after_fix_testpaths_configured(self):
         pyproject = Path(__file__).parents[2] / "pyproject.toml"
         content = pyproject.read_text()
+        print(content)
         assert "testpaths" in content
         assert "mgnipy/_shared_helpers" in content
 
@@ -178,19 +179,21 @@ class TestM4_BuildAndInstall:
     def test_current_state_package_importable(self):
         """The mgnipy package itself imports without error."""
         import mgnipy
+
         assert hasattr(mgnipy, "MGnipy")
         assert mgnipy.__version__ is not None
 
     def test_current_state_version_set(self):
         """Version is available (set via setuptools_scm from git tags)."""
         import mgnipy
+
         assert isinstance(mgnipy.__version__, str)
         assert len(mgnipy.__version__) > 0
 
-    @pytest.mark.xfail(strict=True, reason="cli.py missing — wheel entry point is broken")
     def test_after_fix_wheel_entry_point_resolves(self):
         """After M1 is fixed, the entry point module must be importable."""
         import mgnipy.cli
+
         assert callable(mgnipy.cli.main)
 
 
@@ -211,28 +214,34 @@ class TestM5_README:
 
     README = Path(__file__).parents[2] / "README.md"
 
+    @pytest.mark.xfail
     def test_current_state_stale_class_names_present(self):
         """README currently contains at least one stale class name."""
         content = self.README.read_text()
-        stale = [name for name in ("StudiesMGnifier", "GoSlimCollector") if name in content]
+        stale = [
+            name for name in ("StudiesMGnifier", "GoSlimCollector") if name in content
+        ]
         assert len(stale) > 0, (
-            f"Expected to find stale class names in README but found none. "
+            "Expected to find stale class names in README but found none. "
             "Check if M5 has already been applied."
         )
 
-    @pytest.mark.xfail(strict=True, reason="README not yet updated")
     def test_after_fix_no_stale_class_names(self):
         content = self.README.read_text()
         for stale in ("StudiesMGnifier", "GoSlimCollector"):
-            assert stale not in content, f"README still references removed class: {stale}"
+            assert (
+                stale not in content
+            ), f"README still references removed class: {stale}"
 
-    @pytest.mark.xfail(strict=True, reason="README not yet updated with accurate usage examples")
     def test_after_fix_has_to_df_example(self):
         """After rewrite, README should show the to_df() output formatter."""
         content = self.README.read_text()
         assert "to_df()" in content
 
-    @pytest.mark.xfail(strict=True, reason="README not yet updated — TestPyPI workaround should be removed")
+    @pytest.mark.xfail(
+        strict=True,
+        reason="README not yet updated — TestPyPI workaround should be removed",
+    )
     def test_after_fix_no_testpypi_workaround(self):
         """After rewrite, install should be a clean pip install without --index-url TestPyPI."""
         content = self.README.read_text()
@@ -257,10 +266,12 @@ class TestRegressions:
 
     def test_mgnifier_imports(self):
         from mgnipy.V2.core import MGnifier
+
         assert MGnifier is not None
 
     def test_queryset_imports(self):
         from mgnipy.V2.query_set import QuerySet
+
         assert QuerySet is not None
 
     def test_proxy_classes_import(self):
@@ -272,20 +283,24 @@ class TestRegressions:
             Samples,
             Studies,
         )
+
         for cls in (Analyses, Biomes, Genomes, Runs, Samples, Studies):
             assert cls is not None
 
     def test_mgnipy_facade_imports(self):
         from mgnipy import MGnipy
+
         assert MGnipy is not None
 
     def test_mgnipy_instantiates(self):
         from mgnipy import MGnipy
+
         client = MGnipy()
         assert client is not None
 
     def test_mgnipy_list_resources(self):
         from mgnipy import MGnipy
+
         client = MGnipy()
         resources = client.list_resources()
         assert isinstance(resources, list)
@@ -294,6 +309,7 @@ class TestRegressions:
 
     def test_queryset_filter_is_immutable_clone(self):
         from mgnipy.V2.query_set import QuerySet
+
         qs = QuerySet(resource="studies")
         qs2 = qs.filter(biome="root:Environmental")
         assert qs is not qs2
@@ -302,6 +318,7 @@ class TestRegressions:
 
     def test_queryset_page_size_clone(self):
         from mgnipy.V2.query_set import QuerySet
+
         qs = QuerySet(resource="studies")
         qs2 = qs.page_size(10)
         assert qs is not qs2
@@ -309,19 +326,25 @@ class TestRegressions:
 
     def test_queryset_request_url_builds(self):
         from mgnipy.V2.query_set import QuerySet
+
         qs = QuerySet(resource="studies", params={"page_size": 5})
         url = qs.request_url
         assert "studies" in url or "metagenomics" in url
 
     def test_config_defaults(self):
         from mgnipy._models.config import MgnipyConfig
+
         config = MgnipyConfig()
         assert config.base_url is not None
-        assert "ebi.ac.uk" in str(config.base_url) or "mgnipy" in str(config.base_url).lower()
+        assert (
+            "ebi.ac.uk" in str(config.base_url)
+            or "mgnipy" in str(config.base_url).lower()
+        )
 
     @pytest.mark.live_api
     def test_mgnifier_first_page_studies(self):
         from mgnipy.V2.core import MGnifier
+
         mg = MGnifier(resource="studies", params={"page_size": 3})
         mg.first()
         df = mg.to_df()
@@ -331,6 +354,7 @@ class TestRegressions:
     @pytest.mark.live_api
     def test_mgnifier_to_polars(self):
         from mgnipy.V2.core import MGnifier
+
         mg = MGnifier(resource="studies", params={"page_size": 3})
         mg.first()
         df = mg.to_polars()
@@ -340,6 +364,7 @@ class TestRegressions:
     @pytest.mark.live_api
     def test_mgnifier_to_list(self):
         from mgnipy.V2.core import MGnifier
+
         mg = MGnifier(resource="studies", params={"page_size": 3})
         mg.first()
         result = mg.to_list()
@@ -349,6 +374,7 @@ class TestRegressions:
     @pytest.mark.live_api
     def test_mgnifier_to_json(self):
         from mgnipy.V2.core import MGnifier
+
         mg = MGnifier(resource="studies", params={"page_size": 3})
         mg.first()
         result = mg.to_json()
@@ -358,6 +384,7 @@ class TestRegressions:
     @pytest.mark.live_api
     def test_mgnifier_filter_then_fetch(self):
         from mgnipy.V2.core import MGnifier
+
         mg = MGnifier(resource="studies")
         filtered = mg.filter(biome_lineage="root:Environmental:Aquatic", page_size=2)
         filtered.first()
@@ -367,6 +394,7 @@ class TestRegressions:
     @pytest.mark.live_api
     def test_mgnifier_dry_run_sets_count(self):
         from mgnipy.V2.core import MGnifier
+
         mg = MGnifier(resource="studies", params={"page_size": 5})
         mg.dry_run()
         assert mg.count is not None
