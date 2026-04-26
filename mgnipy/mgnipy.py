@@ -1,3 +1,5 @@
+from typing import Optional
+
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.proxies import (
@@ -26,8 +28,10 @@ class MGnipy:
 
             # Return a callable so required args like accession/biome_lineage
             # are provided when user calls MG.study(...), MG.biome(...), etc.
-            def _detail_factory(**kwargs):
-                return detail_cls(config=self._config.model_dump(mode="json"), **kwargs)
+            def _detail_factory(id: Optional[str] = None, **kwargs):
+                return detail_cls(
+                    id=id, config=self._config.model_dump(mode="json"), **kwargs
+                )
 
             return _detail_factory
 
