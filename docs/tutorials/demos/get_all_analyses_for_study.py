@@ -42,9 +42,7 @@ import pandas as pd  # optional
 
 # %%
 # init
-MG = MGnipy(
-    # configuration
-)
+MG = MGnipy()
 
 # helper
 MG.list_resources()
@@ -55,7 +53,7 @@ MG.list_resources()
 # Since we know our MGnify study ID we can provide as accession
 
 # %%
-study = MG.studies(accession="MGYS00010442")
+study = MG.study(accession="MGYS00010442")
 print(study)
 
 # %% [markdown]
@@ -66,6 +64,13 @@ await study.aget()
 # or
 # study.get()
 
+# %%
+study.to_df()
+
+# %%
+analyses = study.analyses
+await analyses.aget()
+
 # %% [markdown]
 # we can take a look at what was returned in numerous view options
 # - `.results` response parsed as dict
@@ -74,9 +79,6 @@ await study.aget()
 # - `.to_polars()` as polars dataframe
 # - `.to_json()` as json
 
-# %%
-study.to_df()
-
 # %% [markdown]
 # ## Option 1: Find analyses by study id
 # without getting sample and run info
@@ -84,10 +86,25 @@ study.to_df()
 
 # %%
 study_analyses = study.analyses
+print(study_analyses)
+
+# %%
+study_analyses.page_size(10)
+# print(kk)
+# kk.explain()
+
+# %%
+study_analyses.explain()
+
+# %%
+
 # instead get ~10 at a time instead of default ~25
 study_analyses = study_analyses.page_size(10)
 # preview
-study_analyses.explain()
+study_analyses.endpoint_module
+
+# %%
+study_analyses.dry_run()
 
 # %% [markdown]
 # alright we want this study's analyses
@@ -95,17 +112,31 @@ study_analyses.explain()
 # %%
 await study_analyses.aget()
 
+# %%
+study_analyses[0]
+
 # %% tags=["hide-output"]
 study_analyses_details = await study_analyses.acollect_details(
-    fetch=True, by_accession=True  # not lazily  # else as a list
+    fetch=True,  # not lazily
+    # by_accession=True # else as a list
 )
 
 # %%
-df_study_analyses_details = pd.concat(
-    [study_analyses_details[x].to_df() for x in study_analyses_details]
-)
+study_analyses_details[0].resource
 
-df_study_analyses_details.head()
+# %%
+ok = study_analyses_details[0].annotations
+
+ok.endpoint_module
+
+# %%
+ok.explain()
+
+# %%
+await ok.aget()
+
+# %%
+ok.to_df()
 
 # %% [markdown]
 # ## Optional: get sample and runs metadata too
@@ -160,9 +191,6 @@ study_samples_details = await study_samples.acollect_details(
     fetch=True, by_accession=True  # not lazily  # else as a list
 )
 
-# %%
-study_samples_details["SAMEA8156338"].to_df()
-
 # %% [markdown]
 # ### And now traversing their runs metadata
 
@@ -202,10 +230,7 @@ runs_details = {
 # we can take a look at the runs details
 
 # %%
-import pandas as pd
-
 df_runs_details = pd.concat([runs_details[run][0].to_df() for run in runs_details])
-
 df_runs_details.head()
 
 # %% [markdown]
@@ -229,19 +254,3 @@ df_analyses_details = pd.concat(
 )
 
 df_analyses_details.head()
-
-# %% [markdown]
-# # stop
-
-# %%
-
-# %%
-from mgnipy._shared_helpers.ena_helpers import (
-    get_analyses_accession_by_study_accession,
-    ENAAnalysisFields,
-)
-
-get_analyses_accession_by_study_accession(limit=10)
-
-# %%
-ENAAnalysisFields.all_values_as_str()

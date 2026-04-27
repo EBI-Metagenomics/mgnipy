@@ -1,4 +1,4 @@
-# MGnify API_v2 python client submodule
+# emgapi-v2-client submodule
 
 A client library for accessing version 2 of the MGnify API
 
@@ -9,25 +9,41 @@ Expand for more info on how the client library was generated using
 </summary>
 <h1></h1>
 
-`mgnipy.emgapi_v2_client` is a python library that was automatically generated from the MGnify API_v2 openapi.json url using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). An example of the command that was used:
+`mgnipy.emgapi_v2_client` is a python library that was created from the [openapi.json spec](ttps://www.ebi.ac.uk/metagenomics/api/v2/openapi.json) using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). An example of the command that was used:
 
-```shell
+```bash
 openapi-python-client generate \
     --url https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json \
-    --output-path "mgnipy/openapi/mgni-py-v2" \
+    --output-path "mgnipy/emgapi-v2-client" \
     --config "config_v2.yaml" \
     --overwrite
 ```
 
-Specifically **_./autogen_clients.sh_** was used to generate the python client library `mgni-py-v2` using `openapi-python-client generate`
+Specifically [**_./autogen_clients.sh_**](https://github.com/EBI-Metagenomics/mgnipy/blob/main/autogen_clients.sh) was used to generate the python client library `emgapi_v2_client` using the command `openapi-python-client generate`
 
-Then the module dir was moved into mgnipy dir.
+The genereated python client was moved into the mgnipy package and is treated as a submodule in mgnipy.
 
 <h1></h1>
 </details>
 <br>
+<br>
 
-The rest of the readme was automatically generated and provided by openapi-python-client (with updates to the import paths):
+## Introduction
+
+The `emgapi_v2_client` is a Python library that provides programmatic access to version 2 of the MGnify API. It serves as the core HTTP client within the MGni.py package, enabling seamless interaction with MGnify's comprehensive dataset of metagenomic analyses, samples, runs, assemblies, genomes, and more. It abstracts away the complexity of direct HTTP requests while maintaining type safety through `attrs`-based models.
+
+### Purpose
+
+This client library was automatically generated from the [MGnify API v2 OpenAPI specification](https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json) using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client), ensuring that it stays synchronized with the latest API endpoints and models.
+
+### Key Features
+
+- **Type-safe API interactions**: All requests and responses are validated using `attrs` models
+- **Flexible authentication**: Support for both public endpoints and authenticated requests via API tokens
+- **Synchronous and asynchronous support**: Call endpoints using either blocking `sync` operations or async/await patterns
+- **Detailed response information**: Access raw response data, status codes, and parsed models
+
+The rest of this readme was also initiated by [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) when using `generate` and provides instructions on how to use the generated client directly.
 
 ## Usage
 
@@ -36,7 +52,7 @@ First, create a client:
 ```python
 from mgnipy.emgapi_v2_client import Client
 
-client = Client(base_url="https://api.example.com")
+client = Client(base_url="https://www.ebi.ac.uk")
 ```
 
 If the endpoints you're going to hit require authentication, use `AuthenticatedClient` instead:
@@ -44,7 +60,7 @@ If the endpoints you're going to hit require authentication, use `AuthenticatedC
 ```python
 from mgnipy.emgapi_v2_client import AuthenticatedClient
 
-client = AuthenticatedClient(base_url="https://api.example.com", token="SuperSecretToken")
+client = AuthenticatedClient(base_url="https://www.ebi.ac.uk", token="SuperSecretToken")
 ```
 
 Now call your endpoint and use your models:
@@ -138,20 +154,3 @@ client = Client(
 # Note that base_url needs to be re-set, as would any shared cookies, headers, etc.
 client.set_httpx_client(httpx.Client(base_url="https://api.example.com", proxies="http://localhost:8030"))
 ```
-
-## Building / publishing this package
-
-This project uses [Poetry](https://python-poetry.org/) to manage dependencies and packaging. Here are the basics:
-
-1. Update the metadata in pyproject.toml (e.g. authors, version)
-1. If you're using a private repository, configure it with Poetry
-   1. `poetry config repositories.<your-repository-name> <url-to-your-repository>`
-   1. `poetry config http-basic.<your-repository-name> <username> <password>`
-1. Publish the client with `poetry publish --build -r <your-repository-name>` or, if for public PyPI, just `poetry publish --build`
-
-If you want to install this client into another project without publishing it (e.g. for development) then:
-
-1. If that project **is using Poetry**, you can simply do `poetry add <path-to-this-client>` from that project
-1. If that project is not using Poetry:
-   1. Build a wheel with `poetry build -f wheel`
-   1. Install that wheel from the other project `pip install <path-to-wheel>`
