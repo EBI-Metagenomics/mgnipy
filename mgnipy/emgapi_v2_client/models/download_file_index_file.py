@@ -11,6 +11,10 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.download_file_index_file_index_type import DownloadFileIndexFileIndexType
+from ..types import (
+    UNSET,
+    Unset,
+)
 
 T = TypeVar("T", bound="DownloadFileIndexFile")
 
@@ -21,27 +25,31 @@ class DownloadFileIndexFile:
 
     Attributes:
         index_type (DownloadFileIndexFileIndexType):
-        path (str):
+        path (str | Unset):
     """
 
     index_type: DownloadFileIndexFileIndexType
-    path: str
+    path: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         index_type = self.index_type.value
 
-        path: str
-        path = self.path
+        path: str | Unset
+        if isinstance(self.path, Unset):
+            path = UNSET
+        else:
+            path = self.path
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
                 "index_type": index_type,
-                "path": path,
             }
         )
+        if path is not UNSET:
+            field_dict["path"] = path
 
         return field_dict
 
@@ -50,10 +58,12 @@ class DownloadFileIndexFile:
         d = dict(src_dict)
         index_type = DownloadFileIndexFileIndexType(d.pop("index_type"))
 
-        def _parse_path(data: object) -> str:
-            return cast(str, data)
+        def _parse_path(data: object) -> str | Unset:
+            if isinstance(data, Unset):
+                return data
+            return cast(str | Unset, data)
 
-        path = _parse_path(d.pop("path"))
+        path = _parse_path(d.pop("path", UNSET))
 
         download_file_index_file = cls(
             index_type=index_type,

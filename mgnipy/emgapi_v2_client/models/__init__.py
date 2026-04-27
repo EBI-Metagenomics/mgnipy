@@ -96,6 +96,9 @@ from .ninja_pagination_response_schema_analysed_run import (
 from .ninja_pagination_response_schema_assembly import (
     NinjaPaginationResponseSchemaAssembly,
 )
+from .ninja_pagination_response_schema_assembly_detail import (
+    NinjaPaginationResponseSchemaAssemblyDetail,
+)
 from .ninja_pagination_response_schema_biome import NinjaPaginationResponseSchemaBiome
 from .ninja_pagination_response_schema_genome_assembly_link_schema import (
     NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema,
@@ -235,6 +238,7 @@ __all__ = (
     "NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema",
     "NinjaPaginationResponseSchemaAnalysedRun",
     "NinjaPaginationResponseSchemaAssembly",
+    "NinjaPaginationResponseSchemaAssemblyDetail",
     "NinjaPaginationResponseSchemaBiome",
     "NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema",
     "NinjaPaginationResponseSchemaGenomeCatalogueList",
