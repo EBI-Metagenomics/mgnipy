@@ -330,7 +330,7 @@ class QueryExecutor:
         *,
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
-        safety: bool = True,
+        safety: bool = False,
     ) -> list[int]:
         """
         Resolve the list of page numbers to collect based on the provided limit and pages parameters.
@@ -392,7 +392,7 @@ class QueryExecutor:
         client: Client,
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
-        safety: bool = True,
+        safety: bool = False,
         hide_progress: bool = False,
     ):
         """
@@ -430,7 +430,7 @@ class QueryExecutor:
         client: Client,
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
-        safety: bool = True,
+        safety: bool = False,
         hide_progress: bool = False,
     ):
         """
@@ -468,7 +468,7 @@ class QueryExecutor:
         limit: Optional[int] = None,
         *,
         pages: Optional[list[int]] = None,
-        safety: bool = True,
+        safety: bool = False,
         hide_progress: bool = False,
     ):
         """Getting all"""
@@ -490,7 +490,7 @@ class QueryExecutor:
         limit: Optional[int] = None,
         *,
         pages: Optional[list[int]] = None,
-        safety: bool = True,
+        safety: bool = False,
         hide_progress: bool = False,
     ):
         """Getting all asynchronously"""
