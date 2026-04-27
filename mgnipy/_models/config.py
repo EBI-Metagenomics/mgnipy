@@ -2,12 +2,9 @@ from typing import (
     Optional,
 )
 
-from platformdirs import user_cache_dir
 from pydantic import (
-    AliasChoices,
     BaseModel,
     ConfigDict,
-    DirectoryPath,
     Field,
     HttpUrl,
     field_serializer,
@@ -39,11 +36,11 @@ class MgnipyConfig(BaseModel):
         description="Authentication token for private data access",
         repr=False,
     )
-    cache_dir: Optional[DirectoryPath] = Field(
-        default_factory=lambda: user_cache_dir("mgnipy", "MGnify"),
-        description="Directory for caching API responses. Defaults to the user cache directory.",
-        alias=AliasChoices("cache_dir", "cache_directory"),
-    )
+    # cache_dir: Optional[DirectoryPath] = Field(
+    #     default_factory=lambda: user_cache_dir("mgnipy", "MGnify"),
+    #     description="Directory for caching API responses. Defaults to the user cache directory.",
+    #     alias=AliasChoices("cache_dir", "cache_directory"),
+    # )
 
     @field_serializer("base_url")
     def serialize_base_url(self, v: HttpUrl) -> str:

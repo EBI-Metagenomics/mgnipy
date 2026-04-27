@@ -4,10 +4,9 @@ import pytest
 
 from mgnipy.V2.core import MGnifier
 
-
-@pytest.fixture
-def cache_dir():
-    return "pytesting_core_mgnifier_cache"
+# @pytest.fixture
+# def cache_dir():
+#     return "pytesting_core_mgnifier_cache"
 
 
 @pytest.fixture
