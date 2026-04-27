@@ -52,6 +52,7 @@ dev = [
     "openapi-python-client>=0.17.3",
     "pre-commit>=4.5.1",
     "pytest>=8.4.2",
+    "pyyaml>=6.0.3",
     "ruff>=0.14.13",
 ]
 docs = [
