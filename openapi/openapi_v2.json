@@ -3,7 +3,7 @@
   "info": {
     "title": "MGnify API",
     "version": "2.0.0",
-    "description": "**The API for [MGnify](https://www.ebi.ac.uk/metagenomics), EBI\u2019s platform for the submission, analysis, discovery and comparison of metagenomic-derived datasets.**\n\n## Endpoints\nAPI endpoints (URLs) are available for all data types stored in MGnify.\nIn general, there are list endpoints (ending `/`) and detail endpoints (ending `/<accession>`) for individually accessioned data.\nWhere a data type is not accessioned, alternative natural identifiers are used (like a short `slug` for Super Studies).\nCommonly used relationships are available as nested list endpoints, like `studies/{accession}/samples` for the samples belonging to a study.\n\n## Data format\nThe API returns JSON responses.\nList endpoints return data in the format `{count: 10, items: [{...}, ...]}` (unless specified otherwise).\nDetail endpoints return a single object `{...}`.\n\n## Data availability\nMost data are public, available without authentication.\nPrivate data is available only to authenticated users, and the authentication is based on Webin credentials from ENA.\nTo use these, a JWT token must be obtained for the Webin credentials, using the `/auth` endpoints.\n",
+    "description": "**The API for [MGnify](https://www.ebi.ac.uk/metagenomics), EBI’s platform for the submission, analysis, discovery and comparison of metagenomic-derived datasets.**\n\n## Endpoints\nAPI endpoints (URLs) are available for all data types stored in MGnify.\nIn general, there are list endpoints (ending `/`) and detail endpoints (ending `/<accession>`) for individually accessioned data.\nWhere a data type is not accessioned, alternative natural identifiers are used (like a short `slug` for Super Studies).\nCommonly used relationships are available as nested list endpoints, like `studies/{accession}/samples` for the samples belonging to a study.\n\n## Data format\nThe API returns JSON responses.\nList endpoints return data in the format `{count: 10, items: [{...}, ...]}` (unless specified otherwise).\nDetail endpoints return a single object `{...}`.\n\n## Data availability\nMost data are public, available without authentication.\nPrivate data is available only to authenticated users, and the authentication is based on Webin credentials from ENA.\nTo use these, a JWT token must be obtained for the Webin credentials, using the `/auth` endpoints.\n",
     "contact": {
       "name": "MGnify Support",
       "url": "https://www.ebi.ac.uk/about/contact/support/metagenomics"
@@ -2031,6 +2031,13 @@
                   "accession": "$request.path.accession"
                 },
                 "description": "Analyses performed on this run"
+              },
+              "GetAssembliesForRun": {
+                "operationId": "list_runs_assemblies",
+                "parameters": {
+                  "accession": "$request.path.accession"
+                },
+                "description": "Assemblies generated from or including this run"
               }
             }
           }
@@ -2116,6 +2123,85 @@
         },
         "description": "MGnify analyses correspond to an individual Run or Assembly",
         "tags": ["Runs", "Analyses"],
+        "security": [
+          {
+            "WebinJWTAuth": []
+          },
+          {
+            "SessionAuthSuperUser": []
+          },
+          {
+            "NoAuth": []
+          }
+        ]
+      }
+    },
+    "/metagenomics/api/v2/runs/{accession}/assemblies/": {
+      "get": {
+        "operationId": "list_runs_assemblies",
+        "summary": "List Assemblies associated with this Run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accession",
+            "schema": {
+              "title": "Accession",
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Size"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NinjaPaginationResponseSchema_AssemblyDetail_"
+                }
+              }
+            },
+            "links": {
+              "GetAssemblyFromRunItemsList": {
+                "operationId": "get_assembly",
+                "parameters": {
+                  "accession": "$response.body#/items/0/accession"
+                },
+                "description": "The accession is an identifier that can be used to access the Assembly detail"
+              }
+            }
+          }
+        },
+        "description": "Assemblies generated from or including this run",
+        "tags": ["Runs", "Assemblies"],
         "security": [
           {
             "WebinJWTAuth": []
@@ -2242,9 +2328,16 @@
             "type": "string"
           },
           "accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "examples": ["ERR0000001"],
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
           },
           "sample_accession": {
             "anyOf": [
@@ -2299,7 +2392,6 @@
         },
         "required": [
           "experiment_type",
-          "accession",
           "instrument_model",
           "instrument_platform"
         ],
@@ -2368,7 +2460,7 @@
             "title": "Path"
           }
         },
-        "required": ["index_type", "path"],
+        "required": ["index_type"],
         "title": "DownloadFileIndexFile",
         "type": "object"
       },
@@ -2554,9 +2646,9 @@
           }
         },
         "required": [
+          "experiment_type",
           "study_accession",
           "accession",
-          "experiment_type",
           "run",
           "sample",
           "assembly",
@@ -2805,7 +2897,7 @@
         "type": "object"
       },
       "PipelineVersions": {
-        "enum": ["V5", "V6"],
+        "enum": ["V1", "V2", "V3", "V4", "V4.1", "V5", "V6", "V6.1"],
         "title": "PipelineVersions",
         "type": "string"
       },
@@ -3090,9 +3182,9 @@
           }
         },
         "required": [
+          "experiment_type",
           "study_accession",
           "accession",
-          "experiment_type",
           "run",
           "sample",
           "assembly",
@@ -4301,9 +4393,9 @@
           }
         },
         "required": [
+          "experiment_type",
           "study_accession",
           "accession",
-          "experiment_type",
           "run",
           "sample",
           "assembly",
@@ -5946,9 +6038,16 @@
             "type": "string"
           },
           "accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "examples": ["ERR0000001"],
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
           },
           "sample_accession": {
             "anyOf": [
@@ -6023,13 +6122,30 @@
         },
         "required": [
           "experiment_type",
-          "accession",
           "instrument_model",
           "instrument_platform",
           "sample",
           "study"
         ],
         "title": "AnalysedRunDetail",
+        "type": "object"
+      },
+      "NinjaPaginationResponseSchema_AssemblyDetail_": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AssemblyDetail"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": ["count", "items"],
+        "title": "NinjaPaginationResponseSchema[AssemblyDetail]",
         "type": "object"
       },
       "WebinTokenResponse": {

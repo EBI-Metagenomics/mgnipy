@@ -1,3 +1,4 @@
 # https://github.com/openapi-generators/openapi-python-client?tab=readme-ov-file#configuration
 project_name_override: emgapi-v1-client
-package_name_override: emgapi-v1-client
+package_name_override: emgapi_v1_client
+package_version_override: 1.0.0
