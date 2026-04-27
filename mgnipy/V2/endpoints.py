@@ -39,7 +39,7 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_samples,
 )
 
-LIST_ENDPOINTS = {
+LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
@@ -51,7 +51,7 @@ LIST_ENDPOINTS = {
     SupportedEndpoints.CATALOGUES: list_genome_catalogues,  # not really a list endpoint but fits better here than acc detail
 }
 
-ACC_DETAIL_ENDPOINTS = {
+DETAIL_ENDPOINTS_BY_ID: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.BIOME: list_mgnify_biomes,
     SupportedEndpoints.STUDY: get_mgnify_study,
     SupportedEndpoints.SAMPLE: get_mgnify_sample,
@@ -63,9 +63,11 @@ ACC_DETAIL_ENDPOINTS = {
     SupportedEndpoints.CATALOGUE: get_genome_catalogue,
 }
 
-ALL_ENDPOINTS = LIST_ENDPOINTS | ACC_DETAIL_ENDPOINTS
+ALL_ENDPOINTS: dict[SupportedEndpoints, callable] = (
+    LIST_ENDPOINTS | DETAIL_ENDPOINTS_BY_ID
+)
 
-WITHIN_RESOURCE_RELATIONSHIPS = {
+PARENT_CHILD_RESOURCES: dict[SupportedEndpoints, SupportedEndpoints] = {
     SupportedEndpoints.BIOMES: SupportedEndpoints.BIOME,
     SupportedEndpoints.STUDIES: SupportedEndpoints.STUDY,
     SupportedEndpoints.SAMPLES: SupportedEndpoints.SAMPLE,
@@ -73,10 +75,21 @@ WITHIN_RESOURCE_RELATIONSHIPS = {
     SupportedEndpoints.ANALYSES: SupportedEndpoints.ANALYSIS,
     SupportedEndpoints.GENOMES: SupportedEndpoints.GENOME,
     SupportedEndpoints.ASSEMBLIES: SupportedEndpoints.ASSEMBLY,
+    SupportedEndpoints.PUBLICATIONS: SupportedEndpoints.PUBLICATION,
+    SupportedEndpoints.CATALOGUES: SupportedEndpoints.CATALOGUE,
+}
+
+WITHIN_RESOURCE_RELATIONSHIPS: dict[
+    SupportedEndpoints, dict[SupportedEndpoints, callable]
+] = {
+    parent: {child: DETAIL_ENDPOINTS_BY_ID[child]}
+    for parent, child in PARENT_CHILD_RESOURCES.items()
 }
 
 # I think this kinda follows the openapi "Links" on the right of the docs?
-BETWEEN_RESOURCE_RELATIONSHIPS = {
+BETWEEN_RESOURCE_RELATIONSHIPS: dict[
+    SupportedEndpoints, dict[SupportedEndpoints, callable]
+] = {
     # for a biome detail, can list all studies associated with that biome
     SupportedEndpoints.BIOME: {SupportedEndpoints.STUDIES: list_mgnify_studies},
     # for a study detail,
@@ -106,5 +119,8 @@ BETWEEN_RESOURCE_RELATIONSHIPS = {
     },
 }
 
+ALL_SUPPORTED_RELATIONSHIPS: dict[
+    SupportedEndpoints, dict[SupportedEndpoints, callable]
+] = (WITHIN_RESOURCE_RELATIONSHIPS | BETWEEN_RESOURCE_RELATIONSHIPS)
 
 # so basically an agent could update this based on openapi.json spec changes, and then the rest of the code should work without needing to change? maybe some edge cases but ideally this is how we can future proof against API changes

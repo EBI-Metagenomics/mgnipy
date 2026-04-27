@@ -1,4 +1,3 @@
-import inspect
 import logging
 import os
 from copy import deepcopy
@@ -8,19 +7,21 @@ from typing import (
     Literal,
     Optional,
 )
-from urllib.parse import urlencode
 
 import pandas as pd
 
 from mgnipy._models.config import MgnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy.V2.endpoints import ALL_ENDPOINTS as ENDPOINTS
+from mgnipy.V2.endpoints import (
+    ALL_ENDPOINTS,
+    ALL_SUPPORTED_RELATIONSHIPS,
+)
 from mgnipy.V2.mixins import (
-    ResultHandlerMixin,
+    DescribeEmgapiMixin,
+    ResultsHandlerMixin,
 )
 from mgnipy.V2.query_executor import QueryExecutor
 
-BASE_URL = MgnipyConfig().base_url
 ID_PARAM = {
     SupportedEndpoints.BIOMES: "biome_lineage",
     SupportedEndpoints.BIOME: "biome_lineage",
@@ -43,7 +44,7 @@ ID_PARAM = {
 }
 
 
-class QuerySet(ResultHandlerMixin):
+class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
     """
     Plans, builds, validates and previews queries based on endpoint_module and params of the MGnifier owner.
     Stores the request urls.
@@ -69,11 +70,14 @@ class QuerySet(ResultHandlerMixin):
             "assembly",
         ],
         *,
+        config: Optional[MgnipyConfig] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
 
-        self._base_url: str = BASE_URL
+        self.config = MgnipyConfig(**config) if config else MgnipyConfig()
+
+        self._base_url: str = str(self.config.base_url)
         self._resource = SupportedEndpoints.validate(resource)
         # params as dict
         self._params: dict[str, Any] = params or {}
@@ -82,11 +86,11 @@ class QuerySet(ResultHandlerMixin):
             self._params.update(kwargs)
 
         # default endpoint modules based on resource, can be overridden by owner
-        self._endpoint_module: Callable = ENDPOINTS[self._resource]
+        self._endpoint_module: Callable = ALL_ENDPOINTS[self._resource]
 
         # check that params are valid for endpoint module
         # check params are valid for endpoint
-        # self._endpoint_module._get_kwargs(**self._params)
+        # self.validate_endpoint_kwargs(**self._params)
 
         self.exec: QueryExecutor = QueryExecutor(self)
 
@@ -122,7 +126,7 @@ class QuerySet(ResultHandlerMixin):
         # clone the current instance but with updated endpoint module
         self._endpoint_module = value
         # check params are valid for new endpoint module
-        # self._endpoint_module._get_kwargs(**self._params)
+        # self.validate_endpoint_kwargs(**self._params)
         # reset results and urls since endpoint module changed
         self._results = {}
         self.request_urls = None
@@ -135,11 +139,28 @@ class QuerySet(ResultHandlerMixin):
     def params(self, new_params: dict[str, Any]):
         self._params = new_params
         # check that params are valid for endpoint module
-        self.endpoint_module._get_kwargs(**self._params)
+        _ = self.validate_endpoint_kwargs(**self._params)
 
     @property
     def results(self) -> dict[int, list[dict]]:
         return self._results
+
+    @property
+    def results_ids(self) -> Optional[list[str]]:
+        """
+        Get a list of accessions from the retrieved metadata results, if available.
+
+        Returns
+        -------
+        list of str or None
+            A list of accession strings if available, otherwise None.
+        """
+        if self.to_df() is None:
+            return None
+        elif self.id_param_key in self.to_df().columns:
+            return self.to_df()[self.id_param_key].tolist()
+        else:
+            return None
 
     @property
     def resource(self) -> SupportedEndpoints:
@@ -148,9 +169,9 @@ class QuerySet(ResultHandlerMixin):
     @resource.setter
     def resource(self, value: str):
         self._resource = SupportedEndpoints.validate(value)
-        self.endpoint_module = ENDPOINTS[self._resource]
+        self.endpoint_module = ALL_ENDPOINTS[self._resource]
         # check that params are valid for new endpoint module
-        self.endpoint_module._get_kwargs(**self._params)
+        _ = self.validate_endpoint_kwargs(**self._params)
         # reset results and urls since resource changed
         self._results = {}
         self.request_urls = None
@@ -183,17 +204,31 @@ class QuerySet(ResultHandlerMixin):
         return page_num in self._results
 
     # PARAM HANDLING
-    def _spawn(self, *, resource: Optional[str] = None, **params) -> "QuerySet":
+    def _spawn(
+        self,
+        *,
+        target_resource: Optional[str] = None,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> "QuerySet":
         """
         Spawn a new QuerySet instance for a related resource with given parameters.
 
         Returns
         -------
         QuerySet
-            A new QuerySet instance with the same resource and parameters but no cached results.
+            A new QuerySet instance with other resource and parameters.
 
         """
-        return QuerySet(resource=resource or self.resource, **params)
+
+        merged_params = {**(params or {}), **kwargs}
+        resource_override = merged_params.pop("resource", None)
+
+        return QuerySet(
+            resource=target_resource or resource_override or self.resource,
+            config=self.config,
+            params=merged_params,
+        )
 
     def _clone(self, **param_overrides):
         """
@@ -211,23 +246,21 @@ class QuerySet(ResultHandlerMixin):
         QuerySet
             A new instance of the same class with the updated parameters.
         """
+        merged_params = {**self.params, **param_overrides}
+        resource_override = merged_params.pop("resource", None)
 
-        # make a copy of current instance but with updated params and same resource, endpoint module etc
-        base_params = deepcopy(self.params)
-
-        if self.__class__.__name__ == "QuerySet":
-            return self.__class__(
-                resource=self.resource,
-                params=base_params,
-                **param_overrides,
-            )
-
-        # for proxy subclasses
-        param_overrides.pop("resource", None)
-        return self.__class__(
-            params=base_params,
-            **param_overrides,
+        target_resource = (
+            getattr(self, "RESOURCE", None) or resource_override or self.resource
         )
+
+        new_qs = self.__class__(
+            resource=target_resource,
+            config=self.config.model_dump(mode="json"),
+            params=merged_params,
+        )
+        new_qs.endpoint_module = self.endpoint_module
+
+        return new_qs
 
     def filter(
         self,
@@ -290,18 +323,6 @@ class QuerySet(ResultHandlerMixin):
             and "page_size" in self.list_supported_params()
         )
 
-    def list_supported_params(self) -> list[str]:
-        """
-        Lists supported keyword arguments for the endpoint module.
-
-        Returns
-        -------
-        list of str
-            List of supported keyword argument names.
-        """
-        sig = inspect.signature(self.endpoint_module._get_kwargs)
-        return list(sig.parameters.keys())
-
     def _build_request_params(
         self, params: Optional[dict[str, Any]] = None, **kwargs
     ) -> dict[str, Any]:
@@ -331,7 +352,6 @@ class QuerySet(ResultHandlerMixin):
     def _build_request_url(
         self,
         params: Optional[dict[str, Any]] = None,
-        exclude: list[str] = None,
     ) -> str:
         """
         Build a URL for the current resource and parameters using
@@ -352,30 +372,12 @@ class QuerySet(ResultHandlerMixin):
         str
             The constructed URL.
         """
-        # specific to api design, exclude params not used for filtering
-        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
-        params = params or self.params
-        # check params are valid for endpoint
-        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**params)
-        # resource based on emgapi_v2_client
-        emgapi_resource = os.path.basename(
-            os.path.dirname(self.endpoint_module.__file__)
-        )
-
-        _end_url: str = _kwargs.get(
-            "url", f"/metagenomics/api/v2/{emgapi_resource}/"
-        ).strip("/")
-
-        url = os.path.join(self._base_url, _end_url)
-
-        # exclude params not for filtering from encoding
-        incl_params = deepcopy(params)
-        for k in exclude:
-            incl_params.pop(k, None)
-        # encode params for url
-        encoded_params = urlencode(incl_params, doseq=True)
-
-        return f"{url}/?{encoded_params}" if encoded_params else url
+        # accept given params or use self.params
+        _params = deepcopy(params or self.params)
+        # combine sub_url and encoded query params
+        path = self.url_path(**_params)
+        # return full url with base url+sub_url+encoded params
+        return os.path.join(self._base_url, path)
 
     # preview the request(s) prior to making them (option 1)
     def dry_run(self) -> None:
@@ -418,17 +420,18 @@ class QuerySet(ResultHandlerMixin):
         """
         if self.request_urls is not None:
             return self.request_urls
-
         if not self.pagination_status:
             self.request_urls = [self._build_request_url()]
         else:
             # ensure we have total_pages calculated
             if self.total_pages is None:
                 self.dry_run()
-            self.request_urls = [
-                self._build_request_url(params={"page": page})
-                for page in range(1, self.total_pages + 1)
-            ]
+
+            self.request_urls = []
+            for page in range(1, self.total_pages + 1):
+                _parm = deepcopy(self.params)
+                _parm.update({"page": page})
+                self.request_urls.append(self._build_request_url(params=_parm))
 
         return self.request_urls
 
@@ -531,3 +534,49 @@ class QuerySet(ResultHandlerMixin):
             raise AttributeError(
                 f"Identifier key '{self.id_param_key}' not found in parameters for resource '{self.resource}'."
             ) from None
+
+    def _resolve_id_param(self, key: int | str) -> dict:
+        """
+        Resolve the identifier parameter for a related resource based on the provided key,
+        which can be either an index or a string identifier.
+        This method checks if the key is a valid index in the results or a valid identifier string,
+        and returns the corresponding parameter dictionary for accessing the related resource.
+
+        Parameters
+        ----------
+        key : int or str
+            An integer index referring to the position in the results, or a string identifier (such as
+            an accession or biome lineage) that exists in the results.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the identifier parameter key and its corresponding value,
+            which can be used to access the related resource.
+            For example, {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        """
+        # allow index-based access
+        if self.results_ids is not None and isinstance(key, int):
+            return {self.id_param_key: self.results_ids[key]}
+        # or by accession/biome_lineage/ids string directly
+        if self.results_ids is not None and key in self.results_ids:
+            return {self.id_param_key: key}
+
+        raise KeyError(
+            f"Invalid key: {key}. "
+            "Key must be an integer index, or a valid id string. "
+            f"Accession/id/biome_lineage must exist in`.results_ids`: {self.results_ids}"
+        )
+
+    # RELATIONSHIP HANDLING
+    def list_relationships(self) -> list[str]:
+        if self.resource in ALL_SUPPORTED_RELATIONSHIPS:
+            return [
+                endpoint.value
+                for endpoint in ALL_SUPPORTED_RELATIONSHIPS[self.resource]
+            ]
+        else:
+            return []
+
+    def describe_relationships(self):
+        pass  # TODO

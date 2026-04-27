@@ -1,31 +1,32 @@
 from __future__ import annotations
 
+import inspect
+import os
 from itertools import chain
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncIterator,
-    Callable,
-    Iterator,
+    Literal,
     Optional,
 )
+from urllib.parse import urlencode
 
 import pandas as pd
 import polars as pl
-
-from mgnipy._models.CONSTANTS import SupportedEndpoints
-
-if TYPE_CHECKING:
-    from mgnipy.V2.query_set import QuerySet
-
-from mgnipy.V2.endpoints import (
-    ACC_DETAIL_ENDPOINTS,
-    BETWEEN_RESOURCE_RELATIONSHIPS,
-    WITHIN_RESOURCE_RELATIONSHIPS,
+from bigtree import (
+    Tree,
 )
 
+from mgnipy._shared_helpers.docstring_parser import (
+    get_docstring,
+    parse_docstring,
+)
 
-class ResultHandlerMixin:
+if TYPE_CHECKING:
+    pass
+
+
+class ResultsHandlerMixin:
 
     @property
     def data(self) -> dict[int, list[dict[str, Any]]]:
@@ -33,18 +34,6 @@ class ResultHandlerMixin:
         results based on the current resource.
         """
         return getattr(self, "_results", {}) or {}
-
-    @property
-    def id_param_key(self) -> str:
-        """
-        Get the key for the ID parameter based on the current resource.
-
-        Returns
-        -------
-        str
-            The key for the ID parameter.
-        """
-        return self.id_param_key
 
     # helpers
     def _df_expand_nested(
@@ -242,282 +231,168 @@ class ResultHandlerMixin:
 
         return pl.DataFrame(self._unpageinate_results(_data), **polars_kwargs)
 
+
+class BiomesTreeMixin:
+
     @property
-    def results_ids(self) -> Optional[list[str]]:
+    def lineages(self) -> list[str]:
+        return getattr(self, "results_ids", []) or []
+
+    @property
+    def tree(self) -> Tree:
         """
-        Get a list of accessions from the retrieved metadata results, if available.
+        Convert the biomes metadata to a tree structure for visualization or analysis.
 
         Returns
         -------
-        list of str or None
-            A list of accession strings if available, otherwise None.
+        Tree
+            A tree representation of the biomes and their relationships.
         """
-        if self.to_df() is None:
-            return None
-        elif self.id_param_key in self.to_df().columns:
-            return self.to_df()[self.id_param_key].tolist()
+        # TODO generate nodes first
+        return Tree.from_list(self.lineages, sep=":")
+
+    def show_tree(
+        self,
+        method: Literal[
+            "compact",
+            "show",
+            "print",
+            "horizontal",
+            "hshow",
+            "h",
+            "hprint",
+            "vertical",
+            "vshow",
+            "v",
+            "vprint",
+        ] = "compact",
+    ):
+        if method in ["compact", "show", "print"]:
+            # TODO print_tree(self._tree)
+            self.tree.show()
+        elif method in ["horizontal", "hshow", "h", "hprint"]:
+            self.tree.hshow()
+        elif method in ["vertical", "vshow", "v", "vprint"]:
+            self.tree.vshow()
         else:
-            return None
+            raise ValueError(
+                f"Invalid method: {method}. "
+                "Supported methods: 'compact', 'show', 'print', "
+                "'horizontal', 'hshow', 'h', 'hprint', "
+                "'vertical', 'vshow', 'v', 'vprint'."
+            )
 
 
-class NavigationMixin:
+class DescribeEmgapiMixin:
 
-    @property
-    def resource(self) -> SupportedEndpoints:
-        """from parent"""
-        return getattr(self, "resource", None) or None
+    def endpoint_module(self):
+        return getattr(self, "endpoint_module", None)
 
-    @property
-    def id_param_key(self) -> str:
+    def list_supported_params(self) -> list[str]:
         """
-        Forward the key for the ID parameter based on the current resource from parent.
+        Lists supported keyword arguments for the endpoint module.
+
+        Returns
+        -------
+        list of str
+            List of supported keyword argument names.
+        """
+        sig = inspect.signature(self.endpoint_module._get_kwargs)
+        return list(sig.parameters.keys())
+
+    def validate_endpoint_kwargs(self, **kwargs) -> dict[str, Any]:
+        """
+        Validates the provided keyword arguments against the supported parameters of the endpoint module.
+
+        Parameters
+        ----------
+        **kwargs
+            Keyword arguments to validate.
+
+        Returns
+        -------
+        dict of str to Any
+            The validated keyword arguments.
+
+        Raises
+        ------
+        ValueError
+            If any provided keyword argument is not supported by the endpoint module.
+        """
+        return self.endpoint_module._get_kwargs(**kwargs)
+
+    @property
+    def emgapi_resource(self) -> Optional[str]:
+        """
+        Retrieves the name of the endpoint resource based on the endpoint module.
+
+        Returns
+        -------
+        str or None
+            The name of the endpoint resource, or None if the endpoint module is not set.
+        """
+        return os.path.basename(os.path.dirname(self.endpoint_module.__file__))
+
+    def sub_url(self, **kwargs) -> Optional[str]:
+        """
+        Constructs the sub-URL for the endpoint based on the current parameters.
+
+        Returns
+        -------
+        str or None
+            The constructed sub-URL, or None if the endpoint module is not set.
+        """
+        _kwargs = self.validate_endpoint_kwargs(**kwargs)
+        _end_url: str = _kwargs.get(
+            "url", f"/metagenomics/api/v2/{self.emgapi_resource}/"
+        ).strip("/")
+
+        return _end_url
+
+    def resolve_query_string(self, **kwargs) -> str:
+        """
+        Resolves the query string for the endpoint based on the current parameters.
+
+        Parameters
+        ----------
+        **kwargs
+            Keyword arguments to validate and include in the query string.
 
         Returns
         -------
         str
-            The key for the ID parameter.
+            The resolved query string.
         """
-        return self.id_param_key
+        _kwargs = self.validate_endpoint_kwargs(**kwargs)
+
+        # get validated params if any
+        params = _kwargs.get("params", {})
+
+        # encode params for url
+        return urlencode(params, doseq=True)
+
+    def url_path(self, **kwargs) -> str:
+        """
+        Constructs the full URL path for the endpoint based on the current parameters.
+
+        Parameters
+        ----------
+        **kwargs
+            Keyword arguments to validate and include in the URL construction.
+
+        Returns
+        -------
+        str
+            The constructed URL path.
+        """
+        _end_url = self.sub_url(**kwargs)
+        query_string = self.resolve_query_string(**kwargs)
+
+        return f"{_end_url}?{query_string}" if query_string else _end_url
 
     @property
-    def results_ids(self) -> Optional[list[str]]:
-        """
-        Forward the results ids based on the current resource from parent.
-        """
-        return self.results_ids
+    def emgapi_docs(self) -> str:
+        return get_docstring(self.endpoint_module, "sync")
 
-    def list_relationships(self) -> list[str]:
-        if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
-            return [WITHIN_RESOURCE_RELATIONSHIPS[self.resource].value]
-        elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
-            return [
-                endpoint.value
-                for endpoint in BETWEEN_RESOURCE_RELATIONSHIPS[self.resource]
-            ]
-        else:
-            return []
-
-    def next_resource(self, name: Optional[str] = None) -> SupportedEndpoints:
-        """
-        Get the next resource endpoint based on the relationship name
-        or just list the first or only endpoint.
-        """
-        if name is not None and name in self.list_relationships():
-            return SupportedEndpoints.validate(name)
-        if name is not None and name not in self.list_relationships():
-            raise AttributeError(
-                f"{self.resource.value} does not have a linked resource {name}."
-            )
-        if name is None and len(self.list_relationships()) > 0:
-            return SupportedEndpoints.validate(self.list_relationships()[0])
-        raise AttributeError(
-            f"{self.resource.value} does not have any linked resources."
-        )
-
-    def _resolve_access_param(self, key: int | str) -> dict:
-        # allow index-based access
-        if self.results_ids is not None and isinstance(key, int):
-            return {self.id_param_key: self.results_ids[key]}
-        # or by accession/biome_lineage/ids string directly
-        if self.results_ids is not None and key in self.results_ids:
-            return {self.id_param_key: key}
-
-        raise KeyError(
-            f"Invalid key: {key}. "
-            "Key must be an integer index, or a valid id string. "
-            "Accession/id/biome_lineage must exist in`.results_ids`"
-        )
-
-    def next_resource_module(self, name: Optional[str] = None) -> Callable:
-        # get SupportedEndpoint of next resource
-        next_resource = self.next_resource(name)
-        # then get the endpoint function for that resource
-        if self.resource in WITHIN_RESOURCE_RELATIONSHIPS:
-            return ACC_DETAIL_ENDPOINTS[next_resource]
-        elif self.resource in BETWEEN_RESOURCE_RELATIONSHIPS:
-            return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][next_resource]
-        else:
-            raise AttributeError(
-                f"{self.resource.value} does not have any linked resources."
-            )
-
-    def get_next(
-        self,
-        access_param: dict[str, str],
-        resource_name: Optional[str] = None,
-        fetch: bool = True,
-    ) -> "QuerySet":
-        """
-        Independent of list vs detail resource, get next linked proxy for a specific accession.
-
-        Parameters
-        ----------
-        access_param : dict[str, str]
-            A dictionary containing the necessary parameter to identify the detail resource,
-            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
-        resource_name : Optional[str]
-            The name of the resource to get the next instance of. If None, will use the first or only linked resource.
-        fetch : bool
-            Whether to immediately fetch the detail after creating the proxy.
-
-
-        Returns
-        -------
-        QuerySet
-            A proxy for the next resource.
-
-        Examples
-        -------
-        sample = samples.getting_next({"accession": "MGYS00001234"})
-        samples = study.getting_next({"accession": "MGYS00001234"})
-        """
-
-        next_resource = self.next_resource(resource_name).value
-        next_module = self.next_resource_module(resource_name)
-
-        child = self._clone(resource=next_resource, **access_param)
-        child.endpoint_module = next_module
-        if fetch:
-            child.get(safety=False)
-        return child
-
-    async def aget_next(
-        self,
-        access_param: dict[str, str],
-        resource_name: Optional[str] = None,
-        fetch: bool = True,
-    ) -> "QuerySet":
-        """Async version of get_next."""
-        return self.get_next(access_param, resource_name=resource_name, fetch=fetch)
-
-
-class DetailNavigationMixin(NavigationMixin):
-
-    def iter_details(self, fetch: bool = False) -> Iterator["QuerySet"]:
-        """
-        Lazily iterate over child detail proxies.
-
-        Parameters
-        ----------
-        fetch : bool
-            Whether to immediately fetch each detail after creating the proxy.
-
-        Returns
-        -------
-        Iterator of QuerySet
-            An iterator that yields child detail proxies.
-
-        Example
-        -------
-        for sample in samples.iter_details():
-            sample.get()
-        """
-        for acc in self.results_accessions or []:
-            yield self.get_next(self._resolve_access_param(acc), fetch=fetch)
-
-    def collect_details(
-        self,
-        *,
-        fetch: bool = False,
-        by_accession: bool = False,
-    ) -> list["QuerySet"] | dict[str, "QuerySet"]:
-        """
-        Collect child detail proxies into a list or dict.
-
-        Parameters
-        ----------
-        fetch : bool
-            Whether to immediately fetch the details after creating the proxies.
-        by_accession : bool
-            Whether to return a dict keyed by accession instead of a list.
-
-        Returns
-        -------
-        list of QuerySet or dict of str to QuerySet
-            A list or dict of child detail proxies.
-
-        Example
-        -------
-        samples.collect_details(fetch=True, by_accession=True)
-
-
-        """
-
-        items: list["QuerySet"] = []
-        for item in self.iter_details(fetch=fetch):
-            items.append(item)
-
-        if by_accession:
-            return {x.accession: x for x in items if x.accession is not None}
-        return items
-
-    def __iter__(self) -> Iterator["QuerySet"]:
-        return self.iter_details()
-
-    async def __aiter__(self) -> AsyncIterator["QuerySet"]:
-        async for item in self.aiter_details():
-            yield item
-
-    async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
-        for acc in self.results_accessions or []:
-            yield await self.aget_next(self._resolve_access_param(acc), fetch=fetch)
-
-    async def acollect_details(
-        self,
-        *,
-        fetch: bool = False,
-        by_accession: bool = False,
-        concurrency: Optional[int] = None,
-        hide_progress: bool = False,
-    ) -> list["QuerySet"] | dict[str, "QuerySet"]:
-        acc_params = [
-            self._resolve_access_param(acc) for acc in (self.results_accessions or [])
-        ]
-
-        async def _worker(access_param):
-            child = await self.aget_next(access_param, fetch=fetch)
-            return child
-
-        items = await self.exec.map_with_concurrency(
-            items=acc_params,
-            worker=_worker,
-            concurrency=concurrency,
-            hide_progress=hide_progress,
-        )
-
-        if by_accession:
-            return {
-                x.accession: x
-                for x in items
-                if x is not None and x.accession is not None
-            }
-        return items
-
-    def __getitem__(self, key: int | str) -> "QuerySet":
-        """
-        Allow index or accession-based access to child details.
-        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
-        """
-        return self.get_next(
-            self._resolve_access_param(key),
-            fetch=True,
-        )
-
-
-class RelatedNavigationMixin(NavigationMixin):
-
-    @property
-    def identifier(self) -> Optional[list[str]]:
-        """
-        identifier from parent, could be accessions, biome_lineages, or catalogue_ids depending on resource type.
-        """
-        return self.results_ids
-
-    def __getattr__(self, name: str):
-        # if is a supported relationship
-        if name in self.list_relationships():
-            return self.get_next(
-                self._resolve_access_param(self.identifier),
-                resource_name=name,
-                fetch=False,
-            )
+    def describe_endpoint(self, as_dict: bool = False) -> dict[str, str] | None:
+        return parse_docstring(self.emgapi_docs, as_dict=as_dict)

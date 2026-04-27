@@ -6,18 +6,24 @@ from platformdirs import user_cache_dir
 from pydantic import (
     AliasChoices,
     BaseModel,
+    ConfigDict,
     DirectoryPath,
     Field,
     HttpUrl,
+    field_serializer,
 )
 
 from mgnipy._models.CONSTANTS import SupportedApiVersions
 
 
 class MgnipyConfig(BaseModel):
-    class ConfigDict:
-        extra = "forbid"
-        use_enum_values = True
+    # class ConfigDict:
+    #     extra = "forbid"
+    #     use_enum_values = True
+
+    model_config = ConfigDict(
+        extra="forbid", use_enum_values=True, validate_assignment=True
+    )
 
     api_version: SupportedApiVersions = Field(
         default=SupportedApiVersions.V2,
@@ -26,6 +32,7 @@ class MgnipyConfig(BaseModel):
     base_url: HttpUrl = Field(
         default="https://www.ebi.ac.uk/",
         description="Base URL for the MGnify API",
+        validate_default=True,
     )
     auth_token: Optional[str] = Field(
         default=None,
@@ -37,3 +44,7 @@ class MgnipyConfig(BaseModel):
         description="Directory for caching API responses. Defaults to the user cache directory.",
         alias=AliasChoices("cache_dir", "cache_directory"),
     )
+
+    @field_serializer("base_url")
+    def serialize_base_url(self, v: HttpUrl) -> str:
+        return str(v)

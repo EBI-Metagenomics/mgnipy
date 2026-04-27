@@ -9,7 +9,7 @@ from mgnipy.V2.query_set import QuerySet
 
 class MGnifier(QuerySet):
     """
-    (Facade) MGnifier is the main class representing a queryable MGnify resource.
+    (Facade) MGnifier is the main use-facing class representing a queryable MGnify resource.
     It provides methods for fetching and navigating data from the MGnify API.
     """
 
@@ -36,10 +36,11 @@ class MGnifier(QuerySet):
             "catalogue",
         ],
         *,
+        config: Optional[dict] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
-        super().__init__(resource=resource, params=params, **kwargs)
+        super().__init__(resource=resource, params=params, config=config, **kwargs)
 
     # forarding some user-facing QueryExecutor methods
     def get(self, *args, **kwargs):

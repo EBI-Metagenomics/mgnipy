@@ -14,7 +14,10 @@ from tqdm import tqdm
 
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
-from mgnipy.emgapi_v2_client import Client
+from mgnipy.emgapi_v2_client import (
+    AuthenticatedClient,
+    Client,
+)
 from mgnipy.emgapi_v2_client.types import Response as mpy_Response
 
 if TYPE_CHECKING:
@@ -111,7 +114,7 @@ class QueryExecutor:
             ordered[i] = value
         return ordered
 
-    def _init_client(self) -> Client:
+    def _init_client(self, auth_token: Optional[str] = None) -> Client:
         """
         Initialize and return a MGnify API client instance.
 
@@ -120,6 +123,14 @@ class QueryExecutor:
         Client
             Configured MGnify API client.
         """
+        if auth_token:
+            logging.info("Initializing client with provided auth token.")
+            return AuthenticatedClient(
+                base_url=str(self.qs._base_url),
+                token=auth_token,
+                # TODO logs?
+            )
+
         return Client(
             base_url=str(self.qs._base_url),
             # TODO logs?
@@ -226,7 +237,7 @@ class QueryExecutor:
             # then just get and add to results
             # pick up here
             response_dict = self._get_request()
-            self.qs.results = {1: response_dict}
+            self.qs._results = {1: response_dict}
         # otherwise, get first page
         else:
             self.page(1)
@@ -242,7 +253,7 @@ class QueryExecutor:
             logging.info("First response already retrieved, using cached results.")
         elif not self.qs.pagination_status:
             response_dict = await self._aget_request()
-            self.qs.results = {1: response_dict}
+            self.qs._results = {1: response_dict}
         else:
             await self.apage(1)
 
@@ -283,7 +294,7 @@ class QueryExecutor:
         # check if alrady in results first
         if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
-            return self.qs.results.get(page_num, None)
+            return self.qs._results.get(page_num, None)
 
         # otherwise get page
         a_client = client or self._init_client()
@@ -305,7 +316,7 @@ class QueryExecutor:
     ) -> Optional[dict[int, list[dict]]]:
         if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
-            return self.qs.results.get(page_num, None)
+            return self.qs._results.get(page_num, None)
 
         a_client = client or self._init_client()
         response = await self._aget_request(client=a_client, page=page_num)
@@ -502,4 +513,4 @@ class QueryExecutor:
         if name == "httpx_aclient":
             return self._init_client().get_async_httpx_client()
         if name == "api_version":
-            print("v2")
+            print(self.config.api_version)
