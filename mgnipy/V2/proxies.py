@@ -774,6 +774,8 @@ V2_ENDPOINT_LIST_PROXIES = {
     SupportedEndpoints.BIOMES: Biomes,
     SupportedEndpoints.ASSEMBLIES: Assemblies,
     SupportedEndpoints.GENOMES: Genomes,
+    SupportedEndpoints.PUBLICATIONS: Publications,
+    SupportedEndpoints.CATALOGUES: Catalogues,
 }
 
 V2_ENDPOINT_DETAIL_PROXIES = {
@@ -784,4 +786,6 @@ V2_ENDPOINT_DETAIL_PROXIES = {
     SupportedEndpoints.BIOME: BiomeDetail,
     SupportedEndpoints.ASSEMBLY: AssemblyDetail,
     SupportedEndpoints.GENOME: GenomeDetail,
+    SupportedEndpoints.PUBLICATION: PublicationDetail,
+    SupportedEndpoints.CATALOGUE: CatalogueDetail,
 }

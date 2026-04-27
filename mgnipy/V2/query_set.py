@@ -1,4 +1,3 @@
-import inspect
 import logging
 import os
 from copy import deepcopy
@@ -8,7 +7,6 @@ from typing import (
     Literal,
     Optional,
 )
-from urllib.parse import urlencode
 
 import pandas as pd
 
@@ -19,6 +17,7 @@ from mgnipy.V2.endpoints import (
     ALL_SUPPORTED_RELATIONSHIPS,
 )
 from mgnipy.V2.mixins import (
+    DescribeEmgapiMixin,
     ResultsHandlerMixin,
 )
 from mgnipy.V2.query_executor import QueryExecutor
@@ -45,7 +44,7 @@ ID_PARAM = {
 }
 
 
-class QuerySet(ResultsHandlerMixin):
+class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
     """
     Plans, builds, validates and previews queries based on endpoint_module and params of the MGnifier owner.
     Stores the request urls.
@@ -91,7 +90,7 @@ class QuerySet(ResultsHandlerMixin):
 
         # check that params are valid for endpoint module
         # check params are valid for endpoint
-        # self._endpoint_module._get_kwargs(**self._params)
+        # self.validate_endpoint_kwargs(**self._params)
 
         self.exec: QueryExecutor = QueryExecutor(self)
 
@@ -127,7 +126,7 @@ class QuerySet(ResultsHandlerMixin):
         # clone the current instance but with updated endpoint module
         self._endpoint_module = value
         # check params are valid for new endpoint module
-        # self._endpoint_module._get_kwargs(**self._params)
+        # self.validate_endpoint_kwargs(**self._params)
         # reset results and urls since endpoint module changed
         self._results = {}
         self.request_urls = None
@@ -140,7 +139,7 @@ class QuerySet(ResultsHandlerMixin):
     def params(self, new_params: dict[str, Any]):
         self._params = new_params
         # check that params are valid for endpoint module
-        self.endpoint_module._get_kwargs(**self._params)
+        _ = self.validate_endpoint_kwargs(**self._params)
 
     @property
     def results(self) -> dict[int, list[dict]]:
@@ -172,7 +171,7 @@ class QuerySet(ResultsHandlerMixin):
         self._resource = SupportedEndpoints.validate(value)
         self.endpoint_module = ALL_ENDPOINTS[self._resource]
         # check that params are valid for new endpoint module
-        self.endpoint_module._get_kwargs(**self._params)
+        _ = self.validate_endpoint_kwargs(**self._params)
         # reset results and urls since resource changed
         self._results = {}
         self.request_urls = None
@@ -324,18 +323,6 @@ class QuerySet(ResultsHandlerMixin):
             and "page_size" in self.list_supported_params()
         )
 
-    def list_supported_params(self) -> list[str]:
-        """
-        Lists supported keyword arguments for the endpoint module.
-
-        Returns
-        -------
-        list of str
-            List of supported keyword argument names.
-        """
-        sig = inspect.signature(self.endpoint_module._get_kwargs)
-        return list(sig.parameters.keys())
-
     def _build_request_params(
         self, params: Optional[dict[str, Any]] = None, **kwargs
     ) -> dict[str, Any]:
@@ -365,7 +352,6 @@ class QuerySet(ResultsHandlerMixin):
     def _build_request_url(
         self,
         params: Optional[dict[str, Any]] = None,
-        exclude: list[str] = None,
     ) -> str:
         """
         Build a URL for the current resource and parameters using
@@ -386,30 +372,12 @@ class QuerySet(ResultsHandlerMixin):
         str
             The constructed URL.
         """
-        # specific to api design, exclude params not used for filtering
-        exclude = exclude or ["accession", "pubmed_id", "catalogue_id"]
+        # accept given params or use self.params
         _params = deepcopy(params or self.params)
-        # check params are valid for endpoint
-        _kwargs: dict[str, Any] = self.endpoint_module._get_kwargs(**_params)
-        # resource based on emgapi_v2_client
-        emgapi_resource = os.path.basename(
-            os.path.dirname(self.endpoint_module.__file__)
-        )
-
-        _end_url: str = _kwargs.get(
-            "url", f"/metagenomics/api/v2/{emgapi_resource}/"
-        ).strip("/")
-
-        url = os.path.join(self._base_url, _end_url)
-
-        # exclude params not for filtering from encoding
-        incl_params = deepcopy(_params)
-        for k in exclude:
-            incl_params.pop(k, None)
-        # encode params for url
-        encoded_params = urlencode(incl_params, doseq=True)
-
-        return f"{url}/?{encoded_params}" if encoded_params else url
+        # combine sub_url and encoded query params
+        path = self.url_path(**_params)
+        # return full url with base url+sub_url+encoded params
+        return os.path.join(self._base_url, path)
 
     # preview the request(s) prior to making them (option 1)
     def dry_run(self) -> None:
