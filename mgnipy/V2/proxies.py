@@ -135,7 +135,7 @@ class MGnifyList(MGnifier):
         ]
         return detail_endpoint
 
-    def iter_details(self, fetch: bool = False) -> Iterator["QuerySet"]:
+    def iter_details(self, fetch: bool = True) -> Iterator["QuerySet"]:
         """
         Lazily iterate over child detail proxies.
 
@@ -160,8 +160,8 @@ class MGnifyList(MGnifier):
     def collect_details(
         self,
         *,
-        fetch: bool = False,
-        by_accession: bool = False,
+        fetch: bool = True,
+        by_id: bool = False,
     ) -> list["QuerySet"] | dict[str, "QuerySet"]:
         """
         Collect child detail proxies into a list or dict.
@@ -170,8 +170,8 @@ class MGnifyList(MGnifier):
         ----------
         fetch : bool
             Whether to immediately fetch the details after creating the proxies.
-        by_accession : bool
-            Whether to return a dict keyed by accession instead of a list.
+        by_id : bool
+            Whether to return a dict keyed by identifier instead of a list.
 
         Returns
         -------
@@ -180,35 +180,55 @@ class MGnifyList(MGnifier):
 
         Example
         -------
-        samples.collect_details(fetch=True, by_accession=True)
-
-
+        sample_detail = samples.collect_details(fetch=True, by_id=True)
         """
 
         items: list["QuerySet"] = []
         for item in self.iter_details(fetch=fetch):
             items.append(item)
 
-        if by_accession:
-            return {x.accession: x for x in items if x.accession is not None}
+        if by_id:
+            return {x.identifier: x for x in items if x.identifier is not None}
         return items
 
     def __iter__(self) -> Iterator["QuerySet"]:
         return self.iter_details()
 
     async def __aiter__(self) -> AsyncIterator["QuerySet"]:
+        """
+        Async version of __iter__.
+
+        Examples
+        -------
+        async for sample in samples:
+            await sample.aget()
+
+        """
         async for item in self.aiter_details():
             yield item
 
-    async def aiter_details(self, fetch: bool = False) -> AsyncIterator["QuerySet"]:
+    async def aiter_details(self, fetch: bool = True) -> AsyncIterator["QuerySet"]:
+        """
+        Async version of iter_details.
+
+        Parameters
+        ----------
+        fetch : bool
+            Whether to immediately fetch each detail after creating the proxy.
+
+        Returns
+        -------
+        AsyncIterator of QuerySet
+            An async iterator that yields child detail proxies.
+        """
         for acc in self.results_ids or []:
             yield await self.aget_detail(self._resolve_id_param(acc), fetch=fetch)
 
     async def acollect_details(
         self,
         *,
-        fetch: bool = False,
-        by_accession: bool = False,
+        fetch: bool = True,
+        by_id: bool = False,
         concurrency: Optional[int] = None,
         hide_progress: bool = False,
     ) -> list["QuerySet"] | dict[str, "QuerySet"]:
@@ -225,11 +245,11 @@ class MGnifyList(MGnifier):
             hide_progress=hide_progress,
         )
 
-        if by_accession:
+        if by_id:
             return {
-                x.accession: x
+                x.identifier: x
                 for x in items
-                if x is not None and x.accession is not None
+                if x is not None and x.identifier is not None
             }
         return items
 
@@ -788,4 +808,5 @@ V2_ENDPOINT_DETAIL_PROXIES = {
     SupportedEndpoints.GENOME: GenomeDetail,
     SupportedEndpoints.PUBLICATION: PublicationDetail,
     SupportedEndpoints.CATALOGUE: CatalogueDetail,
+    SupportedEndpoints.ANNOTATIONS: None,  # "MGazine",
 }

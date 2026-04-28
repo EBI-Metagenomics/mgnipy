@@ -72,3 +72,6 @@ class SupportedEndpoints(SpecialEnum):
     CATALOGUE = "catalogue"
     #    PRIVATE_DATA = "private_data"
     #    AUTHENTICATION = "authentication"
+    ANNOTATIONS = (
+        "annotations"  # not really an endpoint but fits better here than acc detail
+    )
