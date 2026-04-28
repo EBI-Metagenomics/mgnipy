@@ -1,0 +1,1297 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mgnipy.V2.proxies &#8212; mgnipy 0.1.dev1+gf4e66b3dc documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=61acb51c"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mgnipy/V2/proxies';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/README_emgapi-v2-client.html">emgapi-v2-client submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/intro-openapi-python-client.html">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/capabilities_demo.html">MGnipy — Capabilities Demo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/modules.html">mgnipy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/mgnipy.html">mgnipy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/mgnipy.emgapi_v2_client.html">mgnipy.emgapi_v2_client package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/mgnipy.emgapi_v2_client.models.html">mgnipy.emgapi_v2_client.models package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical notes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for mgnipy.V2.proxies</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">AsyncIterator</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">ClassVar</span><span class="p">,</span>
+    <span class="n">Iterator</span><span class="p">,</span>
+    <span class="n">Literal</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MgnipyConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.CONSTANTS</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SupportedEndpoints</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.endpoints</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BETWEEN_RESOURCE_RELATIONSHIPS</span><span class="p">,</span>
+    <span class="n">PARENT_CHILD_RESOURCES</span><span class="p">,</span>
+    <span class="n">WITHIN_RESOURCE_RELATIONSHIPS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiomesTreeMixin</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.query_set</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuerySet</span>
+
+<span class="n">ListResource</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;biomes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;studies&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;samples&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;runs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;analyses&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;genomes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;assemblies&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;publications&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;catalogues&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">DetailResource</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;biome&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;study&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sample&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;run&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;analysis&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;genome&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;assembly&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;publication&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;catalogue&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="MGnifyList">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyList">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MGnifyList</span><span class="p">(</span><span class="n">MGnifier</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">ListResource</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># Accept accidental &quot;resource&quot; in kwargs, but do not expose it in signature</span>
+        <span class="n">passed_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;resource&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">resolved_resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span> <span class="ow">or</span> <span class="n">passed_resource</span>
+
+        <span class="k">if</span> <span class="n">resolved_resource</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;`resource` is required for base MGnifyList; &quot;</span>
+                <span class="s2">&quot;use a concrete subclass like Analyses/Runs/... &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;or pass a resource param: </span><span class="si">{</span><span class="n">ListResource</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">passed_resource</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Conflicting resource: expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span><span class="si">!r}</span><span class="s2">, got </span><span class="si">{</span><span class="n">passed_resource</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">resource</span><span class="o">=</span><span class="n">resolved_resource</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PARENT_CHILD_RESOURCES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MGnifyList&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allow calling the list proxy to create a new instance with updated params.</span>
+<span class="sd">        This is useful for refining the query with new parameters without having to re-specify the resource or config.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        # Example 1: Using call to update params</span>
+<span class="sd">        gut_studies = MG.studies(search=&quot;gut&quot;)</span>
+<span class="sd">        # Example 2: Using params</span>
+<span class="sd">        cancer_studies = MG.studies(params={&quot;search&quot;: &quot;cancer&quot;})</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        if &quot;params&quot; is included in kwargs, it will be used as the new params.</span>
+<span class="sd">        Otherwise, all kwargs will be treated as params.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="c1"># Merge with params, giving precedence to kwargs</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">),</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_next_rel_module</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the next relationship module for the child resource.</span>
+<span class="sd">        This is used to determine which API endpoint the child proxy should use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="si">}</span><span class="s2"> does not have any linked resources.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># quick check</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">),</span> <span class="p">(</span>
+            <span class="s2">&quot;Should only be be parent to detail endpoint: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span><span class="si">!r}</span><span class="s2">, but got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">!r}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">detail_endpoint</span> <span class="o">=</span> <span class="n">WITHIN_RESOURCE_RELATIONSHIPS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="p">][</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">detail_endpoint</span>
+
+<div class="viewcode-block" id="MGnifyList.iter_details">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyList.iter_details">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iter_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s2">&quot;QuerySet&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lazily iterate over child detail proxies.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fetch : bool</span>
+<span class="sd">            Whether to immediately fetch each detail after creating the proxy.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterator of QuerySet</span>
+<span class="sd">            An iterator that yields child detail proxies.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        for sample in samples.iter_details():</span>
+<span class="sd">            sample.get()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">acc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_ids</span> <span class="ow">or</span> <span class="p">[]:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_detail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_id_param</span><span class="p">(</span><span class="n">acc</span><span class="p">),</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGnifyList.collect_details">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyList.collect_details">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">collect_details</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;QuerySet&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Collect child detail proxies into a list or dict.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fetch : bool</span>
+<span class="sd">            Whether to immediately fetch the details after creating the proxies.</span>
+<span class="sd">        by_id : bool</span>
+<span class="sd">            Whether to return a dict keyed by identifier instead of a list.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of QuerySet or dict of str to QuerySet</span>
+<span class="sd">            A list or dict of child detail proxies.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        sample_detail = samples.collect_details(fetch=True, by_id=True)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;QuerySet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_details</span><span class="p">(</span><span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">):</span>
+            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">by_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">identifier</span><span class="p">:</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">items</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s2">&quot;QuerySet&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_details</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aiter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="s2">&quot;QuerySet&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Async version of __iter__.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        async for sample in samples:</span>
+<span class="sd">            await sample.aget()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aiter_details</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">item</span>
+
+<div class="viewcode-block" id="MGnifyList.aiter_details">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyList.aiter_details">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aiter_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="s2">&quot;QuerySet&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Async version of iter_details.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fetch : bool</span>
+<span class="sd">            Whether to immediately fetch each detail after creating the proxy.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AsyncIterator of QuerySet</span>
+<span class="sd">            An async iterator that yields child detail proxies.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">acc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_ids</span> <span class="ow">or</span> <span class="p">[]:</span>
+            <span class="k">yield</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">aget_detail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_id_param</span><span class="p">(</span><span class="n">acc</span><span class="p">),</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGnifyList.acollect_details">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyList.acollect_details">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">acollect_details</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">concurrency</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hide_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;QuerySet&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">]:</span>
+        <span class="n">acc_params</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_id_param</span><span class="p">(</span><span class="n">acc</span><span class="p">)</span> <span class="k">for</span> <span class="n">acc</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_ids</span> <span class="ow">or</span> <span class="p">[])]</span>
+
+        <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_worker</span><span class="p">(</span><span class="n">access_param</span><span class="p">):</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">aget_detail</span><span class="p">(</span><span class="n">access_param</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">child</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">map_with_concurrency</span><span class="p">(</span>
+            <span class="n">items</span><span class="o">=</span><span class="n">acc_params</span><span class="p">,</span>
+            <span class="n">worker</span><span class="o">=</span><span class="n">_worker</span><span class="p">,</span>
+            <span class="n">concurrency</span><span class="o">=</span><span class="n">concurrency</span><span class="p">,</span>
+            <span class="n">hide_progress</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">by_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">identifier</span><span class="p">:</span> <span class="n">x</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="n">items</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allow index or accession-based access to child details.</span>
+<span class="sd">        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_detail</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_id_param</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
+            <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="MGnifyList.get_detail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyList.get_detail">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_detail</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_param</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get detail proxy for a specific accession/pubmed_id/catalogue_id.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_param : dict[str, str]</span>
+<span class="sd">            A dictionary containing the necessary parameter to identify the detail resource,</span>
+<span class="sd">            such as {&quot;accession&quot;: &quot;MGYS00001234&quot;} or {&quot;biome_lineage&quot;: &quot;root&quot;}.</span>
+<span class="sd">        resource_name : Optional[str]</span>
+<span class="sd">            The name of the resource to get the next instance of. If None, will use the first or only linked resource.</span>
+<span class="sd">        fetch : bool</span>
+<span class="sd">            Whether to immediately fetch the detail after creating the proxy.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QuerySet</span>
+<span class="sd">            A proxy for the next resource.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        sample = samples.get_detail({&quot;accession&quot;: &quot;MGYS00001234&quot;})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">detail_cls</span> <span class="o">=</span> <span class="n">V2_ENDPOINT_DETAIL_PROXIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">detail_cls</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported child resource for detail: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">child</span> <span class="o">=</span> <span class="n">detail_cls</span><span class="p">(</span><span class="o">**</span><span class="n">access_param</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">endpoint_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_rel_module</span>
+        <span class="k">if</span> <span class="n">fetch</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">safety</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">child</span></div>
+
+
+<div class="viewcode-block" id="MGnifyList.aget_detail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyList.aget_detail">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aget_detail</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_param</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Async version of get_detail.</span>
+<span class="sd">        Get detail proxy for a specific accession/pubmed_id/catalogue_id.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        sample = await samples.aget_detail({&quot;accession&quot;: &quot;MGYS00001234&quot;})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">detail_cls</span> <span class="o">=</span> <span class="n">V2_ENDPOINT_DETAIL_PROXIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">detail_cls</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported child resource for detail: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">child_resource</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="n">detail_cls</span><span class="p">(</span><span class="o">**</span><span class="n">access_param</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">endpoint_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_rel_module</span>
+        <span class="k">if</span> <span class="n">fetch</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">child</span><span class="o">.</span><span class="n">aget</span><span class="p">(</span><span class="n">safety</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">child</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MGnifyDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MGnifyDetail</span><span class="p">(</span><span class="n">MGnifier</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">DetailResource</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MgnipyConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="n">passed_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;resource&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">resolved_resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span> <span class="ow">or</span> <span class="n">passed_resource</span>
+
+        <span class="k">if</span> <span class="n">resolved_resource</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;`resource` is required for base MGnifyDetail; &quot;</span>
+                <span class="s2">&quot;init a concrete subclass like Biome/Study/Sample... &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;or pass as a resource param: </span><span class="si">{</span><span class="n">DetailResource</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">passed_resource</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Conflicting resource: expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RESOURCE</span><span class="si">!r}</span><span class="s2">, got </span><span class="si">{</span><span class="n">passed_resource</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># init MGnifier without id first</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="n">resolved_resource</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># then add it to param</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">id_param_key</span><span class="p">:</span> <span class="nb">id</span><span class="p">})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_next_rel_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SupportedEndpoints</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the next resource name based on the relationship name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">BETWEEN_RESOURCE_RELATIONSHIPS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="p">][</span>
+                <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="p">]</span>
+
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="si">}</span><span class="s2"> does not have linked resource: </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># if is a supported relationship</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">():</span>
+
+            <span class="n">access_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_id_param</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_list</span><span class="p">(</span>
+                <span class="n">resource</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">access_param</span><span class="o">=</span><span class="n">access_param</span><span class="p">,</span>
+                <span class="n">fetch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="MGnifyDetail.get_list">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyDetail.get_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resource</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+            <span class="s2">&quot;biomes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;studies&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;samples&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;runs&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;genomes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;analyses&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;assemblies&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;publications&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;catalogues&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">access_param</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">explain</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get list proxy for a specific accession/pubmed_id/catalogue_id detail.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        resource : str</span>
+<span class="sd">            Valid child resource name e.g. in list_relationships(), such as &quot;samples&quot; for a study detail, or &quot;analyses&quot; for a run detail.</span>
+<span class="sd">        access_param : dict[str, str]</span>
+<span class="sd">            A dictionary containing the necessary parameter to identify the detail resource,</span>
+<span class="sd">            such as {&quot;accession&quot;: &quot;MGYS00001234&quot;} or {&quot;biome_lineage&quot;: &quot;root&quot;}.</span>
+<span class="sd">        fetch : bool</span>
+<span class="sd">            Whether to immediately fetch the detail after creating the proxy.</span>
+<span class="sd">        explain : bool</span>
+<span class="sd">            Whether to print example URLs that would be called.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QuerySet</span>
+<span class="sd">            A proxy for the next resource.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        samples = study.get_list(&quot;samples&quot;, {&quot;accession&quot;: &quot;MGYS00001234&quot;})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">proxy_cls</span> <span class="o">=</span> <span class="n">V2_ENDPOINT_LIST_PROXIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">resource</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">proxy_cls</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported resource: </span><span class="si">{</span><span class="n">resource</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="n">proxy_cls</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">access_param</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">endpoint_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_rel_module</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fetch</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">safety</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">child</span></div>
+
+
+<div class="viewcode-block" id="MGnifyDetail.aget_list">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.MGnifyDetail.aget_list">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aget_list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resource</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+            <span class="s2">&quot;biomes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;studies&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;samples&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;runs&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;genomes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;analyses&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;assemblies&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;publications&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;catalogues&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">access_param</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">fetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">explain</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get list proxy for a specific accession/pubmed_id/catalogue_id detail.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        resource : str</span>
+<span class="sd">            Valid child resource name e.g. in list_relationships(), such as &quot;samples&quot; for a study detail, or &quot;analyses&quot; for a run detail.</span>
+<span class="sd">        access_param : dict[str, str]</span>
+<span class="sd">            A dictionary containing the necessary parameter to identify the detail resource,</span>
+<span class="sd">            such as {&quot;accession&quot;: &quot;MGYS00001234&quot;} or {&quot;biome_lineage&quot;: &quot;root&quot;}.</span>
+<span class="sd">        fetch : bool</span>
+<span class="sd">            Whether to immediately fetch the detail after creating the proxy.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QuerySet</span>
+<span class="sd">            A proxy for the next resource.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        samples = await study.aget_list(&quot;samples&quot;, {&quot;accession&quot;: &quot;MGYS00001234&quot;})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">proxy_cls</span> <span class="o">=</span> <span class="n">V2_ENDPOINT_LIST_PROXIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">resource</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">proxy_cls</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported resource: </span><span class="si">{</span><span class="n">resource</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="n">proxy_cls</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">access_param</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">endpoint_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_rel_module</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">explain</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fetch</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">child</span><span class="o">.</span><span class="n">aget</span><span class="p">(</span><span class="n">safety</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">child</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Analyses">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Analyses">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Analyses</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;analyses&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;analyses&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MgnipyConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Runs">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Runs">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Runs</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;runs&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;runs&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MgnipyConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Samples">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Samples">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Samples</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;samples&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Studies">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Studies">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Studies</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;studies&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;studies&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Biomes">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Biomes">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Biomes</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">,</span> <span class="n">BiomesTreeMixin</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;biomes&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;biomes&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Assemblies">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Assemblies">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Assemblies</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;assemblies&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;assemblies&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Genomes">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Genomes">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Genomes</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;genomes&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;genomes&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Publications">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Publications">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Publications</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;publications&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;publications&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Catalogues">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.Catalogues">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Catalogues</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;catalogues&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;catalogues&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StudyDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.StudyDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StudyDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;study&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;study&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SampleDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.SampleDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SampleDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;sample&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RunDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.RunDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RunDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;run&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;run&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AnalysisDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.AnalysisDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnalysisDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;analysis&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;analysis&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GenomeDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.GenomeDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GenomeDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;genome&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;genome&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AssemblyDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.AssemblyDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AssemblyDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;assembly&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;assembly&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="BiomeDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.BiomeDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BiomeDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">,</span> <span class="n">BiomesTreeMixin</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;biome&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;biome&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">biome_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">biome_lineage</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PublicationDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.PublicationDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PublicationDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;publication&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;publication&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CatalogueDetail">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.CatalogueDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CatalogueDetail</span><span class="p">(</span><span class="n">MGnifyDetail</span><span class="p">):</span>
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;catalogue&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;catalogue&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accession</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="n">accession</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="n">V2_ENDPOINT_LIST_PROXIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">ANALYSES</span><span class="p">:</span> <span class="n">Analyses</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">RUNS</span><span class="p">:</span> <span class="n">Runs</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">SAMPLES</span><span class="p">:</span> <span class="n">Samples</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">STUDIES</span><span class="p">:</span> <span class="n">Studies</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">BIOMES</span><span class="p">:</span> <span class="n">Biomes</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">ASSEMBLIES</span><span class="p">:</span> <span class="n">Assemblies</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">GENOMES</span><span class="p">:</span> <span class="n">Genomes</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">PUBLICATIONS</span><span class="p">:</span> <span class="n">Publications</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">CATALOGUES</span><span class="p">:</span> <span class="n">Catalogues</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">V2_ENDPOINT_DETAIL_PROXIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">ANALYSIS</span><span class="p">:</span> <span class="n">AnalysisDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">RUN</span><span class="p">:</span> <span class="n">RunDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span> <span class="n">SampleDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">STUDY</span><span class="p">:</span> <span class="n">StudyDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">BIOME</span><span class="p">:</span> <span class="n">BiomeDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">ASSEMBLY</span><span class="p">:</span> <span class="n">AssemblyDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">GENOME</span><span class="p">:</span> <span class="n">GenomeDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">PUBLICATION</span><span class="p">:</span> <span class="n">PublicationDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">CATALOGUE</span><span class="p">:</span> <span class="n">CatalogueDetail</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">ANNOTATIONS</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># &quot;MGazine&quot;,</span>
+<span class="p">}</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

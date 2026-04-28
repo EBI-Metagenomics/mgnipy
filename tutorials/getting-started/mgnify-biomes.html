@@ -1,0 +1,1526 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>🔍 Explore MGnify Biomes 🏞 &#8212; mgnipy 0.1.dev1+gf4e66b3dc documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=61acb51c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/getting-started/mgnify-biomes';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="🗃 Find all MGnify Analyses for a given Study" href="study-analyses-simple.html" />
+    <link rel="prev" title="🕵 Exploring MGnify Resources 🗂" href="available-resources.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">🔍 Explore MGnify Biomes 	🏞</a></li>
+<li class="toctree-l1"><a class="reference internal" href="study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../dev/README_emgapi-v2-client.html">emgapi-v2-client submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/intro-openapi-python-client.html">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/capabilities_demo.html">MGnipy — Capabilities Demo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../reference/modules.html">mgnipy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../reference/mgnipy.html">mgnipy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.html">mgnipy.emgapi_v2_client package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.models.html">mgnipy.emgapi_v2_client.models package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical notes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/mgnify-biomes.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/tutorials/getting-started/mgnify-biomes.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/tutorials/getting-started/mgnify-biomes.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>🔍 Explore MGnify Biomes 	🏞</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-proxies">Option 1. Proxies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-your-requests">Previewing your requests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carry-out-requests">Carry out requests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-the-results">Exploring the results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-list">as a list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-pandas-dataframe">as a pandas dataframe</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-dictionary">as a dictionary</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="explore-mgnify-biomes">
+<h1>🔍 Explore MGnify Biomes 	🏞<a class="headerlink" href="#explore-mgnify-biomes" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorial/demo-mgnify-biomes.ipynb" rel="noreferrer" target="_blank"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://bioportal.bioontology.org/ontologies/GOLDTERMS" rel="noreferrer" target="_blank">GOLD ecosystem classifications <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like “Host-associated” down to specific environments like “Plant rhizosphere.” MGnify uses this classification system to help researchers discover and organize metagenomic studies and samples by their ecological context.</p>
+<p>This demo will show you how to:</p>
+<ol class="arabic simple">
+<li><p><strong>Query biomes</strong> — Discover available biome classifications and explore the hierarchy</p></li>
+<li><p><strong>Preview before fetching</strong> — Use filtering and preview methods to confirm your query before retrieving full results</p></li>
+<li><p><strong>Access results flexibly</strong> — Retrieve biome data as lists, DataFrames, or hierarchical trees</p></li>
+<li><p><strong>Navigate relationships</strong> — Follow links between biomes and associated studies</p></li>
+</ol>
+<p>By the end, we hope you’ll be comfortable querying the MGnify biome resource to find relevant studies.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy</span>
+<span class="c1">#!pip install asyncio</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can initiate using <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or <code class="docutils literal notranslate"><span class="pre">proxies.Biomes</span></code></p>
+</section>
+<section id="option-1-mgnipy-mgnipy">
+<h2>Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code><a class="headerlink" href="#option-1-mgnipy-mgnipy" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client offers a unified interface to access various MGnify API endpoints, including biomes. This approach is convenient if you want to manage multiple types of queries or resources through a single client object.</p>
+<ul class="simple">
+<li><p>Instantiate <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> to configure your API access and manage requests.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">.biomes</span></code> to create a biome query with your desired parameters.</p></li>
+<li><p>You can use the same filtering and previewing methods as with the proxy, such as <code class="docutils literal notranslate"><span class="pre">filter()</span></code>, <code class="docutils literal notranslate"><span class="pre">list_parameters()</span></code>, and <code class="docutils literal notranslate"><span class="pre">explain()</span></code>.</p></li>
+</ul>
+<p>This method is ideal for users who prefer an object-oriented workflow and may want to extend their analysis to other MGnify resources beyond biomes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="c1"># init</span>
+<span class="n">mg</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
+    <span class="c1"># configuration</span>
+<span class="p">)</span>
+
+<span class="c1"># access proxy</span>
+<span class="n">biomes</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">biomes</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial url: &quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">request_url</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial url:  https://www.ebi.ac.uk/metagenomics/api/v2/biomes?page=1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mg</span><span class="o">.</span><span class="n">describe_resources</span><span class="p">(</span><span class="s2">&quot;biomes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>List all biomes
+
+List all biomes in the MGnify database.
+
+Supported parameters:
+- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
+- max_depth: (int | None | Unset) Maximum depth of the biome lineage to include, e.g. `root` is 1 and `root:Host-Associated:Human` is level 3
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+</pre></div>
+</div>
+</div>
+</div>
+<p>If you would like to know what params are supported for the endpoint there is a helper method you can use: <code class="docutils literal notranslate"><span class="pre">.list_supported_params()</span></code> which</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if not sure what kwargs suupported</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Supported kwargs for biomes: &quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">list_supported_params</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Supported kwargs for biomes:  [&#39;biome_lineage&#39;, &#39;max_depth&#39;, &#39;page&#39;, &#39;page_size&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">describe_endpoint</span><span class="p">(</span><span class="n">as_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;title&#39;: &#39;List all biomes&#39;,
+ &#39;description&#39;: &#39;List all biomes in the MGnify database.&#39;,
+ &#39;args&#39;: {&#39;biome_lineage&#39;: &#39;(None | str | Unset) The lineage to match, including all descendant biomes&#39;,
+  &#39;max_depth&#39;: &#39;(int | None | Unset) Maximum depth of the biome lineage to include, e.g. `root` is 1 and `root:Host-Associated:Human` is level 3&#39;,
+  &#39;page&#39;: &#39;(int | Unset) Default: 1.&#39;,
+  &#39;page_size&#39;: &#39;(int | None | Unset)&#39;},
+ &#39;raises&#39;: &#39;errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.\n    httpx.TimeoutException: If the request takes longer than Client.timeout.&#39;,
+ &#39;returns&#39;: &#39;NinjaPaginationResponseSchemaBiome&#39;,
+ &#39;examples&#39;: &#39;&#39;,
+ &#39;notes&#39;: &#39;&#39;,
+ &#39;schema_link&#39;: &#39;https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># and then</span>
+<span class="n">biomes</span> <span class="o">=</span> <span class="n">biomes</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="n">page_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Filtered url: &quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">request_url</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Filtered url:  https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=1&amp;page_size=15
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="option-1-proxies">
+<h2>Option 1. Proxies<a class="headerlink" href="#option-1-proxies" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Biomes</span></code> proxy provides a direct way to query biome information from the MGnify API. You can customize your query using various parameters such as <code class="docutils literal notranslate"><span class="pre">page_size</span></code> and <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> to control the number of results and the depth of the biome hierarchy.</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">list_parameters()</span></code> to see all available filters and options.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">filter()</span></code> method allows you to refine your query further.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">explain()</span></code> method previews the constructed API URLs and the first few results.</p></li>
+</ul>
+<p>This approach is useful if you want fine-grained control over the API request and wish to explore the available biome data interactively.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biomes</span>
+
+<span class="n">biomes</span> <span class="o">=</span> <span class="n">Biomes</span><span class="p">(</span>
+    <span class="n">page_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Init url: &quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">request_url</span><span class="p">)</span>
+<span class="c1"># if not sure what kwargs suupported</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Supported kwargs for biomes: &quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">list_supported_params</span><span class="p">())</span>
+<span class="c1"># and then</span>
+<span class="n">biomes</span> <span class="o">=</span> <span class="n">biomes</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="n">page_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Filtered url: &quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">request_url</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Init url:  https://www.ebi.ac.uk/metagenomics/api/v2/biomes?page=1&amp;page_size=50
+Supported kwargs for biomes:  [&#39;biome_lineage&#39;, &#39;max_depth&#39;, &#39;page&#39;, &#39;page_size&#39;]
+Filtered url:  https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=1&amp;page_size=15
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="previewing-your-requests">
+<h2>Previewing your requests<a class="headerlink" href="#previewing-your-requests" title="Link to this heading">#</a></h2>
+<p>There is an optional intermediary step to</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.preview()</span></code> the first page of results,  or</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.dry_run()</span></code> to print the number of pages and records to request</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.explain()</span></code> to print the planned request urls
+before <code class="docutils literal notranslate"><span class="pre">.get()</span></code>ting all the result pages.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">head</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="c1"># biomes.dry_run()</span>
+<span class="c1"># or</span>
+<span class="c1"># biomes.preview()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 15, &#39;max_depth&#39;: 6}
+Total pages to retrieve: 33
+Total records to retrieve: 492
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=1&amp;page_size=15
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=2&amp;page_size=15
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=3&amp;page_size=15
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=4&amp;page_size=15
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page_size=15
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="carry-out-requests">
+<h2>Carry out requests<a class="headerlink" href="#carry-out-requests" title="Link to this heading">#</a></h2>
+<p>If happy with the plan, proceed with the async get requests.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># asynchronously get the data</span>
+<span class="k">await</span> <span class="n">biomes</span><span class="o">.</span><span class="n">aget</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/33 [00:00&lt;?, ?it/s]
+Retrieving pages:   3%|▎         | 1/33 [00:00&lt;00:28,  1.12it/s]
+Retrieving pages:  18%|█▊        | 6/33 [00:01&lt;00:03,  7.37it/s]
+Retrieving pages:  33%|███▎      | 11/33 [00:01&lt;00:01, 13.06it/s]
+Retrieving pages:  48%|████▊     | 16/33 [00:01&lt;00:00, 17.95it/s]
+Retrieving pages:  64%|██████▎   | 21/33 [00:01&lt;00:00, 21.94it/s]
+Retrieving pages:  79%|███████▉  | 26/33 [00:01&lt;00:00, 25.19it/s]
+Retrieving pages:  94%|█████████▍| 31/33 [00:01&lt;00:00, 26.93it/s]
+Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 17.83it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="exploring-the-results">
+<h2>Exploring the results<a class="headerlink" href="#exploring-the-results" title="Link to this heading">#</a></h2>
+<p>Different means to access the retireved results</p>
+<section id="as-a-list">
+<h3>as a list<a class="headerlink" href="#as-a-list" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">to_list</span><span class="p">()[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;Mixed alcohol bioreactor&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Biotransformation:Mixed alcohol bioreactor&#39;},
+ {&#39;biome_name&#39;: &#39;Built environment&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Built environment&#39;},
+ {&#39;biome_name&#39;: &#39;Food production&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Food production&#39;},
+ {&#39;biome_name&#39;: &#39;Dairy products&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Food production:Dairy products&#39;},
+ {&#39;biome_name&#39;: &#39;Fermented beverages&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Food production:Fermented beverages&#39;}]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="as-a-pandas-dataframe">
+<h3>as a pandas dataframe<a class="headerlink" href="#as-a-pandas-dataframe" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>biome_name</th>
+      <th>biome_lineage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Mixed alcohol bioreactor</td>
+      <td>root:Engineered:Biotransformation:Mixed alcoho...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Built environment</td>
+      <td>root:Engineered:Built environment</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Food production</td>
+      <td>root:Engineered:Food production</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Dairy products</td>
+      <td>root:Engineered:Food production:Dairy products</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Fermented beverages</td>
+      <td>root:Engineered:Food production:Fermented beve...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="as-a-dictionary">
+<h3>as a dictionary<a class="headerlink" href="#as-a-dictionary" title="Link to this heading">#</a></h3>
+<p>where each key is a page</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># look at first 5 records of page 1</span>
+<span class="n">biomes</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;root&#39;, &#39;lineage&#39;: &#39;root&#39;},
+ {&#39;biome_name&#39;: &#39;Control&#39;, &#39;lineage&#39;: &#39;root:Control&#39;},
+ {&#39;biome_name&#39;: &#39;Engineered&#39;, &#39;lineage&#39;: &#39;root:Engineered&#39;},
+ {&#39;biome_name&#39;: &#39;Biogas plant&#39;, &#39;lineage&#39;: &#39;root:Engineered:Biogas plant&#39;},
+ {&#39;biome_name&#39;: &#39;Wet fermentation&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Biogas plant:Wet fermentation&#39;}]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Specific to the biomes, results can also be visualized as a tree “print” “hshow” or “vshow”</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">show_tree</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
+├── Engineered
+│   ├── Biotransformation
+│   │   ├── Mixed alcohol bioreactor
+│   │   ├── Microbial enhanced oil recovery
+│   │   └── Microbial solubilization of coal
+│   ├── Built environment
+│   ├── Food production
+│   │   ├── Dairy products
+│   │   ├── Fermented beverages
+│   │   ├── Fermented seafood
+│   │   ├── Fermented vegetables
+│   │   └── Silage fermentation
+│   ├── Industrial production
+│   │   └── Engineered product
+│   ├── Lab enrichment
+│   │   ├── Defined media
+│   │   │   ├── Aerobic media
+│   │   │   ├── Anaerobic media
+│   │   │   └── Marine media
+│   │   │       └── Algoconsortia
+│   │   └── Undefined media
+│   ├── Solid waste
+│   │   ├── Composting
+│   │   │   ├── Wood
+│   │   │   │   └── Bioreactor
+│   │   │   ├── Bioreactor
+│   │   │   └── Grass
+│   │   │       └── Bioreactor
+│   │   ├── Landfill
+│   │   └── Solid animal waste
+│   ├── Wastewater
+│   │   ├── Activated Sludge
+│   │   ├── Industrial wastewater
+│   │   │   ├── Agricultural wastewater
+│   │   │   ├── Landfill leachate
+│   │   │   ├── Mine water
+│   │   │   ├── Petrochemical
+│   │   │   └── Pulp and paper wastewater
+│   │   ├── Nutrient removal
+│   │   │   ├── Biological phosphorus removal
+│   │   │   │   ├── Activated sludge
+│   │   │   │   └── Bioreactor
+│   │   │   ├── Dissolved organics (aerobic)
+│   │   │   ├── Activated sludge
+│   │   │   ├── Dissolved organics (anaerobic)
+│   │   │   └── Nitrogen removal
+│   │   │       └── Anammox
+│   │   └── Water and sludge
+│   ├── Lab Synthesis
+│   │   └── Genetic cross
+│   ├── Modeled
+│   │   ├── Simulated communities (DNA mixture)
+│   │   ├── Simulated communities (microbial mixture)
+│   │   ├── Simulated communities (sequence read mixture)
+│   │   └── Sanger
+│   ├── Biogas plant
+│   │   └── Wet fermentation
+│   ├── Bioreactor
+│   │   └── Continuous culture
+│   │       ├── Marine intertidal flat sediment inoculum
+│   │       │   └── Wadden Sea-Germany
+│   │       └── Marine sediment inoculum
+│   │           └── Wadden Sea-Germany
+│   └── Bioremediation
+│       ├── Hydrocarbon
+│       │   └── Benzene
+│       │       └── Bioreactor
+│       ├── Metal
+│       ├── Persistent organic pollutants (POP)
+│       ├── Polycyclic aromatic hydrocarbons
+│       ├── Terephthalate
+│       │   └── Wastewater
+│       │       ├── Activated sludge
+│       │       └── Bioreactor
+│       └── Tetrachloroethylene and derivatives
+│           ├── Chloroethene
+│           │   └── Bioreactor
+│           └── Tetrachloroethylene
+│               └── Bioreactor
+├── Control
+├── Environmental
+│   ├── Aquatic
+│   │   ├── Freshwater
+│   │   │   ├── Drinking water
+│   │   │   │   ├── Chlorinated
+│   │   │   │   └── Delivery networks
+│   │   │   ├── Groundwater
+│   │   │   │   ├── Acid Mine Drainage
+│   │   │   │   ├── Biofilm
+│   │   │   │   ├── Cave water
+│   │   │   │   ├── Coalbed water
+│   │   │   │   ├── Contaminated
+│   │   │   │   ├── Mine
+│   │   │   │   └── Mine drainage
+│   │   │   ├── Ice
+│   │   │   │   ├── Glacial lake
+│   │   │   │   ├── Glacier
+│   │   │   │   └── Ice accretions
+│   │   │   ├── Lake
+│   │   │   ├── Lentic
+│   │   │   │   ├── Epilimnion
+│   │   │   │   ├── Hypolimnion
+│   │   │   │   ├── Limnetic zone
+│   │   │   │   ├── Littoral zone
+│   │   │   │   └── Sediment
+│   │   │   ├── Lotic
+│   │   │   │   ├── Acidic
+│   │   │   │   ├── Low land river systems
+│   │   │   │   ├── Microbial mats
+│   │   │   │   ├── Mid stream
+│   │   │   │   └── Sediment
+│   │   │   ├── Microbialites
+│   │   │   ├── Pond
+│   │   │   │   └── Sediment
+│   │   │   ├── Sediment
+│   │   │   ├── Storm water
+│   │   │   │   └── Drainage pipe biofilm
+│   │   │   ├── Subglacial lake
+│   │   │   └── Wetlands
+│   │   │       ├── Bog
+│   │   │       ├── Marsh
+│   │   │       ├── Sediment
+│   │   │       └── Swamp
+│   │   ├── Aquaculture
+│   │   ├── Estuary
+│   │   │   └── Sediment
+│   │   ├── Lentic
+│   │   │   └── Brackish
+│   │   ├── Marine
+│   │   │   ├── Brackish
+│   │   │   ├── Coastal
+│   │   │   │   └── Sediment
+│   │   │   ├── Cold seeps
+│   │   │   │   └── Sediment
+│   │   │   ├── Fossil
+│   │   │   │   └── Whale fall
+│   │   │   ├── Hydrothermal vents
+│   │   │   │   ├── Black smokers
+│   │   │   │   ├── Diffuse flow
+│   │   │   │   ├── Microbial mats
+│   │   │   │   └── Sediment
+│   │   │   ├── Intertidal zone
+│   │   │   │   ├── Beach
+│   │   │   │   ├── Coral reef
+│   │   │   │   ├── Estuary
+│   │   │   │   ├── Mangrove swamp
+│   │   │   │   ├── Microbialites
+│   │   │   │   ├── Oil-contaminated
+│   │   │   │   ├── Salt marsh
+│   │   │   │   └── Sediment
+│   │   │   ├── Marginal Sea
+│   │   │   ├── Neritic zone
+│   │   │   │   ├── Oil-contaminated sediment
+│   │   │   │   └── Sediment
+│   │   │   ├── Oceanic
+│   │   │   │   ├── Abyssal plane
+│   │   │   │   ├── Aphotic zone
+│   │   │   │   ├── Benthic
+│   │   │   │   ├── Oil-contaminated
+│   │   │   │   ├── Oil-contaminated sediments
+│   │   │   │   ├── Photic zone
+│   │   │   │   └── Sediment
+│   │   │   ├── Oil-contaminated sediment
+│   │   │   ├── Oil field
+│   │   │   │   └── bore hole
+│   │   │   ├── Oil seeps
+│   │   │   ├── Pelagic
+│   │   │   ├── Sediment
+│   │   │   ├── Volcanic
+│   │   │   └── Wetlands
+│   │   │       └── Sediment
+│   │   ├── Meromictic lake
+│   │   ├── Non-marine Saline and Alkaline
+│   │   │   ├── Alkaline
+│   │   │   │   ├── Carbonate
+│   │   │   │   ├── Microbial mats
+│   │   │   │   └── Sediment
+│   │   │   ├── Salt crystallizer pond
+│   │   │   │   └── Microbial mats
+│   │   │   ├── Hypersaline
+│   │   │   │   ├── Microbial mats
+│   │   │   │   └── Sediment
+│   │   │   ├── Near-boiling (&gt;90C)
+│   │   │   └── Saline
+│   │   │       ├── Athalassic
+│   │   │       ├── Epilimnion
+│   │   │       ├── Hypolimnion
+│   │   │       ├── Microbial mats
+│   │   │       ├── Sediment
+│   │   │       └── Thalassic
+│   │   ├── Sediment
+│   │   └── Thermal springs
+│   │       ├── Hot (42-90C)
+│   │       ├── Acidic
+│   │       ├── Alkaline
+│   │       ├── Neutral
+│   │       ├── Sediment
+│   │       ├── Near-boiling (&gt;90C)
+│   │       ├── Tepid (25-34C)
+│   │       └── Warm (34-42C)
+│   ├── Air
+│   │   ├── Indoor Air
+│   │   └── Outdoor Air
+│   └── Terrestrial
+│       ├── Agricultural field
+│       ├── Asphalt lakes
+│       │   └── Tar
+│       ├── Deep subsurface
+│       │   └── Clay
+│       ├── Geologic
+│       │   └── Mine
+│       ├── Oil reservoir
+│       ├── Rock-dwelling (subaerial biofilm)
+│       ├── Soil
+│       │   ├── Agricultural
+│       │   ├── Boreal forest
+│       │   ├── Clay
+│       │   │   ├── Agricultural land
+│       │   │   ├── Contaminated
+│       │   │   ├── Grasslands
+│       │   │   └── Oil-contaminated
+│       │   ├── Contaminated
+│       │   ├── Crop
+│       │   │   └── Agricultural land
+│       │   ├── Desert
+│       │   ├── Forest soil
+│       │   ├── Grasslands
+│       │   ├── Loam
+│       │   │   ├── Agricultural
+│       │   │   ├── Contaminated
+│       │   │   ├── Forest soil
+│       │   │   └── Grasslands
+│       │   ├── Mine
+│       │   ├── Mine drainage
+│       │   ├── Oil-contaminated
+│       │   ├── Permafrost
+│       │   ├── Sand
+│       │   │   ├── Desert
+│       │   │   ├── Forest soil
+│       │   │   ├── Grasslands
+│       │   │   └── Oil-contaminated
+│       │   ├── Shrubland
+│       │   ├── Silt
+│       │   ├── Tropical rainforest
+│       │   ├── Uranium contaminated
+│       │   ├── Viriome
+│       │   └── Wetlands
+│       │       └── Permafrost
+│       └── Volcanic
+│           └── Fumaroles
+├── Host-associated
+│   ├── Algae
+│   │   ├── Brown Algae
+│   │   ├── Green algae
+│   │   │   └── Ectosymbionts
+│   │   └── Red algae
+│   │       └── Ectosymbionts 
+│   ├── Amphibia
+│   │   ├── Digestive system
+│   │   └── Excretory system
+│   ├── Animal
+│   │   ├── Circulatory system
+│   │   ├── Digestive system
+│   │   │   └── Fecal
+│   │   ├── Fossil
+│   │   │   ├── Bone
+│   │   │   └── Feces
+│   │   ├── Reproductive system
+│   │   ├── Respiratory system
+│   │   └── Skin
+│   ├── Annelida
+│   │   ├── Digestive system
+│   │   │   └── Digestive tube
+│   │   │       └── Extracellular symbionts
+│   │   ├── Integument
+│   │   │   ├── Cuticle
+│   │   │   │   └── Epibionts
+│   │   │   └── Subcuticular space
+│   │   │       └── Extracellular symbionts
+│   │   ├── Intracellular endosymbionts
+│   │   │   └── Trophosome
+│   │   └── Reproductive system
+│   │       └── Egg capsule
+│   │           └── Extracellular
+│   ├── Arthropoda
+│   │   ├── Digestive system
+│   │   │   ├── Foregut
+│   │   │   ├── Gut
+│   │   │   │   ├── P3 segment
+│   │   │   │   └── Proctodeal segment
+│   │   │   ├── Hindgut
+│   │   │   │   ├── P1 segment
+│   │   │   │   └── P3 segment
+│   │   │   ├── Midgut
+│   │   │   └── Oral
+│   │   │       └── Saliva
+│   │   ├── Symbiotic fungal gardens and galleries
+│   │   │   ├── Fungus gallery
+│   │   │   └── Fungus garden
+│   │   │       └── Garden dump
+│   │   ├── Venom gland
+│   │   │   └── Venom
+│   │   ├── Integument
+│   │   │   └── Cuticle
+│   │   │       └── Thoracic segments
+│   │   ├── Intracellular endosymbionts
+│   │   │   ├── Primary
+│   │   │   │   └── Bacteriomes
+│   │   │   └── Secondary
+│   │   ├── Oral cavity
+│   │   └── Respiratory system
+│   │       └── Gills
+│   ├── Birds
+│   │   ├── Circulatory system
+│   │   │   └── Blood
+│   │   ├── Digestive system
+│   │   │   ├── Ceca
+│   │   │   │   └── Lumen
+│   │   │   ├── Crop
+│   │   │   │   └── Lumen
+│   │   │   ├── Digestive tube
+│   │   │   │   └── Cecum
+│   │   │   ├── Fecal
+│   │   │   └── Small intestine
+│   │   │       └── Duodenal
+│   │   ├── Reproductive system
+│   │   └── Respiratory system
+│   │       └── Lungs
+│   ├── Cnidaria
+│   ├── Echinodermata
+│   ├── Endosymbionts
+│   │   └── Fungi
+│   │       └── Endosymbionts
+│   ├── Fish
+│   │   ├── Circulatory system
+│   │   │   └── Blood
+│   │   ├── Digestive system
+│   │   │   ├── Foregut
+│   │   │   │   └── Uncharacterized
+│   │   │   └── Intestine
+│   │   ├── Excretory system
+│   │   │   └── Kidneys
+│   │   ├── Reproductive system
+│   │   └── Skin
+│   │       └── Slime
+│   ├── Human
+│   │   ├── Digestive system
+│   │   │   ├── Intestine
+│   │   │   ├── Large intestine
+│   │   │   │   ├── Fecal
+│   │   │   │   └── Sigmoid colon
+│   │   │   ├── Oral
+│   │   │   │   ├── Attached Keratinized gingiva
+│   │   │   │   ├── buccal mucosa
+│   │   │   │   ├── hard palate
+│   │   │   │   ├── Palatine tonsils
+│   │   │   │   ├── Periodontal pockets
+│   │   │   │   ├── Saliva
+│   │   │   │   ├── Subgingival plaque
+│   │   │   │   ├── Supragingival plaque
+│   │   │   │   ├── Throat
+│   │   │   │   └── tongue dorsum
+│   │   │   └── Hindgut
+│   │   │       └── Rectum
+│   │   ├── Circulatory system
+│   │   │   └── Blood
+│   │   ├── Excretory system
+│   │   │   └── Urethra
+│   │   │       └── Urine
+│   │   ├── Fossil
+│   │   │   └── Bone
+│   │   ├── Lympathic system
+│   │   │   └── Lymph nodes
+│   │   ├── Milk
+│   │   ├── Nervous system
+│   │   │   └── Cerebrospinal fluid
+│   │   ├── Reproductive system
+│   │   │   ├── Female
+│   │   │   └── Vagina
+│   │   │       ├── Introitus
+│   │   │       ├── Midpoint vagina
+│   │   │       └── posterior fornix
+│   │   ├── Respiratory system
+│   │   │   ├── Nasopharyngeal
+│   │   │   │   ├── anterior nares
+│   │   │   │   ├── Nasal cavity
+│   │   │   │   └── Pharynx
+│   │   │   └── Pulmonary system
+│   │   │       ├── Lung
+│   │   │       ├── Sputum
+│   │   │       ├── Trachea
+│   │   │       └── Viriome
+│   │   └── Skin
+│   │       ├── Axilla
+│   │       ├── Medial distal leg
+│   │       │   └── Venous leg ulcers
+│   │       ├── Naris
+│   │       ├── retroauricular crease
+│   │       ├── Umbilicus
+│   │       └── Volar forearm
+│   ├── Fungi
+│   ├── Insecta
+│   │   └── Digestive system
+│   ├── Invertebrates
+│   │   ├── Bryozoans
+│   │   │   └── Gymnolaemates
+│   │   ├── Cnidaria
+│   │   │   └── Coral
+│   │   └── Echinodermata
+│   │       └── Sea Urchin
+│   ├── Mammals
+│   │   ├── Circulatory system
+│   │   │   └── Blood
+│   │   ├── Digestive system
+│   │   │   ├── Fecal
+│   │   │   │   └── Uncharacterized
+│   │   │   ├── Foregut
+│   │   │   │   └── Rumen
+│   │   │   ├── Large intestine
+│   │   │   │   ├── Cecum
+│   │   │   │   └── Fecal
+│   │   │   ├── Midgut
+│   │   │   ├── Oral cavity
+│   │   │   │   └── Buccal mucosa
+│   │   │   └── Stomach
+│   │   │       ├── Endoperitrophic space
+│   │   │       └── Rumen
+│   │   ├── Excretory system
+│   │   │   └── Urine
+│   │   ├── Gastrointestinal tract
+│   │   │   └── Intestine
+│   │   │       └── Fecal
+│   │   ├── Lymphatic
+│   │   │   └── Lymph nodes
+│   │   ├── Milk
+│   │   ├── Nervous system
+│   │   │   └── Brain
+│   │   ├── Reproductive system
+│   │   ├── Respiratory system
+│   │   │   ├── Nasopharyngeal
+│   │   │   │   └── Nasal cavity
+│   │   │   └── Pulmonary system
+│   │   │       └── Viriome
+│   │   └── Skin
+│   ├── Microbial
+│   │   ├── Bacteria
+│   │   └── Dinoflagellates
+│   │       └── Endosymbionts
+│   ├── Mollusca
+│   │   ├── Digestive system
+│   │   │   ├── Ceca
+│   │   │   │   └── Uncharacterized
+│   │   │   └── Glands
+│   │   ├── Respiratory system
+│   │   │   └── Gills
+│   │   │       ├── Extracellular
+│   │   │       └── Intracellular
+│   │   └── Shell
+│   ├── Plants
+│   │   ├── Phylloplane
+│   │   │   ├── Endophytes
+│   │   │   └── Epiphytes
+│   │   ├── Rhizome
+│   │   │   └── Epiphytes
+│   │   ├── Rhizoplane
+│   │   │   ├── Endophytes
+│   │   │   ├── Epiphytes
+│   │   │   └── Soil
+│   │   ├── Rhizosphere
+│   │   │   ├── Epiphytes
+│   │   │   ├── Forest soil
+│   │   │   └── Soil
+│   │   └── Root
+│   ├── Porifera
+│   ├── Protists
+│   ├── Protozoa
+│   ├── Reptile
+│   │   └── Oral cavity
+│   │       └── Venom gland
+│   │           └── Venom
+│   ├── Spiralia
+│   └── Tunicates
+│       └── Ascidians
+└── Mixed
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiomeDetail</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biome</span> <span class="o">=</span> <span class="n">BiomeDetail</span><span class="p">(</span><span class="s2">&quot;root:Engineered&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">biome</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnifier instance for resource: biome
+I.e., mgnipy.V2.proxies.BiomeDetail
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {&#39;biome_lineage&#39;: &#39;root:Engineered&#39;}
+Endpoint module: mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/biomes?biome_lineage=root%3AEngineered&amp;page=1
+Returns paginated results: True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biome</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">()</span><span class="o">.</span><span class="n">biome</span><span class="p">(</span><span class="s2">&quot;root:Engineered&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">biome</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnifier instance for resource: biome
+I.e., mgnipy.V2.proxies.BiomeDetail
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {&#39;biome_lineage&#39;: &#39;root:Engineered&#39;}
+Endpoint module: mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/biomes?biome_lineage=root%3AEngineered&amp;page=1
+Returns paginated results: True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">this</span> <span class="o">=</span> <span class="n">biomes</span><span class="p">[</span><span class="s2">&quot;root:Engineered:Biogas plant:Wet fermentation&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 14979.66it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">child_resource</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;SupportedEndpoints.BIOME: &#39;biome&#39;&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">their_studies</span> <span class="o">=</span> <span class="n">biomes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 21290.88it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">their_studies</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">head</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/biomes?biome_lineage=root%3AEngineered%3ABuilt+environment&amp;page=1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">their_studies</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 30615.36it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="available-resources.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">🕵 Exploring MGnify Resources 🗂</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="study-analyses-simple.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">🗃 Find all MGnify Analyses for a given Study</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-proxies">Option 1. Proxies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-your-requests">Previewing your requests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carry-out-requests">Carry out requests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-the-results">Exploring the results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-list">as a list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-pandas-dataframe">as a pandas dataframe</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-dictionary">as a dictionary</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

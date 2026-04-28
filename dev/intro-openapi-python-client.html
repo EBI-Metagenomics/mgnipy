@@ -1,0 +1,780 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quick guide to emgapi_v2_client &#8212; mgnipy 0.1.dev1+gf4e66b3dc documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=61acb51c"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dev/intro-openapi-python-client';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="MGnipy — Capabilities Demo" href="capabilities_demo.html" />
+    <link rel="prev" title="emgapi-v2-client submodule" href="README_emgapi-v2-client.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="README_emgapi-v2-client.html">emgapi-v2-client submodule</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="capabilities_demo.html">MGnipy — Capabilities Demo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/modules.html">mgnipy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/mgnipy.html">mgnipy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.html">mgnipy.emgapi_v2_client package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.models.html">mgnipy.emgapi_v2_client.models package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical notes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/dev/intro-openapi-python-client.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/dev/intro-openapi-python-client.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/dev/intro-openapi-python-client.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Quick guide to emgapi_v2_client</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#client-and-request-handling">Client and request handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#response-handling">Response handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#async-requests-support">Async requests support</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="quick-guide-to-emgapi-v2-client">
+<h1>Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code><a class="headerlink" href="#quick-guide-to-emgapi-v2-client" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">mgnipy.emgapi_v2_client</span></code> is a python library submodule that was created from the <a class="reference internal" href="#ttps://www.ebi.ac.uk/metagenomics/api/v2/openapi.json"><span class="xref myst">openapi.json spec</span></a> using <a class="reference external" href="https://github.com/openapi-generators/openapi-python-client" rel="noreferrer" target="_blank">openapi-python-client <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>The purpose of this page is to better understand the python client libraries generated using <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code> – in case you want to work with the <code class="docutils literal notranslate"><span class="pre">mgnipy.emgapi_v2_client</span></code> submodule directly.</p>
+<details>
+<summary style=color:green>
+As stated in <b>README_emgapi-v2-client.md</b> - Things to know:
+</summary>
+<h1></h1>
+<ol class="arabic simple">
+<li><p>Every path/method combo becomes a Python module with four functions:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sync</span></code>: Blocking request that returns parsed data (if successful) or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sync_detailed</span></code>: Blocking request that always returns a <code class="docutils literal notranslate"><span class="pre">Request</span></code>, optionally with <code class="docutils literal notranslate"><span class="pre">parsed</span></code> set if the request was successful.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">asyncio</span></code>: Like <code class="docutils literal notranslate"><span class="pre">sync</span></code> but async instead of blocking</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">asyncio_detailed</span></code>: Like <code class="docutils literal notranslate"><span class="pre">sync_detailed</span></code> but async instead of blocking</p></li>
+</ol>
+</li>
+<li><p>All path/query params, and bodies become method arguments.</p></li>
+<li><p>If your endpoint had any tags on it, the first tag will be used as a module name for the function (my_tag above)</p></li>
+</ol>
+<h1></h1>
+</details>
+<br>
+<p>Below we will have an example where we will find studies of the biome root:Host-associated:Plants</p>
+</section>
+<hr class="docutils" />
+<section id="required-imports">
+<h2>Required imports<a class="headerlink" href="#required-imports" title="Link to this heading">#</a></h2>
+<p>At a minimum:</p>
+<ol class="arabic simple">
+<li><p>We need to find and import the appropriate module for our endpoint: <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes" rel="noreferrer" target="_blank"><code class="docutils literal notranslate"><span class="pre">/Miscellaneous/list_mgnify_biomes</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p></li>
+<li><p>Get and initiate the <code class="docutils literal notranslate"><span class="pre">mgni_py.Client</span></code> instance</p></li>
+<li><p>(Optional) add type annotations</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># at minimum need</span>
+<span class="c1"># 1. the path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client.api.miscellaneous</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_mgnify_biomes</span>
+<span class="c1"># 2. the client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">Client</span>
+
+<span class="c1"># extra nice to have annotations but not required for usage</span>
+<span class="c1"># 3. the models</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">NinjaPaginationResponseSchemaBiome</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">UNSET</span><span class="p">,</span> <span class="n">Response</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="client-and-request-handling">
+<h2>Client and request handling<a class="headerlink" href="#client-and-request-handling" title="Link to this heading">#</a></h2>
+<p>To instantiate the python client we really only need the base_url. However there are options for loggiing and other httpx args.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mgnipy.emgapi_v2_client.Client</span></code>/<code class="docutils literal notranslate"><span class="pre">AuheticatedClient</span></code> will take care of constructing and closing the httpx clients</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://www.ebi.ac.uk&quot;</span><span class="p">)</span>
+<span class="c1"># check it out</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example_client</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Client(raise_on_unexpected_status=False, _base_url=&#39;https://www.ebi.ac.uk&#39;, _cookies={}, _headers={}, _timeout=None, _verify_ssl=True, _follow_redirects=False, _httpx_args={}, _client=None, _async_client=None)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The get request is made when running the <code class="docutils literal notranslate"><span class="pre">.sync...()</span></code> or <code class="docutils literal notranslate"><span class="pre">.async...()</span></code> functions. For example if executing</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">example_client</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">list_mgnify_biomes</span><span class="o">.</span><span class="n">sync_detailed</span><span class="p">(</span>
+        <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">10</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>the order of the methods within <code class="docutils literal notranslate"><span class="pre">list_mgnify_biomes.py</span></code> is:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_get_kwargs</span></code> to prepare the query params, ensuring that the kwarg exists e.g. that <code class="docutils literal notranslate"><span class="pre">page_size</span></code> is an acceptable kwarg</p></li>
+<li><p>the httpx request is made with the kwargs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_build_response</span></code> to prepare as <code class="docutils literal notranslate"><span class="pre">Response</span></code> type</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">Response</span></code> is attribute <code class="docutils literal notranslate"><span class="pre">Response.parsed</span></code> which uses <code class="docutils literal notranslate"><span class="pre">_parse_response</span></code> to get response as json / dict</p></li>
+</ol>
+<p>The difference between with and sans <code class="docutils literal notranslate"><span class="pre">..._detailed()</span></code> is that with returns the whole response and sans only returns the parsed response.</p>
+<hr class="docutils" />
+<p>We will now make carry out the example request to start at biome_lineage “root:Host-associated:Plants”.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># prep our search</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;biome_lineage&quot;</span><span class="p">:</span> <span class="s2">&quot;root:Host-associated:Plants&quot;</span><span class="p">,</span>
+    <span class="c1"># this is default num of results per page in mgnify</span>
+    <span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># make the sync call and store respone</span>
+<span class="k">with</span> <span class="n">example_client</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">[</span><span class="n">NinjaPaginationResponseSchemaBiome</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_mgnify_biomes</span><span class="o">.</span><span class="n">sync_detailed</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+<span class="c1"># check</span>
+<span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;HTTPStatus.OK: 200&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="response-handling">
+<h2>Response handling<a class="headerlink" href="#response-handling" title="Link to this heading">#</a></h2>
+<p>and if we take a look at the parsed content:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">parsed</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dict_keys([&#39;count&#39;, &#39;items&#39;])
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>In <code class="docutils literal notranslate"><span class="pre">items</span></code> are records such as the biome_lineages</p>
+<ul>
+<li><p>for the first page of results only</p></li>
+</ul>
+</li>
+<li><p>In <code class="docutils literal notranslate"><span class="pre">count</span></code> is the total number of records that matched our query.
+<strong>Note: you need to instantiate a new client object every call</strong></p></li>
+</ul>
+<p>Let’s take a closer look at the response</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">parsed</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;count&#39;: 15,
+ &#39;items&#39;: [{&#39;biome_name&#39;: &#39;Plants&#39;, &#39;lineage&#39;: &#39;root:Host-associated:Plants&#39;},
+  {&#39;biome_name&#39;: &#39;Phylloplane&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Phylloplane&#39;},
+  {&#39;biome_name&#39;: &#39;Endophytes&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Phylloplane:Endophytes&#39;},
+  {&#39;biome_name&#39;: &#39;Epiphytes&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Phylloplane:Epiphytes&#39;},
+  {&#39;biome_name&#39;: &#39;Rhizome&#39;, &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizome&#39;},
+  {&#39;biome_name&#39;: &#39;Epiphytes&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizome:Epiphytes&#39;},
+  {&#39;biome_name&#39;: &#39;Rhizoplane&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizoplane&#39;},
+  {&#39;biome_name&#39;: &#39;Endophytes&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizoplane:Endophytes&#39;},
+  {&#39;biome_name&#39;: &#39;Epiphytes&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizoplane:Epiphytes&#39;},
+  {&#39;biome_name&#39;: &#39;Soil&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizoplane:Soil&#39;},
+  {&#39;biome_name&#39;: &#39;Rhizosphere&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizosphere&#39;},
+  {&#39;biome_name&#39;: &#39;Epiphytes&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizosphere:Epiphytes&#39;},
+  {&#39;biome_name&#39;: &#39;Forest soil&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizosphere:Forest soil&#39;},
+  {&#39;biome_name&#39;: &#39;Soil&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Plants:Rhizosphere:Soil&#39;},
+  {&#39;biome_name&#39;: &#39;Root&#39;, &#39;lineage&#39;: &#39;root:Host-associated:Plants:Root&#39;}]}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="async-requests-support">
+<h2>Async requests support<a class="headerlink" href="#async-requests-support" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span> 
+
+<span class="n">example_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://www.ebi.ac.uk&quot;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">with</span> <span class="n">example_client</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span> 
+    <span class="n">parsed_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">list_mgnify_biomes</span><span class="o">.</span><span class="n">asyncio</span><span class="p">(</span>
+        <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> 
+        <span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Host-associated&quot;</span><span class="p">,</span>
+        <span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+        <span class="n">page_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">parsed_response</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;count&#39;: 233,
+ &#39;items&#39;: [{&#39;biome_name&#39;: &#39;Host-associated&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated&#39;},
+  {&#39;biome_name&#39;: &#39;Algae&#39;, &#39;lineage&#39;: &#39;root:Host-associated:Algae&#39;},
+  {&#39;biome_name&#39;: &#39;Brown Algae&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Algae:Brown Algae&#39;},
+  {&#39;biome_name&#39;: &#39;Green algae&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Algae:Green algae&#39;},
+  {&#39;biome_name&#39;: &#39;Ectosymbionts&#39;,
+   &#39;lineage&#39;: &#39;root:Host-associated:Algae:Green algae:Ectosymbionts&#39;}]}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="README_emgapi-v2-client.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">emgapi-v2-client submodule</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="capabilities_demo.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">MGnipy — Capabilities Demo</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#client-and-request-handling">Client and request handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#response-handling">Response handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#async-requests-support">Async requests support</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

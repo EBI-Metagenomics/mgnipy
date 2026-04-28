@@ -1,0 +1,834 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>mgnipy.emgapi_v2_client.api package &#8212; mgnipy 0.1.dev1+gf4e66b3dc documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=61acb51c"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/mgnipy.emgapi_v2_client.api';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mgnipy.emgapi_v2_client.api.analyses package" href="mgnipy.emgapi_v2_client.api.analyses.html" />
+    <link rel="prev" title="mgnipy.emgapi_v2_client package" href="mgnipy.emgapi_v2_client.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/README_emgapi-v2-client.html">emgapi-v2-client submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/intro-openapi-python-client.html">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/capabilities_demo.html">MGnipy — Capabilities Demo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">mgnipy</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="mgnipy.html">mgnipy package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="mgnipy.emgapi_v2_client.html">mgnipy.emgapi_v2_client package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">mgnipy.emgapi_v2_client.api package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.emgapi_v2_client.models.html">mgnipy.emgapi_v2_client.models package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical notes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/reference/mgnipy.emgapi_v2_client.api.rst" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/reference/mgnipy.emgapi_v2_client.api.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>mgnipy.emgapi_v2_client.api package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-mgnipy.emgapi_v2_client.api">
+<span id="mgnipy-emgapi-v2-client-api-package"></span><h1>mgnipy.emgapi_v2_client.api package<a class="headerlink" href="#module-mgnipy.emgapi_v2_client.api" title="Link to this heading">#</a></h1>
+<p>Contains methods for accessing the API</p>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html">mgnipy.emgapi_v2_client.api.analyses package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#module-mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations">mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#module-mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations_of_type">mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations_of_type module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations_of_type.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations_of_type.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations_of_type.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.analysis_get_mgnify_analysis_with_annotations_of_type.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#module-mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis">mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#module-mgnipy.emgapi_v2_client.api.analyses.list_mgnify_analyses">mgnipy.emgapi_v2_client.api.analyses.list_mgnify_analyses module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.list_mgnify_analyses.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.list_mgnify_analyses.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.list_mgnify_analyses.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.analyses.html#mgnipy.emgapi_v2_client.api.analyses.list_mgnify_analyses.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html">mgnipy.emgapi_v2_client.api.assemblies package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#module-mgnipy.emgapi_v2_client.api.assemblies.get_assembly">mgnipy.emgapi_v2_client.api.assemblies.get_assembly module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.get_assembly.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.get_assembly.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.get_assembly.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.get_assembly.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#module-mgnipy.emgapi_v2_client.api.assemblies.list_additional_contained_genomes_for_assembly">mgnipy.emgapi_v2_client.api.assemblies.list_additional_contained_genomes_for_assembly module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_additional_contained_genomes_for_assembly.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_additional_contained_genomes_for_assembly.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_additional_contained_genomes_for_assembly.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_additional_contained_genomes_for_assembly.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#module-mgnipy.emgapi_v2_client.api.assemblies.list_analyses_for_assembly">mgnipy.emgapi_v2_client.api.assemblies.list_analyses_for_assembly module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_analyses_for_assembly.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_analyses_for_assembly.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_analyses_for_assembly.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_analyses_for_assembly.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#module-mgnipy.emgapi_v2_client.api.assemblies.list_assemblies">mgnipy.emgapi_v2_client.api.assemblies.list_assemblies module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_assemblies.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_assemblies.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_assemblies.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_assemblies.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#module-mgnipy.emgapi_v2_client.api.assemblies.list_genome_links_for_assembly">mgnipy.emgapi_v2_client.api.assemblies.list_genome_links_for_assembly module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_genome_links_for_assembly.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_genome_links_for_assembly.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_genome_links_for_assembly.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.assemblies.html#mgnipy.emgapi_v2_client.api.assemblies.list_genome_links_for_assembly.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html">mgnipy.emgapi_v2_client.api.authentication package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#module-mgnipy.emgapi_v2_client.api.authentication.token_obtain_sliding">mgnipy.emgapi_v2_client.api.authentication.token_obtain_sliding module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_obtain_sliding.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_obtain_sliding.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_obtain_sliding.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_obtain_sliding.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#module-mgnipy.emgapi_v2_client.api.authentication.token_refresh_sliding">mgnipy.emgapi_v2_client.api.authentication.token_refresh_sliding module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_refresh_sliding.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_refresh_sliding.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_refresh_sliding.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_refresh_sliding.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#module-mgnipy.emgapi_v2_client.api.authentication.token_verify">mgnipy.emgapi_v2_client.api.authentication.token_verify module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_verify.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_verify.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_verify.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.authentication.html#mgnipy.emgapi_v2_client.api.authentication.token_verify.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html">mgnipy.emgapi_v2_client.api.genomes package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#module-mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations">mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#module-mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue">mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#module-mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes">mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#module-mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome">mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#module-mgnipy.emgapi_v2_client.api.genomes.list_genome_catalogues">mgnipy.emgapi_v2_client.api.genomes.list_genome_catalogues module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_genome_catalogues.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_genome_catalogues.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_genome_catalogues.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_genome_catalogues.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#module-mgnipy.emgapi_v2_client.api.genomes.list_mgnify_genomes">mgnipy.emgapi_v2_client.api.genomes.list_mgnify_genomes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_mgnify_genomes.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_mgnify_genomes.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_mgnify_genomes.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.list_mgnify_genomes.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.miscellaneous.html">mgnipy.emgapi_v2_client.api.miscellaneous package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.miscellaneous.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.miscellaneous.html#module-mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes">mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.miscellaneous.html#mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.miscellaneous.html#mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.miscellaneous.html#mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.miscellaneous.html#mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.private_data.html">mgnipy.emgapi_v2_client.api.private_data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.private_data.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.private_data.html#module-mgnipy.emgapi_v2_client.api.private_data.list_private_mgnify_studies">mgnipy.emgapi_v2_client.api.private_data.list_private_mgnify_studies module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.private_data.html#mgnipy.emgapi_v2_client.api.private_data.list_private_mgnify_studies.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.private_data.html#mgnipy.emgapi_v2_client.api.private_data.list_private_mgnify_studies.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.private_data.html#mgnipy.emgapi_v2_client.api.private_data.list_private_mgnify_studies.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.private_data.html#mgnipy.emgapi_v2_client.api.private_data.list_private_mgnify_studies.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html">mgnipy.emgapi_v2_client.api.publications package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#module-mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication">mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#module-mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication_annotations">mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication_annotations module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication_annotations.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication_annotations.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication_annotations.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.get_mgnify_publication_annotations.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#module-mgnipy.emgapi_v2_client.api.publications.list_mgnify_publications">mgnipy.emgapi_v2_client.api.publications.list_mgnify_publications module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.list_mgnify_publications.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.list_mgnify_publications.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.list_mgnify_publications.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.publications.html#mgnipy.emgapi_v2_client.api.publications.list_mgnify_publications.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html">mgnipy.emgapi_v2_client.api.runs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#module-mgnipy.emgapi_v2_client.api.runs.get_analysed_run">mgnipy.emgapi_v2_client.api.runs.get_analysed_run module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.get_analysed_run.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.get_analysed_run.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.get_analysed_run.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.get_analysed_run.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#module-mgnipy.emgapi_v2_client.api.runs.list_analysed_runs">mgnipy.emgapi_v2_client.api.runs.list_analysed_runs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_analysed_runs.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_analysed_runs.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_analysed_runs.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_analysed_runs.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#module-mgnipy.emgapi_v2_client.api.runs.list_runs_analyses">mgnipy.emgapi_v2_client.api.runs.list_runs_analyses module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_analyses.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_analyses.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_analyses.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_analyses.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#module-mgnipy.emgapi_v2_client.api.runs.list_runs_assemblies">mgnipy.emgapi_v2_client.api.runs.list_runs_assemblies module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_assemblies.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_assemblies.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_assemblies.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.runs.html#mgnipy.emgapi_v2_client.api.runs.list_runs_assemblies.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html">mgnipy.emgapi_v2_client.api.samples package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#module-mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample">mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#module-mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples">mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#module-mgnipy.emgapi_v2_client.api.samples.list_sample_runs">mgnipy.emgapi_v2_client.api.samples.list_sample_runs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_sample_runs.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_sample_runs.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_sample_runs.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.samples.html#mgnipy.emgapi_v2_client.api.samples.list_sample_runs.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html">mgnipy.emgapi_v2_client.api.studies package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#module-mgnipy.emgapi_v2_client.api.studies.get_mgnify_study">mgnipy.emgapi_v2_client.api.studies.get_mgnify_study module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_mgnify_study.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_mgnify_study.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_mgnify_study.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_mgnify_study.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#module-mgnipy.emgapi_v2_client.api.studies.get_super_study">mgnipy.emgapi_v2_client.api.studies.get_super_study module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_super_study.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_super_study.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_super_study.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.get_super_study.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#module-mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies">mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#module-mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses">mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#module-mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_publications">mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_publications module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_publications.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_publications.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_publications.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_publications.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#module-mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_samples">mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_samples module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_samples.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_samples.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_samples.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_samples.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#module-mgnipy.emgapi_v2_client.api.studies.list_super_studies">mgnipy.emgapi_v2_client.api.studies.list_super_studies module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_super_studies.sync_detailed"><code class="docutils literal notranslate"><span class="pre">sync_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_super_studies.sync"><code class="docutils literal notranslate"><span class="pre">sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_super_studies.asyncio_detailed"><code class="docutils literal notranslate"><span class="pre">asyncio_detailed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.studies.html#mgnipy.emgapi_v2_client.api.studies.list_super_studies.asyncio"><code class="docutils literal notranslate"><span class="pre">asyncio()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mgnipy.emgapi_v2_client.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">mgnipy.emgapi_v2_client package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mgnipy.emgapi_v2_client.api.analyses.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">mgnipy.emgapi_v2_client.api.analyses package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

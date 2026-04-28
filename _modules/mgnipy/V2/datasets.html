@@ -1,0 +1,1578 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mgnipy.V2.datasets &#8212; mgnipy 0.1.dev1+gf4e66b3dc documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=61acb51c"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mgnipy/V2/datasets';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/README_emgapi-v2-client.html">emgapi-v2-client submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/intro-openapi-python-client.html">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/capabilities_demo.html">MGnipy — Capabilities Demo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/modules.html">mgnipy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/mgnipy.html">mgnipy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/mgnipy.emgapi_v2_client.html">mgnipy.emgapi_v2_client package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/mgnipy.emgapi_v2_client.models.html">mgnipy.emgapi_v2_client.models package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical notes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for mgnipy.V2.datasets</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Generator</span><span class="p">,</span>
+    <span class="n">Literal</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">aiofiles</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ijson</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DirectoryPath</span><span class="p">,</span>
+    <span class="n">HttpUrl</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">requests.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skbio.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span> <span class="k">as</span> <span class="n">tqdm_sync</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span> <span class="k">as</span> <span class="n">tqdm_async</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MgnipyConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.async_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_semaphore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client.api.analyses</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">analysis_get_mgnify_analysis_with_annotations</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client.models.m_gnify_analysis_with_annotations</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MGnifyAnalysisWithAnnotations</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnifier</span>
+
+<span class="n">semaphore</span> <span class="o">=</span> <span class="n">get_semaphore</span><span class="p">()</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="n">MgnipyConfig</span><span class="p">()</span><span class="o">.</span><span class="n">base_url</span>
+
+
+<div class="viewcode-block" id="MGazine">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MGazine</span><span class="p">(</span><span class="n">MGnifyAnalysisWithAnnotations</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;More so an extended data class&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accession</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># mgnifier TODO handing private data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">accession</span><span class="o">=</span><span class="n">accession</span><span class="p">)</span>
+        <span class="c1"># set endpoint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">endpoint_module</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">analysis_get_mgnify_analysis_with_annotations</span>
+        <span class="p">)</span>
+        <span class="c1"># get the data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="c1"># init with the data</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">url_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;returns a dict of alias: url for all downloads&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;alias&quot;</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">downloads_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;returns a dataframe of all downloads with columns alias, url, file_type&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">url_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;returns a list of all download urls&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_url_by_alias</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the download url for a given alias</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alias : str</span>
+<span class="sd">            The alias of the download.</span>
+<span class="sd">        df : Optional[pd.DataFrame], optional</span>
+<span class="sd">            The dataframe to query. If None, uses the downloads_df property.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Optional[str]</span>
+<span class="sd">            The download url for the given alias, or None if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alias == &#39;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Issue getting download url for alias: </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_alias_by_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="n">HttpUrl</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the alias for a given download url</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : HttpUrl</span>
+<span class="sd">            The url of the download.</span>
+<span class="sd">        df : Optional[pd.DataFrame], optional</span>
+<span class="sd">            The dataframe to query. If None, uses the downloads_df property.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Optional[str]</span>
+<span class="sd">            The alias for the given url, or None if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;url == &#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)[</span><span class="s2">&quot;alias&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Issue getting alias for url: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_type_by_alias</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the file type for a given alias</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alias : str</span>
+<span class="sd">            The alias of the download.</span>
+<span class="sd">        df : Optional[pd.DataFrame], optional</span>
+<span class="sd">            The dataframe to query. If None, uses the downloads_df property.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Optional[str]</span>
+<span class="sd">            The file type for the given alias, or None if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alias == &#39;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)[</span><span class="s2">&quot;file_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Issue getting file type for alias: </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prioritize_alias</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">],</span>
+        <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">HttpUrl</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prioritizes alias over url. If both are provided, alias is used and url is ignored with a warning.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alias : Optional[str]</span>
+<span class="sd">            The alias of the download.</span>
+<span class="sd">        url : Optional[HttpUrl]</span>
+<span class="sd">            The url of the download.</span>
+<span class="sd">        required : bool, optional</span>
+<span class="sd">            If required is True, raises an error if neither alias nor url is provided.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple[str, HttpUrl]</span>
+<span class="sd">            A tuple of (alias, url) where alias is the prioritized alias and url is the corresponding url.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">alias</span> <span class="ow">and</span> <span class="n">url</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Both `alias` and `url` provided, ignoring `url`.&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+            <span class="p">)</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_url_by_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">alias</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_url_by_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">url</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">alias</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">alias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_alias_by_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># to reuse download/adownload for other urls</span>
+                <span class="n">alias</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">required</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">alias</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either `alias` or `url` must be provided.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">alias</span><span class="p">,</span> <span class="n">url</span>
+
+<div class="viewcode-block" id="MGazine.stream_tsv">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_tsv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_tsv</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">readers</span><span class="o">.</span><span class="n">TextFileReader</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads a tsv file from a url and returns an iterator of pandas dataframes.</span>
+<span class="sd">        Handles potential issues with extra header rows (causing pd.errors.ParserError)</span>
+<span class="sd">        by trying to read the file with increasing skiprows until it succeeds or reaches max_skip.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the tsv file to stream.</span>
+<span class="sd">        sep : str, optional</span>
+<span class="sd">            The separator used in the tsv file. Default is tab.</span>
+<span class="sd">        chunksize : int, optional</span>
+<span class="sd">            The number of rows to include in each chunk. Default is None.</span>
+<span class="sd">        max_skip : int, optional</span>
+<span class="sd">            The maximum number of rows to skip before raising an error. Default is 5.</span>
+<span class="sd">        pd_kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to pandas read_csv.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame | pd.io.parsers.readers.TextFileReader</span>
+<span class="sd">            An iterator of pandas dataframes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">skip</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_skip</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+                    <span class="n">url</span><span class="p">,</span>
+                    <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span>
+                    <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                    <span class="n">skiprows</span><span class="o">=</span><span class="n">skip</span> <span class="k">if</span> <span class="n">skip</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ParserError</span><span class="p">:</span>
+                <span class="k">continue</span>  <span class="c1"># Try next skiprows value</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Error reading TSV from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> with skiprows=</span><span class="si">{</span><span class="n">skip</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+        <span class="k">raise</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ParserError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Failed to parse </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> after skipping up to </span><span class="si">{</span><span class="n">max_skip</span><span class="si">}</span><span class="s2"> rows.&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_html">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_html">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">web_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams an html file from a url and opens it in the default web browser.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the html file to stream.</span>
+<span class="sd">        web_kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to webbrowser.open.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the url was opened successfully, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">web_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_txt">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_txt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_txt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a txt file from a url and returns an iterator of strings.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the txt file to stream.</span>
+<span class="sd">        chunksize : Optional[int], optional</span>
+<span class="sd">            The number of characters to include in each chunk. Default is None.</span>
+<span class="sd">        httpx_kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the httpx client.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator[str, None, None]</span>
+<span class="sd">            An iterator of strings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_client</span>
+
+        <span class="k">if</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># load as whole</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chunksize</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chunksize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># load in chunks</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="n">chunk</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_text</span><span class="p">():</span>
+                    <span class="n">chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">==</span> <span class="n">chunksize</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">chunk</span>
+                        <span class="n">chunk</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">chunk</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`chunksize` must be a positive integer or None.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_fasta">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_fasta">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_fasta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a fasta file from a url and returns an iterator of tuples (header, sequence).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the fasta file to stream.</span>
+<span class="sd">        skbio_kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the skbio parsers.</span>
+<span class="sd">            https://scikit.bio/docs/latest/generated/skbio.io.format.fasta.html</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator[tuple[str, str], None, None]</span>
+<span class="sd">            An iterator of tuples (header, sequence).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;fasta&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_gff">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_gff">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_gff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a gff file from a url and returns an iterator of parsed gff records.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the gff file to stream.</span>
+<span class="sd">        skbio_kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the skbio parser.</span>
+<span class="sd">            https://scikit.bio/docs/latest/generated/skbio.io.format.gff3.html</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator[skbio.io._gff3.GFF3Record, None, None]</span>
+<span class="sd">            &quot;generator of tuple (seq_id of str type, skbio.metadata.IntervalMetadata)&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;gff3&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_biom">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_biom">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_biom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a biom file from a url and returns an iterator of parsed biom records.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the biom file to stream.</span>
+<span class="sd">        skbio_kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the skbio parser.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator[dict, None, None]</span>
+<span class="sd">            An iterator of parsed biom records as dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;biom&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_gzipped">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_gzipped">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_gzipped</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">decode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+        <span class="n">errors</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;replace&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span> <span class="o">|</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a gzipped file from a url and returns a file-like object that can be read in chunks.</span>
+<span class="sd">        Written using GPT-5.3-Codex.</span>
+<span class="sd">        Uses httpx for streaming and zlib for decompression.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the gzipped file to stream.</span>
+<span class="sd">        chunksize : int, optional</span>
+<span class="sd">            The size of each chunk to read from the stream.</span>
+<span class="sd">        httpx_client : httpx.Client, optional</span>
+<span class="sd">            The httpx client to use for streaming.</span>
+<span class="sd">        decode : bool, default False</span>
+<span class="sd">            Whether to decode the decompressed bytes to a string.</span>
+<span class="sd">        encoding : str, default &quot;utf-8&quot;</span>
+<span class="sd">            The encoding to use for decoding bytes to a string.</span>
+<span class="sd">        errors : str, default &quot;replace&quot;</span>
+<span class="sd">            The error handling strategy for decoding bytes to a string.</span>
+<span class="sd">        **httpx_kwargs : dict</span>
+<span class="sd">            Additional keyword arguments to pass to the httpx client.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bytes | str | io.BufferedReader | io.TextIOWrapper</span>
+<span class="sd">            A file-like object that can be read in chunks.</span>
+<span class="sd">            If `chunksize` is None, returns the full decompressed content as bytes,</span>
+<span class="sd">            or string based on `decode`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Pick caller-provided client, or fallback to the shared MGnifier client.</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_client</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;stream_gzipped called url=</span><span class="si">%s</span><span class="s2"> chunksize=</span><span class="si">%s</span><span class="s2"> decode=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">url</span><span class="p">,</span>
+            <span class="n">chunksize</span><span class="p">,</span>
+            <span class="n">decode</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Backward-compatible mode: no chunksize means full download into memory.</span>
+        <span class="k">if</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using full-download mode (chunksize=None)&quot;</span><span class="p">)</span>
+            <span class="c1"># Perform a normal blocking GET.</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span>
+            <span class="c1"># Raise if HTTP status is not 2xx.</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="c1"># Create gzip-compatible streaming decompressor (16 + MAX_WBITS enables gzip header).</span>
+            <span class="n">decompressor</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompressobj</span><span class="p">(</span><span class="mi">16</span> <span class="o">+</span> <span class="n">zlib</span><span class="o">.</span><span class="n">MAX_WBITS</span><span class="p">)</span>
+            <span class="c1"># Decompress full payload bytes and flush remaining tail bytes.</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">decompressor</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">+</span> <span class="n">decompressor</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Full-download mode complete: compressed=</span><span class="si">%d</span><span class="s2"> decompressed=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">),</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="c1"># Return text if decode=True, else raw bytes.</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span> <span class="k">if</span> <span class="n">decode</span> <span class="k">else</span> <span class="n">data</span>
+
+        <span class="c1"># Validate chunksize for streaming mode.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chunksize</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">chunksize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`chunksize` must be a positive integer or None.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Custom raw stream that adapts httpx streamed gzip bytes to a readable file-like object.</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">_HTTPGzipRaw</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">RawIOBase</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="c1"># Open streaming HTTP response context.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cm</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span>
+                <span class="c1"># Enter context manually so this object controls lifecycle.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cm</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+                <span class="c1"># Fail fast on non-2xx.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="c1"># Iterate compressed bytes in fixed-size network chunks.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resp</span><span class="o">.</span><span class="n">iter_raw</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="n">chunksize</span><span class="p">)</span>
+                <span class="c1"># Incremental gzip decompressor.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_decomp</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompressobj</span><span class="p">(</span><span class="mi">16</span> <span class="o">+</span> <span class="n">zlib</span><span class="o">.</span><span class="n">MAX_WBITS</span><span class="p">)</span>
+                <span class="c1"># Internal decompressed byte buffer.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+                <span class="c1"># End-of-stream marker.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_eof</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># Track whether decompressor.flush() has been called.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flushed</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Streaming HTTP/gzip reader initialized&quot;</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="c1"># Required by BufferedReader to know this raw stream supports reading.</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">need</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Keep buffering until we have enough bytes or we hit EOF.</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">need</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eof</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># Pull next compressed network chunk.</span>
+                        <span class="n">chunk</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                        <span class="c1"># Network stream finished; flush remaining decompressor tail once.</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flushed</span><span class="p">:</span>
+                            <span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decomp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">tail</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_flushed</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="c1"># Mark EOF so future reads stop pulling.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_eof</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reached end of HTTP stream&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+                    <span class="c1"># If chunk is non-empty, incrementally decompress and append output.</span>
+                    <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decomp</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">out</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">readinto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="c1"># If already closed, signal EOF.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mi">0</span>
+                <span class="c1"># Create writable view into caller-provided buffer.</span>
+                <span class="n">mv</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                <span class="c1"># Ensure internal buffer has enough data for requested read.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mv</span><span class="p">))</span>
+                <span class="c1"># Compute how many bytes we can actually return.</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mv</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">))</span>
+                <span class="c1"># No bytes available means EOF.</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mi">0</span>
+                <span class="c1"># Copy decompressed bytes into caller buffer.</span>
+                <span class="n">mv</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+                <span class="c1"># Remove consumed bytes from internal buffer.</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+                <span class="c1"># Return byte count copied.</span>
+                <span class="k">return</span> <span class="n">n</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Close HTTP stream context exactly once.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cm</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">finally</span><span class="p">:</span>
+                        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Streaming HTTP/gzip reader closed&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Wrap raw stream in BufferedReader for efficient file-like reads.</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">_HTTPGzipRaw</span><span class="p">()</span>
+        <span class="n">buffered</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="n">chunksize</span><span class="p">)</span>
+
+        <span class="c1"># If decode requested, wrap bytes stream as text stream.</span>
+        <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">buffered</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+
+        <span class="c1"># Default return: binary buffered reader (works with ijson.kvitems).</span>
+        <span class="k">return</span> <span class="n">buffered</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_jsonl">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_jsonl">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_jsonl</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">orient</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;records&quot;</span><span class="p">,</span> <span class="s2">&quot;split&quot;</span><span class="p">,</span> <span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="s2">&quot;table&quot;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a jsonl file from a url and returns the parsed json as a dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the json file to stream.</span>
+<span class="sd">        sep : str, optional</span>
+<span class="sd">            The separator to use when parsing the json file. Default is &quot;\t&quot;.</span>
+<span class="sd">        chunksize : Optional[int], optional</span>
+<span class="sd">            The size of the chunks to read from the stream. Default is None.</span>
+<span class="sd">        max_skip : int, optional</span>
+<span class="sd">            The maximum number of rows to skip before raising an error. Default is 5.</span>
+<span class="sd">        **pd_kwargs : dict</span>
+<span class="sd">            Additional keyword arguments to pass to the pandas parser.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            The parsed json as a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span>
+            <span class="n">url</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="n">orient</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="o">**</span><span class="n">pd_kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_json">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a json file from a url and returns the parsed json as a dictionary or an iterator of dictionaries if chunksize is specified.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the json file to stream.</span>
+<span class="sd">        chunksize : Optional[int], optional</span>
+<span class="sd">            The size of the chunks to read from the stream. Default is None.</span>
+<span class="sd">        **httpx_kwargs : dict</span>
+<span class="sd">            Additional keyword arguments to pass to the httpx client.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict | Generator</span>
+<span class="sd">            The parsed json as a dictionary, or an iterator of dictionaries if chunksize is specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_client</span>
+
+        <span class="c1"># normal full get and json parse</span>
+        <span class="k">if</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">)):</span>
+            <span class="c1"># If no chunksize and not gzipped, do a normal full GET and parse as JSON.</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="c1"># streaming json, not zipped</span>
+        <span class="k">elif</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="c1"># If chunksize specified and not gzipped, stream text and parse JSON objects one by one.</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">ijson</span><span class="o">.</span><span class="n">kvitems</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">iter_text</span><span class="p">(),</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">entry</span>
+        <span class="c1"># gzipped json (with or without chunksize)</span>
+        <span class="k">elif</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">):</span>
+            <span class="c1"># If gzipped, use the stream_gzipped method to get a file-like object and parse JSON objects one by one.</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_gzipped</span><span class="p">(</span>
+                <span class="n">url</span><span class="p">,</span>
+                <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">gzipped_stream</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">ijson</span><span class="o">.</span><span class="n">kvitems</span><span class="p">(</span><span class="n">gzipped_stream</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">entry</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file type for URL: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.stream_tree">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream_tree">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a tree file from a url and returns an iterator of parsed tree records.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The url of the tree file to stream.</span>
+<span class="sd">        skbio_kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the skbio parser.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator[dict, None, None]</span>
+<span class="sd">            An iterator of parsed tree records as dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fix_inconsistent_cols</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">pad_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fixes inconsistent columns in a list of strings.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fields : list[str]</span>
+<span class="sd">            The list of strings to fix.</span>
+<span class="sd">        pad_to : int, optional</span>
+<span class="sd">            The number of columns to pad or truncate to. Default is 15.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[str] | None</span>
+<span class="sd">            The fixed list of strings, or None if the fields are invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pad to</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">pad_to</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fields</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">pad_to</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">))</span>
+        <span class="c1"># truncate</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">pad_to</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fields</span><span class="p">[:</span><span class="n">pad_to</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">fields</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_streamer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the appropriate streamer function based on the file type of the download.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alias : Optional[str]</span>
+<span class="sd">            The alias of the download to stream.</span>
+<span class="sd">        url : Optional[HttpUrl]</span>
+<span class="sd">            The url of the download to stream.</span>
+<span class="sd">        chunksize : int, optional</span>
+<span class="sd">            The size of the chunks to read from the stream. Default is 1000.</span>
+<span class="sd">        httpx_client : Optional[httpx.Client], optional</span>
+<span class="sd">            The httpx client to use for making requests. Default is None.</span>
+<span class="sd">        max_skip : int, optional</span>
+<span class="sd">            The maximum number of rows to skip before raising an error. Default is 5.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Additional keyword arguments to pass to the streamer function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Callable</span>
+<span class="sd">            A function that can be called to stream the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_client</span>
+
+        <span class="c1"># get alias/url</span>
+        <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># return stream based on file type</span>
+        <span class="n">file_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_by_alias</span><span class="p">(</span><span class="n">_alias</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;tsv&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tsv file type ends with .gz: </span><span class="si">{</span><span class="n">_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                        <span class="n">_url</span><span class="p">,</span>
+                        <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                        <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span>
+                        <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ParserError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ParserError: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                        <span class="n">_url</span><span class="p">,</span>
+                        <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                        <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span>
+                        <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+                        <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+                        <span class="n">on_bad_lines</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_inconsistent_cols</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.tsv&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                    <span class="n">_url</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                <span class="n">_url</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_html</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span>  <span class="c1"># TODO: to constants</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_txt</span><span class="p">(</span>
+                <span class="n">_url</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;gff&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_gff</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;biom&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_biom</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;fasta&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_fasta</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;tree&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tree</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_jsonl</span><span class="p">(</span>
+                <span class="n">_url</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;other&quot;</span> <span class="ow">and</span> <span class="s2">&quot;.json&quot;</span> <span class="ow">in</span> <span class="n">_url</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;json.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;json.gzip&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_json</span><span class="p">(</span>
+                    <span class="n">_url</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_alias</span><span class="si">}</span><span class="s2"> is only available for download &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(e.g., `.download(</span><span class="si">{</span><span class="n">_alias</span><span class="si">}</span><span class="s2">))`&quot;</span>
+            <span class="p">)</span>
+            <span class="c1"># more info</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Alias: </span><span class="si">{</span><span class="n">_alias</span><span class="si">}</span><span class="se">\n</span><span class="s2">URL: </span><span class="si">{</span><span class="n">_url</span><span class="si">}</span><span class="se">\n</span><span class="s2">File type: </span><span class="si">{</span><span class="n">file_type</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="s2">&quot;Only &#39;.json&#39; files can be streamed under &#39;other&#39; type, &quot;</span>
+                <span class="s2">&quot;otherwise this download is only available for download.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file type for streaming: </span><span class="si">{</span><span class="n">file_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MGazine.stream">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.stream">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a download based on its alias or url. If neither alias nor url is provided, streams all downloads.</span>
+<span class="sd">        (if chunksize is specified, it&#39;s kinda lazy loading)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alias : Optional[str]</span>
+<span class="sd">            The alias of the download to stream.</span>
+<span class="sd">        url : Optional[HttpUrl]</span>
+<span class="sd">            The url of the download to stream.</span>
+<span class="sd">        chunksize : Optional[int]</span>
+<span class="sd">            The size of the chunks to read from the stream.</span>
+<span class="sd">        max_skip : int, optional</span>
+<span class="sd">            The maximum number of rows to skip before raising an error. Default is 5.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments to pass to the streamer function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[str, Callable]</span>
+<span class="sd">            A dictionary of alias: streamer_function for the requested downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get alias/url</span>
+        <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="c1"># if neither alias nor url provided, stream all downloads</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_alias</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_url</span><span class="p">:</span>
+            <span class="n">aliases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">[</span><span class="s2">&quot;alias&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">aliases</span> <span class="o">=</span> <span class="p">[</span><span class="n">_alias</span><span class="p">]</span>
+        <span class="c1"># return dict of alias: streamer_function</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_client</span>
+
+        <span class="c1"># TODO: skip404 client error for now</span>
+        <span class="n">streams</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting up stream for alias: </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">streams</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_streamer</span><span class="p">(</span>
+                    <span class="n">alias</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
+                    <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                    <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                    <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HTTP error for alias </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> and url </span><span class="si">{</span><span class="n">_url</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>  <span class="c1"># skip this stream but continue with others</span>
+
+        <span class="k">return</span> <span class="n">streams</span></div>
+
+
+<div class="viewcode-block" id="MGazine.download">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.download">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">to_dir</span><span class="p">:</span> <span class="n">DirectoryPath</span><span class="p">,</span>
+        <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hide_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads a file from a url or alias to a specified directory.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        to_dir : DirectoryPath</span>
+<span class="sd">            The directory to download the file to.</span>
+<span class="sd">        alias : Optional[str], optional</span>
+<span class="sd">            The alias of the file to download. If not provided, `url` must be provided. Default is None.</span>
+<span class="sd">        url : Optional[str], optional</span>
+<span class="sd">            The url of the file to download. If not provided, `alias` must be provided. Default is None.</span>
+<span class="sd">        filename : Optional[str], optional</span>
+<span class="sd">            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.</span>
+
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If neither `alias` nor `url` is provided, or if `url` is provided without a corresponding `alias` in the downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get alias/url</span>
+        <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># if no alias then need filename</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_alias</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;If `url` not from downloads, `filename` must be provided since no alias available.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># make dir if not exists</span>
+        <span class="n">to_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">to_dir</span><span class="p">)</span>
+        <span class="n">to_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># prep full path</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">to_dir</span> <span class="o">/</span> <span class="n">filename</span> <span class="k">if</span> <span class="n">filename</span> <span class="k">else</span> <span class="n">to_dir</span> <span class="o">/</span> <span class="n">_alias</span>
+
+        <span class="c1"># reuse httpx client if provided, otherwise init new client using mgnifier</span>
+        <span class="k">with</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_client</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content-length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="k">with</span> <span class="p">(</span>
+                    <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">,</span>
+                    <span class="n">tqdm_sync</span><span class="p">(</span>
+                        <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+                        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span>
+                        <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Downloading </span><span class="si">{</span><span class="n">filename</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">_alias</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">ascii</span><span class="o">=</span><span class="s2">&quot; &gt;=&quot;</span><span class="p">,</span>
+                        <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+                <span class="p">):</span>
+                    <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_bytes</span><span class="p">():</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                        <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="MGazine.adownload">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.adownload">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">adownload</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">to_dir</span><span class="p">:</span> <span class="n">DirectoryPath</span><span class="p">,</span>
+        <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_aclient</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hide_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously downloads a file from a url or alias to a specified directory.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        to_dir : DirectoryPath</span>
+<span class="sd">            The directory to download the file to.</span>
+<span class="sd">        alias : Optional[str], optional</span>
+<span class="sd">            The alias of the file to download. If not provided, `url` must be provided. Default is None.</span>
+<span class="sd">        url : Optional[str], optional</span>
+<span class="sd">            The url of the file to download. If not provided, `alias` must be provided. Default is None.</span>
+<span class="sd">        filename : Optional[str], optional</span>
+<span class="sd">            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.</span>
+<span class="sd">            Note that if `url` is provided without a corresponding `alias` in the downloads,</span>
+<span class="sd">            `filename` must be provided since there is no alias to use as the filename.</span>
+<span class="sd">        httpx_aclient : Optional[httpx.AsyncClient], optional</span>
+<span class="sd">            An optional httpx.AsyncClient to use for the download.</span>
+<span class="sd">            If not provided, a new client will be created using the mgnifier helper. Default is None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get alias/url</span>
+        <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># if no alias then need filename</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_alias</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;If `url` not from downloads, `filename` must be provided since no alias available.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># make dir if not exists</span>
+        <span class="n">to_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">to_dir</span><span class="p">)</span>
+        <span class="n">to_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># prep full path</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">to_dir</span> <span class="o">/</span> <span class="n">filename</span> <span class="k">if</span> <span class="n">filename</span> <span class="k">else</span> <span class="n">to_dir</span> <span class="o">/</span> <span class="n">_alias</span>
+
+        <span class="c1"># arg TODO mixins</span>
+        <span class="c1"># semaphore to limit concurrent downloads, can be adjusted in config</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">httpx_aclient</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_aclient</span>
+                <span class="c1"># Do NOT use &#39;async with&#39; here, just use the client directly</span>
+                <span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                    <span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content-length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                    <span class="k">with</span> <span class="n">tqdm_sync</span><span class="p">(</span>
+                        <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+                        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span>
+                        <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Downloading </span><span class="si">{</span><span class="n">filename</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">_alias</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">ascii</span><span class="o">=</span><span class="s2">&quot;░▒█&quot;</span><span class="p">,</span>
+                        <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">:</span>
+                        <span class="k">async</span> <span class="k">with</span> <span class="n">aiofiles</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                            <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">aiter_bytes</span><span class="p">():</span>
+                                <span class="k">await</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_aclient</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+                    <span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                        <span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content-length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                        <span class="k">with</span> <span class="n">tqdm_sync</span><span class="p">(</span>
+                            <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+                            <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span>
+                            <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Downloading </span><span class="si">{</span><span class="n">filename</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">_alias</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">ascii</span><span class="o">=</span><span class="s2">&quot;░▒█&quot;</span><span class="p">,</span>
+                            <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">:</span>
+                            <span class="k">async</span> <span class="k">with</span> <span class="n">aiofiles</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                                <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">aiter_bytes</span><span class="p">():</span>
+                                    <span class="k">await</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                                    <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="MGazine.adownload_all">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.adownload_all">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">adownload_all</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">to_dir</span><span class="p">:</span> <span class="n">DirectoryPath</span><span class="p">,</span>
+        <span class="n">hide_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously downloads all files in the downloads to a specified directory.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        to_dir : DirectoryPath</span>
+<span class="sd">            The directory to download the files to.</span>
+<span class="sd">        hide_progress : bool, optional</span>
+<span class="sd">            Whether to hide the progress bars. Default is False.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        This method will use the `adownload` method for each file,</span>
+<span class="sd">        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.</span>
+<span class="sd">        If you want to customize those parameters for each file,</span>
+<span class="sd">        you can call `adownload` directly for each file instead of using this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing async client once for all downloads&quot;</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_aclient</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+            <span class="c1"># create tasks for each download</span>
+            <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adownload</span><span class="p">(</span>
+                    <span class="n">to_dir</span><span class="o">=</span><span class="n">to_dir</span><span class="p">,</span>
+                    <span class="n">alias</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
+                    <span class="n">httpx_aclient</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                    <span class="n">hide_progress</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_dict</span>
+            <span class="p">]</span>
+            <span class="c1"># Overall progress bar</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tqdm_async</span><span class="p">(</span>
+                <span class="n">asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">tasks</span><span class="p">),</span>
+                <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">),</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Overall Progress&quot;</span><span class="p">,</span>
+                <span class="n">ascii</span><span class="o">=</span><span class="s2">&quot; &gt;=&quot;</span><span class="p">,</span>
+                <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">f</span>
+                <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">ConnectError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
+                    <span class="c1"># flag and continue with downloads</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Connection error occurred while downloading </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ce</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="c1"># flag and continue with downloads ..</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error occurred while downloading </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MGazine.download_all">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazine.download_all">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download_all</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">to_dir</span><span class="p">:</span> <span class="n">DirectoryPath</span><span class="p">,</span>
+        <span class="n">hide_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO fix</span>
+<span class="sd">        Downloads all files in the downloads to a specified directory.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        to_dir : DirectoryPath</span>
+<span class="sd">            The directory to download the files to.</span>
+<span class="sd">        hide_progress : bool, optional</span>
+<span class="sd">            Whether to hide the progress bars. Default is False.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        This method will use the `download` method for each file,</span>
+<span class="sd">        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.</span>
+<span class="sd">        If you want to customize those parameters for each file,</span>
+<span class="sd">        you can call `download` directly for each file instead of using this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing client once for all downloads&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="o">.</span><span class="n">httpx_client</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">aliases</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+            <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">tqdm_sync</span><span class="p">(</span>
+                <span class="n">aliases</span><span class="p">,</span>
+                <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">aliases</span><span class="p">),</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Overall Progress&quot;</span><span class="p">,</span>
+                <span class="n">ascii</span><span class="o">=</span><span class="s2">&quot; &gt;=&quot;</span><span class="p">,</span>
+                <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">(</span>
+                        <span class="n">to_dir</span><span class="o">=</span><span class="n">to_dir</span><span class="p">,</span>
+                        <span class="n">alias</span><span class="o">=</span><span class="n">alias</span><span class="p">,</span>
+                        <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                        <span class="n">hide_progress</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">ConnectError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="s2">&quot;Connection error occurred while downloading </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">alias</span><span class="p">,</span>
+                        <span class="n">ce</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="s2">&quot;Error occurred while downloading </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">alias</span><span class="p">,</span>
+                        <span class="n">e</span><span class="p">,</span>
+                    <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MGazineCurator">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazineCurator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MGazineCurator</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">mgazines</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">mgazines</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">MGazine</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mgazines</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mgazines</span> <span class="o">=</span> <span class="n">mgazines</span>
+        <span class="k">elif</span> <span class="n">mgazines</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mgazines</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mgazines</span> <span class="o">=</span> <span class="p">[</span><span class="n">MGazine</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mgazines</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid input: all inputs must be either MGazine instances or accession strings.&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="MGazineCurator.go_terms">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.datasets.MGazineCurator.go_terms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">go_terms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<span class="c1"># class DatasetBuilder(MGnifier):</span>
+
+<span class="c1">#     def __init__(</span>
+<span class="c1">#         self,</span>
+<span class="c1">#         accession: str,</span>
+<span class="c1">#     ):</span>
+<span class="c1">#         super().__init__(</span>
+<span class="c1">#             accession=accession,</span>
+<span class="c1">#         )</span>
+<span class="c1">#         self.mpy_module = analysis_get_mgnify_analysis_with_annotations</span>
+
+<span class="c1">#     def __getitem__(self, key):</span>
+<span class="c1">#         pass</span>
+
+<span class="c1">#     def __getattr__(self, name):</span>
+<span class="c1">#         if name == &quot;annotations&quot;:</span>
+<span class="c1">#             return self</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             raise KeyError(f&quot;DatasetBuilder object has no attribute {name}&quot;)</span>
+
+<span class="c1">#     def export(self):</span>
+<span class="c1">#         pass</span>
+
+
+<span class="c1"># should there be different dataset builders?</span>
+<span class="c1"># and they can be added to dataset builder as attributes?</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

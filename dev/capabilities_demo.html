@@ -1,0 +1,1902 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MGnipy — Capabilities Demo &#8212; mgnipy 0.1.dev1+gf4e66b3dc documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=61acb51c"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dev/capabilities_demo';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mgnipy" href="../reference/modules.html" />
+    <link rel="prev" title="Quick guide to emgapi_v2_client" href="intro-openapi-python-client.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf4e66b3dc documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="README_emgapi-v2-client.html">emgapi-v2-client submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro-openapi-python-client.html">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">MGnipy — Capabilities Demo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/modules.html">mgnipy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/mgnipy.html">mgnipy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.html">mgnipy.emgapi_v2_client package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.models.html">mgnipy.emgapi_v2_client.models package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical notes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/dev/capabilities_demo.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/dev/capabilities_demo.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/dev/capabilities_demo.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>MGnipy — Capabilities Demo</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">1. Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnifier-direct-low-level-api">2. <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> — direct low-level API</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#output-formatters">3. Output formatters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#query-planning-dry-run-preview-explain">4. Query planning: <code class="docutils literal notranslate"><span class="pre">dry_run</span></code>, <code class="docutils literal notranslate"><span class="pre">preview</span></code>, <code class="docutils literal notranslate"><span class="pre">explain</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#immutable-filter-cloning">5. Immutable filter cloning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pagination-page-n-and-get-limit">6. Pagination: <code class="docutils literal notranslate"><span class="pre">page(n)</span></code> and <code class="docutils literal notranslate"><span class="pre">get(limit)</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy-facade-proxy-classes">7. <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> facade + proxy classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#async-aget-apage-afirst">8. Async: <code class="docutils literal notranslate"><span class="pre">aget</span></code>, <code class="docutils literal notranslate"><span class="pre">apage</span></code>, <code class="docutils literal notranslate"><span class="pre">afirst</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-currently-broken">9. ⚠️ What is currently broken</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#m1-cli-py-is-missing">✅ M1 — <code class="docutils literal notranslate"><span class="pre">cli.py</span></code> is missing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#m2-config-not-passed-to-proxies">✅ M2 — Config not passed to proxies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#not-yet-implemented-singleresource-accession-lookup">✅ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">SingleResource</span></code> (accession lookup)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#not-yet-implemented-order-by-and-exists">❌ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">.order_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">.exists()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#not-yet-implemented-describe-resources">✅ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">describe_resources()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-comes-next">10. 🗺️ What comes next</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#milestones-for-the-2-hour-pypi-publish-session">Milestones for the 2-hour PyPI publish session</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#to-run-the-milestone-tests">To run the milestone tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deferred-post-publish">Deferred post-publish</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="mgnipy-capabilities-demo">
+<h1>MGnipy — Capabilities Demo<a class="headerlink" href="#mgnipy-capabilities-demo" title="Link to this heading">#</a></h1>
+<p>This notebook demonstrates everything the library can do <strong>right now</strong>, and explicitly marks what is broken or not yet implemented. It is organized as a live tour before the PyPI draft publish.</p>
+<p><strong>Sections:</strong></p>
+<ol class="arabic simple">
+<li><p>Setup</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> — direct low-level API (works)</p></li>
+<li><p>Output formatters: <code class="docutils literal notranslate"><span class="pre">to_df</span></code>, <code class="docutils literal notranslate"><span class="pre">to_polars</span></code>, <code class="docutils literal notranslate"><span class="pre">to_json</span></code>, <code class="docutils literal notranslate"><span class="pre">to_list</span></code> (works)</p></li>
+<li><p>Query planning: <code class="docutils literal notranslate"><span class="pre">dry_run</span></code>, <code class="docutils literal notranslate"><span class="pre">preview</span></code>, <code class="docutils literal notranslate"><span class="pre">explain</span></code> (works)</p></li>
+<li><p>Immutable filter cloning (works)</p></li>
+<li><p>Pagination: <code class="docutils literal notranslate"><span class="pre">page(n)</span></code>, <code class="docutils literal notranslate"><span class="pre">get(limit)</span></code> (works)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> facade + proxy classes (partially works)</p></li>
+<li><p>Async: <code class="docutils literal notranslate"><span class="pre">aget</span></code>, <code class="docutils literal notranslate"><span class="pre">apage</span></code> (works)</p></li>
+<li><p>❌ What is currently broken</p></li>
+<li><p>🗺️ What comes next</p></li>
+</ol>
+<hr class="docutils" />
+<section id="setup">
+<h2>1. Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify installation</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mgnipy</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mgnipy version: </span><span class="si">{</span><span class="n">mgnipy</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mgnipy version: 0.0.1.dev0+g73d819d64.d20260407
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.query_set</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuerySet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All imports OK&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>All imports OK
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="mgnifier-direct-low-level-api">
+<h2>2. <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> — direct low-level API<a class="headerlink" href="#mgnifier-direct-low-level-api" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> is the core query object. It wraps <code class="docutils literal notranslate"><span class="pre">QuerySet</span></code> (which does query building) and delegates HTTP calls to <code class="docutils literal notranslate"><span class="pre">QueryExecutor</span></code>. You can use it directly or through the higher-level <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> facade.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a query for studies — no API call yet</span>
+<span class="n">mg</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;studies&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mg</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnifier instance for resource: studies
+I.e., mgnipy.V2.core.MGnifier
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {&#39;page_size&#39;: 5}
+Endpoint module: mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/studies?page=1&amp;page_size=5
+Returns paginated results: True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch just the first page — one API call</span>
+<span class="n">mg</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pages fetched so far: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">mg</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 5}
+Total pages to retrieve: 1110
+Total records to retrieve: 5546
+Pages fetched so far: [1]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="output-formatters">
+<h2>3. Output formatters<a class="headerlink" href="#output-formatters" title="Link to this heading">#</a></h2>
+<p>All four formatters work once data is in <code class="docutils literal notranslate"><span class="pre">_results</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pandas DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;to_df() → </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, shape: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>to_df() → DataFrame, shape: (5, 5)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00000653</td>
+      <td>[DRP000157, PRJDA46243]</td>
+      <td>Metatranscriptomic Analysis for Eukaryotic Fun...</td>
+      <td>{'biome_name': 'Soil', 'lineage': 'root:Enviro...</td>
+      <td>2025-01-27T15:22:29.059000+00:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00001632</td>
+      <td>[DRP000423, PRJDA68519]</td>
+      <td>The Usefulness and Reproducibility of Pyrosequ...</td>
+      <td>{'biome_name': 'Bioreactor', 'lineage': 'root:...</td>
+      <td>2026-04-27T12:08:49.939000+00:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00001846</td>
+      <td>[DRP000450, PRJDA72133]</td>
+      <td>food metagenome Metagenome</td>
+      <td>{'biome_name': 'Fermented seafood', 'lineage':...</td>
+      <td>2025-01-27T15:22:38.826000+00:00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>MGYS00001633</td>
+      <td>[DRP000451, PRJDA67149]</td>
+      <td>microbial community of traditional Korean alco...</td>
+      <td>{'biome_name': 'Fermented beverages', 'lineage...</td>
+      <td>2025-01-27T15:22:37.053000+00:00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MGYS00000624</td>
+      <td>[DRP000487, PRJDA73169]</td>
+      <td>Metagenomic analysis of soil microorganisms</td>
+      <td>{'biome_name': 'Soil', 'lineage': 'root:Enviro...</td>
+      <td>2025-01-27T15:22:28.785000+00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Polars DataFrame</span>
+<span class="n">pl_df</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;to_polars() → </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">pl_df</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, shape: </span><span class="si">{</span><span class="n">pl_df</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">pl_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>to_polars() → DataFrame, shape: (5, 5)
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 5)</small><table border="1" class="dataframe"><thead><tr><th>accession</th><th>ena_accessions</th><th>title</th><th>biome</th><th>updated_at</th></tr><tr><td>str</td><td>list[str]</td><td>str</td><td>struct[2]</td><td>str</td></tr></thead><tbody><tr><td>&quot;MGYS00000653&quot;</td><td>[&quot;DRP000157&quot;, &quot;PRJDA46243&quot;]</td><td>&quot;Metatranscriptomic Analysis fo…</td><td>{&quot;Soil&quot;,&quot;root:Environmental:Terrestrial:Soil&quot;}</td><td>&quot;2025-01-27T15:22:29.059000+00:…</td></tr><tr><td>&quot;MGYS00001632&quot;</td><td>[&quot;DRP000423&quot;, &quot;PRJDA68519&quot;]</td><td>&quot;The Usefulness and Reproducibi…</td><td>{&quot;Bioreactor&quot;,&quot;root:Engineered:Bioreactor&quot;}</td><td>&quot;2026-04-27T12:08:49.939000+00:…</td></tr><tr><td>&quot;MGYS00001846&quot;</td><td>[&quot;DRP000450&quot;, &quot;PRJDA72133&quot;]</td><td>&quot;food metagenome Metagenome&quot;</td><td>{&quot;Fermented seafood&quot;,&quot;root:Engineered:Food production:Fermented seafood&quot;}</td><td>&quot;2025-01-27T15:22:38.826000+00:…</td></tr><tr><td>&quot;MGYS00001633&quot;</td><td>[&quot;DRP000451&quot;, &quot;PRJDA67149&quot;]</td><td>&quot;microbial community of traditi…</td><td>{&quot;Fermented beverages&quot;,&quot;root:Engineered:Food production:Fermented beverages&quot;}</td><td>&quot;2025-01-27T15:22:37.053000+00:…</td></tr><tr><td>&quot;MGYS00000624&quot;</td><td>[&quot;DRP000487&quot;, &quot;PRJDA73169&quot;]</td><td>&quot;Metagenomic analysis of soil m…</td><td>{&quot;Soil&quot;,&quot;root:Environmental:Terrestrial:Soil&quot;}</td><td>&quot;2025-01-27T15:22:28.785000+00:…</td></tr></tbody></table></div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># List of dicts</span>
+<span class="n">records</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;to_list() → </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First record keys: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">records</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;none&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>to_list() → list, length: 5
+First record keys: [&#39;accession&#39;, &#39;ena_accessions&#39;, &#39;title&#39;, &#39;biome&#39;, &#39;updated_at&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># JSON string (newline-delimited by default)</span>
+<span class="n">json_str</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;to_json() → </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span><span class="si">}</span><span class="s2"> chars&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json_str</span><span class="p">[:</span><span class="mi">200</span><span class="p">],</span> <span class="s2">&quot;...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>to_json() → str, 1434 chars
+{&quot;accession&quot;:&quot;MGYS00000653&quot;,&quot;ena_accessions&quot;:[&quot;DRP000157&quot;,&quot;PRJDA46243&quot;],&quot;title&quot;:&quot;Metatranscriptomic Analysis for Eukaryotic Functional Genes in Forest Soil&quot;,&quot;biome&quot;:{&quot;biome_name&quot;:&quot;Soil&quot;,&quot;lineage&quot;:&quot;roo ...
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="query-planning-dry-run-preview-explain">
+<h2>4. Query planning: <code class="docutils literal notranslate"><span class="pre">dry_run</span></code>, <code class="docutils literal notranslate"><span class="pre">preview</span></code>, <code class="docutils literal notranslate"><span class="pre">explain</span></code><a class="headerlink" href="#query-planning-dry-run-preview-explain" title="Link to this heading">#</a></h2>
+<p>Before fetching everything you can inspect the plan — how many records, how many pages, which URLs.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># dry_run: makes one small API call (page_size=1) to learn total count, then prints the plan</span>
+<span class="n">planner</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;analyses&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<span class="n">planner</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 10}
+Total pages to retrieve: 1420
+Total records to retrieve: 14198
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># After dry_run, count and total_pages are populated</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total records: </span><span class="si">{</span><span class="n">planner</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total pages (at page_size=10): </span><span class="si">{</span><span class="n">planner</span><span class="o">.</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total records: 14198
+Total pages (at page_size=10): 1420
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># explain: print the first N request URLs without making them</span>
+<span class="n">planner</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">head</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/analyses?page=1&amp;page_size=10
+https://www.ebi.ac.uk/metagenomics/api/v2/analyses?page=2&amp;page_size=10
+https://www.ebi.ac.uk/metagenomics/api/v2/analyses?page=3&amp;page_size=10
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># list_urls: returns the full URL list</span>
+<span class="n">urls</span> <span class="o">=</span> <span class="n">planner</span><span class="o">.</span><span class="n">list_urls</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span><span class="si">}</span><span class="s2"> URLs total. First: </span><span class="si">{</span><span class="n">urls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1420 URLs total. First: https://www.ebi.ac.uk/metagenomics/api/v2/analyses?page=1&amp;page_size=10
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># preview: fetches page 1 and returns a DataFrame immediately</span>
+<span class="n">preview_df</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span><span class="o">.</span><span class="n">preview</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;preview() → </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">preview_df</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, shape: </span><span class="si">{</span><span class="n">preview_df</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">preview_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 5}
+Total pages to retrieve: 7060
+Total records to retrieve: 35300
+preview() → DataFrame, shape: (5, 5)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>sample_title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>SAMEA113539431</td>
+      <td>[SAMEA113539431, ERS15535852]</td>
+      <td>Study_1322_RNA</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-04-24T16:01:41.365000+00:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SAMEA113539645</td>
+      <td>[ERS15536066, SAMEA113539645]</td>
+      <td>Study_1665_DNA</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-04-24T16:02:06.759000+00:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>SAMEA113539284</td>
+      <td>[ERS15535705, SAMEA113539284]</td>
+      <td>Study_963_DNA</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-04-24T16:01:23.909000+00:00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SAMEA113540517</td>
+      <td>[ERS15536938, SAMEA113540517]</td>
+      <td>Study_5298_DNA</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-04-24T16:03:53.546000+00:00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>SAMEA115284684</td>
+      <td>[ERS18228651, SAMEA115284684]</td>
+      <td>ATZ_IGR_046_V1</td>
+      <td>None</td>
+      <td>2026-04-24T16:07:38.087000+00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="immutable-filter-cloning">
+<h2>5. Immutable filter cloning<a class="headerlink" href="#immutable-filter-cloning" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">filter()</span></code> returns a <strong>new</strong> <code class="docutils literal notranslate"><span class="pre">QuerySet</span></code> with the updated params — the original is untouched.
+This makes it safe to build queries incrementally.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">base</span> <span class="o">=</span> <span class="n">QuerySet</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;studies&quot;</span><span class="p">)</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Environmental:Aquatic&quot;</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;base params:     </span><span class="si">{</span><span class="n">base</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;filtered params: </span><span class="si">{</span><span class="n">filtered</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Same object?     </span><span class="si">{</span><span class="n">base</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="n">filtered</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>base params:     {}
+filtered params: {&#39;biome_lineage&#39;: &#39;root:Environmental:Aquatic&#39;, &#39;page_size&#39;: 5}
+Same object?     False
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Chain filters — each step is a new clone</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">QuerySet</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;studies&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Environmental&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">page_size</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chained params: </span><span class="si">{</span><span class="n">qs</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request URL: </span><span class="si">{</span><span class="n">qs</span><span class="o">.</span><span class="n">request_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Chained params: {&#39;biome_lineage&#39;: &#39;root:Environmental&#39;, &#39;page_size&#39;: 3}
+Request URL: https://www.ebi.ac.uk/metagenomics/api/v2/studies?biome_lineage=root%3AEnvironmental&amp;page=1&amp;page_size=3
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch the filtered results</span>
+<span class="n">qs</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">qs</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rows returned: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;biome_lineage&#39;: &#39;root:Environmental&#39;, &#39;page_size&#39;: 3}
+Total pages to retrieve: 889
+Total records to retrieve: 2665
+Rows returned: 3
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00000274</td>
+      <td>[SRP000664]</td>
+      <td>Windshield splatter</td>
+      <td>{'biome_name': 'Air', 'lineage': 'root:Environ...</td>
+      <td>2025-01-27T15:22:25.672000+00:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00010288</td>
+      <td>[PRJEB93890]</td>
+      <td>Metagenome assembly of PRJNA270248 data set (M...</td>
+      <td>{'biome_name': 'Sediment', 'lineage': 'root:En...</td>
+      <td>2025-07-14T20:41:25.062000+00:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00002009</td>
+      <td>[ERP104175, PRJEB22494]</td>
+      <td>EMG produced TPA metagenomics assembly of the ...</td>
+      <td>{'biome_name': 'Salt marsh', 'lineage': 'root:...</td>
+      <td>2025-05-16T10:58:55.790000+00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="pagination-page-n-and-get-limit">
+<h2>6. Pagination: <code class="docutils literal notranslate"><span class="pre">page(n)</span></code> and <code class="docutils literal notranslate"><span class="pre">get(limit)</span></code><a class="headerlink" href="#pagination-page-n-and-get-limit" title="Link to this heading">#</a></h2>
+<p>Pages are fetched individually and cached. Already-fetched pages are not re-requested.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pg</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;biomes&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">pg</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total pages: </span><span class="si">{</span><span class="n">pg</span><span class="o">.</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 5}
+Total pages to retrieve: 99
+Total records to retrieve: 492
+Total pages: 99
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch page 1</span>
+<span class="n">pg</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Page 1 in results: </span><span class="si">{</span><span class="n">pg</span><span class="o">.</span><span class="n">_is_in_results</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Page 2 in results: </span><span class="si">{</span><span class="n">pg</span><span class="o">.</span><span class="n">_is_in_results</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Page 1 in results: True
+Page 2 in results: False
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch page 3 (skipping page 2 — non-contiguous fetch is fine)</span>
+<span class="n">pg</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pages fetched: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataFrame has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">to_df</span><span class="p">())</span><span class="si">}</span><span class="s2"> rows (2 pages × 5 per page)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Pages fetched: [1, 3]
+DataFrame has 10 rows (2 pages × 5 per page)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get(limit=N) fetches however many pages are needed to satisfy limit records</span>
+<span class="c1"># Requires dry_run() first (or pass safety=False to skip)</span>
+<span class="n">limited</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">limited</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
+<span class="n">limited</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>  <span class="c1"># will fetch 3 pages (5+5+5 = 15, enough for 12)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Records retrieved: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">limited</span><span class="o">.</span><span class="n">to_df</span><span class="p">())</span><span class="si">}</span><span class="s2"> (asked for 12, got nearest page boundary)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 5}
+Total pages to retrieve: 7060
+Total records to retrieve: 35300
+Records retrieved: 15 (asked for 12, got nearest page boundary)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages: 100%|██████████| 3/3 [00:00&lt;00:00, 21.45it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="mgnipy-facade-proxy-classes">
+<h2>7. <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> facade + proxy classes<a class="headerlink" href="#mgnipy-facade-proxy-classes" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> is the top-level entry point. It uses <code class="docutils literal notranslate"><span class="pre">__getattr__</span></code> to dispatch attribute access to typed proxy classes.</p>
+<p><strong>⚠️ Known limitation:</strong> the config passed to <code class="docutils literal notranslate"><span class="pre">MGnipy()</span></code> is not forwarded to the proxy. Custom base URLs and auth tokens are silently ignored until M2 is fixed. ✅</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available resources: </span><span class="si">{</span><span class="n">client</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Available resources: [&#39;analyses&#39;, &#39;analysis&#39;, &#39;assemblies&#39;, &#39;assembly&#39;, &#39;genomes&#39;, &#39;genome&#39;, &#39;publications&#39;, &#39;publication&#39;, &#39;samples&#39;, &#39;sample&#39;, &#39;studies&#39;, &#39;study&#39;, &#39;runs&#39;, &#39;run&#39;, &#39;biomes&#39;, &#39;biome&#39;, &#39;catalogues&#39;, &#39;catalogue&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Accessing a resource returns a typed proxy (list-type)</span>
+<span class="n">studies_proxy</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">studies</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">studies_proxy</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">studies_proxy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;mgnipy.V2.proxies.Studies&#39;&gt;
+MGnifier instance for resource: studies
+I.e., mgnipy.V2.proxies.Studies
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {}
+Endpoint module: mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/studies?page=1
+Returns paginated results: True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Proxies expose the same query-building API as MGnifier</span>
+<span class="n">filtered_proxy</span> <span class="o">=</span> <span class="n">studies_proxy</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Environmental&quot;</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filter returned new object: </span><span class="si">{</span><span class="n">filtered_proxy</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">studies_proxy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtered params: </span><span class="si">{</span><span class="n">filtered_proxy</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Filter returned new object: True
+Filtered params: {&#39;biome_lineage&#39;: &#39;root:Environmental&#39;, &#39;page_size&#39;: 3}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch first page through the proxy</span>
+<span class="n">filtered_proxy</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">filtered_proxy</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rows: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;biome_lineage&#39;: &#39;root:Environmental&#39;, &#39;page_size&#39;: 3}
+Total pages to retrieve: 889
+Total records to retrieve: 2665
+Rows: 3
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00000274</td>
+      <td>[SRP000664]</td>
+      <td>Windshield splatter</td>
+      <td>{'biome_name': 'Air', 'lineage': 'root:Environ...</td>
+      <td>2025-01-27T15:22:25.672000+00:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00010288</td>
+      <td>[PRJEB93890]</td>
+      <td>Metagenome assembly of PRJNA270248 data set (M...</td>
+      <td>{'biome_name': 'Sediment', 'lineage': 'root:En...</td>
+      <td>2025-07-14T20:41:25.062000+00:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00002009</td>
+      <td>[ERP104175, PRJEB22494]</td>
+      <td>EMG produced TPA metagenomics assembly of the ...</td>
+      <td>{'biome_name': 'Salt marsh', 'lineage': 'root:...</td>
+      <td>2025-05-16T10:58:55.790000+00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Biomes has a special tree visualisation (after fetching)</span>
+<span class="n">biomes</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">biomes</span>
+<span class="n">biomes</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Biome lineages: </span><span class="si">{</span><span class="n">biomes</span><span class="o">.</span><span class="n">lineages</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{}
+Total pages to retrieve: 20
+Total records to retrieve: 492
+Biome lineages: [&#39;root&#39;, &#39;root:Control&#39;, &#39;root:Engineered&#39;, &#39;root:Engineered:Biogas plant&#39;, &#39;root:Engineered:Biogas plant:Wet fermentation&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Config bug demonstration — custom base_url is silently ignored right now</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MgnipyConfig</span>
+<span class="n">default_url</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">MgnipyConfig</span><span class="p">()</span><span class="o">.</span><span class="n">base_url</span><span class="p">)</span>
+
+<span class="n">custom_client</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://custom.example.com&quot;</span><span class="p">)</span>
+<span class="n">proxy</span> <span class="o">=</span> <span class="n">custom_client</span><span class="o">.</span><span class="n">studies</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Custom URL given to MGnipy: https://custom.example.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;URL actually used by proxy: </span><span class="si">{</span><span class="n">proxy</span><span class="o">.</span><span class="n">_base_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bug present: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">proxy</span><span class="o">.</span><span class="n">_base_url</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">default_url</span><span class="si">}</span><span class="s2">  ← should be False after M2 fix&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Custom URL given to MGnipy: https://custom.example.com
+URL actually used by proxy: https://custom.example.com/
+Bug present: False  ← should be False after M2 fix
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="async-aget-apage-afirst">
+<h2>8. Async: <code class="docutils literal notranslate"><span class="pre">aget</span></code>, <code class="docutils literal notranslate"><span class="pre">apage</span></code>, <code class="docutils literal notranslate"><span class="pre">afirst</span></code><a class="headerlink" href="#async-aget-apage-afirst" title="Link to this heading">#</a></h2>
+<p>Every sync method has an async counterpart. Use these when you need to concurrently fetch many resources.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">demo_async</span><span class="p">():</span>
+    <span class="n">mg</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;runs&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+    <span class="k">await</span> <span class="n">mg</span><span class="o">.</span><span class="n">afirst</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Async fetch → </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="c1"># In Jupyter, use await directly (event loop already running)</span>
+<span class="n">df_async</span> <span class="o">=</span> <span class="k">await</span> <span class="n">demo_async</span><span class="p">()</span>
+<span class="n">df_async</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 5}
+Total pages to retrieve: 7703
+Total records to retrieve: 38514
+Async fetch → 5 rows
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>experiment_type</th>
+      <th>accession</th>
+      <th>instrument_model</th>
+      <th>instrument_platform</th>
+      <th>sample_accession</th>
+      <th>study_accession</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Amplicon</td>
+      <td>DRR019176</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMD00004051</td>
+      <td>MGYS00001632</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Amplicon</td>
+      <td>DRR001168</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMD00009393</td>
+      <td>MGYS00001632</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Amplicon</td>
+      <td>DRR001169</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMD00009394</td>
+      <td>MGYS00001632</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Amplicon</td>
+      <td>DRR001167</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMD00009395</td>
+      <td>MGYS00001632</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Amplicon</td>
+      <td>DRR001170</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMD00009396</td>
+      <td>MGYS00001632</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">demo_concurrent_pages</span><span class="p">():</span>
+    <span class="n">mg</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+    <span class="n">mg</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
+    <span class="c1"># aget fetches all pages concurrently (with semaphore to protect the server)</span>
+    <span class="k">await</span> <span class="n">mg</span><span class="o">.</span><span class="n">aget</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">safety</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mg</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+
+<span class="n">df_concurrent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">demo_concurrent_pages</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Concurrent fetch → </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_concurrent</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;page_size&#39;: 10}
+Total pages to retrieve: 3530
+Total records to retrieve: 35300
+Concurrent fetch → 30 rows
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages: 100%|██████████| 3/3 [00:00&lt;00:00, 28.81it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="what-is-currently-broken">
+<h2>9. ⚠️ What is currently broken<a class="headerlink" href="#what-is-currently-broken" title="Link to this heading">#</a></h2>
+<p>These cells document bugs and missing features. They are <strong>expected to fail</strong> until the corresponding milestone is fixed.</p>
+<section id="m1-cli-py-is-missing">
+<h3>✅ M1 — <code class="docutils literal notranslate"><span class="pre">cli.py</span></code> is missing<a class="headerlink" href="#m1-cli-py-is-missing" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># This should succeed after M1 is fixed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">mgnipy.cli</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ mgnipy.cli imported, main=</span><span class="si">{</span><span class="n">mgnipy</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">main</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ M1 not fixed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Fix: create mgnipy/cli.py with a main() function&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ mgnipy.cli imported, main=&lt;function main at 0x111b67ce0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="m2-config-not-passed-to-proxies">
+<h3>✅ M2 — Config not passed to proxies<a class="headerlink" href="#m2-config-not-passed-to-proxies" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># After M2 is fixed, proxy._base_url should match the custom URL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MgnipyConfig</span>
+
+<span class="n">custom</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://staging.example.com/&quot;</span><span class="p">)</span>
+<span class="n">proxy</span> <span class="o">=</span> <span class="n">custom</span><span class="o">.</span><span class="n">studies</span>
+
+<span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;https://staging.example.com/&quot;</span>
+<span class="n">actual</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">proxy</span><span class="o">.</span><span class="n">_base_url</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">actual</span> <span class="o">==</span> <span class="n">expected</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ M2 fixed: config flows through&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ M2 not fixed: proxy uses &#39;</span><span class="si">{</span><span class="n">actual</span><span class="si">}</span><span class="s2">&#39; instead of &#39;</span><span class="si">{</span><span class="n">expected</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Fix: mgnipy/mgnipy.py:52 — pass base_url to proxy constructor&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ M2 fixed: config flows through
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="not-yet-implemented-singleresource-accession-lookup">
+<h3>✅ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">SingleResource</span></code> (accession lookup)<a class="headerlink" href="#not-yet-implemented-singleresource-accession-lookup" title="Link to this heading">#</a></h3>
+<p>✅ Intead of <code class="docutils literal notranslate"><span class="pre">SingleResource</span></code> I created <code class="docutils literal notranslate"><span class="pre">MGnifyDetail</span></code> but I think its a similar idea</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">StudyDetail</span><span class="p">,</span> <span class="n">Studies</span>
+
+<span class="n">Studies</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;MGYS00001422&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">preview</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;search&#39;: &#39;MGYS00001422&#39;}
+Total pages to retrieve: 1
+Total records to retrieve: 1
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00001422</td>
+      <td>[ERP014234, PRJEB12735]</td>
+      <td>Amplicon sequencing of four biogas plants</td>
+      <td>{'biome_name': 'Biogas plant', 'lineage': 'roo...</td>
+      <td>2026-04-27T12:05:32.095000+00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The plan (Day 2) calls for: mgnipy.studies[&quot;MGYS00001422&quot;] → lazy SingleResource</span>
+<span class="c1"># Currently __getitem__ on the proxy requires data to already be fetched</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">StudyDetail</span><span class="p">,</span> <span class="n">Studies</span>
+
+<span class="n">detail</span> <span class="o">=</span> <span class="n">StudyDetail</span><span class="p">(</span><span class="s2">&quot;MGYS00001422&quot;</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">Studies</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;MGYS00001422&quot;</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;MGYS00001422&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Accession lookup returned: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># or </span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Accession lookup returned: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">detail</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ SingleResource not implemented: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Fix: implement SingleResource class and update proxy __getitem__&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;search&#39;: &#39;MGYS00001422&#39;}
+Total pages to retrieve: 1
+Total records to retrieve: 1
+Planning the API call with params:
+{&#39;accession&#39;: &#39;MGYS00001422&#39;}
+Total pages to retrieve: 1
+Total records to retrieve: 1
+✅ Accession lookup returned: StudyDetail
+✅ Accession lookup returned: StudyDetail
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 18236.10it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="not-yet-implemented-order-by-and-exists">
+<h3>❌ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">.order_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">.exists()</span></code><a class="headerlink" href="#not-yet-implemented-order-by-and-exists" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.query_set</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuerySet</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">QuerySet</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;studies&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;order_by&quot;</span><span class="p">,</span> <span class="s2">&quot;exists&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">() exists&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">() not implemented yet&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>❌ order_by() not implemented yet
+❌ exists() not implemented yet
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="not-yet-implemented-describe-resources">
+<h3>✅ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">describe_resources()</span></code><a class="headerlink" href="#not-yet-implemented-describe-resources" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">describe_resources</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ describe_resources() returned: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ describe_resources() is a stub — returns None&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Fix: implement in mgnipy/mgnipy.py&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>List all analyses (MGYAs) available from MGnify
+
+Each analysis is the result of a Pipeline execution on a reads dataset (either a raw read-run, or an
+assembly).
+
+Supported parameters:
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get MGnify analysis by accession
+
+MGnify analyses are accessioned with an MYGA-prefixed identifier and correspond to an individual Run
+or Assembly analysed by a Pipeline.
+
+Supported parameters:
+- accession: (str)
+List all assemblies available in MGnify
+
+Each assembly represents a collection of contigs generated by assembling sequencing reads from an
+MGnify or run
+
+Supported parameters:
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get assembly by accession
+
+Get detailed information about a specific assembly.
+
+Supported parameters:
+- accession: (str)
+List all genomes across MGnify Genome catalogues
+
+MGnify Genomes are either isolates, or MAGs derived from binned metagenomes.
+
+Supported parameters:
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get the detail of a single MGnify Genome
+
+MGnify Genomes are either isolates, or MAGs derived from binned metagenomes.
+
+Supported parameters:
+- accession: (str)
+List all publications
+
+List all publications in the MGnify database.
+
+Supported parameters:
+- order: (ListMgnifyPublicationsOrderType0 | None | Unset)
+- published_after: (int | None | Unset) Filter by minimum publication year
+- published_before: (int | None | Unset) Filter by maximum publication year
+- title: (None | str | Unset) Search within publication titles
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get the detail of a single publication
+
+Get detailed information about a publication, including associated studies.
+
+Supported parameters:
+- pubmed_id: (int)
+List all samples analysed by MGnify
+
+MGnify samples inherit directly from samples (or BioSamples) in ENA.
+
+Supported parameters:
+- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
+- search: (None | str | Unset) Search within sample titles and accessions
+- order: (ListMgnifySamplesOrderType0 | None | Unset)
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get the detail of a single sample analysed by MGnify
+
+MGnify samples inherit directly from samples (or BioSamples) in ENA.
+
+Supported parameters:
+- accession: (str)
+List all studies analysed by MGnify
+
+MGnify studies inherit directly from studies (or projects) in ENA.
+
+Supported parameters:
+- order: (ListMgnifyStudiesOrderType0 | None | Unset)
+- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
+- has_analyses_from_pipeline: (None | PipelineVersions | Unset) If set, will only show studies with analyses from the specified MGnify pipeline version
+- search: (None | str | Unset) Search within study titles and accessions
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get the detail of a single study analysed by MGnify
+
+MGnify studies inherit directly from studies (or projects) in ENA.
+
+Supported parameters:
+- accession: (str)
+List all analysed runs
+
+List all analysed runs in the MGnify database.
+
+Supported parameters:
+- has_experiment_type: (ExperimentTypes | None | Unset) If set, will only show runs with the specified experiment type
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get the detail of a single analysed run
+
+Get the detail of a single analysed run in the MGnify database.
+
+Supported parameters:
+- accession: (str)
+List all biomes
+
+List all biomes in the MGnify database.
+
+Supported parameters:
+- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
+- max_depth: (int | None | Unset) Maximum depth of the biome lineage to include, e.g. `root` is 1 and `root:Host-Associated:Human` is level 3
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+List all biomes
+
+List all biomes in the MGnify database.
+
+Supported parameters:
+- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
+- max_depth: (int | None | Unset) Maximum depth of the biome lineage to include, e.g. `root` is 1 and `root:Host-Associated:Human` is level 3
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+List all genome catalogues
+
+MGnify Genomes Catalogues are biome-specific collections of isolate and MAG genomes.
+
+Supported parameters:
+- page: (int | Unset) Default: 1.
+- page_size: (int | None | Unset)
+Get genome catalogue by ID
+
+Supported parameters:
+- catalogue_id: (str)
+✅ describe_resources() returned: {}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="what-comes-next">
+<h2>10. 🗺️ What comes next<a class="headerlink" href="#what-comes-next" title="Link to this heading">#</a></h2>
+<section id="milestones-for-the-2-hour-pypi-publish-session">
+<h3>Milestones for the 2-hour PyPI publish session<a class="headerlink" href="#milestones-for-the-2-hour-pypi-publish-session" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>Fix</p></th>
+<th class="head"><p>File</p></th>
+<th class="head"><p>Time</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>M1</p></td>
+<td><p>Create <code class="docutils literal notranslate"><span class="pre">cli.py</span></code> with <code class="docutils literal notranslate"><span class="pre">main()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mgnipy/cli.py</span></code> (new)</p></td>
+<td><p>15 min</p></td>
+</tr>
+<tr class="row-odd"><td><p>M2</p></td>
+<td><p>Pass config to proxy constructors</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mgnipy/mgnipy.py:52</span></code></p></td>
+<td><p>10 min</p></td>
+</tr>
+<tr class="row-even"><td><p>M3</p></td>
+<td><p>Narrow <code class="docutils literal notranslate"><span class="pre">testpaths</span></code> in pytest config</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code></p></td>
+<td><p>5 min</p></td>
+</tr>
+<tr class="row-odd"><td><p>M4</p></td>
+<td><p>Build wheel and test-install</p></td>
+<td><p>—</p></td>
+<td><p>15 min</p></td>
+</tr>
+<tr class="row-even"><td><p>M5</p></td>
+<td><p>Rewrite README with accurate examples</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code></p></td>
+<td><p>20 min</p></td>
+</tr>
+<tr class="row-odd"><td><p>M6</p></td>
+<td><p>Add CHANGELOG</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code> (new)</p></td>
+<td><p>5 min</p></td>
+</tr>
+<tr class="row-even"><td><p>M7</p></td>
+<td><p>Tag version and push</p></td>
+<td><p>git</p></td>
+<td><p>10 min</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="to-run-the-milestone-tests">
+<h3>To run the milestone tests<a class="headerlink" href="#to-run-the-milestone-tests" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># All milestones (offline, no API calls)</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/milestones/test_milestones.py<span class="w"> </span>-v
+
+<span class="c1"># Include live-API regression tests</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/milestones/test_milestones.py<span class="w"> </span>-v<span class="w"> </span>-m<span class="w"> </span>live_api
+
+<span class="c1"># After fixing M1, remove @pytest.mark.xfail from TestM1_CLI.test_after_fix_*</span>
+<span class="c1"># and re-run — those tests should now be green</span>
+</pre></div>
+</div>
+</section>
+<section id="deferred-post-publish">
+<h3>Deferred post-publish<a class="headerlink" href="#deferred-post-publish" title="Link to this heading">#</a></h3>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">SingleResource</span></code> — lazy accession-keyed objects (<code class="docutils literal notranslate"><span class="pre">studies[&quot;MGYS00001422&quot;]</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.order_by()</span></code>, <code class="docutils literal notranslate"><span class="pre">.exists()</span></code> methods</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">describe_resources()</span></code> implementation</p></li>
+<li><blockquote>
+<div><p>85% test coverage with mocked API calls</p>
+</div></blockquote>
+</li>
+<li><p>Full docstring pass</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="intro-openapi-python-client.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../reference/modules.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">mgnipy</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">1. Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnifier-direct-low-level-api">2. <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> — direct low-level API</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#output-formatters">3. Output formatters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#query-planning-dry-run-preview-explain">4. Query planning: <code class="docutils literal notranslate"><span class="pre">dry_run</span></code>, <code class="docutils literal notranslate"><span class="pre">preview</span></code>, <code class="docutils literal notranslate"><span class="pre">explain</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#immutable-filter-cloning">5. Immutable filter cloning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pagination-page-n-and-get-limit">6. Pagination: <code class="docutils literal notranslate"><span class="pre">page(n)</span></code> and <code class="docutils literal notranslate"><span class="pre">get(limit)</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy-facade-proxy-classes">7. <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> facade + proxy classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#async-aget-apage-afirst">8. Async: <code class="docutils literal notranslate"><span class="pre">aget</span></code>, <code class="docutils literal notranslate"><span class="pre">apage</span></code>, <code class="docutils literal notranslate"><span class="pre">afirst</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-currently-broken">9. ⚠️ What is currently broken</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#m1-cli-py-is-missing">✅ M1 — <code class="docutils literal notranslate"><span class="pre">cli.py</span></code> is missing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#m2-config-not-passed-to-proxies">✅ M2 — Config not passed to proxies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#not-yet-implemented-singleresource-accession-lookup">✅ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">SingleResource</span></code> (accession lookup)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#not-yet-implemented-order-by-and-exists">❌ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">.order_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">.exists()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#not-yet-implemented-describe-resources">✅ Not-yet-implemented: <code class="docutils literal notranslate"><span class="pre">describe_resources()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-comes-next">10. 🗺️ What comes next</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#milestones-for-the-2-hour-pypi-publish-session">Milestones for the 2-hour PyPI publish session</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#to-run-the-milestone-tests">To run the milestone tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deferred-post-publish">Deferred post-publish</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
