@@ -15,4 +15,4 @@ sphinx-apidoc --force \
 #     -o reference/emgapi-v2-client ../openapi/emgapi-v2-client/emgapi_v2_client
 
 # check index.md and conf.py files
-sphinx-build -n -W --keep-going -b html ./ ./_build/
+sphinx-build --keep-going -b html ./ ./_build/

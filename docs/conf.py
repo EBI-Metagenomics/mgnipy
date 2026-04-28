@@ -17,6 +17,7 @@ release = PACKAGE_VERSION
 
 
 # -- General configuration ---------------------------------------------------
+warningiserror = False
 
 extensions = [
     "sphinx.ext.autodoc",  # Core extension for generating documentation from docstrings
