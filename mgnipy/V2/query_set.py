@@ -192,7 +192,7 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         """
         # get number of pages if not already
         if (self.count is None) or (self.total_pages is None):
-            self.dry_run()
+            self.dry_run(verbose=False)
 
         if not (isinstance(page_num, int) and 0 < page_num <= self.total_pages):
             raise ValueError(
@@ -380,7 +380,7 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         return os.path.join(self._base_url, path)
 
     # preview the request(s) prior to making them (option 1)
-    def dry_run(self) -> None:
+    def dry_run(self, *, verbose: bool = True) -> None:
         """
         Plan the API call by validating parameters and estimating the number of pages and records available.
         Prints the plan details for the user to review before executing the full data retrieval.
@@ -391,21 +391,21 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         None
         """
         # verbose
-        print("Planning the API call with params:")
-        print(self.params)
+        if verbose:
+            print("Planning the API call with params:")
+            print(self.params)
 
         if self.count is not None and self.total_pages is not None:
             logging.info("Already have count and total_pages from previous dry run")
         elif not self.pagination_status:
-            # if not pageinated only 1
             self.count = 1
             self.total_pages = 1
         else:
-            # small get request to get count and calc total pages
             self.exec.get_pageinated_counts()
 
-        print(f"Total pages to retrieve: {self.total_pages}")
-        print(f"Total records to retrieve: {self.count}")
+        if verbose:
+            print(f"Total pages to retrieve: {self.total_pages}")
+            print(f"Total records to retrieve: {self.count}")
 
     # preview the request(s) prior to making them (option 2)
     def list_urls(self) -> list[str]:
