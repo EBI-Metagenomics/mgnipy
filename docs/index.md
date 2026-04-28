@@ -12,7 +12,7 @@
 :hidden:
 tutorials/getting-started/available-resources
 tutorials/getting-started/mgnify-biomes
-tutorials/getting-started/get_all_analyses_for_study
+tutorials/getting-started/study-analyses-simple
 ```
 
 ```{toctree}

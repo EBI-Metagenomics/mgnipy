@@ -2,8 +2,9 @@ jupytext dev/*.ipynb --sync
 
 jupytext tutorials/getting-started/available-resources.ipynb --sync
 jupytext tutorials/getting-started/mgnify-biomes.ipynb --sync
+jupytext tutorials/getting-started/study-analyses-simple.ipynb --sync
 
-jupytext tutorials/demos/get_all_analyses_for_study.ipynb --sync
+#jupytext tutorials/demos/get_all_analyses_for_study.ipynb --sync
 
 sphinx-apidoc --force \
     --module-first  --remove-old -t _templates \
