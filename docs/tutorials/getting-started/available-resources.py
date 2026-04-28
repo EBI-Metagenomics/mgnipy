@@ -15,6 +15,9 @@
 # %% [markdown]
 # #  &#x1F575; Exploring MGnify Resources &#x1F5C2;
 #
+# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/available-resources.ipynb)
+#
+#
 # The MGnify API provides access to multiple types of resources (or endpoints) such as studies, samples, analyses, runs, and more. This notebook shows you how to:
 #
 # 1. **Discover** what resources are available
@@ -30,6 +33,14 @@
 # Let's start by exploring available resources using the `MGnipy` client.
 #
 # ---
+#
+
+# %%
+# uncomment below if colab
+# #!pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy
+# #!pip install asyncio
+
+# %% [markdown]
 #
 # ## 1. `MGnipy` Client
 

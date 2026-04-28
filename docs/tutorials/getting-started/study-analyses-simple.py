@@ -17,7 +17,7 @@
 #
 # On this page, we show how to navigate MGnify resources starting from a study and moving to the analyses associated with it using MGni.py.
 #
-# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorial/demo-mgnify-tomatoes.ipynb)
+# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/study-analyses-simple.ipynb)
 #
 # ## Introduction
 #
