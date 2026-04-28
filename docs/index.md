@@ -8,22 +8,29 @@
 
 ```{toctree}
 :maxdepth: 2
-:caption: "tutorials"
+:caption: "Getting Started"
 :hidden:
-
-tutorial/demo-mgnify-biomes
-tutorial/get_all_analyses_for_study
+tutorials/getting-started/available-resources
+tutorials/getting-started/mgnify-biomes
+tutorials/getting-started/study-analyses-simple
 ```
 
 ```{toctree}
 :maxdepth: 2
-:caption: "openapi-python-client"
+:caption: "Demos"
 :hidden:
+<!-- tutorials/demo/pd-gut-microbiome -->
+<!-- tutorials/demo/MOFAR -->
+<!-- tutorials/demo/SpeSpeNet -->
+```
 
-openapi-py-client/intro-openapi-python-client
-openapi-py-client/README_mgni-py-v1
-openapi-py-client/README_mgni-py-v2
-
+```{toctree}
+:maxdepth: 2
+:caption: "Development Guide"
+:hidden:
+dev/README_emgapi-v2-client.md
+dev/intro-openapi-python-client.ipynb
+dev/capabilities_demo.ipynb
 ```
 
 ```{toctree}

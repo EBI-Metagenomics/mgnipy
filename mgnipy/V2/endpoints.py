@@ -115,7 +115,7 @@ BETWEEN_RESOURCE_RELATIONSHIPS: dict[
     # for an analysis detail, there is an endpoint to get the analysis with annotations
     # or should the analysis detail already have annotations?
     SupportedEndpoints.ANALYSIS: {
-        "annotations": analysis_get_mgnify_analysis_with_annotations
+        SupportedEndpoints.ANNOTATIONS: analysis_get_mgnify_analysis_with_annotations
     },
 }
 

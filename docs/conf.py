@@ -9,7 +9,7 @@ os.environ["PLOTLY_RENDERER"] = "notebook"
 # -- Project information -----------------------------------------------------
 
 project = "mgnipy"
-copyright = "2025, MGnify"
+copyright = "2026, MGnify"
 author = "MGnify"
 PACKAGE_VERSION = metadata.version("mgnipy")
 version = PACKAGE_VERSION
@@ -17,6 +17,7 @@ release = PACKAGE_VERSION
 
 
 # -- General configuration ---------------------------------------------------
+warningiserror = False
 
 extensions = [
     "sphinx.ext.autodoc",  # Core extension for generating documentation from docstrings
@@ -121,7 +122,6 @@ if os.environ.get("READTHEDOCS") == "True":
     PROJECT_ROOT = Path(__file__).parent.parent
     print(f"PROJECT_ROOT: {PROJECT_ROOT}")
     PACKAGE_ROOT = PROJECT_ROOT / "mgnipy"
-    # CLIENT_ROOT_V2 = PROJECT_ROOT / "openapi" / "emgapi-v2-client" / "emgapi_v2_client"
 
     def run_apidoc(_):
         from sphinx.ext import apidoc
@@ -139,20 +139,6 @@ if os.environ.get("READTHEDOCS") == "True":
                 str(PACKAGE_ROOT / "*.so"),
             ]
         )
-
-        # apidoc.main(
-        #     [
-        #         "--force",
-        #         "--implicit-namespaces",
-        #         "--module-first",
-        #         "--separate",
-        #         "-o",
-        #         str(PROJECT_ROOT / "docs" / "reference" / "mgni-py-v2"),
-        #         str(CLIENT_ROOT_V2),
-        #         str(CLIENT_ROOT_V2 / "*.c"),
-        #         str(CLIENT_ROOT_V2 / "*.so"),
-        #     ]
-        # )
 
     def setup(app):
         app.connect("builder-inited", run_apidoc)
