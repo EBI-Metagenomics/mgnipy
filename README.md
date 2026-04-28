@@ -82,18 +82,6 @@ pl_df = studies.to_polars()
 results_json = studies.to_json()
 ```
 
-## Configuration
-
-```python
-from mgnipy import MGnipy
-
-mg = MGnipy(
-    headers={"User-Agent": "my-app/1.0"},
-    # Optional: authentication
-    auth=("username", "password")
-)
-```
-
 ## Available Endpoints
 
 - Studies — Browse and filter metagenomic studies
