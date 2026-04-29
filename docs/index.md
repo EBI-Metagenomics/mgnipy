@@ -13,6 +13,7 @@
 tutorials/getting-started/available-resources
 tutorials/getting-started/mgnify-biomes
 tutorials/getting-started/study-analyses-simple
+tutorials/getting-started/access-private-data
 ```
 
 ```{toctree}

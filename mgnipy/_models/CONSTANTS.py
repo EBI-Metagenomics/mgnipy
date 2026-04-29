@@ -70,8 +70,11 @@ class SupportedEndpoints(SpecialEnum):
     BIOME = "biome"
     CATALOGUES = "catalogues"
     CATALOGUE = "catalogue"
-    #    PRIVATE_DATA = "private_data"
-    #    AUTHENTICATION = "authentication"
     ANNOTATIONS = (
         "annotations"  # not really an endpoint but fits better here than acc detail
     )
+    PRIVATE_STUDIES = "private_studies"
+
+
+class PrivateEndpoints(SpecialEnum):
+    PRIVATE_STUDIES = "private_studies"

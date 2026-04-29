@@ -70,12 +70,12 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
             "assembly",
         ],
         *,
-        config: Optional[MgnipyConfig] = None,
+        config: Optional[dict] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
 
-        self.config = MgnipyConfig(**config) if config else MgnipyConfig()
+        self.config: MgnipyConfig = MgnipyConfig(**config) if config else MgnipyConfig()
 
         self._base_url: str = str(self.config.base_url)
         self._resource = SupportedEndpoints.validate(resource)

@@ -12,6 +12,7 @@ from typing import (
 
 from tqdm import tqdm
 
+from mgnipy._models.CONSTANTS import PrivateEndpoints
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
 from mgnipy.emgapi_v2_client import (
@@ -123,17 +124,19 @@ class QueryExecutor:
         Client
             Configured MGnify API client.
         """
-        if auth_token:
+
+        # extra hold for ONLY auth when private?
+        if self.qs.resource.value in PrivateEndpoints.as_list():
+            _auth = auth_token or self.qs.config.auth_token
+
             logging.info("Initializing client with provided auth token.")
             return AuthenticatedClient(
                 base_url=str(self.qs._base_url),
-                token=auth_token,
-                # TODO logs?
+                token=_auth,
             )
 
         return Client(
             base_url=str(self.qs._base_url),
-            # TODO logs?
         )
 
     def _parse_response(self, response: mpy_Response) -> Optional[dict[str, Any]]:
