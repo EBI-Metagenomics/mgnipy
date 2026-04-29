@@ -19,7 +19,7 @@
 #
 # ## Introduction
 #
-# The [GOLD ecosystem classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like "Host-associated" down to specific environments like "Plant rhizosphere." MGnify uses this classification system to help researchers discover and organize metagenomic studies and samples by their ecological context.
+# The [GOLD ecosystem classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like "Engineered" to specific environments like "Plant rhizosphere."
 #
 # This demo will show you how to:
 #
@@ -39,15 +39,19 @@
 # We can initiate using `mgnipy.MGnipy` or `proxies.Biomes`
 
 # %% [markdown]
-# ## Option 1. `mgnipy.MGnipy`
+# ## The start: Preparing queries
+#
+# ### Option 1. `mgnipy.MGnipy`
 #
 # The `MGnipy` client offers a unified interface to access various MGnify API endpoints, including biomes. This approach is convenient if you want to manage multiple types of queries or resources through a single client object.
 #
 # - Instantiate `MGnipy` to configure your API access and manage requests.
 # - Use `.biomes` to create a biome query with your desired parameters.
-# - You can use the same filtering and previewing methods as with the proxy, such as `filter()`, `list_parameters()`, and `explain()`.
+# - Use `list_parameters()` to see all available filters and options.
+# - The `filter()` method allows you to refine your query further.
+# - The `explain()` method previews the constructed API URLs and the first few results.
 #
-# This method is ideal for users who prefer an object-oriented workflow and may want to extend their analysis to other MGnify resources beyond biomes.
+# This method has an additional helper function to list and describe available resources
 
 # %%
 from mgnipy import MGnipy
@@ -65,21 +69,22 @@ print("Initial url: ", biomes.request_url)
 mg.describe_resources("biomes")
 
 # %% [markdown]
-# If you would like to know what params are supported for the endpoint there is a helper method you can use: `.list_supported_params()` which
+# If you would like to know what params are supported for the endpoint there is a helper method you can use: `.list_supported_params()`
 
 # %%
 # if not sure what kwargs suupported
 print("Supported kwargs for biomes: ", biomes.list_supported_params())
 
+# %% [markdown]
+# also like describe_resources() there is a `describe_endpoint()`
+
 # %%
 biomes.describe_endpoint(as_dict=True)
 
 # %% [markdown]
-#
+# and then can pass as kwargs to `.filter()`
 
 # %%
-
-# and then
 biomes = biomes.filter(
     page_size=15,
     max_depth=6,
@@ -87,15 +92,9 @@ biomes = biomes.filter(
 print("Filtered url: ", biomes.request_url)
 
 # %% [markdown]
-# ## Option 1. Proxies
+# ### Option 2. Proxies
 #
-# The `Biomes` proxy provides a direct way to query biome information from the MGnify API. You can customize your query using various parameters such as `page_size` and `max_depth` to control the number of results and the depth of the biome hierarchy.
-#
-# - Use `list_parameters()` to see all available filters and options.
-# - The `filter()` method allows you to refine your query further.
-# - The `explain()` method previews the constructed API URLs and the first few results.
-#
-# This approach is useful if you want fine-grained control over the API request and wish to explore the available biome data interactively.
+# The `Biomes` proxy provides a direct way to query biome information from the MGnify API. You can customize your query using various parameters such as `page_size` and `max_depth` to control the number of results and the depth of the biome hierarchy. You can use the same filtering and previewing methods as with the proxy, such as `filter()`, `list_parameters()`, and `explain()`.
 
 # %%
 from mgnipy.V2.proxies import Biomes
@@ -131,7 +130,7 @@ biomes.explain(head=5)
 
 # %% [markdown]
 # ## Carry out requests
-# If happy with the plan, proceed with the async get requests.
+# If happy with the plan, proceed with the async or sync get requests.
 
 # %%
 # asynchronously get the data
@@ -168,30 +167,24 @@ biomes.results[1][:5]
 # %% tags=["hide-output"]
 biomes.show_tree()
 
-# %%
-from mgnipy.V2.proxies import BiomeDetail
+# %% [markdown]
+# ## Extra: Finding studies for a given biome
 
 # %%
-biome = BiomeDetail("root:Engineered")
-print(biome)
+# getting the biome_detail for a specific biome
+a_biome = biomes["root:Engineered:Biogas plant:Wet fermentation"]
+# what relationships can we traverse from biome detail?
+a_biome.list_relationships()
 
 # %%
-biome = MGnipy().biome("root:Engineered")
-print(biome)
+# lazily access the studies list related to this biome (basically prepping query)
+their_studies_list = a_biome.studies
 
-# %%
-this = biomes["root:Engineered:Biogas plant:Wet fermentation"]
+# preview the requests that will be made to get the studies list
+their_studies_list.explain()
 
-# %%
-biomes.child_resource
+# asynchronously get the studies list
+await their_studies_list.aget()
 
-# %%
-their_studies = biomes[1]
-
-# %%
-their_studies.explain(head=5)
-
-# %%
-their_studies.get()
-
-# %%
+# look at results
+their_studies_list.to_df().head()
