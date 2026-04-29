@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>🗃 Find all MGnify Analyses for a given Study &#8212; mgnipy 0.1.dev1+g28fccbb4b documentation</title>
+    <title>🗃 Find all MGnify Analyses for a given Study &#8212; mgnipy 0.1.dev1+gf91363ba8 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=de5fccf9"></script>
+    <script src="../../_static/documentation_options.js?v=96565a26"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,8 +142,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g28fccbb4b documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g28fccbb4b documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -701,8 +701,8 @@ https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00010442/analyses?page=3
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/3 [00:00&lt;?, ?it/s]
-Retrieving pages:  33%|███▎      | 1/3 [00:00&lt;00:01,  1.91it/s]
-Retrieving pages: 100%|██████████| 3/3 [00:00&lt;00:00,  5.01it/s]
+Retrieving pages:  33%|███▎      | 1/3 [00:01&lt;00:02,  1.14s/it]
+Retrieving pages: 100%|██████████| 3/3 [00:01&lt;00:00,  2.47it/s]
 </pre></div>
 </div>
 <div class="output text_html"><div>
@@ -1037,23 +1037,27 @@ Returns paginated results: False
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Processing:   0%|          | 0/63 [00:00&lt;?, ?it/s]
-Processing:   2%|▏         | 1/63 [00:00&lt;00:28,  2.18it/s]
-Processing:  10%|▉         | 6/63 [00:00&lt;00:07,  7.50it/s]
-Processing:  17%|█▋        | 11/63 [00:01&lt;00:05,  9.19it/s]
-Processing:  19%|█▉        | 12/63 [00:01&lt;00:07,  6.51it/s]
-Processing:  27%|██▋       | 17/63 [00:02&lt;00:05,  8.31it/s]
-Processing:  35%|███▍      | 22/63 [00:02&lt;00:04,  9.43it/s]
-Processing:  43%|████▎     | 27/63 [00:03&lt;00:03, 10.21it/s]
-Processing:  51%|█████     | 32/63 [00:03&lt;00:02, 11.09it/s]
-Processing:  54%|█████▍    | 34/63 [00:03&lt;00:02, 11.94it/s]
-Processing:  59%|█████▊    | 37/63 [00:03&lt;00:02, 11.18it/s]
-Processing:  65%|██████▌   | 41/63 [00:03&lt;00:01, 14.55it/s]
-Processing:  68%|██████▊   | 43/63 [00:04&lt;00:01, 11.70it/s]
-Processing:  75%|███████▍  | 47/63 [00:04&lt;00:01, 11.28it/s]
-Processing:  79%|███████▉  | 50/63 [00:05&lt;00:01,  9.37it/s]
-Processing:  87%|████████▋ | 55/63 [00:05&lt;00:00,  9.98it/s]
-Processing:  95%|█████████▌| 60/63 [00:05&lt;00:00, 10.83it/s]
-Processing: 100%|██████████| 63/63 [00:05&lt;00:00, 10.52it/s]
+Processing:   2%|▏         | 1/63 [00:00&lt;00:42,  1.45it/s]
+Processing:  10%|▉         | 6/63 [00:01&lt;00:11,  4.76it/s]
+Processing:  17%|█▋        | 11/63 [00:02&lt;00:08,  5.93it/s]
+Processing:  25%|██▌       | 16/63 [00:02&lt;00:07,  6.58it/s]
+Processing:  33%|███▎      | 21/63 [00:03&lt;00:05,  7.04it/s]
+Processing:  40%|███▉      | 25/63 [00:03&lt;00:04,  9.39it/s]
+Processing:  43%|████▎     | 27/63 [00:04&lt;00:05,  7.02it/s]
+Processing:  49%|████▉     | 31/63 [00:04&lt;00:04,  7.12it/s]
+Processing:  52%|█████▏    | 33/63 [00:04&lt;00:03,  7.96it/s]
+Processing:  57%|█████▋    | 36/63 [00:05&lt;00:03,  7.20it/s]
+Processing:  60%|██████    | 38/63 [00:05&lt;00:03,  8.00it/s]
+Processing:  65%|██████▌   | 41/63 [00:05&lt;00:03,  6.99it/s]
+Processing:  68%|██████▊   | 43/63 [00:06&lt;00:02,  8.10it/s]
+Processing:  73%|███████▎  | 46/63 [00:06&lt;00:02,  7.04it/s]
+Processing:  76%|███████▌  | 48/63 [00:06&lt;00:01,  8.22it/s]
+Processing:  81%|████████  | 51/63 [00:07&lt;00:01,  7.15it/s]
+Processing:  84%|████████▍ | 53/63 [00:07&lt;00:01,  8.33it/s]
+Processing:  89%|████████▉ | 56/63 [00:07&lt;00:00,  7.04it/s]
+Processing:  92%|█████████▏| 58/63 [00:08&lt;00:00,  8.34it/s]
+Processing:  97%|█████████▋| 61/63 [00:08&lt;00:00,  7.12it/s]
+Processing: 100%|██████████| 63/63 [00:08&lt;00:00,  7.28it/s]
 </pre></div>
 </div>
 </div>
