@@ -37,8 +37,8 @@ jobs:
       - name: Copy README into site
         run: cp README.md docs/_build/README.md
 
-      - name: Copy README into site
-        run: cp CNAME docs/_build/CNAME
+      - name: Copy CNAME into site
+        run: cp docs/CNAME docs/_build/CNAME
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
