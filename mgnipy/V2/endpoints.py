@@ -17,6 +17,7 @@ from mgnipy.emgapi_v2_client.api.genomes import (
     list_mgnify_genomes,
 )
 from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
+from mgnipy.emgapi_v2_client.api.private_data import list_private_mgnify_studies
 from mgnipy.emgapi_v2_client.api.publications import (
     get_mgnify_publication,
     list_mgnify_publications,
@@ -49,6 +50,7 @@ LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.ASSEMBLIES: list_assemblies,  # listing all assemblies, no filtering TODO more info?
     SupportedEndpoints.PUBLICATIONS: list_mgnify_publications,
     SupportedEndpoints.CATALOGUES: list_genome_catalogues,  # not really a list endpoint but fits better here than acc detail
+    SupportedEndpoints.PRIVATE_STUDIES: list_private_mgnify_studies,
 }
 
 DETAIL_ENDPOINTS_BY_ID: dict[SupportedEndpoints, callable] = {
@@ -123,4 +125,6 @@ ALL_SUPPORTED_RELATIONSHIPS: dict[
     SupportedEndpoints, dict[SupportedEndpoints, callable]
 ] = (WITHIN_RESOURCE_RELATIONSHIPS | BETWEEN_RESOURCE_RELATIONSHIPS)
 
-# so basically an agent could update this based on openapi.json spec changes, and then the rest of the code should work without needing to change? maybe some edge cases but ideally this is how we can future proof against API changes
+# so basically an agent could update this based on openapi.json spec changes,
+# and then the rest of the code should work without needing to change?
+# maybe some edge cases but ideally this is how we can future proof against API changes

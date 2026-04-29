@@ -11,7 +11,7 @@ from typing import (
     Optional,
 )
 
-from mgnipy._models.config import MgnipyConfig
+from mgnipy._models.config import AuthMGnipyConfig
 from mgnipy._models.CONSTANTS import (
     SupportedEndpoints,
 )
@@ -36,6 +36,7 @@ ListResource = Literal[
     "assemblies",
     "publications",
     "catalogues",
+    "private_studies",
 ]
 
 DetailResource = Literal[
@@ -335,7 +336,7 @@ class MGnifyDetail(MGnifier):
     def __init__(
         self,
         id: str,
-        config: Optional[MgnipyConfig] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
@@ -496,7 +497,7 @@ class Analyses(MGnifyList):
         self,
         *,
         params: Optional[dict[str, Any]] = None,
-        config: Optional[MgnipyConfig] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
@@ -511,7 +512,7 @@ class Runs(MGnifyList):
         self,
         *,
         params: Optional[dict[str, Any]] = None,
-        config: Optional[MgnipyConfig] = None,
+        config: Optional[dict] = None,
         **kwargs,
     ):
 
@@ -545,6 +546,24 @@ class Studies(MGnifyList):
     ):
 
         super().__init__(params=params, config=config, **kwargs)
+
+
+class PrivateStudies(MGnifyList):
+
+    RESOURCE: ClassVar[Literal["private_studies"]] = "private_studies"
+
+    def __init__(
+        self,
+        *,
+        params: Optional[dict[str, Any]] = None,
+        config: Optional[dict] = None,
+        **kwargs,
+    ):
+
+        super().__init__(params=params, config=config, **kwargs)
+
+        self.config = AuthMGnipyConfig(**config)
+        self.config.resolve_auth_token()
 
 
 class Biomes(MGnifyList, BiomesTreeMixin):
@@ -796,6 +815,7 @@ V2_ENDPOINT_LIST_PROXIES = {
     SupportedEndpoints.GENOMES: Genomes,
     SupportedEndpoints.PUBLICATIONS: Publications,
     SupportedEndpoints.CATALOGUES: Catalogues,
+    SupportedEndpoints.PRIVATE_STUDIES: PrivateStudies,
 }
 
 V2_ENDPOINT_DETAIL_PROXIES = {

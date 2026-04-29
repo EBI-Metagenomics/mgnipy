@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 from getpass import getpass
 from pathlib import Path
 from time import time
@@ -139,7 +140,7 @@ class AuthMGnipyConfig(MgnipyConfig):
 
         """
         token_path = self._token_cache_path()
-        to_cache = {"auth_token": auth_token, "ts": int(time.time())}
+        to_cache = {"auth_token": auth_token, "ts": int(time())}
         token_path.write_text(json.dumps(to_cache))
 
     def _clear_cached_token(self) -> None:
@@ -148,10 +149,7 @@ class AuthMGnipyConfig(MgnipyConfig):
         """
         token_path = self._token_cache_path()
         if token_path.exists():
-            try:
-                token_path.unlink()
-            except Exception:
-                pass
+            token_path.unlink(missing_ok=True)
 
     def _get_login(
         self,
@@ -184,6 +182,7 @@ class AuthMGnipyConfig(MgnipyConfig):
         """
         # if already configured return them
         if self.mg_user and self.mg_password:
+            logging.debug("Using configured MGnify credentials")
             return self.mg_user, self.mg_password
 
         # just raise error
@@ -215,10 +214,11 @@ class AuthMGnipyConfig(MgnipyConfig):
         Obtains an authentication token using the MGnify username and password.
         If credentials are not available, can prompt the user to enter them.
         """
-
+        logging.debug("getting username and password...")
         username, password = self._get_login(prompt_if_missing=prompt_if_missing)
-
+        logging.debug("retrieved username and password...")
         # prep body
+        logging.debug("prepping body for token request...")
         body = WebinTokenRequest(
             username=username,
             password=password,
@@ -226,15 +226,17 @@ class AuthMGnipyConfig(MgnipyConfig):
 
         try:
             # requesting token from API
+            logging.debug("requesting token from API...")
             with self._unauth_client() as client:
                 resp = token_obtain_sliding.sync(client=client, body=body)
             token = resp.token if resp else None
             # if successful cache it and return
             if token:
-                self.auth_token = token
+                logging.debug("successfully obtained auth token, caching it...")
                 self._save_cached_token(token)
             return token
         except Exception:
+            logging.debug("Failed to obtain authentication token.")
             return None
 
     def verify_auth_token(self, token: Optional[str] = None) -> bool:
@@ -274,8 +276,6 @@ class AuthMGnipyConfig(MgnipyConfig):
             new_token = response.token if response else None
             # if yes then cache it and return
             if new_token:
-                # set auth_token config
-                self.auth_token = new_token
                 # save to cache
                 self._save_cached_token(new_token)
             return new_token
@@ -286,7 +286,7 @@ class AuthMGnipyConfig(MgnipyConfig):
         self,
         *,
         prompt_if_missing: bool = True,
-    ) -> Optional[str]:
+    ) -> None:
         """
         Resolve a valid authentication token by checking the current token,
         verifying it, and refreshing or obtaining a new one as needed.
@@ -296,37 +296,42 @@ class AuthMGnipyConfig(MgnipyConfig):
         prompt_if_missing : bool, optional
             If True, prompts the user for credentials if they are not found in the config when obtaining a new token. Default is True.
 
-        Returns
-        -------
-        Optional[str]
-            A valid authentication token, or None if a token could not be obtained or verified.
 
         Example
         -------
         config = AuthMGnipyConfig(mg_user="myuser", mg_password="mypassword")
-        token = config.resolve_auth_token()
+        config.resolve_auth_token()
         """
 
         # 1. check cache first
         cached = self._load_cached_token()
         if cached and not self.auth_token:
+            logging.debug("Loaded auth token from cache")
             self.auth_token = cached
 
-        # 1.5. verify if cached or existing token
+        # 1.5. verify if is cached or existing token
         if self.auth_token:
             # if is valid try refresh
             if self.verify_auth_token(self.auth_token):
-                refreshed = self.refresh_auth_token(self.auth_token)
-                return refreshed or self.auth_token
+                logging.debug("Valid auth token found, refreshing it...")
+                self.auth_token = self.refresh_auth_token(self.auth_token)
+            else:
+                # then clear it from cache
+                logging.debug(
+                    "Invalid auth token found, clearing cache and trying to obtain new one..."
+                )
+                self._clear_cached_token()
+                self.auth_token = None
 
-            # attempt to refresh anyways hehe maybe can still refresh even if exp?
-            refreshed = self.refresh_auth_token(self.auth_token)
-            if refreshed:
-                return refreshed
-            # okay okay if that failed too then clear it and get new one
-            self._clear_cached_token()
-            self.auth_token = None
+        # 2. try to obtain new token :) and caches
+        if self.auth_token is None:
+            logging.debug("No valid auth token available, obtaining new one...")
+            self.auth_token = self.obtain_auth_token(
+                prompt_if_missing=prompt_if_missing
+            )
 
-        # 2. try to obtain new token :)
-        token = self.obtain_auth_token(prompt_if_missing=prompt_if_missing)
-        return token
+        # a check
+        if self.auth_token and not self.verify_auth_token(self.auth_token):
+            raise RuntimeError("Failed to resolve a valid authentication token.")
+
+        print("Authentication token resolved successfully.")
