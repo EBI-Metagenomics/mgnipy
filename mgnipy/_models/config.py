@@ -42,9 +42,6 @@ CACHE_DIR = user_cache_dir(APPNAME, APPAUTHOR)
 class MgnipyConfig(BaseSettings):
 
     model_config = SettingsConfigDict(
-        # extra="forbid",
-        # use_enum_values=True,
-        # validate_assignment=True,
         env_file=".env",
         env_file_encoding="utf-8",
     )
@@ -87,6 +84,7 @@ class MgnipyConfig(BaseSettings):
 
     @field_serializer("base_url")
     def serialize_base_url(self, v: HttpUrl) -> str:
+        """Custom serializer for the base_url field to ensure it is always represented as a string."""
         return str(v)
 
 
@@ -154,7 +152,7 @@ class AuthMGnipyConfig(MgnipyConfig):
     def _get_login(
         self,
         *,
-        prompt_if_missing: bool = True,
+        interactive: bool = True,
     ) -> tuple[str, str]:
         """
         Returns MGnify username and password,
@@ -162,8 +160,8 @@ class AuthMGnipyConfig(MgnipyConfig):
 
         Parameters
         ----------
-        prompt_if_missing : bool, optional
-            If True, prompts the user for credentials if they are not found in the config. Default is True.
+        interactive : bool, optional
+            If True, prompts the user to input credentials if they are not found in the config. Default is True.
 
         Returns
         -------
@@ -185,37 +183,36 @@ class AuthMGnipyConfig(MgnipyConfig):
             logging.debug("Using configured MGnify credentials")
             return self.mg_user, self.mg_password
 
-        # just raise error
-        if not prompt_if_missing:
-            raise RuntimeError(
-                "set MG_USER and MG_PASSWORD in .env for authentication "
-                "or pass to MGnipy or proxies via `mg_user` and `mg_password` params"
-            )
+        if interactive:
+            # otherwise ask them to login interactively
+            user = input("MGnify username (Webin): ").strip()
+            password = getpass("MGnify password: ")
 
-        # otherwise ask them to login interactively
-        user = input("MGnify username (Webin): ").strip()
-        password = getpass("MGnify password: ")
+            if not user or not password:
+                print(
+                    "Username/password not provided. Proceeding without authentication."
+                )
 
-        if not user or not password:
-            raise RuntimeError("Username/password not provided")
-
+        else:
+            user = None
+            password = None
         # keep in config for this session
         # they will be prompted each time if not in .env
-        self.mg_user = user
-        self.mg_password = password
+        self.mg_user = user or None
+        self.mg_password = password or None
         return user, password
 
     def obtain_auth_token(
         self,
         *,
-        prompt_if_missing: bool = True,
+        interactive: bool = True,
     ) -> Optional[str]:
         """
         Obtains an authentication token using the MGnify username and password.
         If credentials are not available, can prompt the user to enter them.
         """
         logging.debug("getting username and password...")
-        username, password = self._get_login(prompt_if_missing=prompt_if_missing)
+        username, password = self._get_login(interactive=interactive)
         logging.debug("retrieved username and password...")
         # prep body
         logging.debug("prepping body for token request...")
@@ -285,7 +282,7 @@ class AuthMGnipyConfig(MgnipyConfig):
     def resolve_auth_token(
         self,
         *,
-        prompt_if_missing: bool = True,
+        interactive: bool = True,
     ) -> None:
         """
         Resolve a valid authentication token by checking the current token,
@@ -293,8 +290,8 @@ class AuthMGnipyConfig(MgnipyConfig):
 
         Parameters
         ----------
-        prompt_if_missing : bool, optional
-            If True, prompts the user for credentials if they are not found in the config when obtaining a new token. Default is True.
+        interactive : bool, optional
+            If True, prompts the user to input credentials if they are not found in the config. Default is True.
 
 
         Example
@@ -326,12 +323,14 @@ class AuthMGnipyConfig(MgnipyConfig):
         # 2. try to obtain new token :) and caches
         if self.auth_token is None:
             logging.debug("No valid auth token available, obtaining new one...")
-            self.auth_token = self.obtain_auth_token(
-                prompt_if_missing=prompt_if_missing
-            )
+            self.auth_token = self.obtain_auth_token(interactive=interactive)
+            if not self.mg_user and not self.mg_password:
+                logging.debug(
+                    "No login credentials provided, unable to obtain auth_token."
+                )
 
-        # a check
+        # post checks
         if self.auth_token and not self.verify_auth_token(self.auth_token):
             raise RuntimeError("Failed to resolve a valid authentication token.")
-
-        print("Authentication token resolved successfully.")
+        if self.auth_token and self.verify_auth_token(self.auth_token):
+            print("Authenticated successfully.")
