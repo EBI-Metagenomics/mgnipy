@@ -1,47 +1,332 @@
+import hashlib
+import json
+from getpass import getpass
+from pathlib import Path
+from time import time
 from typing import (
     Optional,
 )
 
+from platformdirs import user_cache_dir
 from pydantic import (
-    BaseModel,
-    ConfigDict,
     Field,
     HttpUrl,
     field_serializer,
 )
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict,
+)
 
 from mgnipy._models.CONSTANTS import SupportedApiVersions
+from mgnipy.emgapi_v2_client import Client
+from mgnipy.emgapi_v2_client.api.authentication import (
+    token_obtain_sliding,
+    token_refresh_sliding,
+    token_verify,
+)
+from mgnipy.emgapi_v2_client.models.token_verify_input_schema import (
+    TokenVerifyInputSchema,
+)
+from mgnipy.emgapi_v2_client.models.webin_token_refresh_request import (
+    WebinTokenRefreshRequest,
+)
+from mgnipy.emgapi_v2_client.models.webin_token_request import WebinTokenRequest
+
+APPNAME = "mgnipy"
+APPAUTHOR = "MGnify"
+CACHE_DIR = user_cache_dir(APPNAME, APPAUTHOR)
 
 
-class MgnipyConfig(BaseModel):
-    # class ConfigDict:
-    #     extra = "forbid"
-    #     use_enum_values = True
+class MgnipyConfig(BaseSettings):
 
-    model_config = ConfigDict(
-        extra="forbid", use_enum_values=True, validate_assignment=True
+    model_config = SettingsConfigDict(
+        # extra="forbid",
+        # use_enum_values=True,
+        # validate_assignment=True,
+        env_file=".env",
+        env_file_encoding="utf-8",
     )
 
     api_version: SupportedApiVersions = Field(
         default=SupportedApiVersions.V2,
-        description="API version to use. Supported values are 'v1', 'v2', and 'latest'.",
+        description="API version to use. Supported values are 'v2', and 'latest'.",
     )
     base_url: HttpUrl = Field(
         default="https://www.ebi.ac.uk/",
         description="Base URL for the MGnify API",
         validate_default=True,
     )
-    auth_token: Optional[str] = Field(
+
+    mg_user: Optional[str] = Field(
         default=None,
-        description="Authentication token for private data access",
+        description="Username for basic authentication (if required)",
         repr=False,
     )
-    # cache_dir: Optional[DirectoryPath] = Field(
-    #     default_factory=lambda: user_cache_dir("mgnipy", "MGnify"),
-    #     description="Directory for caching API responses. Defaults to the user cache directory.",
-    #     alias=AliasChoices("cache_dir", "cache_directory"),
-    # )
+
+    mg_password: Optional[str] = Field(
+        default=None,
+        description="Password for basic authentication (if required)",
+        repr=False,
+    )
+
+    auth_token: Optional[str] = Field(
+        default=None,
+        description="Authentication token for API access. If provided, it will be used for authenticated requests.",
+        repr=False,
+    )
+
+    cache_dir: Path = Field(
+        default_factory=lambda: Path(CACHE_DIR),
+        description=(
+            "Cache directory for storing API responses or other temp things. "
+            "Defaults to a platform-appropriate cache dir via `platformdirs`.",
+        ),
+    )
 
     @field_serializer("base_url")
     def serialize_base_url(self, v: HttpUrl) -> str:
         return str(v)
+
+
+class AuthMGnipyConfig(MgnipyConfig):
+    """
+    Manage authentication credentials and tokens.
+
+    Extension of MgnipyConfig with methods for handling authentication,
+    including obtaining, verifying, and refreshing tokens.
+    """
+
+    def _unauth_client(self) -> Client:
+        """Client without auth for getting tokens"""
+        return Client(base_url=str(self.base_url))
+
+    def _token_cache_path(self) -> Path:
+        """
+        Generate a cache file path for storing the authentication token based on the base URL and username.
+        """
+        # create dir if not exist
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        # hash of url and username for filename
+        key = hashlib.sha256(
+            f"{self.base_url}|{self.mg_user or ''}".encode()
+        ).hexdigest()
+        return Path(self.cache_dir) / f"auth_{key}.json"
+
+    def _load_cached_token(self) -> Optional[str]:
+        """
+        Load a cached authentication token from the cache directory if it exists
+        Also if cant read then return None to get new token
+        """
+        token_path = self._token_cache_path()
+        if not token_path.exists():
+            return None
+        try:
+            data = json.loads(token_path.read_text())
+            return data.get("auth_token")
+        except Exception:
+            return None
+
+    def _save_cached_token(self, auth_token: str) -> None:
+        """
+        Save the authentication token to a cache file in the cache directory.
+        The token is stored along with a timestamp to allow for future expiration handling if needed.
+
+        Parameters
+        ----------
+        auth_token : str
+            The authentication token to be cached.
+
+        """
+        token_path = self._token_cache_path()
+        to_cache = {"auth_token": auth_token, "ts": int(time.time())}
+        token_path.write_text(json.dumps(to_cache))
+
+    def _clear_cached_token(self) -> None:
+        """
+        Clear the cached authentication token by deleting the cache file if it exists.
+        """
+        token_path = self._token_cache_path()
+        if token_path.exists():
+            try:
+                token_path.unlink()
+            except Exception:
+                pass
+
+    def _get_login(
+        self,
+        *,
+        prompt_if_missing: bool = True,
+    ) -> tuple[str, str]:
+        """
+        Returns MGnify username and password,
+        either from config or by prompting the user.
+
+        Parameters
+        ----------
+        prompt_if_missing : bool, optional
+            If True, prompts the user for credentials if they are not found in the config. Default is True.
+
+        Returns
+        -------
+        tuple[str, str]
+            A tuple containing the username and password.
+
+        Raises
+        ------
+        RuntimeError
+            If credentials are not provided and prompting is disabled.
+
+        Example
+        -------
+        config = AuthMGnipyConfig(mg_user="myuser", mg_password="mypassword")
+        username, password = config._get_login()
+        """
+        # if already configured return them
+        if self.mg_user and self.mg_password:
+            return self.mg_user, self.mg_password
+
+        # just raise error
+        if not prompt_if_missing:
+            raise RuntimeError(
+                "set MG_USER and MG_PASSWORD in .env for authentication "
+                "or pass to MGnipy or proxies via `mg_user` and `mg_password` params"
+            )
+
+        # otherwise ask them to login interactively
+        user = input("MGnify username (Webin): ").strip()
+        password = getpass("MGnify password: ")
+
+        if not user or not password:
+            raise RuntimeError("Username/password not provided")
+
+        # keep in config for this session
+        # they will be prompted each time if not in .env
+        self.mg_user = user
+        self.mg_password = password
+        return user, password
+
+    def obtain_auth_token(
+        self,
+        *,
+        prompt_if_missing: bool = True,
+    ) -> Optional[str]:
+        """
+        Obtains an authentication token using the MGnify username and password.
+        If credentials are not available, can prompt the user to enter them.
+        """
+
+        username, password = self._get_login(prompt_if_missing=prompt_if_missing)
+
+        # prep body
+        body = WebinTokenRequest(
+            username=username,
+            password=password,
+        )
+
+        try:
+            # requesting token from API
+            with self._unauth_client() as client:
+                resp = token_obtain_sliding.sync(client=client, body=body)
+            token = resp.token if resp else None
+            # if successful cache it and return
+            if token:
+                self.auth_token = token
+                self._save_cached_token(token)
+            return token
+        except Exception:
+            return None
+
+    def verify_auth_token(self, token: Optional[str] = None) -> bool:
+        """
+        Verify the validity of the provided authentication token
+        Makes request to the token verification endpoint
+        If no token is provided, it will attempt to verify the token stored in the config.
+        """
+        _token = token or self.auth_token
+
+        # if token is None then obvi not valid
+        if not _token:
+            return False
+
+        # prep body
+        body = TokenVerifyInputSchema(token=_token)
+
+        try:
+            with self._unauth_client() as client:
+                reponse = token_verify.sync(client=client, body=body)
+            return reponse is not None
+        except Exception:
+            return False
+
+    def refresh_auth_token(self, token: Optional[str] = None) -> Optional[str]:
+        _token = token or self.auth_token
+        if not _token:
+            return None
+
+        # prep body
+        body = WebinTokenRefreshRequest(token=_token)
+
+        try:
+            with self._unauth_client() as client:
+                response = token_refresh_sliding.sync(client=client, body=body)
+            # new token or not?
+            new_token = response.token if response else None
+            # if yes then cache it and return
+            if new_token:
+                # set auth_token config
+                self.auth_token = new_token
+                # save to cache
+                self._save_cached_token(new_token)
+            return new_token
+        except Exception:
+            return None
+
+    def resolve_auth_token(
+        self,
+        *,
+        prompt_if_missing: bool = True,
+    ) -> Optional[str]:
+        """
+        Resolve a valid authentication token by checking the current token,
+        verifying it, and refreshing or obtaining a new one as needed.
+
+        Parameters
+        ----------
+        prompt_if_missing : bool, optional
+            If True, prompts the user for credentials if they are not found in the config when obtaining a new token. Default is True.
+
+        Returns
+        -------
+        Optional[str]
+            A valid authentication token, or None if a token could not be obtained or verified.
+
+        Example
+        -------
+        config = AuthMGnipyConfig(mg_user="myuser", mg_password="mypassword")
+        token = config.resolve_auth_token()
+        """
+
+        # 1. check cache first
+        cached = self._load_cached_token()
+        if cached and not self.auth_token:
+            self.auth_token = cached
+
+        # 1.5. verify if cached or existing token
+        if self.auth_token:
+            # if is valid try refresh
+            if self.verify_auth_token(self.auth_token):
+                refreshed = self.refresh_auth_token(self.auth_token)
+                return refreshed or self.auth_token
+
+            # attempt to refresh anyways hehe maybe can still refresh even if exp?
+            refreshed = self.refresh_auth_token(self.auth_token)
+            if refreshed:
+                return refreshed
+            # okay okay if that failed too then clear it and get new one
+            self._clear_cached_token()
+            self.auth_token = None
+
+        # 2. try to obtain new token :)
+        token = self.obtain_auth_token(prompt_if_missing=prompt_if_missing)
+        return token
