@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.query_executor &#8212; mgnipy 0.1.dev1+ga98c2f786 documentation</title>
+    <title>mgnipy.V2.query_executor &#8212; mgnipy 0.1.dev1+g0072251bd documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=c8999e49"></script>
+    <script src="../../../_static/documentation_options.js?v=2e52a41b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,8 +141,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -187,6 +187,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/access-private-data.html">🔐 Accessing your private data 🔓</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
 <ul class="nav bd-sidenav">
@@ -344,6 +345,7 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.CONSTANTS</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrivateEndpoints</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.async_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_semaphore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.pydantic_help</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_gt_int</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -463,17 +465,19 @@ document.write(`
 <span class="sd">        Client</span>
 <span class="sd">            Configured MGnify API client.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
+
+        <span class="c1"># extra hold for ONLY auth when private?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">PrivateEndpoints</span><span class="o">.</span><span class="n">as_list</span><span class="p">():</span>
+            <span class="n">_auth</span> <span class="o">=</span> <span class="n">auth_token</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">auth_token</span>
+
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initializing client with provided auth token.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">AuthenticatedClient</span><span class="p">(</span>
                 <span class="n">base_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">_base_url</span><span class="p">),</span>
-                <span class="n">token</span><span class="o">=</span><span class="n">auth_token</span><span class="p">,</span>
-                <span class="c1"># TODO logs?</span>
+                <span class="n">token</span><span class="o">=</span><span class="n">_auth</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Client</span><span class="p">(</span>
             <span class="n">base_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">_base_url</span><span class="p">),</span>
-            <span class="c1"># TODO logs?</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">mpy_Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>

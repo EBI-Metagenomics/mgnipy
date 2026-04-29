@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy package &#8212; mgnipy 0.1.dev1+ga98c2f786 documentation</title>
+    <title>mgnipy package &#8212; mgnipy 0.1.dev1+g0072251bd documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=c8999e49"></script>
+    <script src="../_static/documentation_options.js?v=2e52a41b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,8 +142,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -188,6 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/access-private-data.html">🔐 Accessing your private data 🔓</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
 <ul class="nav bd-sidenav">
@@ -577,6 +578,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Studies.url_path"><code class="docutils literal notranslate"><span class="pre">Studies.url_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Studies.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Studies.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Studies.child_resource"><code class="docutils literal notranslate"><span class="pre">Studies.child_resource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Studies.config"><code class="docutils literal notranslate"><span class="pre">Studies.config</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Studies.exec"><code class="docutils literal notranslate"><span class="pre">Studies.exec</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Studies.count"><code class="docutils literal notranslate"><span class="pre">Studies.count</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Studies.total_pages"><code class="docutils literal notranslate"><span class="pre">Studies.total_pages</span></code></a></li>
@@ -630,6 +632,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Samples.url_path"><code class="docutils literal notranslate"><span class="pre">Samples.url_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Samples.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Samples.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Samples.child_resource"><code class="docutils literal notranslate"><span class="pre">Samples.child_resource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Samples.config"><code class="docutils literal notranslate"><span class="pre">Samples.config</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Samples.exec"><code class="docutils literal notranslate"><span class="pre">Samples.exec</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Samples.count"><code class="docutils literal notranslate"><span class="pre">Samples.count</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Samples.total_pages"><code class="docutils literal notranslate"><span class="pre">Samples.total_pages</span></code></a></li>
@@ -683,6 +686,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Analyses.url_path"><code class="docutils literal notranslate"><span class="pre">Analyses.url_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Analyses.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Analyses.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Analyses.child_resource"><code class="docutils literal notranslate"><span class="pre">Analyses.child_resource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Analyses.config"><code class="docutils literal notranslate"><span class="pre">Analyses.config</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Analyses.exec"><code class="docutils literal notranslate"><span class="pre">Analyses.exec</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Analyses.count"><code class="docutils literal notranslate"><span class="pre">Analyses.count</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Analyses.total_pages"><code class="docutils literal notranslate"><span class="pre">Analyses.total_pages</span></code></a></li>
@@ -736,6 +740,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Genomes.url_path"><code class="docutils literal notranslate"><span class="pre">Genomes.url_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Genomes.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Genomes.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Genomes.child_resource"><code class="docutils literal notranslate"><span class="pre">Genomes.child_resource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Genomes.config"><code class="docutils literal notranslate"><span class="pre">Genomes.config</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Genomes.exec"><code class="docutils literal notranslate"><span class="pre">Genomes.exec</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Genomes.count"><code class="docutils literal notranslate"><span class="pre">Genomes.count</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.Genomes.total_pages"><code class="docutils literal notranslate"><span class="pre">Genomes.total_pages</span></code></a></li>
@@ -813,6 +818,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.core.MGnifier.to_polars"><code class="docutils literal notranslate"><span class="pre">MGnifier.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.core.MGnifier.url_path"><code class="docutils literal notranslate"><span class="pre">MGnifier.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.core.MGnifier.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">MGnifier.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.core.MGnifier.config"><code class="docutils literal notranslate"><span class="pre">MGnifier.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.core.MGnifier.exec"><code class="docutils literal notranslate"><span class="pre">MGnifier.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.core.MGnifier.count"><code class="docutils literal notranslate"><span class="pre">MGnifier.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.core.MGnifier.total_pages"><code class="docutils literal notranslate"><span class="pre">MGnifier.total_pages</span></code></a></li>
@@ -944,6 +950,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyList.to_polars"><code class="docutils literal notranslate"><span class="pre">MGnifyList.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyList.url_path"><code class="docutils literal notranslate"><span class="pre">MGnifyList.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyList.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">MGnifyList.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyList.config"><code class="docutils literal notranslate"><span class="pre">MGnifyList.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyList.exec"><code class="docutils literal notranslate"><span class="pre">MGnifyList.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyList.count"><code class="docutils literal notranslate"><span class="pre">MGnifyList.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyList.total_pages"><code class="docutils literal notranslate"><span class="pre">MGnifyList.total_pages</span></code></a></li>
@@ -992,6 +999,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">MGnifyDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyDetail.url_path"><code class="docutils literal notranslate"><span class="pre">MGnifyDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">MGnifyDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyDetail.config"><code class="docutils literal notranslate"><span class="pre">MGnifyDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyDetail.exec"><code class="docutils literal notranslate"><span class="pre">MGnifyDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyDetail.count"><code class="docutils literal notranslate"><span class="pre">MGnifyDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.MGnifyDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">MGnifyDetail.total_pages</span></code></a></li>
@@ -1045,6 +1053,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Analyses.url_path"><code class="docutils literal notranslate"><span class="pre">Analyses.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Analyses.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Analyses.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Analyses.child_resource"><code class="docutils literal notranslate"><span class="pre">Analyses.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Analyses.config"><code class="docutils literal notranslate"><span class="pre">Analyses.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Analyses.exec"><code class="docutils literal notranslate"><span class="pre">Analyses.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Analyses.count"><code class="docutils literal notranslate"><span class="pre">Analyses.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Analyses.total_pages"><code class="docutils literal notranslate"><span class="pre">Analyses.total_pages</span></code></a></li>
@@ -1098,6 +1107,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Runs.url_path"><code class="docutils literal notranslate"><span class="pre">Runs.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Runs.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Runs.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Runs.child_resource"><code class="docutils literal notranslate"><span class="pre">Runs.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Runs.config"><code class="docutils literal notranslate"><span class="pre">Runs.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Runs.exec"><code class="docutils literal notranslate"><span class="pre">Runs.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Runs.count"><code class="docutils literal notranslate"><span class="pre">Runs.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Runs.total_pages"><code class="docutils literal notranslate"><span class="pre">Runs.total_pages</span></code></a></li>
@@ -1151,6 +1161,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Samples.url_path"><code class="docutils literal notranslate"><span class="pre">Samples.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Samples.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Samples.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Samples.child_resource"><code class="docutils literal notranslate"><span class="pre">Samples.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Samples.config"><code class="docutils literal notranslate"><span class="pre">Samples.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Samples.exec"><code class="docutils literal notranslate"><span class="pre">Samples.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Samples.count"><code class="docutils literal notranslate"><span class="pre">Samples.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Samples.total_pages"><code class="docutils literal notranslate"><span class="pre">Samples.total_pages</span></code></a></li>
@@ -1204,11 +1215,66 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.url_path"><code class="docutils literal notranslate"><span class="pre">Studies.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Studies.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.child_resource"><code class="docutils literal notranslate"><span class="pre">Studies.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.config"><code class="docutils literal notranslate"><span class="pre">Studies.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.exec"><code class="docutils literal notranslate"><span class="pre">Studies.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.count"><code class="docutils literal notranslate"><span class="pre">Studies.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.total_pages"><code class="docutils literal notranslate"><span class="pre">Studies.total_pages</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.default_page_size"><code class="docutils literal notranslate"><span class="pre">Studies.default_page_size</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Studies.request_urls"><code class="docutils literal notranslate"><span class="pre">Studies.request_urls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies"><code class="docutils literal notranslate"><span class="pre">PrivateStudies</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.RESOURCE"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.RESOURCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.config"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.acollect_details"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.acollect_details()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.afirst"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.afirst()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.aget"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.aget()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.aget_detail"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.aget_detail()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.aiter_details"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.aiter_details()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.apage"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.apage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.base_url"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.base_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.collect_details"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.collect_details()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.data"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.describe_endpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.describe_relationships"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.describe_relationships()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.dry_run"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.dry_run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.emgapi_docs"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.emgapi_docs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.emgapi_resource"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.emgapi_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.endpoint_module"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.endpoint_module</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.explain"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.explain()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.filter"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.first"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.first()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.get"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.get_detail"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.get_detail()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.id_param_key"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.id_param_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.identifier"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.identifier</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.iter_details"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.iter_details()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.list_relationships"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.list_relationships()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.list_supported_params"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.list_supported_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.list_urls"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.list_urls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.page"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.page()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.page_size"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.page_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.pagination_status"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.pagination_status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.params"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.preview"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.preview()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.request_url"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.request_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.resolve_query_string"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.resolve_query_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.resource"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.results"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.results</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.results_ids"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.results_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.sub_url"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.sub_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.to_df"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.to_df()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.to_json"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.to_list"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.to_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.to_polars"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.to_polars()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.url_path"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.url_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.child_resource"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.exec"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.exec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.count"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.total_pages"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.total_pages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.default_page_size"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.default_page_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PrivateStudies.request_urls"><code class="docutils literal notranslate"><span class="pre">PrivateStudies.request_urls</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes"><code class="docutils literal notranslate"><span class="pre">Biomes</span></code></a><ul>
@@ -1260,6 +1326,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes.url_path"><code class="docutils literal notranslate"><span class="pre">Biomes.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Biomes.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes.child_resource"><code class="docutils literal notranslate"><span class="pre">Biomes.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes.config"><code class="docutils literal notranslate"><span class="pre">Biomes.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes.exec"><code class="docutils literal notranslate"><span class="pre">Biomes.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes.count"><code class="docutils literal notranslate"><span class="pre">Biomes.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Biomes.total_pages"><code class="docutils literal notranslate"><span class="pre">Biomes.total_pages</span></code></a></li>
@@ -1313,6 +1380,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Assemblies.url_path"><code class="docutils literal notranslate"><span class="pre">Assemblies.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Assemblies.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Assemblies.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Assemblies.child_resource"><code class="docutils literal notranslate"><span class="pre">Assemblies.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Assemblies.config"><code class="docutils literal notranslate"><span class="pre">Assemblies.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Assemblies.exec"><code class="docutils literal notranslate"><span class="pre">Assemblies.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Assemblies.count"><code class="docutils literal notranslate"><span class="pre">Assemblies.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Assemblies.total_pages"><code class="docutils literal notranslate"><span class="pre">Assemblies.total_pages</span></code></a></li>
@@ -1366,6 +1434,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Genomes.url_path"><code class="docutils literal notranslate"><span class="pre">Genomes.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Genomes.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Genomes.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Genomes.child_resource"><code class="docutils literal notranslate"><span class="pre">Genomes.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Genomes.config"><code class="docutils literal notranslate"><span class="pre">Genomes.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Genomes.exec"><code class="docutils literal notranslate"><span class="pre">Genomes.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Genomes.count"><code class="docutils literal notranslate"><span class="pre">Genomes.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Genomes.total_pages"><code class="docutils literal notranslate"><span class="pre">Genomes.total_pages</span></code></a></li>
@@ -1419,6 +1488,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Publications.url_path"><code class="docutils literal notranslate"><span class="pre">Publications.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Publications.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Publications.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Publications.child_resource"><code class="docutils literal notranslate"><span class="pre">Publications.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Publications.config"><code class="docutils literal notranslate"><span class="pre">Publications.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Publications.exec"><code class="docutils literal notranslate"><span class="pre">Publications.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Publications.count"><code class="docutils literal notranslate"><span class="pre">Publications.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Publications.total_pages"><code class="docutils literal notranslate"><span class="pre">Publications.total_pages</span></code></a></li>
@@ -1472,6 +1542,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Catalogues.url_path"><code class="docutils literal notranslate"><span class="pre">Catalogues.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Catalogues.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">Catalogues.validate_endpoint_kwargs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Catalogues.child_resource"><code class="docutils literal notranslate"><span class="pre">Catalogues.child_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Catalogues.config"><code class="docutils literal notranslate"><span class="pre">Catalogues.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Catalogues.exec"><code class="docutils literal notranslate"><span class="pre">Catalogues.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Catalogues.count"><code class="docutils literal notranslate"><span class="pre">Catalogues.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.Catalogues.total_pages"><code class="docutils literal notranslate"><span class="pre">Catalogues.total_pages</span></code></a></li>
@@ -1520,6 +1591,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.StudyDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">StudyDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.StudyDetail.url_path"><code class="docutils literal notranslate"><span class="pre">StudyDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.StudyDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">StudyDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.StudyDetail.config"><code class="docutils literal notranslate"><span class="pre">StudyDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.StudyDetail.exec"><code class="docutils literal notranslate"><span class="pre">StudyDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.StudyDetail.count"><code class="docutils literal notranslate"><span class="pre">StudyDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.StudyDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">StudyDetail.total_pages</span></code></a></li>
@@ -1568,6 +1640,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.SampleDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">SampleDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.SampleDetail.url_path"><code class="docutils literal notranslate"><span class="pre">SampleDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.SampleDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">SampleDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.SampleDetail.config"><code class="docutils literal notranslate"><span class="pre">SampleDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.SampleDetail.exec"><code class="docutils literal notranslate"><span class="pre">SampleDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.SampleDetail.count"><code class="docutils literal notranslate"><span class="pre">SampleDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.SampleDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">SampleDetail.total_pages</span></code></a></li>
@@ -1616,6 +1689,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.RunDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">RunDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.RunDetail.url_path"><code class="docutils literal notranslate"><span class="pre">RunDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.RunDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">RunDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.RunDetail.config"><code class="docutils literal notranslate"><span class="pre">RunDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.RunDetail.exec"><code class="docutils literal notranslate"><span class="pre">RunDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.RunDetail.count"><code class="docutils literal notranslate"><span class="pre">RunDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.RunDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">RunDetail.total_pages</span></code></a></li>
@@ -1664,6 +1738,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AnalysisDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AnalysisDetail.url_path"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AnalysisDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AnalysisDetail.config"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AnalysisDetail.exec"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AnalysisDetail.count"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AnalysisDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.total_pages</span></code></a></li>
@@ -1712,6 +1787,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.GenomeDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">GenomeDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.GenomeDetail.url_path"><code class="docutils literal notranslate"><span class="pre">GenomeDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.GenomeDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">GenomeDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.GenomeDetail.config"><code class="docutils literal notranslate"><span class="pre">GenomeDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.GenomeDetail.exec"><code class="docutils literal notranslate"><span class="pre">GenomeDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.GenomeDetail.count"><code class="docutils literal notranslate"><span class="pre">GenomeDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.GenomeDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">GenomeDetail.total_pages</span></code></a></li>
@@ -1760,6 +1836,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AssemblyDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">AssemblyDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AssemblyDetail.url_path"><code class="docutils literal notranslate"><span class="pre">AssemblyDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AssemblyDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">AssemblyDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AssemblyDetail.config"><code class="docutils literal notranslate"><span class="pre">AssemblyDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AssemblyDetail.exec"><code class="docutils literal notranslate"><span class="pre">AssemblyDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AssemblyDetail.count"><code class="docutils literal notranslate"><span class="pre">AssemblyDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.AssemblyDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">AssemblyDetail.total_pages</span></code></a></li>
@@ -1811,6 +1888,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.BiomeDetail.tree"><code class="docutils literal notranslate"><span class="pre">BiomeDetail.tree</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.BiomeDetail.url_path"><code class="docutils literal notranslate"><span class="pre">BiomeDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.BiomeDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">BiomeDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.BiomeDetail.config"><code class="docutils literal notranslate"><span class="pre">BiomeDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.BiomeDetail.exec"><code class="docutils literal notranslate"><span class="pre">BiomeDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.BiomeDetail.count"><code class="docutils literal notranslate"><span class="pre">BiomeDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.BiomeDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">BiomeDetail.total_pages</span></code></a></li>
@@ -1859,6 +1937,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PublicationDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">PublicationDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PublicationDetail.url_path"><code class="docutils literal notranslate"><span class="pre">PublicationDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PublicationDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">PublicationDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PublicationDetail.config"><code class="docutils literal notranslate"><span class="pre">PublicationDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PublicationDetail.exec"><code class="docutils literal notranslate"><span class="pre">PublicationDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PublicationDetail.count"><code class="docutils literal notranslate"><span class="pre">PublicationDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.PublicationDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">PublicationDetail.total_pages</span></code></a></li>
@@ -1907,6 +1986,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.CatalogueDetail.to_polars"><code class="docutils literal notranslate"><span class="pre">CatalogueDetail.to_polars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.CatalogueDetail.url_path"><code class="docutils literal notranslate"><span class="pre">CatalogueDetail.url_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.CatalogueDetail.validate_endpoint_kwargs"><code class="docutils literal notranslate"><span class="pre">CatalogueDetail.validate_endpoint_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.CatalogueDetail.config"><code class="docutils literal notranslate"><span class="pre">CatalogueDetail.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.CatalogueDetail.exec"><code class="docutils literal notranslate"><span class="pre">CatalogueDetail.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.CatalogueDetail.count"><code class="docutils literal notranslate"><span class="pre">CatalogueDetail.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.proxies.CatalogueDetail.total_pages"><code class="docutils literal notranslate"><span class="pre">CatalogueDetail.total_pages</span></code></a></li>
@@ -1933,6 +2013,7 @@ document.write(`
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mgnipy.V2.html#module-mgnipy.V2.query_set">mgnipy.V2.query_set module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.query_set.QuerySet"><code class="docutils literal notranslate"><span class="pre">QuerySet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.query_set.QuerySet.config"><code class="docutils literal notranslate"><span class="pre">QuerySet.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.query_set.QuerySet.exec"><code class="docutils literal notranslate"><span class="pre">QuerySet.exec</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.query_set.QuerySet.count"><code class="docutils literal notranslate"><span class="pre">QuerySet.count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="mgnipy.V2.html#mgnipy.V2.query_set.QuerySet.total_pages"><code class="docutils literal notranslate"><span class="pre">QuerySet.total_pages</span></code></a></li>

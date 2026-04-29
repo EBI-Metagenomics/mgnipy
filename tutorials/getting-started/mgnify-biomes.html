@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>🔍 Explore MGnify Biomes 🏞 &#8212; mgnipy 0.1.dev1+ga98c2f786 documentation</title>
+    <title>🔍 Explore MGnify Biomes 🏞 &#8212; mgnipy 0.1.dev1+g0072251bd documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=c8999e49"></script>
+    <script src="../../_static/documentation_options.js?v=2e52a41b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,8 +142,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -188,6 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">🔍 Explore MGnify Biomes 	🏞</a></li>
 <li class="toctree-l1"><a class="reference internal" href="study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="access-private-data.html">🔐 Accessing your private data 🔓</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
 <ul class="nav bd-sidenav">
@@ -440,8 +441,11 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-proxies">Option 1. Proxies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-start-preparing-queries">The start: Preparing queries</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-proxies">Option 2. Proxies</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-your-requests">Previewing your requests</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carry-out-requests">Carry out requests</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-the-results">Exploring the results</a><ul class="nav section-nav flex-column">
@@ -450,6 +454,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-dictionary">as a dictionary</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extra-finding-studies-for-a-given-biome">Extra: Finding studies for a given biome</a></li>
 </ul>
             </nav>
         </div>
@@ -466,7 +471,7 @@ document.write(`
 <p><a class="reference external" href="https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/mgnify-biomes.ipynb" rel="noreferrer" target="_blank"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
-<p>The <a class="reference external" href="https://bioportal.bioontology.org/ontologies/GOLDTERMS" rel="noreferrer" target="_blank">GOLD ecosystem classifications <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like “Host-associated” down to specific environments like “Plant rhizosphere.” MGnify uses this classification system to help researchers discover and organize metagenomic studies and samples by their ecological context.</p>
+<p>The <a class="reference external" href="https://bioportal.bioontology.org/ontologies/GOLDTERMS" rel="noreferrer" target="_blank">GOLD ecosystem classifications <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like “Engineered” to specific environments like “Plant rhizosphere.”</p>
 <p>This demo will show you how to:</p>
 <ol class="arabic simple">
 <li><p><strong>Query biomes</strong> — Discover available biome classifications and explore the hierarchy</p></li>
@@ -486,15 +491,19 @@ document.write(`
 </div>
 <p>We can initiate using <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or <code class="docutils literal notranslate"><span class="pre">proxies.Biomes</span></code></p>
 </section>
+<section id="the-start-preparing-queries">
+<h2>The start: Preparing queries<a class="headerlink" href="#the-start-preparing-queries" title="Link to this heading">#</a></h2>
 <section id="option-1-mgnipy-mgnipy">
-<h2>Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code><a class="headerlink" href="#option-1-mgnipy-mgnipy" title="Link to this heading">#</a></h2>
+<h3>Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code><a class="headerlink" href="#option-1-mgnipy-mgnipy" title="Link to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client offers a unified interface to access various MGnify API endpoints, including biomes. This approach is convenient if you want to manage multiple types of queries or resources through a single client object.</p>
 <ul class="simple">
 <li><p>Instantiate <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> to configure your API access and manage requests.</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">.biomes</span></code> to create a biome query with your desired parameters.</p></li>
-<li><p>You can use the same filtering and previewing methods as with the proxy, such as <code class="docutils literal notranslate"><span class="pre">filter()</span></code>, <code class="docutils literal notranslate"><span class="pre">list_parameters()</span></code>, and <code class="docutils literal notranslate"><span class="pre">explain()</span></code>.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">list_parameters()</span></code> to see all available filters and options.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">filter()</span></code> method allows you to refine your query further.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">explain()</span></code> method previews the constructed API URLs and the first few results.</p></li>
 </ul>
-<p>This method is ideal for users who prefer an object-oriented workflow and may want to extend their analysis to other MGnify resources beyond biomes.</p>
+<p>This method has an additional helper function to list and describe available resources</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
@@ -536,7 +545,7 @@ Supported parameters:
 </div>
 </div>
 </div>
-<p>If you would like to know what params are supported for the endpoint there is a helper method you can use: <code class="docutils literal notranslate"><span class="pre">.list_supported_params()</span></code> which</p>
+<p>If you would like to know what params are supported for the endpoint there is a helper method you can use: <code class="docutils literal notranslate"><span class="pre">.list_supported_params()</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if not sure what kwargs suupported</span>
@@ -550,6 +559,7 @@ Supported parameters:
 </div>
 </div>
 </div>
+<p>also like describe_resources() there is a <code class="docutils literal notranslate"><span class="pre">describe_endpoint()</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">describe_endpoint</span><span class="p">(</span><span class="n">as_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -572,10 +582,10 @@ Supported parameters:
 </div>
 </div>
 </div>
+<p>and then can pass as kwargs to <code class="docutils literal notranslate"><span class="pre">.filter()</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># and then</span>
-<span class="n">biomes</span> <span class="o">=</span> <span class="n">biomes</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span> <span class="o">=</span> <span class="n">biomes</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
     <span class="n">page_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
     <span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
 <span class="p">)</span>
@@ -590,15 +600,9 @@ Supported parameters:
 </div>
 </div>
 </section>
-<section id="option-1-proxies">
-<h2>Option 1. Proxies<a class="headerlink" href="#option-1-proxies" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Biomes</span></code> proxy provides a direct way to query biome information from the MGnify API. You can customize your query using various parameters such as <code class="docutils literal notranslate"><span class="pre">page_size</span></code> and <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> to control the number of results and the depth of the biome hierarchy.</p>
-<ul class="simple">
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">list_parameters()</span></code> to see all available filters and options.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">filter()</span></code> method allows you to refine your query further.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">explain()</span></code> method previews the constructed API URLs and the first few results.</p></li>
-</ul>
-<p>This approach is useful if you want fine-grained control over the API request and wish to explore the available biome data interactively.</p>
+<section id="option-2-proxies">
+<h3>Option 2. Proxies<a class="headerlink" href="#option-2-proxies" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Biomes</span></code> proxy provides a direct way to query biome information from the MGnify API. You can customize your query using various parameters such as <code class="docutils literal notranslate"><span class="pre">page_size</span></code> and <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> to control the number of results and the depth of the biome hierarchy. You can use the same filtering and previewing methods as with the proxy, such as <code class="docutils literal notranslate"><span class="pre">filter()</span></code>, <code class="docutils literal notranslate"><span class="pre">list_parameters()</span></code>, and <code class="docutils literal notranslate"><span class="pre">explain()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biomes</span>
@@ -626,6 +630,7 @@ Filtered url:  https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;
 </div>
 </div>
 </div>
+</section>
 </section>
 <section id="previewing-your-requests">
 <h2>Previewing your requests<a class="headerlink" href="#previewing-your-requests" title="Link to this heading">#</a></h2>
@@ -663,7 +668,7 @@ https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page
 </section>
 <section id="carry-out-requests">
 <h2>Carry out requests<a class="headerlink" href="#carry-out-requests" title="Link to this heading">#</a></h2>
-<p>If happy with the plan, proceed with the async get requests.</p>
+<p>If happy with the plan, proceed with the async or sync get requests.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># asynchronously get the data</span>
@@ -673,14 +678,14 @@ https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/33 [00:00&lt;?, ?it/s]
-Retrieving pages:   3%|▎         | 1/33 [00:00&lt;00:21,  1.48it/s]
-Retrieving pages:  21%|██        | 7/33 [00:00&lt;00:02, 11.63it/s]
-Retrieving pages:  33%|███▎      | 11/33 [00:00&lt;00:01, 17.08it/s]
-Retrieving pages:  48%|████▊     | 16/33 [00:00&lt;00:00, 23.89it/s]
-Retrieving pages:  67%|██████▋   | 22/33 [00:01&lt;00:00, 32.30it/s]
-Retrieving pages:  82%|████████▏ | 27/33 [00:01&lt;00:00, 35.60it/s]
-Retrieving pages:  97%|█████████▋| 32/33 [00:01&lt;00:00, 39.18it/s]
-Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25.01it/s]
+Retrieving pages:   3%|▎         | 1/33 [00:01&lt;00:32,  1.01s/it]
+Retrieving pages:  18%|█▊        | 6/33 [00:01&lt;00:04,  6.50it/s]
+Retrieving pages:  33%|███▎      | 11/33 [00:01&lt;00:01, 11.52it/s]
+Retrieving pages:  48%|████▊     | 16/33 [00:01&lt;00:01, 15.94it/s]
+Retrieving pages:  64%|██████▎   | 21/33 [00:01&lt;00:00, 19.69it/s]
+Retrieving pages:  76%|███████▌  | 25/33 [00:01&lt;00:00, 21.00it/s]
+Retrieving pages:  91%|█████████ | 30/33 [00:01&lt;00:00, 23.51it/s]
+Retrieving pages: 100%|██████████| 33/33 [00:02&lt;00:00, 16.11it/s]
 </pre></div>
 </div>
 </div>
@@ -698,15 +703,16 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;Metal&#39;, &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Metal&#39;},
- {&#39;biome_name&#39;: &#39;Persistent organic pollutants (POP)&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Persistent organic pollutants (POP)&#39;},
- {&#39;biome_name&#39;: &#39;Polycyclic aromatic hydrocarbons&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Polycyclic aromatic hydrocarbons&#39;},
- {&#39;biome_name&#39;: &#39;Terephthalate&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Terephthalate&#39;},
- {&#39;biome_name&#39;: &#39;Wastewater&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Terephthalate:Wastewater&#39;}]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;Mixed alcohol bioreactor&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Biotransformation:Mixed alcohol bioreactor&#39;},
+ {&#39;biome_name&#39;: &#39;Built environment&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Built environment&#39;},
+ {&#39;biome_name&#39;: &#39;Food production&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Food production&#39;},
+ {&#39;biome_name&#39;: &#39;Dairy products&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Food production:Dairy products&#39;},
+ {&#39;biome_name&#39;: &#39;Fermented beverages&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Food production:Fermented beverages&#39;}]
 </pre></div>
 </div>
 </div>
@@ -746,28 +752,28 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
   <tbody>
     <tr>
       <th>0</th>
-      <td>Metal</td>
-      <td>root:Engineered:Bioremediation:Metal</td>
+      <td>Mixed alcohol bioreactor</td>
+      <td>root:Engineered:Biotransformation:Mixed alcoho...</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Persistent organic pollutants (POP)</td>
-      <td>root:Engineered:Bioremediation:Persistent orga...</td>
+      <td>Built environment</td>
+      <td>root:Engineered:Built environment</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Polycyclic aromatic hydrocarbons</td>
-      <td>root:Engineered:Bioremediation:Polycyclic arom...</td>
+      <td>Food production</td>
+      <td>root:Engineered:Food production</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Terephthalate</td>
-      <td>root:Engineered:Bioremediation:Terephthalate</td>
+      <td>Dairy products</td>
+      <td>root:Engineered:Food production:Dairy products</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Wastewater</td>
-      <td>root:Engineered:Bioremediation:Terephthalate:W...</td>
+      <td>Fermented beverages</td>
+      <td>root:Engineered:Food production:Fermented beve...</td>
     </tr>
   </tbody>
 </table>
@@ -810,26 +816,10 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
 ├── Engineered
-│   ├── Bioremediation
-│   │   ├── Metal
-│   │   ├── Persistent organic pollutants (POP)
-│   │   ├── Polycyclic aromatic hydrocarbons
-│   │   ├── Terephthalate
-│   │   │   └── Wastewater
-│   │   │       ├── Activated sludge
-│   │   │       └── Bioreactor
-│   │   ├── Tetrachloroethylene and derivatives
-│   │   │   ├── Chloroethene
-│   │   │   │   └── Bioreactor
-│   │   │   └── Tetrachloroethylene
-│   │   │       └── Bioreactor
-│   │   └── Hydrocarbon
-│   │       └── Benzene
-│   │           └── Bioreactor
 │   ├── Biotransformation
+│   │   ├── Mixed alcohol bioreactor
 │   │   ├── Microbial enhanced oil recovery
-│   │   ├── Microbial solubilization of coal
-│   │   └── Mixed alcohol bioreactor
+│   │   └── Microbial solubilization of coal
 │   ├── Built environment
 │   ├── Food production
 │   │   ├── Dairy products
@@ -846,14 +836,22 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   │   └── Marine media
 │   │   │       └── Algoconsortia
 │   │   └── Undefined media
-│   ├── Biogas plant
-│   │   └── Wet fermentation
-│   ├── Bioreactor
-│   │   └── Continuous culture
-│   │       ├── Marine intertidal flat sediment inoculum
-│   │       │   └── Wadden Sea-Germany
-│   │       └── Marine sediment inoculum
-│   │           └── Wadden Sea-Germany
+│   ├── Bioremediation
+│   │   ├── Metal
+│   │   ├── Persistent organic pollutants (POP)
+│   │   ├── Polycyclic aromatic hydrocarbons
+│   │   ├── Terephthalate
+│   │   │   └── Wastewater
+│   │   │       ├── Activated sludge
+│   │   │       └── Bioreactor
+│   │   ├── Tetrachloroethylene and derivatives
+│   │   │   ├── Chloroethene
+│   │   │   │   └── Bioreactor
+│   │   │   └── Tetrachloroethylene
+│   │   │       └── Bioreactor
+│   │   └── Hydrocarbon
+│   │       └── Benzene
+│   │           └── Bioreactor
 │   ├── Solid waste
 │   │   ├── Composting
 │   │   │   ├── Wood
@@ -883,11 +881,19 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   └── Water and sludge
 │   ├── Lab Synthesis
 │   │   └── Genetic cross
-│   └── Modeled
-│       ├── Simulated communities (DNA mixture)
-│       ├── Simulated communities (microbial mixture)
-│       ├── Simulated communities (sequence read mixture)
-│       └── Sanger
+│   ├── Modeled
+│   │   ├── Simulated communities (DNA mixture)
+│   │   ├── Simulated communities (microbial mixture)
+│   │   ├── Simulated communities (sequence read mixture)
+│   │   └── Sanger
+│   ├── Biogas plant
+│   │   └── Wet fermentation
+│   └── Bioreactor
+│       └── Continuous culture
+│           ├── Marine intertidal flat sediment inoculum
+│           │   └── Wadden Sea-Germany
+│           └── Marine sediment inoculum
+│               └── Wadden Sea-Germany
 ├── Control
 ├── Environmental
 │   ├── Air
@@ -983,11 +989,12 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   │   ├── Volcanic
 │   │   │   └── Wetlands
 │   │   │       └── Sediment
+│   │   ├── Meromictic lake
 │   │   ├── Non-marine Saline and Alkaline
 │   │   │   ├── Alkaline
+│   │   │   │   ├── Carbonate
 │   │   │   │   ├── Microbial mats
-│   │   │   │   ├── Sediment
-│   │   │   │   └── Carbonate
+│   │   │   │   └── Sediment
 │   │   │   ├── Hypersaline
 │   │   │   │   ├── Microbial mats
 │   │   │   │   └── Sediment
@@ -1001,17 +1008,16 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   │   │   └── Thalassic
 │   │   │   └── Salt crystallizer pond
 │   │   │       └── Microbial mats
-│   │   ├── Thermal springs
-│   │   │   ├── Sediment
-│   │   │   ├── Hot (42-90C)
-│   │   │   ├── Acidic
-│   │   │   ├── Alkaline
-│   │   │   ├── Neutral
-│   │   │   ├── Near-boiling (&gt;90C)
-│   │   │   ├── Tepid (25-34C)
-│   │   │   └── Warm (34-42C)
-│   │   ├── Meromictic lake
-│   │   └── Sediment
+│   │   ├── Sediment
+│   │   └── Thermal springs
+│   │       ├── Hot (42-90C)
+│   │       ├── Acidic
+│   │       ├── Alkaline
+│   │       ├── Neutral
+│   │       ├── Sediment
+│   │       ├── Near-boiling (&gt;90C)
+│   │       ├── Tepid (25-34C)
+│   │       └── Warm (34-42C)
 │   └── Terrestrial
 │       ├── Agricultural field
 │       ├── Asphalt lakes
@@ -1122,22 +1128,29 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   └── Venom gland
 │   │       └── Venom
 │   ├── Birds
-│   │   ├── Circulatory system
-│   │   │   └── Blood
 │   │   ├── Digestive system
+│   │   │   ├── Fecal
+│   │   │   ├── Small intestine
+│   │   │   │   └── Duodenal
 │   │   │   ├── Ceca
 │   │   │   │   └── Lumen
 │   │   │   ├── Crop
 │   │   │   │   └── Lumen
-│   │   │   ├── Digestive tube
-│   │   │   │   └── Cecum
-│   │   │   ├── Fecal
-│   │   │   └── Small intestine
-│   │   │       └── Duodenal
+│   │   │   └── Digestive tube
+│   │   │       └── Cecum
 │   │   ├── Reproductive system
-│   │   └── Respiratory system
-│   │       └── Lungs
+│   │   ├── Respiratory system
+│   │   │   └── Lungs
+│   │   └── Circulatory system
+│   │       └── Blood
+│   ├── Cnidaria
+│   ├── Echinodermata
+│   ├── Endosymbionts
+│   │   └── Fungi
+│   │       └── Endosymbionts
 │   ├── Fish
+│   │   ├── Circulatory system
+│   │   │   └── Blood
 │   │   ├── Digestive system
 │   │   │   ├── Foregut
 │   │   │   │   └── Uncharacterized
@@ -1145,10 +1158,8 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   ├── Excretory system
 │   │   │   └── Kidneys
 │   │   ├── Reproductive system
-│   │   ├── Skin
-│   │   │   └── Slime
-│   │   └── Circulatory system
-│   │       └── Blood
+│   │   └── Skin
+│   │       └── Slime
 │   ├── Fungi
 │   ├── Human
 │   │   ├── Circulatory system
@@ -1171,12 +1182,22 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   │       ├── Supragingival plaque
 │   │   │       ├── Throat
 │   │   │       └── tongue dorsum
+│   │   ├── Excretory system
+│   │   │   └── Urethra
+│   │   │       └── Urine
+│   │   ├── Fossil
+│   │   │   └── Bone
+│   │   ├── Lympathic system
+│   │   │   └── Lymph nodes
+│   │   ├── Milk
+│   │   ├── Nervous system
+│   │   │   └── Cerebrospinal fluid
 │   │   ├── Reproductive system
-│   │   │   ├── Vagina
-│   │   │   │   ├── posterior fornix
-│   │   │   │   ├── Introitus
-│   │   │   │   └── Midpoint vagina
-│   │   │   └── Female
+│   │   │   ├── Female
+│   │   │   └── Vagina
+│   │   │       ├── Introitus
+│   │   │       ├── Midpoint vagina
+│   │   │       └── posterior fornix
 │   │   ├── Respiratory system
 │   │   │   ├── Nasopharyngeal
 │   │   │   │   ├── anterior nares
@@ -1187,24 +1208,14 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   │       ├── Sputum
 │   │   │       ├── Trachea
 │   │   │       └── Viriome
-│   │   ├── Skin
-│   │   │   ├── Axilla
-│   │   │   ├── Medial distal leg
-│   │   │   │   └── Venous leg ulcers
-│   │   │   ├── Naris
-│   │   │   ├── retroauricular crease
-│   │   │   ├── Umbilicus
-│   │   │   └── Volar forearm
-│   │   ├── Excretory system
-│   │   │   └── Urethra
-│   │   │       └── Urine
-│   │   ├── Fossil
-│   │   │   └── Bone
-│   │   ├── Lympathic system
-│   │   │   └── Lymph nodes
-│   │   ├── Milk
-│   │   └── Nervous system
-│   │       └── Cerebrospinal fluid
+│   │   └── Skin
+│   │       ├── Axilla
+│   │       ├── Medial distal leg
+│   │       │   └── Venous leg ulcers
+│   │       ├── Naris
+│   │       ├── retroauricular crease
+│   │       ├── Umbilicus
+│   │       └── Volar forearm
 │   ├── Insecta
 │   │   └── Digestive system
 │   ├── Invertebrates
@@ -1231,12 +1242,6 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   │   └── Stomach
 │   │   │       ├── Endoperitrophic space
 │   │   │       └── Rumen
-│   │   ├── Respiratory system
-│   │   │   ├── Pulmonary system
-│   │   │   │   └── Viriome
-│   │   │   └── Nasopharyngeal
-│   │   │       └── Nasal cavity
-│   │   ├── Skin
 │   │   ├── Excretory system
 │   │   │   └── Urine
 │   │   ├── Gastrointestinal tract
@@ -1247,7 +1252,13 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   ├── Milk
 │   │   ├── Nervous system
 │   │   │   └── Brain
-│   │   └── Reproductive system
+│   │   ├── Reproductive system
+│   │   ├── Respiratory system
+│   │   │   ├── Nasopharyngeal
+│   │   │   │   └── Nasal cavity
+│   │   │   └── Pulmonary system
+│   │   │       └── Viriome
+│   │   └── Skin
 │   ├── Microbial
 │   │   ├── Bacteria
 │   │   └── Dinoflagellates
@@ -1277,11 +1288,6 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 │   │   │   ├── Forest soil
 │   │   │   └── Soil
 │   │   └── Root
-│   ├── Cnidaria
-│   ├── Echinodermata
-│   ├── Endosymbionts
-│   │   └── Fungi
-│   │       └── Endosymbionts
 │   ├── Porifera
 │   ├── Protists
 │   ├── Protozoa
@@ -1298,117 +1304,128 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 25
 </div>
 </details>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiomeDetail</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biome</span> <span class="o">=</span> <span class="n">BiomeDetail</span><span class="p">(</span><span class="s2">&quot;root:Engineered&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">biome</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnifier instance for resource: biome
-I.e., mgnipy.V2.proxies.BiomeDetail
-----------------------------------------
-Base URL: https://www.ebi.ac.uk/
-Parameters: {&#39;biome_lineage&#39;: &#39;root:Engineered&#39;}
-Endpoint module: mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes
-Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/biomes?biome_lineage=root%3AEngineered&amp;page=1
-Returns paginated results: True
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biome</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">()</span><span class="o">.</span><span class="n">biome</span><span class="p">(</span><span class="s2">&quot;root:Engineered&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">biome</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnifier instance for resource: biome
-I.e., mgnipy.V2.proxies.BiomeDetail
-----------------------------------------
-Base URL: https://www.ebi.ac.uk/
-Parameters: {&#39;biome_lineage&#39;: &#39;root:Engineered&#39;}
-Endpoint module: mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes
-Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/biomes?biome_lineage=root%3AEngineered&amp;page=1
-Returns paginated results: True
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">this</span> <span class="o">=</span> <span class="n">biomes</span><span class="p">[</span><span class="s2">&quot;root:Engineered:Biogas plant:Wet fermentation&quot;</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 15196.75it/s]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">child_resource</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;SupportedEndpoints.BIOME: &#39;biome&#39;&gt;
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">their_studies</span> <span class="o">=</span> <span class="n">biomes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 16710.37it/s]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">their_studies</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">head</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/biomes?biome_lineage=root%3AEngineered%3ABioremediation%3APersistent+organic+pollutants+%28POP%29&amp;page=1
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">their_studies</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 15307.68it/s]
-</pre></div>
-</div>
-</div>
-</div>
 </section>
+</section>
+<section id="extra-finding-studies-for-a-given-biome">
+<h2>Extra: Finding studies for a given biome<a class="headerlink" href="#extra-finding-studies-for-a-given-biome" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># getting the biome_detail for a specific biome</span>
+<span class="n">a_biome</span> <span class="o">=</span> <span class="n">biomes</span><span class="p">[</span><span class="s2">&quot;root:Engineered:Biogas plant:Wet fermentation&quot;</span><span class="p">]</span>
+<span class="c1"># what relationships can we traverse from biome detail?</span>
+<span class="n">a_biome</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 18396.07it/s]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;studies&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lazily access the studies list related to this biome (basically prepping query)</span>
+<span class="n">their_studies_list</span> <span class="o">=</span> <span class="n">a_biome</span><span class="o">.</span><span class="n">studies</span>
+
+<span class="c1"># preview the requests that will be made to get the studies list</span>
+<span class="n">their_studies_list</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+
+<span class="c1"># asynchronously get the studies list</span>
+<span class="k">await</span> <span class="n">their_studies_list</span><span class="o">.</span><span class="n">aget</span><span class="p">()</span>
+
+<span class="c1"># look at results</span>
+<span class="n">their_studies_list</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;biome_lineage&#39;: &#39;root:Engineered:Biogas plant:Wet fermentation&#39;}
+Total pages to retrieve: 1
+Total records to retrieve: 12
+https://www.ebi.ac.uk/metagenomics/api/v2/studies?biome_lineage=root%3AEngineered%3ABiogas+plant%3AWet+fermentation&amp;page=1
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.54it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.54it/s]
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00000364</td>
+      <td>[ERP005249, PRJEB5813]</td>
+      <td>Metagenome sequencing of biogas plant operatin...</td>
+      <td>{'biome_name': 'Wet fermentation', 'lineage': ...</td>
+      <td>2026-04-27T16:48:24.092000+00:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00001584</td>
+      <td>[ERP008939, PRJEB7938]</td>
+      <td>Functional redundant and similar microbial com...</td>
+      <td>{'biome_name': 'Wet fermentation', 'lineage': ...</td>
+      <td>2026-04-28T05:52:47.418000+00:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00001776</td>
+      <td>[ERP023030, PRJEB20841]</td>
+      <td>Extraction and sequencing methodology affects ...</td>
+      <td>{'biome_name': 'Wet fermentation', 'lineage': ...</td>
+      <td>2026-04-28T07:55:07.516000+00:00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>MGYS00001781</td>
+      <td>[ERP023045, PRJEB20855]</td>
+      <td>Whole shotgun metagenome sequencing of AD micr...</td>
+      <td>{'biome_name': 'Wet fermentation', 'lineage': ...</td>
+      <td>2026-04-28T07:56:52.466000+00:00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MGYS00001815</td>
+      <td>[SRP027584, PRJNA212723]</td>
+      <td>Substrate variations triggered the emergent of...</td>
+      <td>{'biome_name': 'Wet fermentation', 'lineage': ...</td>
+      <td>2026-04-28T08:15:54.407000+00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
 </section>
 </section>
 
@@ -1458,8 +1475,11 @@ Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 1530
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-proxies">Option 1. Proxies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-start-preparing-queries">The start: Preparing queries</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-proxies">Option 2. Proxies</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-your-requests">Previewing your requests</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carry-out-requests">Carry out requests</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-the-results">Exploring the results</a><ul class="nav section-nav flex-column">
@@ -1468,6 +1488,7 @@ Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 1530
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#as-a-dictionary">as a dictionary</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extra-finding-studies-for-a-given-biome">Extra: Finding studies for a given biome</a></li>
 </ul>
   </nav></div>
 

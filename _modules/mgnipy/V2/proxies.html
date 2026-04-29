@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.proxies &#8212; mgnipy 0.1.dev1+ga98c2f786 documentation</title>
+    <title>mgnipy.V2.proxies &#8212; mgnipy 0.1.dev1+g0072251bd documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=c8999e49"></script>
+    <script src="../../../_static/documentation_options.js?v=2e52a41b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,8 +141,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+ga98c2f786 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0072251bd documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -187,6 +187,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/access-private-data.html">🔐 Accessing your private data 🔓</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
 <ul class="nav bd-sidenav">
@@ -343,7 +344,7 @@ document.write(`
     <span class="n">Optional</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MgnipyConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuthMGnipyConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.CONSTANTS</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">SupportedEndpoints</span><span class="p">,</span>
 <span class="p">)</span>
@@ -368,6 +369,7 @@ document.write(`
     <span class="s2">&quot;assemblies&quot;</span><span class="p">,</span>
     <span class="s2">&quot;publications&quot;</span><span class="p">,</span>
     <span class="s2">&quot;catalogues&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;private_studies&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="n">DetailResource</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
@@ -690,7 +692,7 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MgnipyConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 
@@ -860,7 +862,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MgnipyConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 
@@ -878,7 +880,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MgnipyConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 
@@ -918,6 +920,27 @@ document.write(`
     <span class="p">):</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PrivateStudies">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.html#mgnipy.V2.PrivateStudies">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrivateStudies</span><span class="p">(</span><span class="n">MGnifyList</span><span class="p">):</span>
+
+    <span class="n">RESOURCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;private_studies&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;private_studies&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">AuthMGnipyConfig</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">resolve_auth_token</span><span class="p">()</span></div>
 
 
 
@@ -1212,6 +1235,7 @@ document.write(`
     <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">GENOMES</span><span class="p">:</span> <span class="n">Genomes</span><span class="p">,</span>
     <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">PUBLICATIONS</span><span class="p">:</span> <span class="n">Publications</span><span class="p">,</span>
     <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">CATALOGUES</span><span class="p">:</span> <span class="n">Catalogues</span><span class="p">,</span>
+    <span class="n">SupportedEndpoints</span><span class="o">.</span><span class="n">PRIVATE_STUDIES</span><span class="p">:</span> <span class="n">PrivateStudies</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">V2_ENDPOINT_DETAIL_PROXIES</span> <span class="o">=</span> <span class="p">{</span>
