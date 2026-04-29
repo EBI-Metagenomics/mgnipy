@@ -1,6 +1,6 @@
 from typing import Optional
 
-from mgnipy._models.config import MgnipyConfig
+from mgnipy._models.config import AuthMGnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.proxies import (
     V2_ENDPOINT_DETAIL_PROXIES,
@@ -14,7 +14,7 @@ class MGnipy:
     """ """
 
     def __init__(self, **config):
-        self._config = MgnipyConfig(**config)
+        self._config = AuthMGnipyConfig(**config)
         self._endpoints = self.list_resources()
 
     def __getattr__(self, name: str):

@@ -10,11 +10,12 @@ from typing import (
 
 import pandas as pd
 
-from mgnipy._models.config import MgnipyConfig
+from mgnipy._models.config import AuthMGnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.endpoints import (
     ALL_ENDPOINTS,
     ALL_SUPPORTED_RELATIONSHIPS,
+    PRIVATE_ENDPOINTS,
 )
 from mgnipy.V2.mixins import (
     DescribeEmgapiMixin,
@@ -75,10 +76,20 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         **kwargs,
     ):
 
-        self.config: MgnipyConfig = MgnipyConfig(**config) if config else MgnipyConfig()
-
+        self.config: AuthMGnipyConfig = (
+            AuthMGnipyConfig(**config) if config else AuthMGnipyConfig()
+        )
         self._base_url: str = str(self.config.base_url)
         self._resource = SupportedEndpoints.validate(resource)
+
+        if os.getenv("MGNIPY_AUTHENTICATION_OFF") == "1":
+            logging.debug(
+                "Authentication disabled e.g. for docs build. Set MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
+            )
+        elif self._resource in PRIVATE_ENDPOINTS:
+            self.config.resolve_auth_token(interactive=True)
+        else:  # silently attemp to resolve but no pop up
+            self.config.resolve_auth_token(interactive=False)
         # params as dict
         self._params: dict[str, Any] = params or {}
         # add kwargs to params if provided, prioritizing kwargs
