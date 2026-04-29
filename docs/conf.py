@@ -6,6 +6,7 @@ from importlib import metadata
 
 # compatibility with plotly6
 os.environ["PLOTLY_RENDERER"] = "notebook"
+os.environ["MGNIPY_AUTHENTICATION_OFF"] = "1"
 # -- Project information -----------------------------------------------------
 
 project = "mgnipy"
