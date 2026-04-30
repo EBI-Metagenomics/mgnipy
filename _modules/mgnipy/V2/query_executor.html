@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.query_executor &#8212; mgnipy 0.1.dev1+gf91363ba8 documentation</title>
+    <title>mgnipy.V2.query_executor &#8212; mgnipy 0.1.dev1+g326962095 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=96565a26"></script>
+    <script src="../../../_static/documentation_options.js?v=3def8002"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,8 +141,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -345,7 +345,6 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.CONSTANTS</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrivateEndpoints</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.async_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_semaphore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.pydantic_help</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_gt_int</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.emgapi_v2_client</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -466,10 +465,9 @@ document.write(`
 <span class="sd">            Configured MGnify API client.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># extra hold for ONLY auth when private?</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">PrivateEndpoints</span><span class="o">.</span><span class="n">as_list</span><span class="p">():</span>
-            <span class="n">_auth</span> <span class="o">=</span> <span class="n">auth_token</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">auth_token</span>
+        <span class="n">_auth</span> <span class="o">=</span> <span class="n">auth_token</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">auth_token</span>
 
+        <span class="k">if</span> <span class="n">_auth</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initializing client with provided auth token.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">AuthenticatedClient</span><span class="p">(</span>
                 <span class="n">base_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">_base_url</span><span class="p">),</span>

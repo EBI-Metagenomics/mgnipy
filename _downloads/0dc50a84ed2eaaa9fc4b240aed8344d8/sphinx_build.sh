@@ -1,3 +1,5 @@
+export MGNIPY_AUTHENTICATION_OFF=1
+
 jupytext dev/*.ipynb --sync
 jupytext tutorials/getting-started/*.ipynb --sync
 

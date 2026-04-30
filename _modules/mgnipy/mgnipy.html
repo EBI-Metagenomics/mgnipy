@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.mgnipy &#8212; mgnipy 0.1.dev1+gf91363ba8 documentation</title>
+    <title>mgnipy.mgnipy &#8212; mgnipy 0.1.dev1+g326962095 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=96565a26"></script>
+    <script src="../../_static/documentation_options.js?v=3def8002"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,8 +141,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -333,7 +333,7 @@ document.write(`
   <h1>Source code for mgnipy.mgnipy</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MgnipyConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuthMGnipyConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.CONSTANTS</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportedEndpoints</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">V2_ENDPOINT_DETAIL_PROXIES</span><span class="p">,</span>
@@ -349,7 +349,7 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">MgnipyConfig</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">AuthMGnipyConfig</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>

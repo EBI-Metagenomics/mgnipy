@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>🔐 Accessing your private data 🔓 &#8212; mgnipy 0.1.dev1+gf91363ba8 documentation</title>
+    <title>🔐 Accessing your private data 🔓 &#8212; mgnipy 0.1.dev1+g326962095 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=96565a26"></script>
+    <script src="../../_static/documentation_options.js?v=3def8002"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,8 +142,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gf91363ba8 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -486,10 +486,25 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># init authenticated client</span>
-<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">mg_user</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MG_USER&quot;</span><span class="p">),</span> <span class="n">mg_password</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MG_PASS&quot;</span><span class="p">))</span>
+<span class="n">MG_manual_config</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
+    <span class="n">mg_user</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MG_USER&quot;</span><span class="p">),</span> <span class="n">mg_password</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MG_PASSWORD&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
-<span class="c1"># would be auto authenticated</span>
-<span class="c1"># my_studies = MG.private_studies</span>
+<span class="c1"># requires sliding authentication token using user and pass</span>
+<span class="n">my_studies</span> <span class="o">=</span> <span class="n">MG_manual_config</span><span class="o">.</span><span class="n">private_studies</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># re-authenticate from cache to also view non-public analyses etc</span>
+<span class="n">MG_manual_config</span><span class="o">.</span><span class="n">analyses</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;mgnipy.V2.proxies.Analyses at 0x7f1a3185ef30&gt;
 </pre></div>
 </div>
 </div>
@@ -500,12 +515,11 @@ document.write(`
 <p>if no .env or not passed to MGnipy or proxies then when private endpoints called you will auto be prompted with an input window for user and then password</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
-
-<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># no .env</span>
+<span class="n">MG_auto_env</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
     <span class="c1"># no config</span>
 <span class="p">)</span>
-<span class="c1"># my_studies = MG.private_studies</span>
+<span class="n">my_studies</span> <span class="o">=</span> <span class="n">MG_auto_env</span><span class="o">.</span><span class="n">private_studies</span>
 </pre></div>
 </div>
 </div>
@@ -513,7 +527,7 @@ document.write(`
 </section>
 <section id="then">
 <h2>then<a class="headerlink" href="#then" title="Link to this heading">#</a></h2>
-<p>same as with non-private data</p>
+<p>to retrieve the metadata same process as with non-private data</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># my_studies.dry_run()</span>
