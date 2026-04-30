@@ -38,7 +38,8 @@
 
 # %%
 # uncomment below if colab
-# #!pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy
+# #!pip install --index-
+# url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy
 # #!pip install asyncio
 
 # %% [markdown]
@@ -160,12 +161,12 @@ df_analysis_details.head()
 # Alternatively, MGnifyList proxxies (e.g., studies, analyses, samples etc. plural) also have option to `collect_details()` or `.acollect_details()` which will return a list or dict of the associated `MGnifyDetail` proxies (e.g., study, analysis)
 
 # %%
-# or if you want to keep them as objects, you can do
-analysis_details: dict[str, mgnipy.V2.proxies.AnalysisDetail] = (
-    await study_analyses_list.acollect_details(
-        fetch=True, by_id=True  # not lazily  # else as a list
-    )
-)
+# # or if you want to keep them as objects, you can do
+# analysis_details: dict[str, mgnipy.V2.proxies.AnalysisDetail] = (
+#     await study_analyses_list.acollect_details(
+#         fetch=True, by_id=True  # not lazily  # else as a list
+#     )
+# )
 
 # for example for further relaionship traversal
 # annotations = analysis_details['MGYA01021267'].annotations

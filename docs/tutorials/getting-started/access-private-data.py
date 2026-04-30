@@ -39,10 +39,16 @@ load_dotenv("path/to/your-env-file")
 
 # %%
 # init authenticated client
-MG = MGnipy(mg_user=os.getenv("MG_USER"), mg_password=os.getenv("MG_PASS"))
+MG_manual_config = MGnipy(
+    mg_user=os.getenv("MG_USER"), mg_password=os.getenv("MG_PASSWORD")
+)
 
-# would be auto authenticated
-# my_studies = MG.private_studies
+# requires sliding authentication token using user and pass
+my_studies = MG_manual_config.private_studies
+
+# %%
+# re-authenticate from cache to also view non-public analyses etc
+MG_manual_config.analyses
 
 # %% [markdown]
 # ## Input
@@ -50,22 +56,19 @@ MG = MGnipy(mg_user=os.getenv("MG_USER"), mg_password=os.getenv("MG_PASS"))
 # if no .env or not passed to MGnipy or proxies then when private endpoints called you will auto be prompted with an input window for user and then password
 
 # %%
-from mgnipy import MGnipy
-
-MG = MGnipy(
+# no .env
+MG_auto_env = MGnipy(
     # no config
 )
-# my_studies = MG.private_studies
+my_studies = MG_auto_env.private_studies
 
 # %% [markdown]
 # ## then
 #
-# same as with non-private data
+# to retrieve the metadata same process as with non-private data
 
 # %%
 # my_studies.dry_run()
 
 # %%
 # my_studies.get()
-
-# %%
