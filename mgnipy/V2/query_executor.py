@@ -12,7 +12,6 @@ from typing import (
 
 from tqdm import tqdm
 
-from mgnipy._models.CONSTANTS import PrivateEndpoints
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.pydantic_help import validate_gt_int
 from mgnipy.emgapi_v2_client import (
@@ -125,10 +124,9 @@ class QueryExecutor:
             Configured MGnify API client.
         """
 
-        # extra hold for ONLY auth when private?
-        if self.qs.resource.value in PrivateEndpoints.as_list():
-            _auth = auth_token or self.qs.config.auth_token
+        _auth = auth_token or self.qs.config.auth_token
 
+        if _auth:
             logging.info("Initializing client with provided auth token.")
             return AuthenticatedClient(
                 base_url=str(self.qs._base_url),

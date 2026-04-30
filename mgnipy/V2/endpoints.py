@@ -125,6 +125,10 @@ ALL_SUPPORTED_RELATIONSHIPS: dict[
     SupportedEndpoints, dict[SupportedEndpoints, callable]
 ] = (WITHIN_RESOURCE_RELATIONSHIPS | BETWEEN_RESOURCE_RELATIONSHIPS)
 
+PRIVATE_ENDPOINTS: set[SupportedEndpoints] = {
+    SupportedEndpoints.PRIVATE_STUDIES,
+}
+
 # so basically an agent could update this based on openapi.json spec changes,
 # and then the rest of the code should work without needing to change?
 # maybe some edge cases but ideally this is how we can future proof against API changes

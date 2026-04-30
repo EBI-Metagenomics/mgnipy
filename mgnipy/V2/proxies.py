@@ -11,7 +11,6 @@ from typing import (
     Optional,
 )
 
-from mgnipy._models.config import AuthMGnipyConfig
 from mgnipy._models.CONSTANTS import (
     SupportedEndpoints,
 )
@@ -561,9 +560,6 @@ class PrivateStudies(MGnifyList):
     ):
 
         super().__init__(params=params, config=config, **kwargs)
-
-        self.config = AuthMGnipyConfig(**config)
-        self.config.resolve_auth_token()
 
 
 class Biomes(MGnifyList, BiomesTreeMixin):
