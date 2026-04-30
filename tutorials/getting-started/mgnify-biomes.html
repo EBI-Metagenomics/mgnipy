@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>🔍 Explore MGnify Biomes 🏞 &#8212; mgnipy 0.1.dev1+g326962095 documentation</title>
+    <title>🔍 Explore MGnify Biomes 🏞 &#8212; mgnipy 0.1.dev1+gd8457d5d1 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=3def8002"></script>
+    <script src="../../_static/documentation_options.js?v=29d4ac44"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,8 +142,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g326962095 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd8457d5d1 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd8457d5d1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -678,14 +678,13 @@ https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/33 [00:00&lt;?, ?it/s]
-Retrieving pages:   3%|▎         | 1/33 [00:00&lt;00:19,  1.61it/s]
-Retrieving pages:  18%|█▊        | 6/33 [00:00&lt;00:02,  9.49it/s]
-Retrieving pages:  33%|███▎      | 11/33 [00:00&lt;00:01, 15.28it/s]
-Retrieving pages:  48%|████▊     | 16/33 [00:01&lt;00:00, 19.38it/s]
-Retrieving pages:  64%|██████▎   | 21/33 [00:01&lt;00:00, 22.35it/s]
-Retrieving pages:  79%|███████▉  | 26/33 [00:01&lt;00:00, 24.60it/s]
-Retrieving pages:  94%|█████████▍| 31/33 [00:01&lt;00:00, 26.27it/s]
-Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20.10it/s]
+Retrieving pages:   3%|▎         | 1/33 [00:00&lt;00:21,  1.51it/s]
+Retrieving pages:  21%|██        | 7/33 [00:00&lt;00:02, 11.88it/s]
+Retrieving pages:  42%|████▏     | 14/33 [00:00&lt;00:00, 23.02it/s]
+Retrieving pages:  61%|██████    | 20/33 [00:00&lt;00:00, 31.05it/s]
+Retrieving pages:  79%|███████▉  | 26/33 [00:01&lt;00:00, 32.14it/s]
+Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 40.31it/s]
+Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 26.26it/s]
 </pre></div>
 </div>
 </div>
@@ -703,16 +702,12 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;Mixed alcohol bioreactor&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Biotransformation:Mixed alcohol bioreactor&#39;},
- {&#39;biome_name&#39;: &#39;Built environment&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Built environment&#39;},
- {&#39;biome_name&#39;: &#39;Food production&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Food production&#39;},
- {&#39;biome_name&#39;: &#39;Dairy products&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Food production:Dairy products&#39;},
- {&#39;biome_name&#39;: &#39;Fermented beverages&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Food production:Fermented beverages&#39;}]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;root&#39;, &#39;lineage&#39;: &#39;root&#39;},
+ {&#39;biome_name&#39;: &#39;Control&#39;, &#39;lineage&#39;: &#39;root:Control&#39;},
+ {&#39;biome_name&#39;: &#39;Engineered&#39;, &#39;lineage&#39;: &#39;root:Engineered&#39;},
+ {&#39;biome_name&#39;: &#39;Biogas plant&#39;, &#39;lineage&#39;: &#39;root:Engineered:Biogas plant&#39;},
+ {&#39;biome_name&#39;: &#39;Wet fermentation&#39;,
+  &#39;lineage&#39;: &#39;root:Engineered:Biogas plant:Wet fermentation&#39;}]
 </pre></div>
 </div>
 </div>
@@ -752,28 +747,28 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
   <tbody>
     <tr>
       <th>0</th>
-      <td>Mixed alcohol bioreactor</td>
-      <td>root:Engineered:Biotransformation:Mixed alcoho...</td>
+      <td>root</td>
+      <td>root</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Built environment</td>
-      <td>root:Engineered:Built environment</td>
+      <td>Control</td>
+      <td>root:Control</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Food production</td>
-      <td>root:Engineered:Food production</td>
+      <td>Engineered</td>
+      <td>root:Engineered</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Dairy products</td>
-      <td>root:Engineered:Food production:Dairy products</td>
+      <td>Biogas plant</td>
+      <td>root:Engineered:Biogas plant</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Fermented beverages</td>
-      <td>root:Engineered:Food production:Fermented beve...</td>
+      <td>Wet fermentation</td>
+      <td>root:Engineered:Biogas plant:Wet fermentation</td>
     </tr>
   </tbody>
 </table>
@@ -815,11 +810,36 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 </summary>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
+├── Control
 ├── Engineered
+│   ├── Biogas plant
+│   │   └── Wet fermentation
+│   ├── Bioreactor
+│   │   └── Continuous culture
+│   │       ├── Marine intertidal flat sediment inoculum
+│   │       │   └── Wadden Sea-Germany
+│   │       └── Marine sediment inoculum
+│   │           └── Wadden Sea-Germany
+│   ├── Bioremediation
+│   │   ├── Hydrocarbon
+│   │   │   └── Benzene
+│   │   │       └── Bioreactor
+│   │   ├── Metal
+│   │   ├── Persistent organic pollutants (POP)
+│   │   ├── Polycyclic aromatic hydrocarbons
+│   │   ├── Terephthalate
+│   │   │   └── Wastewater
+│   │   │       ├── Activated sludge
+│   │   │       └── Bioreactor
+│   │   └── Tetrachloroethylene and derivatives
+│   │       ├── Chloroethene
+│   │       │   └── Bioreactor
+│   │       └── Tetrachloroethylene
+│   │           └── Bioreactor
 │   ├── Biotransformation
-│   │   ├── Mixed alcohol bioreactor
 │   │   ├── Microbial enhanced oil recovery
-│   │   └── Microbial solubilization of coal
+│   │   ├── Microbial solubilization of coal
+│   │   └── Mixed alcohol bioreactor
 │   ├── Built environment
 │   ├── Food production
 │   │   ├── Dairy products
@@ -836,38 +856,15 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   └── Marine media
 │   │   │       └── Algoconsortia
 │   │   └── Undefined media
-│   ├── Lab Synthesis
-│   │   └── Genetic cross
-│   ├── Modeled
-│   │   ├── Simulated communities (DNA mixture)
-│   │   ├── Simulated communities (microbial mixture)
-│   │   ├── Simulated communities (sequence read mixture)
-│   │   └── Sanger
 │   ├── Solid waste
 │   │   ├── Composting
-│   │   │   ├── Bioreactor
-│   │   │   ├── Grass
+│   │   │   ├── Wood
 │   │   │   │   └── Bioreactor
-│   │   │   └── Wood
+│   │   │   ├── Bioreactor
+│   │   │   └── Grass
 │   │   │       └── Bioreactor
 │   │   ├── Landfill
 │   │   └── Solid animal waste
-│   ├── Bioremediation
-│   │   ├── Metal
-│   │   ├── Persistent organic pollutants (POP)
-│   │   ├── Polycyclic aromatic hydrocarbons
-│   │   ├── Terephthalate
-│   │   │   └── Wastewater
-│   │   │       ├── Activated sludge
-│   │   │       └── Bioreactor
-│   │   ├── Tetrachloroethylene and derivatives
-│   │   │   ├── Chloroethene
-│   │   │   │   └── Bioreactor
-│   │   │   └── Tetrachloroethylene
-│   │   │       └── Bioreactor
-│   │   └── Hydrocarbon
-│   │       └── Benzene
-│   │           └── Bioreactor
 │   ├── Wastewater
 │   │   ├── Activated Sludge
 │   │   ├── Industrial wastewater
@@ -886,23 +883,15 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   └── Nitrogen removal
 │   │   │       └── Anammox
 │   │   └── Water and sludge
-│   ├── Biogas plant
-│   │   └── Wet fermentation
-│   └── Bioreactor
-│       └── Continuous culture
-│           ├── Marine intertidal flat sediment inoculum
-│           │   └── Wadden Sea-Germany
-│           └── Marine sediment inoculum
-│               └── Wadden Sea-Germany
-├── Control
+│   ├── Lab Synthesis
+│   │   └── Genetic cross
+│   └── Modeled
+│       ├── Simulated communities (DNA mixture)
+│       ├── Simulated communities (microbial mixture)
+│       ├── Simulated communities (sequence read mixture)
+│       └── Sanger
 ├── Environmental
-│   ├── Air
-│   │   ├── Indoor Air
-│   │   └── Outdoor Air
 │   ├── Aquatic
-│   │   ├── Aquaculture
-│   │   ├── Estuary
-│   │   │   └── Sediment
 │   │   ├── Freshwater
 │   │   │   ├── Ice
 │   │   │   │   ├── Ice accretions
@@ -944,6 +933,9 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │       ├── Marsh
 │   │   │       ├── Sediment
 │   │   │       └── Swamp
+│   │   ├── Aquaculture
+│   │   ├── Estuary
+│   │   │   └── Sediment
 │   │   ├── Lentic
 │   │   │   └── Brackish
 │   │   ├── Marine
@@ -968,14 +960,18 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   │   ├── Oil-contaminated
 │   │   │   │   ├── Salt marsh
 │   │   │   │   └── Sediment
+│   │   │   ├── Marginal Sea
+│   │   │   ├── Neritic zone
+│   │   │   │   ├── Oil-contaminated sediment
+│   │   │   │   └── Sediment
 │   │   │   ├── Oceanic
-│   │   │   │   ├── Photic zone
-│   │   │   │   ├── Sediment
 │   │   │   │   ├── Abyssal plane
 │   │   │   │   ├── Aphotic zone
 │   │   │   │   ├── Benthic
 │   │   │   │   ├── Oil-contaminated
-│   │   │   │   └── Oil-contaminated sediments
+│   │   │   │   ├── Oil-contaminated sediments
+│   │   │   │   ├── Photic zone
+│   │   │   │   └── Sediment
 │   │   │   ├── Oil-contaminated sediment
 │   │   │   ├── Oil field
 │   │   │   │   └── bore hole
@@ -983,11 +979,7 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   ├── Pelagic
 │   │   │   ├── Sediment
 │   │   │   ├── Volcanic
-│   │   │   ├── Wetlands
-│   │   │   │   └── Sediment
-│   │   │   ├── Marginal Sea
-│   │   │   └── Neritic zone
-│   │   │       ├── Oil-contaminated sediment
+│   │   │   └── Wetlands
 │   │   │       └── Sediment
 │   │   ├── Meromictic lake
 │   │   ├── Non-marine Saline and Alkaline
@@ -1008,16 +1000,19 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   │   └── Thalassic
 │   │   │   └── Salt crystallizer pond
 │   │   │       └── Microbial mats
-│   │   ├── Thermal springs
-│   │   │   ├── Sediment
-│   │   │   ├── Hot (42-90C)
-│   │   │   ├── Acidic
-│   │   │   ├── Alkaline
-│   │   │   ├── Neutral
-│   │   │   ├── Near-boiling (&gt;90C)
-│   │   │   ├── Tepid (25-34C)
-│   │   │   └── Warm (34-42C)
-│   │   └── Sediment
+│   │   ├── Sediment
+│   │   └── Thermal springs
+│   │       ├── Hot (42-90C)
+│   │       ├── Acidic
+│   │       ├── Alkaline
+│   │       ├── Neutral
+│   │       ├── Sediment
+│   │       ├── Near-boiling (&gt;90C)
+│   │       ├── Tepid (25-34C)
+│   │       └── Warm (34-42C)
+│   ├── Air
+│   │   ├── Indoor Air
+│   │   └── Outdoor Air
 │   └── Terrestrial
 │       ├── Agricultural field
 │       ├── Asphalt lakes
@@ -1036,8 +1031,17 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │       │   │   ├── Contaminated
 │       │   │   ├── Grasslands
 │       │   │   └── Oil-contaminated
-│       │   ├── Wetlands
-│       │   │   └── Permafrost
+│       │   ├── Contaminated
+│       │   ├── Crop
+│       │   │   └── Agricultural land
+│       │   ├── Desert
+│       │   ├── Forest soil
+│       │   ├── Grasslands
+│       │   ├── Loam
+│       │   │   ├── Agricultural
+│       │   │   ├── Contaminated
+│       │   │   ├── Forest soil
+│       │   │   └── Grasslands
 │       │   ├── Mine
 │       │   ├── Mine drainage
 │       │   ├── Oil-contaminated
@@ -1052,17 +1056,8 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │       │   ├── Tropical rainforest
 │       │   ├── Uranium contaminated
 │       │   ├── Viriome
-│       │   ├── Contaminated
-│       │   ├── Crop
-│       │   │   └── Agricultural land
-│       │   ├── Desert
-│       │   ├── Forest soil
-│       │   ├── Grasslands
-│       │   └── Loam
-│       │       ├── Agricultural
-│       │       ├── Contaminated
-│       │       ├── Forest soil
-│       │       └── Grasslands
+│       │   └── Wetlands
+│       │       └── Permafrost
 │       └── Volcanic
 │           └── Fumaroles
 ├── Host-associated
@@ -1086,19 +1081,19 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   ├── Respiratory system
 │   │   └── Skin
 │   ├── Annelida
+│   │   ├── Digestive system
+│   │   │   └── Digestive tube
+│   │   │       └── Extracellular symbionts
 │   │   ├── Integument
-│   │   │   ├── Subcuticular space
-│   │   │   │   └── Extracellular symbionts
-│   │   │   └── Cuticle
-│   │   │       └── Epibionts
+│   │   │   ├── Cuticle
+│   │   │   │   └── Epibionts
+│   │   │   └── Subcuticular space
+│   │   │       └── Extracellular symbionts
 │   │   ├── Intracellular endosymbionts
 │   │   │   └── Trophosome
-│   │   ├── Reproductive system
-│   │   │   └── Egg capsule
-│   │   │       └── Extracellular
-│   │   └── Digestive system
-│   │       └── Digestive tube
-│   │           └── Extracellular symbionts
+│   │   └── Reproductive system
+│   │       └── Egg capsule
+│   │           └── Extracellular
 │   ├── Arthropoda
 │   │   ├── Digestive system
 │   │   │   ├── Foregut
@@ -1111,6 +1106,12 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   ├── Midgut
 │   │   │   └── Oral
 │   │   │       └── Saliva
+│   │   ├── Symbiotic fungal gardens and galleries
+│   │   │   ├── Fungus gallery
+│   │   │   └── Fungus garden
+│   │   │       └── Garden dump
+│   │   ├── Venom gland
+│   │   │   └── Venom
 │   │   ├── Integument
 │   │   │   └── Cuticle
 │   │   │       └── Thoracic segments
@@ -1119,14 +1120,8 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   │   └── Bacteriomes
 │   │   │   └── Secondary
 │   │   ├── Oral cavity
-│   │   ├── Respiratory system
-│   │   │   └── Gills
-│   │   ├── Symbiotic fungal gardens and galleries
-│   │   │   ├── Fungus gallery
-│   │   │   └── Fungus garden
-│   │   │       └── Garden dump
-│   │   └── Venom gland
-│   │       └── Venom
+│   │   └── Respiratory system
+│   │       └── Gills
 │   ├── Birds
 │   │   ├── Circulatory system
 │   │   │   └── Blood
@@ -1274,7 +1269,6 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │       └── Intracellular
 │   │   └── Shell
 │   ├── Plants
-│   │   ├── Root
 │   │   ├── Phylloplane
 │   │   │   ├── Endophytes
 │   │   │   └── Epiphytes
@@ -1284,10 +1278,11 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 │   │   │   ├── Endophytes
 │   │   │   ├── Epiphytes
 │   │   │   └── Soil
-│   │   └── Rhizosphere
-│   │       ├── Epiphytes
-│   │       ├── Forest soil
-│   │       └── Soil
+│   │   ├── Rhizosphere
+│   │   │   ├── Epiphytes
+│   │   │   ├── Forest soil
+│   │   │   └── Soil
+│   │   └── Root
 │   ├── Porifera
 │   ├── Protists
 │   ├── Protozoa
@@ -1319,7 +1314,7 @@ Retrieving pages: 100%|██████████| 33/33 [00:01&lt;00:00, 20
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 14169.95it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00, 16008.79it/s]
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;studies&#39;]
@@ -1352,8 +1347,8 @@ https://www.ebi.ac.uk/metagenomics/api/v2/studies?biome_lineage=root%3AEngineere
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.65it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.65it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.99it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.99it/s]
 </pre></div>
 </div>
 <div class="output text_html"><div>
