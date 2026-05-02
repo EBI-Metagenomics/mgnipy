@@ -18,14 +18,19 @@ if TYPE_CHECKING:
     pass
 
 
-class ResultsHandlerMixin:
+class ResultsHandler:
+
+    def __init__(self, data: Optional[chain[dict[str, Any]]] = None):
+        self._data = data
 
     @property
-    def data(self) -> dict[int, list[dict[str, Any]]]:
+    def data(self) -> chain[dict[str, Any]]:
         """
         results based on the current resource.
         """
-        return getattr(self, "_results", {}) or {}
+        if self._data is None:
+            return getattr(self, "records", []) or []
+        return self._data
 
     # helpers
     def _df_expand_nested(
@@ -55,28 +60,6 @@ class ResultsHandlerMixin:
                 attr_df = pd.json_normalize(new_df[c])
                 new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
         return new_df
-
-    def _unpageinate_results(self, data: Optional[dict] = None) -> chain:
-        """
-        Unpaginate the results by flattening the dictionary of pages into a single list of records.
-
-        Returns
-        -------
-        chain
-            An iterator that yields individual metadata records from all pages.
-        """
-        _data = data or self.data
-
-        def _page_to_records(page):
-            if page is None:
-                return []
-            if isinstance(page, list):
-                return page
-            if isinstance(page, dict):
-                return [page]
-            return [page]
-
-        return chain.from_iterable(_page_to_records(v) for v in _data.values())
 
     # viewing the retrieved
     def to_df(
@@ -112,15 +95,11 @@ class ResultsHandlerMixin:
         """
 
         _data = data or self.data
-
-        _rename_columns = rename_columns or {"lineage": "biome_lineage"}
-
-        if _data == {} or _data is None:
+        if _data == [] or _data is None:
             return None
 
-        as_pandas = pd.DataFrame(self._unpageinate_results(_data), **kwargs).rename(
-            columns=_rename_columns
-        )
+        _rename_columns = rename_columns or {"lineage": "biome_lineage"}
+        as_pandas = pd.DataFrame(_data, **kwargs).rename(columns=_rename_columns)
 
         if expand_nested_dicts is None or expand_nested_dicts is False:
             return as_pandas
@@ -133,9 +112,7 @@ class ResultsHandlerMixin:
         if expand_nested_dicts is True:  # TODO
             return self._df_expand_nested(as_pandas)
 
-    def to_list(
-        self, data: Optional[dict[int, list[dict]]] = None
-    ) -> list[dict[str, Any]]:
+    def to_list(self, data: Optional[chain] = None) -> list[Any]:
         """
         Convert the current or provided metadata to a list of dictionaries.
 
@@ -156,14 +133,14 @@ class ResultsHandlerMixin:
         """
         _data = data or self.data
 
-        if _data == {} or _data is None:
+        if _data == [] or _data is None:
             return None
 
-        return list(self._unpageinate_results(_data))
+        return list(_data)
 
     def to_json(
         self,
-        data: Optional[dict[int, list[dict]]] = None,
+        data: Optional[chain] = None,
         orient: str = "records",
         lines: bool = True,
         **json_kwargs,
@@ -192,9 +169,7 @@ class ResultsHandlerMixin:
             orient=orient, lines=lines, **json_kwargs
         )
 
-    def to_polars(
-        self, data: Optional[dict[int, list[dict]]] = None, **polars_kwargs
-    ) -> pl.DataFrame:
+    def to_polars(self, data: Optional[chain] = None, **polars_kwargs) -> pl.DataFrame:
         """
         Convert the current metadata to a Polars DataFrame.
 
@@ -218,10 +193,10 @@ class ResultsHandlerMixin:
 
         _data = data or self.data
 
-        if _data == {} or _data is None:
+        if _data == [] or _data is None:
             return None
 
-        return pl.DataFrame(self._unpageinate_results(_data), **polars_kwargs)
+        return pl.DataFrame(_data, **polars_kwargs)
 
 
 class BiomesTreeMixin:
