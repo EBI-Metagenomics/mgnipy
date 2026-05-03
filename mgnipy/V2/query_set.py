@@ -1,6 +1,7 @@
 import logging
 import os
 from copy import deepcopy
+from itertools import chain
 from typing import (
     Any,
     Callable,
@@ -12,14 +13,10 @@ import pandas as pd
 
 from mgnipy._models.config import AuthMGnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy.V2.describe import DescribeEmgapiModule
 from mgnipy.V2.endpoints import (
     ALL_ENDPOINTS,
     ALL_SUPPORTED_RELATIONSHIPS,
-    PRIVATE_ENDPOINTS,
-)
-from mgnipy.V2.mixins import (
-    DescribeEmgapiMixin,
-    ResultsHandlerMixin,
 )
 from mgnipy.V2.query_executor import QueryExecutor
 
@@ -45,7 +42,7 @@ ID_PARAM = {
 }
 
 
-class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
+class QuerySet:
     """
     Plans, builds, validates and previews queries based on endpoint_module and params of the MGnifier owner.
     Stores the request urls.
@@ -76,44 +73,60 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         **kwargs,
     ):
 
-        self.config: AuthMGnipyConfig = (
-            AuthMGnipyConfig(**config) if config else AuthMGnipyConfig()
-        )
-        self._base_url: str = str(self.config.base_url)
-        self._resource = SupportedEndpoints.validate(resource)
-
-        if os.getenv("MGNIPY_AUTHENTICATION_OFF") == "1":
-            logging.debug(
-                "Authentication disabled e.g. for docs build. Set MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
-            )
-        elif self._resource in PRIVATE_ENDPOINTS:
-            self.config.resolve_auth_token(interactive=True)
-        else:  # silently attemp to resolve but no pop up
-            self.config.resolve_auth_token(interactive=False)
-        # params as dict
+        # attribute initialization
+        self._resource: SupportedEndpoints = SupportedEndpoints.validate(resource)
+        self.count: Optional[int] = None
+        self.num_requests: Optional[int] = None
+        self.default_page_size: int = 25
+        self.request_urls: Optional[list[str]] = None
+        self._results: dict[int, list[dict]] = None
         self._params: dict[str, Any] = params or {}
         # add kwargs to params if provided, prioritizing kwargs
         if kwargs:
             self._params.update(kwargs)
 
-        # default endpoint modules based on resource, can be overridden by owner
-        self._endpoint_module: Callable = ALL_ENDPOINTS[self._resource]
-
-        # check that params are valid for endpoint module
-        # check params are valid for endpoint
-        # self.validate_endpoint_kwargs(**self._params)
-
+        # handlers
+        # for emgapi_v2_client
+        self.emgapi_handler: DescribeEmgapiModule = DescribeEmgapiModule(
+            endpoint_module=ALL_ENDPOINTS[self._resource]
+        )
+        # for executing requests
         self.exec: QueryExecutor = QueryExecutor(self)
+        # configuration and auth init
+        self.config: AuthMGnipyConfig = (
+            AuthMGnipyConfig(**config) if config else AuthMGnipyConfig()
+        )
+        # interactive auth?
+        if os.getenv("MGNIPY_AUTHENTICATION_OFF") == "1":
+            logging.debug(
+                "Authentication disabled e.g. for docs build. Set MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
+            )
+        elif self.emgapi_handler.is_private:
+            logging.debug(
+                f"Endpoint module {self.emgapi_handler.endpoint_module.__name__} corresponds to a private endpoint. Authentication will be required."
+            )
+            self.config.resolve_auth_token(interactive=True)
+        else:  # silently attemp to resolve but no pop up
+            self.config.resolve_auth_token(interactive=False)
 
+    @property
+    def endpoint_module(self) -> Callable:
+        return self.emgapi_handler.endpoint_module
+
+    @endpoint_module.setter
+    def endpoint_module(self, value: Callable):
+        """
+        Default endpoint modules based on resource at initialization but can be re-assigned.
+        When re-assigning, the QuerySet should be re-instantiated to update the urls and other info.
+
+        """
+        self.emgapi_handler = DescribeEmgapiModule(endpoint_module=value)
         self.count: Optional[int] = None
-        self.total_pages: Optional[int] = None
-        self.default_page_size: int = 25
-
-        # request_urls
+        self.num_requests: Optional[int] = None
         self.request_urls: Optional[list[str]] = None
-
-        # results
-        self._results: dict[int, list[dict]] = {}
+        self._results: dict[int, list[dict]] = None
+        # check that params are valid for new endpoint module
+        _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
 
     @property
     def request_url(self) -> str:
@@ -129,20 +142,6 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         return self._build_request_url()
 
     @property
-    def endpoint_module(self) -> Callable:
-        return self._endpoint_module
-
-    @endpoint_module.setter
-    def endpoint_module(self, value: Callable):
-        # clone the current instance but with updated endpoint module
-        self._endpoint_module = value
-        # check params are valid for new endpoint module
-        # self.validate_endpoint_kwargs(**self._params)
-        # reset results and urls since endpoint module changed
-        self._results = {}
-        self.request_urls = None
-
-    @property
     def params(self) -> dict[str, Any]:
         return self._params
 
@@ -150,11 +149,58 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
     def params(self, new_params: dict[str, Any]):
         self._params = new_params
         # check that params are valid for endpoint module
-        _ = self.validate_endpoint_kwargs(**self._params)
+        _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
 
     @property
     def results(self) -> dict[int, list[dict]]:
+        """
+        Get the retrieved metadata results, if available.
+        Results are stored in a dictionary with request number (e.g. page number) as keys.
+        """
+        if self._results is None:
+            print(
+                "No results available. Please execute a query first e.g. .get(), .page()"
+            )
         return self._results
+
+    def _unpageinate_results(self, data: Optional[dict] = None) -> chain:
+        """
+        Flattening the results into a single iterator of records.
+        If paginated results are stored in a dictionary with page numbers as keys,
+        this method will extract the records from all pages and combine them into a single iterable sequence.
+
+        Returns
+        -------
+        chain
+            An iterator that yields individual metadata records from all pages.
+        """
+        _data = data or self.results
+
+        def _page_to_records(page):
+            if page is None:
+                return []
+            if isinstance(page, list):
+                return page
+            if isinstance(page, dict):
+                return [page]
+            return [page]
+
+        return chain.from_iterable(_page_to_records(v) for v in _data.values())
+
+    @property
+    def records(self) -> Optional[chain]:
+        """
+        Get an iterator of individual metadata records from the retrieved results, if available.
+        This property provides a convenient way to access the metadata records without needing to handle pagination.
+
+        Returns
+        -------
+        chain or None
+            An iterator that yields individual metadata records if results are available, otherwise None.
+        """
+        if self.results is None:
+            return None
+        return self._unpageinate_results()
 
     @property
     def results_ids(self) -> Optional[list[str]]:
@@ -166,12 +212,18 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         list of str or None
             A list of accession strings if available, otherwise None.
         """
-        if self.to_df() is None:
+        if self.results is None:
+            logging.warning(
+                "No attempts for results to be retieved yet (e.g., .get(), .page()), so no accessions/ids available."
+            )
             return None
-        elif self.id_param_key in self.to_df().columns:
-            return self.to_df()[self.id_param_key].tolist()
-        else:
-            return None
+
+        try:
+            return [record[self.id_param_key] for record in self._unpageinate_results()]
+        except KeyError as exc:
+            raise KeyError(
+                f"Identifier key '{self.id_param_key}' not found in results for resource '{self.resource}'. Cannot extract accessions/ids. Check .results"
+            ) from exc
 
     @property
     def resource(self) -> SupportedEndpoints:
@@ -181,38 +233,32 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
     def resource(self, value: str):
         self._resource = SupportedEndpoints.validate(value)
         self.endpoint_module = ALL_ENDPOINTS[self._resource]
-        # check that params are valid for new endpoint module
-        _ = self.validate_endpoint_kwargs(**self._params)
-        # reset results and urls since resource changed
-        self._results = {}
-        self.request_urls = None
 
-    def _is_in_results(self, page_num: int) -> bool:
+    def _is_in_results(self, request_num: int) -> bool:
         """
-        Check if results for a specific page number already exist in the results.
+        Check if results for a specific request number already exist in the results.
 
         Parameters
         ----------
-        page_num : int
-            The page number to check for existing results.
+        request_num : int
+            The request number (e.g., page number) to check for existing results.
 
         Returns
         -------
         bool
-            True if results for the specified page number exist, False otherwise.
+            True if results for the specified request number exist, False otherwise.
         """
         # get number of pages if not already
-        if (self.count is None) or (self.total_pages is None):
-            self.dry_run(verbose=False)
+        self.set_counts()
 
-        if not (isinstance(page_num, int) and 0 < page_num <= self.total_pages):
+        if not (isinstance(request_num, int) and 0 < request_num <= self.num_requests):
             raise ValueError(
-                f"Invalid page number: {page_num}. "
-                "Pages must be positive integers "
-                f"not exceeding total pages {self.total_pages}."
+                f"Invalid request number: {request_num}. "
+                "Request numbers (e.g., page number) must be positive integers "
+                f"not exceeding total pages/number of requests {self.num_requests}."
             )
 
-        return page_num in self._results
+        return request_num in self._results
 
     # PARAM HANDLING
     def _spawn(
@@ -295,70 +341,9 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         new_qs = self._clone(**filters)
         return new_qs
 
-    def page_size(self, n: int) -> "QuerySet":
-        """
-        Set the page size for paginated API calls.
-
-        Parameters
-        ----------
-        n : int
-
-        Returns
-        -------
-        QuerySet
-            A new QuerySet instance with the updated page size parameter.
-        """
-        if not isinstance(n, int) or n <= 0:
-            raise ValueError("Page size must be a positive integer.")
-
-        # make a copy of current instance
-        new_qs = self._clone(page_size=n)
-        return new_qs
-
     @property
     def base_url(self) -> str:
-        return self._base_url
-
-    @property
-    def pagination_status(self) -> bool:
-        """
-        Check if the current resource requires pagination based on its supported keyword arguments.
-
-        Returns
-        -------
-        bool
-            True if pagination, False otherwise.
-        """
-        return (
-            "page" in self.list_supported_params()
-            and "page_size" in self.list_supported_params()
-        )
-
-    def _build_request_params(
-        self, params: Optional[dict[str, Any]] = None, **kwargs
-    ) -> dict[str, Any]:
-        """
-        Build the parameters for the API request by combining the current parameters with
-        any additional parameters provided.
-
-        Parameters
-        ----------
-        params : dict, optional
-            Additional parameters to include in the API request.
-        **kwargs
-            Additional keyword arguments to include in the API request.
-
-        Returns
-        -------
-        dict
-            The combined parameters for the API request.
-        """
-        # combine params with kwargs, with kwargs taking precedence
-        request_params = {**(params or self.params), **kwargs}
-        # if pagination and no page size set, add default page size
-        if self.pagination_status and "page_size" not in request_params:
-            request_params["page_size"] = self.default_page_size
-        return request_params
+        return self.config.base_url
 
     def _build_request_url(
         self,
@@ -388,10 +373,10 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         # combine sub_url and encoded query params
         path = self.url_path(**_params)
         # return full url with base url+sub_url+encoded params
-        return os.path.join(self._base_url, path)
+        return os.path.join(self.base_url, path)
 
     # preview the request(s) prior to making them (option 1)
-    def dry_run(self, *, verbose: bool = True) -> None:
+    def dry_run(self) -> None:
         """
         Plan the API call by validating parameters and estimating the number of pages and records available.
         Prints the plan details for the user to review before executing the full data retrieval.
@@ -401,22 +386,28 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         -------
         None
         """
-        # verbose
-        if verbose:
-            print("Planning the API call with params:")
-            print(self.params)
+        print("Planning the API call with params:")
+        print(self.params)
 
-        if self.count is not None and self.total_pages is not None:
-            logging.info("Already have count and total_pages from previous dry run")
-        elif not self.pagination_status:
-            self.count = 1
-            self.total_pages = 1
+        self.set_counts()
+
+        print(f"Total requests to make: {self.num_requests}")
+        print(f"Total records to retrieve: {self.count}")
+
+    def set_counts(self):
+        """
+        Helper method to set the count and num_requests attributes
+        based on the current parameters and endpoint.
+        """
+        if self.count is not None and self.num_requests is not None:
+            logging.debug("Already have count and num_requests from previous dry runs")
         else:
-            self.exec.get_pageinated_counts()
-
-        if verbose:
-            print(f"Total pages to retrieve: {self.total_pages}")
-            print(f"Total records to retrieve: {self.count}")
+            self.count = self.emgapi_handler.get_num_items(
+                self.exec._init_client(), params=self.params
+            )
+            self.num_requests = self.emgapi_handler.get_num_pages(
+                self.count, page_size=self.params.get("page_size", None)
+            )
 
     # preview the request(s) prior to making them (option 2)
     def list_urls(self) -> list[str]:
@@ -429,17 +420,16 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         list of str
             A list of URLs corresponding to each API request that would be made.
         """
+        self.set_counts()
+        # cached?
         if self.request_urls is not None:
             return self.request_urls
-        if not self.pagination_status:
+
+        if not self.emgapi_handler.is_list_endpoint:
             self.request_urls = [self._build_request_url()]
         else:
-            # ensure we have total_pages calculated
-            if self.total_pages is None:
-                self.dry_run()
-
             self.request_urls = []
-            for page in range(1, self.total_pages + 1):
+            for page in range(1, self.num_requests + 1):
                 _parm = deepcopy(self.params)
                 _parm.update({"page": page})
                 self.request_urls.append(self._build_request_url(params=_parm))
@@ -451,7 +441,14 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         Print example URLs that would be called. Actual requests handled by client.
         """
         _ = self.list_urls()  # ensure urls are generated
-        limit = min(head, self.total_pages) if head else self.total_pages
+        limit = (
+            min(
+                head,
+                self.num_requests,
+            )
+            if head
+            else self.num_requests
+        )
 
         for url in self.list_urls()[:limit]:
             print(url)
@@ -475,6 +472,7 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
 
         first = self.first()
         return self.to_df({1: first})
+        # PICK UP HERE: so no mixin but intead resultshandler
 
     # alternatively preview get first
     def first(self) -> dict:
@@ -482,7 +480,13 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         Retrieve the first page of metadata for the current resource and parameters.
         Same as preview() but returns the raw dictionary instead of a DataFrame.
         """
-        self.exec.get_any_first()
+
+        if self._is_in_results(1):
+            logging.info("First response already retrieved, using cached results.")
+        elif not self._is_list_endpoint:
+            response_dict = self.exec.get()
+            self._results[1] = response_dict
+
         return self._results.get(1, [])
 
     async def afirst(self) -> dict:
@@ -490,7 +494,12 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
         Asynchronously retrieve the first page of metadata for the current resource and parameters.
         Same as preview() but returns the raw dictionary instead of a DataFrame.
         """
-        await self.exec.aget_any_first()
+        if self._is_in_results(1):
+            logging.info("First response already retrieved, using cached results.")
+        elif not self._is_list_endpoint:
+            response_dict = await self.exec.aget()
+            self._results[1] = response_dict
+
         return self._results.get(1, [])
 
     # dunder methods
@@ -509,11 +518,11 @@ class QuerySet(ResultsHandlerMixin, DescribeEmgapiMixin):
             f"MGnifier instance for resource: {self.resource}\n"
             f"I.e., {class_path}\n"
             f"----------------------------------------\n"
-            f"Base URL: {self._base_url}\n"
+            f"Base URL: {self.base_url}\n"
             f"Parameters: {self.params}\n"
             f"Endpoint module: {self.endpoint_module.__name__ or 'None'}\n"
             f"Example request URL: {self._build_request_url()}\n"
-            f"Returns paginated results: {self.pagination_status}\n"
+            f"Returns paginated results: {self._is_list_endpoint}\n"
         )
 
     def __call__(self, **kwargs):

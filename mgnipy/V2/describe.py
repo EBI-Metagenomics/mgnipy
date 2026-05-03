@@ -1,11 +1,16 @@
 import inspect
+import logging
 import os
+from copy import deepcopy
+from math import ceil
 from types import ModuleType
 from typing import (
     Any,
     Optional,
 )
 from urllib.parse import urlencode
+
+import httpx
 
 from mgnipy._shared_helpers.docstring_parser import (
     get_docstring,
@@ -21,6 +26,8 @@ class DescribeEmgapiModule:
 
     def __init__(self, endpoint_module: Optional[ModuleType] = None):
         self.endpoint_module = endpoint_module
+
+        self.default_page_size: int = 25
 
     def list_supported_params(self) -> list[str]:
         """
@@ -140,3 +147,32 @@ class DescribeEmgapiModule:
     def is_list_endpoint(self) -> bool:
         """Checks if the endpoint module corresponds to a list endpoint."""
         return self.endpoint_module in LIST_ENDPOINTS.values()
+
+    def get_num_items(
+        self, client: httpx.Client, params: Optional[dict] = None
+    ) -> Optional[int]:
+
+        _params = deepcopy(params) or {}
+
+        if not self.is_list_endpoint:
+            return 1
+
+        _params.update({"page_size": 1})
+        with client as c:
+            response = self.endpoint_module.sync_detailed(client=c, **_params)
+
+        if response.status_code == 200:
+            return response.parsed.to_dict().get("count", 0)
+        else:
+            logging.warning(
+                f"Failed to retrieve count for endpoint {self.emgapi_resource}. Status code: {response.status_code}"
+            )
+
+    def get_num_pages(
+        self, num_items: Optional[int], page_size: Optional[int] = None
+    ) -> Optional[int]:
+        """Calculates the total number of pages based on the total count and default page size."""
+        if not num_items:
+            return None
+        ps = page_size or self.default_page_size
+        return ceil(num_items / ps)
