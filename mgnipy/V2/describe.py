@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 
 import httpx
 
-from mgnipy._shared_helpers.docstring_parser import (
+from mgnipy._shared_helpers.parsers import (
     get_docstring,
     parse_docstring,
 )

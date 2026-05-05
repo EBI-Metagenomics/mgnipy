@@ -11,15 +11,15 @@ from typing import (
 
 from mgnipy._models.config import AuthMGnipyConfig
 from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy._shared_helpers.pydantic_help import validate_gt_int
+from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.V2.describe import DescribeEmgapiModule
 from mgnipy.V2.endpoints import (
     ALL_ENDPOINTS,
 )
-from mgnipy.V2.mixins import DiskCheckpointMixin
+from mgnipy.V2.mixins import DiskCheckpointer
 
 
-class QuerySet(DiskCheckpointMixin):
+class QuerySet:
     """
     Builds and stores the current state of a query, including the resource type, parameters, and results.
     """
@@ -79,14 +79,34 @@ class QuerySet(DiskCheckpointMixin):
             self.config.resolve_auth_token(interactive=True)
         else:  # silently attemp to resolve but no pop up
             self.config.resolve_auth_token(interactive=False)
-
-        # load any existing cached pages for this exact query
+        # cache handler
+        self.cache_handler = DiskCheckpointer(
+            params=self.params,
+            resource_str=self.resource.value,
+            config=self.config,
+            results_store=self._results,
+            count=self.count,
+            num_requests=self.num_requests,
+        )
+        # try to load from cache
         try:
-            loaded = self.load_cache_from_disk()
-            if loaded:
-                logging.info(f"Loaded {loaded} cached page(s) for {self._resource}")
-        except Exception:
-            logging.exception("Failed to load query cache")
+            # results
+            self._pages_from_cache = self.cache_handler.load_cache_results()
+            logging.info(
+                f"Loaded pages {self._pages_from_cache} from cache for resource {self.resource.value}"
+            )
+            # if cache results loaded, update
+            if self._pages_from_cache:
+                self._results = self.cache_handler._results
+            # manifest
+            self._cached_manifest = self.cache_handler.load_cache_manifest()
+            # update
+            self.count = self._cached_manifest.get("count", None)
+            self.num_requests = self._cached_manifest.get("total_pages", None)
+        except Exception as e:
+            logging.warning(f"Failed to load from cache: {e}")
+            self._pages_from_cache = []
+            self._cached_manifest = {}
 
     @property
     def endpoint_module(self) -> Callable:
@@ -348,10 +368,52 @@ class QuerySet(DiskCheckpointMixin):
 
         # otherwise
         _parm = deepcopy(self.params)
-        return [
-            self._build_request_url(params=_parm.update(pg_param))
-            for pg_param in self.emgapi_handler.page_param_iter(total_pages)
-        ]
+        urls = []
+        for pg in self.emgapi_handler.page_param_iter(total_pages):
+            _parm.update(pg)
+            urls.append(self._build_request_url(params=_parm))
+        return urls
 
     def __call__(self, **kwargs):
         return self.filter(**kwargs)
+
+    def queries(self, **httpx_kwargs) -> list[dict[str, Any]]:
+        """
+        Generate a list of query parameter dictionaries for each API request that would be made based on the current parameters.
+        This allows the user to see the specific query parameters for each request before executing them.
+
+        Returns
+        -------
+        list of dict
+            A list of dictionaries, each containing the query parameters for a corresponding API request.
+        """
+
+        if not self.emgapi_handler.is_list_endpoint:
+            query_setup = {
+                "url": self.emgapi_handler.sub_url(**self.params),
+                "params": self.params,
+            }
+            return {1: query_setup}
+
+        if self.num_requests is None:
+            logging.warning(
+                "Number of requests is not set. Call planning helpers (e.g., .dry_run, explain) for accurate URL list"
+            )
+            total_pages = 0
+        else:
+            total_pages = self.num_requests
+
+        queries = {}
+        for pg, pg_param in enumerate(
+            self.emgapi_handler.page_param_iter(total_pages), start=1
+        ):
+            # prep numbereed params
+            _parm = deepcopy(self.params)
+            _parm.update(pg_param)
+            # save set up
+            query_setup = {
+                "url": self.emgapi_handler.sub_url(**_parm),
+                "params": _parm,
+            }
+            queries[pg] = query_setup
+        return queries
