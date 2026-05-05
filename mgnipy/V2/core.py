@@ -84,6 +84,42 @@ class MGnifier(QuerySet, ResultsHandler):
         # init result handler
         ResultsHandler.__init__(self)
 
+    def __iter__(self):
+        return iter(self.exec)
+
+    def __next__(self):
+        return next(self.exec)
+
+    def __aiter__(self):
+        return self.exec.__aiter__()
+
+    def __anext__(self):
+        return self.exec.__anext__()
+
+    def reset_iterator(self):
+        return self.exec.reset_iterator()
+
+    def continue_iterator(self, start_page: Optional[int] = None):
+        return self.exec.continue_iterator(start_page=start_page)
+
+    def get(self):
+        return self.exec.get()
+
+    async def aget(self):
+        return await self.exec.aget()
+
+    def page(self, *args, **kwargs):
+        return self.exec.page(*args, **kwargs)
+
+    async def apage(self, *args, **kwargs):
+        return await self.exec.apage(*args, **kwargs)
+
+    def bulk_fetch(self, *args, **kwargs):
+        return self.exec.bulk_fetch(*args, **kwargs)
+
+    async def abulk_fetch(self, *args, **kwargs):
+        return await self.exec.abulk_fetch(*args, **kwargs)
+
     # preview the request(s) prior to making them
     def dry_run(self) -> None:
         """
@@ -152,19 +188,6 @@ class MGnifier(QuerySet, ResultsHandler):
 
     def describe_endpoint(self, **kwargs) -> dict[str, str] | None:
         return self.emgapi_handler.describe_endpoint(**kwargs)
-
-    # forarding some user-facing QueryExecutor methods
-    def get(self, *args, **kwargs):
-        return self.exec.get(*args, **kwargs)
-
-    async def aget(self, *args, **kwargs):
-        return await self.exec.aget(*args, **kwargs)
-
-    def page(self, *args, **kwargs):
-        return self.exec.page(*args, **kwargs)
-
-    async def apage(self, *args, **kwargs):
-        return await self.exec.apage(*args, **kwargs)
 
     @property
     def id_param_key(self) -> str:

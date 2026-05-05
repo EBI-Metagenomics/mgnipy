@@ -227,7 +227,7 @@ class QuerySet:
         # validate num is positive int
         validated_int = validate_gt_int(request_num, 0)
 
-        return validated_int in self._results
+        return validated_int in (self._results or [])
 
     # PARAM HANDLING
     def _spawn(

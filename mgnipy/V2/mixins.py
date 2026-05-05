@@ -267,7 +267,7 @@ class DiskCheckpointer:
             "resource": self._resource_val,
             "params": self._params_dict,
             "count": self._total_records,
-            "total_pages": self._total_pages,
+            "total_pages": self._total_requests,
         }
 
         atomic_write_json(filepath, items)
