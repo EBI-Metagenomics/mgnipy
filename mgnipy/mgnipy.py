@@ -73,7 +73,7 @@ class MGnipy:
 
         proxy_cls = V2_ALL_PROXIES[endpoint]
         proxy = proxy_cls(config=self._config.model_dump(mode="json"))
-        return proxy.describe_endpoint(as_dict=as_dict)
+        return proxy.emgapi_handler.describe_endpoint(as_dict=as_dict)
 
     def describe_resources(
         self, resource: Optional[str] = None, as_dict: bool = False

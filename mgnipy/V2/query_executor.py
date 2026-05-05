@@ -56,15 +56,57 @@ class QueryExecutor:
         if _auth:
             logging.info("Initializing client with provided auth token.")
             return AuthenticatedClient(
-                base_url=str(self.qs._base_url),
+                base_url=str(self.qs.base_url),
                 token=_auth,
                 **httpx_kwargs,
             )
 
         return Client(
-            base_url=str(self.qs._base_url),
+            base_url=str(self.qs.base_url),
             **httpx_kwargs,
         )
+
+    def set_counts(self):
+        """
+        Helper method to set the count and num_requests attributes
+        based on the current parameters and endpoint.
+        """
+        if self.qs.count is not None and self.qs.num_requests is not None:
+            logging.debug("Already have count and num_requests from previous dry runs")
+        else:
+            self.qs.count = self.qs.emgapi_handler.get_num_items(
+                self._init_client(), params=self.qs.params
+            )
+            self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
+                self.qs.count, page_size=self.qs.params.get("page_size", None)
+            )
+
+    def first(self) -> dict:
+        """
+        Retrieve the first page of metadata for the current resource and parameters.
+        Same as preview() but returns the raw dictionary instead of a DataFrame.
+        """
+
+        if self.qs._is_in_results(1):
+            logging.info("First response already retrieved, using cached results.")
+        elif not self.qs.emgapi_handler._is_list_endpoint:
+            response_dict = self.exec.get()
+            self.qs._results[1] = response_dict
+
+        return self.qs._results.get(1, [])
+
+    async def afirst(self) -> dict:
+        """
+        Asynchronously retrieve the first page of metadata for the current resource and parameters.
+        Same as preview() but returns the raw dictionary instead of a DataFrame.
+        """
+        if self.qs._is_in_results(1):
+            logging.info("First response already retrieved, using cached results.")
+        elif not self.qs.emgapi_handler._is_list_endpoint:
+            response_dict = await self.exec.aget()
+            self.qs._results[1] = response_dict
+
+        return self.qs._results.get(1, [])
 
     async def _semaphore_guarded_request(
         self,
@@ -215,18 +257,6 @@ class QueryExecutor:
         )
         return self._parse_response(response)
 
-    def get_counts(self):
-        """
-        Make a small get request with page_size=1 to determine if the endpoint is paginated and to get the total count of records.
-        """
-
-        # small get request to get count and calc total pages
-        response_dict = self.get(page_size=1)
-        self.qs.count = response_dict["count"]
-        self.qs.total_pages = ceil(
-            self.qs.count / self.qs.params.get("page_size", self.qs.default_page_size)
-        )
-
     def _page_items(self, response: mpy_Response) -> Optional[dict]:
         """
         Extract the 'items' from the API response.
@@ -274,6 +304,11 @@ class QueryExecutor:
         page_items = self._page_items(response)
         # add to results
         self.qs._results.update({page_num: page_items})
+        # checkpoint each page
+        try:
+            self.qs.save_page_to_disk(page_num, page_items)
+        except Exception:
+            logging.exception(f"Failed to checkpoint page {page_num}")
         return page_items
 
     async def apage(
@@ -289,6 +324,11 @@ class QueryExecutor:
         response = await self.aget(client=a_client, page=page_num)
         page_items = self._page_items(response)
         self.qs._results.update({page_num: page_items})
+        # checkpoint
+        try:
+            await self.qs.async_save_page_to_disk(page_num, page_items)
+        except Exception:
+            logging.exception(f"Failed to checkpoint page {page_num}")
         return page_items
 
     def _resolve_pages_to_collect(

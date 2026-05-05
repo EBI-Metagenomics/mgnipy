@@ -328,6 +328,52 @@ class MGnifyList(MGnifier):
             await child.aget(safety=False)
         return child
 
+    def page_size(self, n: int) -> "QuerySet":
+        """
+        Set the page size for paginated API calls.
+
+        Parameters
+        ----------
+        n : int
+
+        Returns
+        -------
+        QuerySet
+            A new QuerySet instance with the updated page size parameter.
+        """
+        if not isinstance(n, int) or n <= 0:
+            raise ValueError("Page size must be a positive integer.")
+
+        # make a copy of current instance
+        new_qs = self._clone(page_size=n)
+        return new_qs
+
+    def _build_request_params(
+        self, params: Optional[dict[str, Any]] = None, **kwargs
+    ) -> dict[str, Any]:
+        """
+        Build the parameters for the API request by combining the current parameters with
+        any additional parameters provided.
+
+        Parameters
+        ----------
+        params : dict, optional
+            Additional parameters to include in the API request.
+        **kwargs
+            Additional keyword arguments to include in the API request.
+
+        Returns
+        -------
+        dict
+            The combined parameters for the API request.
+        """
+        # combine params with kwargs, with kwargs taking precedence
+        request_params = {**(params or self.params), **kwargs}
+        # if pagination and no page size set, add default page size
+        if self._is_list_endpoint and "page_size" not in request_params:
+            request_params["page_size"] = self.default_page_size
+        return request_params
+
 
 class MGnifyDetail(MGnifier):
     RESOURCE: ClassVar[Optional[DetailResource]] = None

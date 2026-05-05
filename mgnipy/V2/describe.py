@@ -141,7 +141,7 @@ class DescribeEmgapiModule:
     @property
     def is_private(self) -> bool:
         """Checks if the endpoint module corresponds to a private only endpoint."""
-        return self.endpoint_module in PRIVATE_ENDPOINTS.values()
+        return self.endpoint_module in PRIVATE_ENDPOINTS
 
     @property
     def is_list_endpoint(self) -> bool:
@@ -176,3 +176,7 @@ class DescribeEmgapiModule:
             return None
         ps = page_size or self.default_page_size
         return ceil(num_items / ps)
+
+    def page_param_iter(self, num_pages: int) -> list[dict[str, int]]:
+        """Generates a list of parameter dictionaries for each page based on the total number of pages."""
+        return [{"page": page} for page in range(1, num_pages + 1)]
