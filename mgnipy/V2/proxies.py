@@ -52,6 +52,12 @@ DetailResource = Literal[
 
 
 class MGnifyList(MGnifier):
+    """Base class for MGnify list endpoints.
+
+    Concrete subclasses bind a specific list resource such as studies, samples,
+    or analyses. Calling the proxy returns a new instance with merged filters.
+    """
+
     RESOURCE: ClassVar[Optional[ListResource]] = None
 
     def __init__(
@@ -89,21 +95,25 @@ class MGnifyList(MGnifier):
         self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
 
     def __call__(self, **kwargs) -> "MGnifyList":
-        """
-        Allow calling the list proxy to create a new instance with updated params.
-        This is useful for refining the query with new parameters without having to re-specify the resource or config.
+        """Return a cloned list proxy with updated parameters.
+
+        Parameters
+        ----------
+        **kwargs
+            Query parameters to merge into the current parameter set. If
+            ``params`` is supplied, it replaces the current parameters before
+            the remaining keyword arguments are merged in.
+
+        Returns
+        -------
+        MGnifyList
+            A new proxy instance with the same resource and updated filters.
 
         Examples
-        -------
-        # Example 1: Using call to update params
-        gut_studies = MG.studies(search="gut")
-        # Example 2: Using params
-        cancer_studies = MG.studies(params={"search": "cancer"})
-
-        Note
-        ----
-        if "params" is included in kwargs, it will be used as the new params.
-        Otherwise, all kwargs will be treated as params.
+        --------
+        >>> from mgnipy.V2.proxies import Studies
+        >>> studies = Studies(params={"search": "gut"}, config={})  # doctest: +SKIP
+        >>> studies(search="soil")  # doctest: +SKIP
         """
         params = kwargs.pop("params", None) or {}
         # Merge with params, giving precedence to kwargs
@@ -111,13 +121,161 @@ class MGnifyList(MGnifier):
 
         return self.__class__(config=self.config.model_dump(mode="json"), params=params)
 
+    def __len__(self) -> int:
+        """Return the number of child details based on results.
+
+        Examples
+        --------
+        >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
+        >>> studies = Studies(config={})  # doctest: +SKIP
+        >>> len(studies)  # doctest: +SKIP
+        """
+        return len(self.results_ids or [])
+
+    def _reset_detail_iterator(self) -> None:
+        """
+        Initialize or reset the internal state for iterating over MGnifyDetails
+        """
+        # if refresh:
+        #     try:
+        #         self.exec.first()
+        #     except Exception:
+        #         pass
+        self._detail_ids = list(self.results_ids or [])
+        self._detail_index = 0
+        self._last_successful_detail = None
+
+    def get_detail(
+        self,
+    ) -> Optional["MGnifyDetail"]:
+        """
+        Get the next MGnifyDetail based on current _detail_index.
+        Updates `_last_successful_detail` on success.
+
+        Returns
+        -------
+        MGnifyDetail or None
+             The next detail proxy, or None if no more details to iterate.
+
+        Example
+        -------
+        >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
+        >>> studies = Studies(search="tomato")  # doctest: +SKIP
+        >>> studies.bulk_fetch()  # doctest: +SKIP
+        >>> first_detail = studies.get_detail()  # doctest: +SKIP
+        >>> second_detail = studies.get_detail()  # doctest: +SKIP
+        """
+        if not hasattr(self, "_detail_ids"):
+            self._reset_detail_iterator()
+
+        if self._detail_index >= len(self._detail_ids):
+            # nothing left to iter
+            return None
+
+        # otherwise return next MGnifyDetail in the list
+        the_id = self._detail_ids[self._detail_index]
+        child = self._single_detail(self._resolve_id_param(the_id))
+        # update counters
+        self._detail_index += 1
+        self._last_successful_detail = self._detail_index - 1
+        return child
+
+    async def aget_detail(self) -> "MGnifyDetail":
+        """
+        Async variant of `get_detail`.
+
+        Returns
+        -------
+        MGnifyDetail or None
+             The next detail proxy, or None if no more details to iterate.
+
+        """
+        if not hasattr(self, "_detail_ids"):
+            self._reset_detail_iterator()
+
+        if self._detail_index >= len(self._detail_ids):
+            return None
+
+        the_id = self._detail_ids[self._detail_index]
+        child = await self._asingle_detail(self._resolve_id_param(the_id))
+
+        self._detail_index += 1
+        self._last_successful_detail = self._detail_index - 1
+        return child
+
+    def continue_detail_iterator(
+        self, start_index: Optional[int] = None
+    ) -> "MGnifyList":
+        """
+        Continue iterating for MGnifyDetails from `start_index` or the next index after the last successful detail.
+
+        Parameters
+        ----------
+        start_index : int, optional
+             The index to continue from. If None, will continue from the next index after the last successful detail, or 0 if no successful detail yet.
+
+        Returns
+        -------
+        MGnifyList
+            The current instance with the detail iterator reset to the specified index.
+
+        """
+        # ensure the detail ids are initialized
+        if not hasattr(self, "_detail_ids"):
+            self._reset_detail_iterator()
+
+        # if start_index is not provided
+        if start_index is None:
+            # if no successful detail yet, start from the beginning
+            if getattr(self, "_last_successful_detail", None) is None:
+                start_index = 0
+            # otherwise continue from the next index after the last successful detail
+            else:
+                start_index = self._last_successful_detail + 1
+
+        # validate start_index
+        if not (0 <= start_index <= len(self._detail_ids)):
+            raise ValueError("start_index out of range")
+
+        self._detail_index = start_index
+        return self
+
+    def resume_detail_iterator(self) -> "MGnifyList":
+        """
+        Resume from the element after the last successful MGnifyDetail fetch.
+
+        Returns
+        -------
+        MGnifyList
+            The current instance with the detail iterator reset to the specified index.
+
+        Raises
+        ------
+        RuntimeError
+            If there is no last successful detail to resume from.
+        """
+        if getattr(self, "_last_successful_detail", None) is None:
+            raise RuntimeError("No last successful detail to resume from")
+        return self.continue_detail_iterator(self._last_successful_detail + 1)
+
     @property
-    def _next_rel_module(self) -> Callable:
+    def _detail_endpoint(self) -> Callable:
         """
-        Get the next relationship module for the child resource.
-        This is used to determine which API endpoint the child proxy should use.
-        """
-        # check
+        Return the endpoint module for the child/detail endpoint.
+
+        Returns
+        -------
+        Callable
+            The endpoint function or module used by the child resource.
+            E.g., mgnipy.emgapi_v2_client.studies.get_study_detail
+
+        Examples
+        --------
+        >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
+        >>> studies = Studies()  # doctest: +SKIP
+        >>> studies._detail_endpoint
+
+        """  # check
         if len(self.list_relationships()) == 0:
             raise AttributeError(f"{self.resource} does not have any linked resources.")
 
@@ -136,26 +294,63 @@ class MGnifyList(MGnifier):
         return detail_endpoint
 
     def iter_details(self, fetch: bool = True) -> Iterator["QuerySet"]:
-        """
-        Lazily iterate over child detail proxies.
+        """Yield child detail proxies one by one.
 
         Parameters
         ----------
-        fetch : bool
-            Whether to immediately fetch each detail after creating the proxy.
+        fetch : bool, default=True
+            If ``True``, fetch each detail immediately after creating the
+            proxy.
 
         Returns
         -------
-        Iterator of QuerySet
-            An iterator that yields child detail proxies.
+        Iterator[QuerySet]
+            Iterator over child detail proxies.
 
-        Example
-        -------
-        for sample in samples.iter_details():
-            sample.get()
+        Examples
+        --------
+        >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
+        >>> studies = Studies(config={})  # doctest: +SKIP
+        >>> next(studies.iter_details())  # doctest: +SKIP
         """
         for acc in self.results_ids or []:
-            yield self.get_detail(self._resolve_id_param(acc), fetch=fetch)
+            yield self._single_detail(self._resolve_id_param(acc), fetch=fetch)
+
+    def _single_detail(
+        self,
+        access_param: dict[str, str],
+    ) -> "QuerySet":
+        """
+        Get detail proxy for a specific accession/pubmed_id/catalogue_id.
+
+        Parameters
+        ----------
+        access_param : dict[str, str]
+            A dictionary containing the necessary parameter to identify the detail resource,
+            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+        resource_name : Optional[str]
+            The name of the resource to get the next instance of. If None, will use the first or only linked resource.
+
+        Returns
+        -------
+        MGnifyDetail
+            A proxy for the child/detail for the given id
+
+        Examples
+        -------
+        sample = samples._single_detail({"accession": "MGYS00001234"})
+        """
+
+        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)
+        if not detail_cls:
+            raise ValueError(
+                f"Unsupported child resource for detail: {self.child_resource}"
+            )
+
+        child = detail_cls(**access_param)
+        child.endpoint_module = self._detail_endpoint
+        child.get()
+        return child
 
     def collect_details(
         self,
@@ -163,26 +358,27 @@ class MGnifyList(MGnifier):
         fetch: bool = True,
         by_id: bool = False,
     ) -> list["QuerySet"] | dict[str, "QuerySet"]:
-        """
-        Collect child detail proxies into a list or dict.
+        """Collect child detail proxies into a list or mapping.
 
         Parameters
         ----------
-        fetch : bool
-            Whether to immediately fetch the details after creating the proxies.
-        by_id : bool
-            Whether to return a dict keyed by identifier instead of a list.
+        fetch : bool, default=True
+            If ``True``, fetch each detail immediately after creating the
+            proxy.
+        by_id : bool, default=False
+            If ``True``, return a dictionary keyed by identifier.
 
         Returns
         -------
-        list of QuerySet or dict of str to QuerySet
-            A list or dict of child detail proxies.
+        list[QuerySet] or dict[str, QuerySet]
+            Child detail proxies, optionally keyed by identifier.
 
-        Example
-        -------
-        sample_detail = samples.collect_details(fetch=True, by_id=True)
+        Examples
+        --------
+        >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
+        >>> studies = Studies(config={})  # doctest: +SKIP
+        >>> studies.collect_details(by_id=True)  # doctest: +SKIP
         """
-
         items: list["QuerySet"] = []
         for item in self.iter_details(fetch=fetch):
             items.append(item)
@@ -190,22 +386,6 @@ class MGnifyList(MGnifier):
         if by_id:
             return {x.identifier: x for x in items if x.identifier is not None}
         return items
-
-    def __iter__(self) -> Iterator["QuerySet"]:
-        return self.iter_details()
-
-    async def __aiter__(self) -> AsyncIterator["QuerySet"]:
-        """
-        Async version of __iter__.
-
-        Examples
-        -------
-        async for sample in samples:
-            await sample.aget()
-
-        """
-        async for item in self.aiter_details():
-            yield item
 
     async def aiter_details(self, fetch: bool = True) -> AsyncIterator["QuerySet"]:
         """
@@ -222,7 +402,7 @@ class MGnifyList(MGnifier):
             An async iterator that yields child detail proxies.
         """
         for acc in self.results_ids or []:
-            yield await self.aget_detail(self._resolve_id_param(acc), fetch=fetch)
+            yield await self._asingle_detail(self._resolve_id_param(acc), fetch=fetch)
 
     async def acollect_details(
         self,
@@ -235,7 +415,7 @@ class MGnifyList(MGnifier):
         acc_params = [self._resolve_id_param(acc) for acc in (self.results_ids or [])]
 
         async def _worker(access_param):
-            child = await self.aget_detail(access_param, fetch=fetch)
+            child = await self._asingle_detail(access_param, fetch=fetch)
             return child
 
         items = await self.exec.map_with_concurrency(
@@ -258,64 +438,22 @@ class MGnifyList(MGnifier):
         Allow index or accession-based access to child details.
         Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
         """
-        return self.get_detail(
+        return self._single_detail(
             self._resolve_id_param(key),
-            fetch=True,
         )
 
-    def get_detail(
+    async def _asingle_detail(
         self,
         access_param: dict[str, str],
         fetch: bool = True,
     ) -> "QuerySet":
         """
-        Get detail proxy for a specific accession/pubmed_id/catalogue_id.
-
-        Parameters
-        ----------
-        access_param : dict[str, str]
-            A dictionary containing the necessary parameter to identify the detail resource,
-            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
-        resource_name : Optional[str]
-            The name of the resource to get the next instance of. If None, will use the first or only linked resource.
-        fetch : bool
-            Whether to immediately fetch the detail after creating the proxy.
-
-
-        Returns
-        -------
-        QuerySet
-            A proxy for the next resource.
-
-        Examples
-        -------
-        sample = samples.get_detail({"accession": "MGYS00001234"})
-        """
-
-        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)
-        if not detail_cls:
-            raise ValueError(
-                f"Unsupported child resource for detail: {self.child_resource}"
-            )
-
-        child = detail_cls(**access_param)
-        child.endpoint_module = self._next_rel_module
-        if fetch:
-            child.get(safety=False)
-        return child
-
-    async def aget_detail(
-        self,
-        access_param: dict[str, str],
-        fetch: bool = True,
-    ) -> "QuerySet":
-        """
-        Async version of get_detail.
+        Async version of _single_detail.
         Get detail proxy for a specific accession/pubmed_id/catalogue_id.
 
         Examples
         -------
-        sample = await samples.aget_detail({"accession": "MGYS00001234"})
+        sample = await samples._asingle_detail({"accession": "MGYS00001234"})
         """
         detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)
         if not detail_cls:
@@ -323,7 +461,7 @@ class MGnifyList(MGnifier):
                 f"Unsupported child resource for detail: {self.child_resource}"
             )
         child = detail_cls(**access_param)
-        child.endpoint_module = self._next_rel_module
+        child.endpoint_module = self._detail_endpoint
         if fetch:
             await child.aget(safety=False)
         return child
@@ -347,32 +485,6 @@ class MGnifyList(MGnifier):
         # make a copy of current instance
         new_qs = self._clone(page_size=n)
         return new_qs
-
-    def _build_request_params(
-        self, params: Optional[dict[str, Any]] = None, **kwargs
-    ) -> dict[str, Any]:
-        """
-        Build the parameters for the API request by combining the current parameters with
-        any additional parameters provided.
-
-        Parameters
-        ----------
-        params : dict, optional
-            Additional parameters to include in the API request.
-        **kwargs
-            Additional keyword arguments to include in the API request.
-
-        Returns
-        -------
-        dict
-            The combined parameters for the API request.
-        """
-        # combine params with kwargs, with kwargs taking precedence
-        request_params = {**(params or self.params), **kwargs}
-        # if pagination and no page size set, add default page size
-        if self._is_list_endpoint and "page_size" not in request_params:
-            request_params["page_size"] = self.default_page_size
-        return request_params
 
 
 class MGnifyDetail(MGnifier):
@@ -430,6 +542,30 @@ class MGnifyDetail(MGnifier):
                 access_param=access_param,
                 fetch=False,
             )
+
+    @property
+    def identifier(self) -> Optional[str]:
+        """Get the identifier value from the query parameters.
+
+        Used for constructing URLs to related resources.
+
+        Returns
+        -------
+        str or None
+            The identifier value, or ``None`` if not set.
+
+        Examples
+        --------
+        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> query = MGnifier("studies", accession="MGYS000000001", config={})  # doctest: +SKIP
+        >>> query.identifier  # doctest: +SKIP
+        """
+        try:
+            return self.params[self.id_param_key]
+        except KeyError:
+            raise AttributeError(
+                f"Identifier key '{self.id_param_key}' not found in parameters for resource '{self.resource}'."
+            ) from None
 
     def get_list(
         self,
