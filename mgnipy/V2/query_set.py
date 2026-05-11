@@ -81,13 +81,16 @@ class QuerySet:
             self.config.resolve_auth_token(interactive=False)
         # cache handler
         self.cache_handler = DiskCheckpointer(
-            params=self.params,
+            params_getter=lambda: self.params,
             resource_str=self.resource.value,
             config=self.config,
             results_store=self._results,
             count=self.count,
             num_requests=self.num_requests,
         )
+        self._try_load_cache()
+
+    def _try_load_cache(self):
         # try to load from cache
         try:
             # results
@@ -125,6 +128,16 @@ class QuerySet:
         self._results: dict[int, list[dict]] = None
         # check that params are valid for new endpoint module
         _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
+        # reset cache?
+        self.cache_handler = DiskCheckpointer(
+            params_getter=lambda: self.params,
+            resource_str=self.resource.value,
+            config=self.config,
+            results_store=self._results,
+            count=self.count,
+            num_requests=self.num_requests,
+        )
+        self._try_load_cache()
 
     @property
     def request_url(self) -> str:
@@ -148,6 +161,16 @@ class QuerySet:
         self._params = new_params
         # check that params are valid for endpoint module
         _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
+        # reset cache?
+        self.cache_handler = DiskCheckpointer(
+            params_getter=lambda: self.params,
+            resource_str=self.resource.value,
+            config=self.config,
+            results_store=self._results,
+            count=self.count,
+            num_requests=self.num_requests,
+        )
+        self._try_load_cache()
 
     @property
     def results(self) -> dict[int, list[dict]]:

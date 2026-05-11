@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     Literal,
     Optional,
 )
@@ -213,7 +214,7 @@ class DiskCheckpointer:
 
     def __init__(
         self,
-        params: dict,
+        params_getter: Callable[[], dict],
         resource_str: str,
         config,
         results_store: Optional[dict] = None,
@@ -221,7 +222,7 @@ class DiskCheckpointer:
         num_requests: Optional[int] = None,
     ):
         """Initialize with explicit dependencies."""
-        self._params_dict = params
+        self._params_getter = params_getter
         self._resource_val = resource_str
         self.config = config
         self._results = results_store or {}
@@ -234,8 +235,28 @@ class DiskCheckpointer:
 
     @property
     def _cache_key(self) -> str:
-        """Generate deterministic hash from resource + params."""
-        params = self._params_dict.copy()
+        """
+        Generate deterministic hash from resource + params.
+
+        Returns
+        -------
+        str
+            A unique cache key for the current query parameters and resource.
+            For a query to the 'samples' resource with parameters {'biome_lineage': 'root:Environmental:Terrestrial'},
+            the cache key will be a SHA256 hash of the string representation of the resource and parameters,
+            ensuring that identical queries will have the same cache key and thus access the same cached results.
+
+        Example
+        -------
+        >>> from mgnipy.V2.mixins import DiskCheckpointer
+        >>> from mgnipy.V2.config import MGnifyConfig
+        >>> params = {'lineage': 'root:Environmental:Terrestrial'}
+        >>> resource_str = 'biome'
+        >>> config = MGnifyConfig()
+        >>> cache_key = DiskCheckpointer(params, resource_str, config)._cache_key
+        '1eb56ddf5a2e7d60d8155c8bbe01f032f959a2519d43e99f31f533abffa3166f'
+        """
+        params = self._params_getter().copy()
         serial = json.dumps(
             {"resource": self._resource_val, "params": params},
             sort_keys=True,
@@ -265,7 +286,7 @@ class DiskCheckpointer:
         # and data for manifest
         manifest = {
             "resource": self._resource_val,
-            "params": self._params_dict,
+            "params": self._params_getter(),
             "count": self._total_records,
             "total_pages": self._total_requests,
         }

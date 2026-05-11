@@ -452,7 +452,9 @@ class MGnifier(QuerySet, ResultsHandler):
                 f"Resource {self.resource} does not have a defined access identifier key."
             ) from None
 
-    def _resolve_id_param(self, key: int | str) -> dict:
+    def _resolve_id_param(
+        self, key: int | str, param_name: Optional[str] = None
+    ) -> dict:
         """Resolve an identifier parameter by index or value.
 
         Parameters
@@ -473,12 +475,16 @@ class MGnifier(QuerySet, ResultsHandler):
         >>> query.get()  # doctest: +SKIP
         >>> param_dict = query._resolve_id_param(0)  # doctest: +SKIP
         """
+
+        if not param_name:
+            param_name = self.id_param_key
+
         # allow index-based access
         if self.results_ids is not None and isinstance(key, int):
-            return {self.id_param_key: self.results_ids[key]}
+            return {param_name: self.results_ids[key]}
         # or by accession/biome_lineage/ids string directly
         if self.results_ids is not None and key in self.results_ids:
-            return {self.id_param_key: key}
+            return {param_name: key}
 
         raise KeyError(
             f"Invalid key: {key}. "
