@@ -16,7 +16,7 @@ from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.query_set import QuerySet
 
 ID_PARAM = {
-    SupportedEndpoints.BIOMES: "biome_lineage",
+    SupportedEndpoints.BIOMES: "lineage",
     SupportedEndpoints.BIOME: "biome_lineage",
     SupportedEndpoints.STUDIES: "accession",
     SupportedEndpoints.SAMPLES: "accession",
@@ -450,30 +450,6 @@ class MGnifier(QuerySet, ResultsHandler):
         except KeyError:
             raise AttributeError(
                 f"Resource {self.resource} does not have a defined access identifier key."
-            ) from None
-
-    @property
-    def identifier(self) -> Optional[str]:
-        """Get the identifier value from the query parameters.
-
-        Used for constructing URLs to related resources.
-
-        Returns
-        -------
-        str or None
-            The identifier value, or ``None`` if not set.
-
-        Examples
-        --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
-        >>> query = MGnifier("studies", accession="MGYS000000001", config={})  # doctest: +SKIP
-        >>> query.identifier  # doctest: +SKIP
-        """
-        try:
-            return self.params[self.id_param_key]
-        except KeyError:
-            raise AttributeError(
-                f"Identifier key '{self.id_param_key}' not found in parameters for resource '{self.resource}'."
             ) from None
 
     def _resolve_id_param(self, key: int | str) -> dict:
