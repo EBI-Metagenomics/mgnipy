@@ -16,7 +16,7 @@ from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.query_set import QuerySet
 
 ID_PARAM = {
-    SupportedEndpoints.BIOMES: "lineage",
+    SupportedEndpoints.BIOMES: "biome_lineage",
     SupportedEndpoints.BIOME: "biome_lineage",
     SupportedEndpoints.STUDIES: "accession",
     SupportedEndpoints.SAMPLES: "accession",

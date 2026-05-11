@@ -410,3 +410,23 @@ class BiomesTreeMixin:
                 "'horizontal', 'hshow', 'h', 'hprint', "
                 "'vertical', 'vshow', 'v', 'vprint'."
             )
+
+    @property
+    def results(self) -> dict:
+        """Get results and auto-normalize lineage field."""
+        parent_results = super().results
+        # Always normalize if results exist
+        if parent_results:
+            self._normalise_lineage()
+        return parent_results
+
+    def _normalise_lineage(self):
+        """
+        Rename field "lineage" to "biome_lineage" for consistency with other resources.
+        """
+        if self._results:
+            for page_data in self._results.values():
+                if isinstance(page_data, list):
+                    for record in page_data:
+                        if isinstance(record, dict) and "lineage" in record:
+                            record["biome_lineage"] = record.pop("lineage")
