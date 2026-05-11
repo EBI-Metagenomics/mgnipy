@@ -328,7 +328,7 @@ class QueryExecutor:
 
         if self.qs._is_in_results(1):
             logging.info("First response already retrieved, using cached results.")
-        elif not self.qs.emgapi_handler._is_list_endpoint:
+        elif not self.qs.emgapi_handler.is_list_endpoint:
             response_dict = self.exec.get()
             self.qs._results[1] = response_dict
 
@@ -348,7 +348,7 @@ class QueryExecutor:
         """
         if self.qs._is_in_results(1):
             logging.info("First response already retrieved, using cached results.")
-        elif not self.qs.emgapi_handler._is_list_endpoint:
+        elif not self.qs.emgapi_handler.is_list_endpoint:
             response_dict = await self.exec.aget()
             self.qs._results[1] = response_dict
 
@@ -548,7 +548,17 @@ class QueryExecutor:
         if response is None:
             logging.warning("No response received from API.")
             return None
-        return response.get("items", None)
+
+        if self.qs.emgapi_handler.is_list_endpoint:
+            return response.get("items")
+        else:
+            logging.debug(
+                "Endpoint is not a list endpoint, returning full response as items."
+            )
+            try:
+                return response["items"]  # only because of biomes -_-
+            except Exception:
+                return response
 
     # getting specific page
     def page(

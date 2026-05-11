@@ -555,13 +555,10 @@ class MGnifyDetail(MGnifier):
     def __getattr__(self, name: str):
         # if is a supported relationship
         if name in self.list_relationships():
-
-            access_param = self._resolve_id_param(self.identifier)
-
             return self.get_list(
                 resource=name,
-                access_param=access_param,
-                fetch=False,
+                fetch=True,
+                explain=False,
             )
 
     @property
@@ -590,106 +587,114 @@ class MGnifyDetail(MGnifier):
 
     def get_list(
         self,
-        resource: Literal[
-            "biomes",
-            "studies",
-            "samples",
-            "runs",
-            "genomes",
-            "analyses",
-            "assemblies",
-            "publications",
-            "catalogues",
-        ],
-        access_param: dict[str, str],
+        resource: ListResource,
+        *,
         fetch: bool = True,
         explain: bool = False,
-    ) -> "QuerySet":
+    ) -> "MGnifyList":
         """
         Get list proxy for a specific accession/pubmed_id/catalogue_id detail.
 
         Parameters
         ----------
         resource : str
-            Valid child resource name e.g. in list_relationships(), such as "samples" for a study detail, or "analyses" for a run detail.
-        access_param : dict[str, str]
-            A dictionary containing the necessary parameter to identify the detail resource,
-            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+            Valid child resource name e.g. in list_relationships(),
+            such as "samples" for a study detail, or "analyses" for a run detail.
         fetch : bool
             Whether to immediately fetch the detail after creating the proxy.
         explain : bool
             Whether to print example URLs that would be called.
         Returns
         -------
-        QuerySet
+        MGnifyList
             A proxy for the next resource.
 
         Examples
         -------
-        samples = study.get_list("samples", {"accession": "MGYS00001234"})
+        samples = study.get_list("samples", fetch=False)
         """
 
-        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))
-        if not proxy_cls:
-            raise ValueError(f"Unsupported resource: {resource}")
-        child = proxy_cls(config=self.config.model_dump(mode="json"), **access_param)
-        child.endpoint_module = self._next_rel_module(resource)
+        # get related MGnifyList class for the resource, e.g. Samples for "samples"
+        logging.debug(
+            f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
+        )
+        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
+            config=self.config.model_dump(mode="json")
+        )
+        logging.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
+
+        logging.debug(
+            f"Resolving id param for identifier {self.identifier!r} with id_param_key {self.id_param_key!r}"
+        )
+        # prep access param e.g. {"accession": "MGYS00001234"} or {"biome_lineage": "root"}
+        id_param = self._resolve_id_param(self.identifier)
+        logging.debug(f"Resolved access param for list proxy: {id_param}")
+
+        # init list endpoint
+        list_endpoint = proxy_cls.filter(**id_param)
+        list_endpoint.endpoint_module = self._next_rel_module(resource)
+        logging.debug(
+            f"Set endpoint module for list proxy: {list_endpoint.endpoint_module} with params {list_endpoint.params!r}"
+        )
+
+        # extra auto
         if explain:
-            child.explain()
+            list_endpoint.explain()
         if fetch:
-            child.get(safety=False)
-        return child
+            list_endpoint.bulk_fetch()
+        return list_endpoint
 
     async def aget_list(
         self,
-        resource: Literal[
-            "biomes",
-            "studies",
-            "samples",
-            "runs",
-            "genomes",
-            "analyses",
-            "assemblies",
-            "publications",
-            "catalogues",
-        ],
-        access_param: dict[str, str],
+        resource: ListResource,
+        *,
         fetch: bool = True,
         explain: bool = False,
-    ) -> "QuerySet":
+    ) -> "MGnifyList":
         """
         Get list proxy for a specific accession/pubmed_id/catalogue_id detail.
 
         Parameters
         ----------
         resource : str
-            Valid child resource name e.g. in list_relationships(), such as "samples" for a study detail, or "analyses" for a run detail.
-        access_param : dict[str, str]
-            A dictionary containing the necessary parameter to identify the detail resource,
-            such as {"accession": "MGYS00001234"} or {"biome_lineage": "root"}.
+            Valid list resource name e.g. in list_relationships(), such as "samples" for a study detail, or "analyses" for a run detail.
         fetch : bool
             Whether to immediately fetch the detail after creating the proxy.
+        explain : bool
+            Whether to print example URLs that would be called.
 
         Returns
         -------
-        QuerySet
+        MGnifyList
             A proxy for the next resource.
 
         Examples
         -------
-        samples = await study.aget_list("samples", {"accession": "MGYS00001234"})
+        samples = await study.aget_list("samples", fetch=False)
         """
 
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))
+        logging.debug(f"Getting proxy class {proxy_cls} for resource {resource!r}")
         if not proxy_cls:
             raise ValueError(f"Unsupported resource: {resource}")
-        child = proxy_cls(config=self.config.model_dump(mode="json"), **access_param)
-        child.endpoint_module = self._next_rel_module(resource)
+
+        custom_id_param_key = proxy_cls.id_param_key
+        id_param = self._resolve_id_param(
+            self.identifier, param_name=custom_id_param_key
+        )
+        logging.debug(f"Resolved access param for list proxy: {id_param}")
+        list_endpoint = proxy_cls(
+            config=self.config.model_dump(mode="json"), **id_param
+        )
+        list_endpoint.endpoint_module = self._next_rel_module(resource)
+        logging.debug(
+            f"Set endpoint module for list proxy: {list_endpoint.endpoint_module} with params {list_endpoint.params!r}"
+        )
         if explain:
-            child.explain()
+            list_endpoint.explain()
         if fetch:
-            await child.aget(safety=False)
-        return child
+            await list_endpoint.abulk_fetch()
+        return list_endpoint
 
 
 class Analyses(MGnifyList):
@@ -765,7 +770,7 @@ class PrivateStudies(MGnifyList):
         super().__init__(params=params, config=config, **kwargs)
 
 
-class Biomes(MGnifyList, BiomesTreeMixin):
+class Biomes(BiomesTreeMixin, MGnifyList):
     RESOURCE: ClassVar[Literal["biomes"]] = "biomes"
 
     def __init__(
@@ -947,7 +952,7 @@ class AssemblyDetail(MGnifyDetail):
         )
 
 
-class BiomeDetail(MGnifyDetail, BiomesTreeMixin):
+class BiomeDetail(BiomesTreeMixin, MGnifyDetail):
     RESOURCE: ClassVar[Literal["biome"]] = "biome"
 
     def __init__(
