@@ -19,15 +19,53 @@ class SpecialEnum(Enum):
 
     @classmethod
     def validate(cls, input):
-        """Validate the input against the enum values and return the corresponding enum member."""
+        """
+        Validate the input against the enum values and return the corresponding enum member.
+
+        Parameters
+        ----------
+        input : str
+            The input string to validate against the enum values.
+
+        Returns
+        -------
+            Enum member corresponding to the input string if valid, otherwise raises ValueError.
+
+        Examples
+        --------
+        >>> SupportedEndpoints.validate("analyses")
+        <SupportedEndpoints.ANALYSES: 'analyses'>
+        >>> SupportedEndpoints.validate("invalid")
+        Traceback (most recent call last):
+        ...
+        ValueError: Invalid SupportedEndpoints: invalid
+        """
         try:
             return TypeAdapter(cls).validate_python(input)
         except ValidationError as e:
             raise ValueError(f"Invalid {cls.__name__}: {input}") from e
 
     @classmethod
-    def is_valid(cls, input):
-        """Check if the input is a valid value for the enum."""
+    def is_valid(cls, input) -> bool:
+        """
+        Check if the input is a valid value for the enum.
+
+        Parameters
+        ----------
+        input : str
+            The input string to check against the enum values.
+
+        Returns
+        -------
+            True if the input is a valid enum value, False otherwise.
+
+        Examples
+        --------
+        >>> SupportedEndpoints.is_valid("analyses")
+        True
+        >>> SupportedEndpoints.is_valid("invalid")
+        False
+        """
         try:
             cls.validate(input)
             return True
@@ -35,14 +73,30 @@ class SpecialEnum(Enum):
             return False
 
     @classmethod
-    def as_one_str(cls, sep=","):
-        """Return a string of all enum values joined by the specified separator."""
-        return sep.join(field.value for field in cls)
+    def as_one_str(cls, sep=",") -> str:
+        """
+        Provides a string of all enum values joined by the specified separator.
 
-    @classmethod
-    def is_prefix_in(cls, input):
-        """Check if the input string starts with any of the enum values (used for accession prefixes)."""
-        return any(input.startswith(field.value) for field in cls)
+        Parameters
+        ----------
+        sep : str, optional
+            The separator to use between enum values in the resulting string (default is ",").
+
+        Returns
+        -------
+        str
+            A string of all enum values joined by the specified separator.
+
+        Examples
+        --------
+        >>> comma_sep = SupportedEndpoints.as_one_str()
+        >>> comma_sep
+        'analyses,analysis,...,annotations,private_studies'
+        >>> pipe_sep = SupportedEndpoints.as_one_str(sep="|")
+        >>> pipe_sep
+        'analyses|analysis|...|biomes|biome|...|private_studies'
+        """
+        return sep.join(field.value for field in cls)
 
 
 class SupportedApiVersions(SpecialEnum):
