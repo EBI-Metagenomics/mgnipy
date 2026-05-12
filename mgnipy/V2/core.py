@@ -586,5 +586,5 @@ class MGnifier(QuerySet, ResultsHandler):
             f"Parameters: {self.params}\n"
             f"Endpoint module: {self.endpoint_module.__name__ or 'None'}\n"
             f"Example request URL: {self._build_request_url()}\n"
-            f"Returns paginated results: {self.emgapi_handler.is_list_endpoint}\n"
+            f"Is list endpoint (returns paginated results): {self.emgapi_handler.is_list_endpoint}\n"
         )
