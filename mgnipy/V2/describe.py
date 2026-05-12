@@ -17,7 +17,7 @@ from mgnipy._shared_helpers.parsers import (
     parse_docstring,
 )
 from mgnipy.V2.endpoints import (
-    LIST_ENDPOINTS,
+    ALL_LIST_ENDPOINTS,
     PRIVATE_ENDPOINTS,
 )
 
@@ -146,7 +146,7 @@ class DescribeEmgapiModule:
     @property
     def is_list_endpoint(self) -> bool:
         """Checks if the endpoint module corresponds to a list endpoint."""
-        return self.endpoint_module in LIST_ENDPOINTS.values()
+        return self.endpoint_module in ALL_LIST_ENDPOINTS
 
     def get_num_items(
         self, client: httpx.Client, params: Optional[dict] = None

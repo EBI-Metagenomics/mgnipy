@@ -14,7 +14,7 @@ from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.V2.describe import DescribeEmgapiModule
 from mgnipy.V2.endpoints import (
-    ALL_ENDPOINTS,
+    RESOURCES_ALL_ENDPOINTS,
 )
 from mgnipy.V2.mixins import DiskCheckpointer
 
@@ -61,7 +61,7 @@ class QuerySet:
         # handlers
         # for emgapi_v2_client
         self.emgapi_handler: DescribeEmgapiModule = DescribeEmgapiModule(
-            endpoint_module=ALL_ENDPOINTS[self._resource]
+            endpoint_module=RESOURCES_ALL_ENDPOINTS[self._resource]
         )
         # configuration and auth init
         self.config: AuthMGnipyConfig = (
@@ -127,7 +127,7 @@ class QuerySet:
         self.num_requests: Optional[int] = None
         self._results: dict[int, list[dict]] = None
         # check that params are valid for new endpoint module
-        _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
+        # _ = self.emgapi_handler.validate_endpoint_kwargs(**self.params)
         # reset cache?
         self.cache_handler = DiskCheckpointer(
             params_getter=lambda: self.params,
@@ -230,7 +230,7 @@ class QuerySet:
     @resource.setter
     def resource(self, value: str):
         self._resource = SupportedEndpoints.validate(value)
-        self.endpoint_module = ALL_ENDPOINTS[self._resource]
+        self.endpoint_module = RESOURCES_ALL_ENDPOINTS[self._resource]
 
     def _is_in_results(self, request_num: int) -> bool:
         """
