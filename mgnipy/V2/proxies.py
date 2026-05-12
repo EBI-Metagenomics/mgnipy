@@ -12,6 +12,8 @@ from typing import (
     Optional,
 )
 
+import pandas as pd
+
 from mgnipy._models.CONSTANTS import (
     SupportedEndpoints,
 )
@@ -303,45 +305,38 @@ class MGnifyList(MGnifier):
         ]
         return detail_endpoint
 
-    def iter_details(self, fetch: bool = True) -> Iterator["QuerySet"]:
-        """Yield child detail proxies one by one.
-
-        Parameters
-        ----------
-        fetch : bool, default=True
-            If ``True``, fetch each detail immediately after creating the
-            proxy.
+    @property
+    def iter_details(self) -> Iterator[dict]:
+        """
+        Yield MGnifyDetail results one by one.
 
         Returns
         -------
-        Iterator[QuerySet]
-            Iterator over child detail proxies.
+        Iterator[dict]
+            An iterator that yields MGnifyDetail results one by one, fetched on demand.
 
         Examples
         --------
         >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
-        >>> studies = Studies(config={})  # doctest: +SKIP
-        >>> next(studies.iter_details())  # doctest: +SKIP
+        >>> studies = Studies()  # doctest: +SKIP
+        >>> result_dict = next(studies.iter_details)  # doctest: +SKIP
         """
         for acc in self.results_ids or []:
             yield self._single_detail(acc).page(1)
 
-    async def aiter_details(self, fetch: bool = True) -> AsyncIterator["QuerySet"]:
+    @property
+    async def aiter_details(self) -> AsyncIterator[dict]:
         """
         Async version of iter_details.
 
-        Parameters
-        ----------
-        fetch : bool
-            Whether to immediately fetch each detail after creating the proxy.
-
         Returns
         -------
-        AsyncIterator of QuerySet
-            An async iterator that yields child detail proxies.
+        AsyncIterator[dict]
+            An async iterator that yields MGnifyDetail results one by one, fetched on demand.
         """
         for acc in self.results_ids or []:
-            yield await self._asingle_detail(acc).apage(1)
+            child = await self._asingle_detail(acc)
+            yield await child.apage(1)
 
     def _single_detail(
         self,
@@ -436,6 +431,10 @@ class MGnifyList(MGnifier):
     @property
     def collected_details_results(self) -> dict[str, dict]:
         return self._collected_details_results
+
+    @property
+    def collected_details_df(self) -> pd.DataFrame:
+        return pd.DataFrame.from_dict(self.collected_details_results, orient="index")
 
     def __getitem__(self, key: int | str) -> "MGnifyDetail":
         """
@@ -632,10 +631,10 @@ class MGnifyDetail(MGnifier):
 
         # init list endpoint
         list_endpoint = proxy_cls.filter(**id_param)
-        list_endpoint.endpoint_module = self._next_rel_module(resource)
         logging.debug(
             f"Set endpoint module for list proxy: {list_endpoint.endpoint_module} with params {list_endpoint.params!r}"
         )
+        list_endpoint.endpoint_module = self._next_rel_module(resource)
 
         # extra auto
         if explain:
