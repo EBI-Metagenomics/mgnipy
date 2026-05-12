@@ -29,20 +29,3 @@ repos:
     rev: 25.1.0
     hooks:
       - id: black
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        #name: isort (python)
-        args:
-          [
-            "--profile",
-            "black",
-            "--split-on-trailing-comma",
-            "--force-grid-wrap",
-            "2",
-            "--use-parentheses",
-            "true",
-          ]
-        exclude: docs/
