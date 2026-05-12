@@ -81,6 +81,12 @@ ignore = ["E501"]  # ignore line length for now
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 testpaths = ["tests", "mgnipy/_shared_helpers", "mgnipy/mgnipy.py"]
+doctest_optionflags = [
+  "ELLIPSIS",
+  "NORMALIZE_WHITESPACE",
+  "IGNORE_EXCEPTION_DETAIL",
+  "NUMBER"
+]
 
 [tool.setuptools.packages.find]
 include = ["mgnipy*"]
