@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 class ResultsHandler:
 
     def __init__(self, data: Optional[chain[dict[str, Any]]] = None):
+        logging.debug("Initializing ResultsHandler")
         self._data = data
 
     @property
@@ -102,8 +103,14 @@ class ResultsHandler:
             If no data is available to convert.
         """
 
+        logging.debug(
+            "Converting results to pandas DataFrame; expand_nested_dicts=%s",
+            expand_nested_dicts,
+        )
+
         _data = data or self.data
         if _data == [] or _data is None:
+            logging.debug("No data available for pandas DataFrame conversion")
             return None
 
         _rename_columns = rename_columns or {"lineage": "biome_lineage"}
@@ -119,6 +126,8 @@ class ResultsHandler:
             )
         if expand_nested_dicts is True:  # TODO
             return self._df_expand_nested(as_pandas)
+
+        logging.debug("Returning pandas DataFrame without nested expansion")
 
     def to_list(self, data: Optional[chain] = None) -> list[Any]:
         """
@@ -139,9 +148,11 @@ class ResultsHandler:
         RuntimeError
             If no data is available to convert.
         """
+        logging.debug("Converting results to list")
         _data = data or self.data
 
         if _data == [] or _data is None:
+            logging.debug("No data available for list conversion")
             return None
 
         return list(_data)
@@ -173,6 +184,11 @@ class ResultsHandler:
         RuntimeError
             If no data is available to convert.
         """
+        logging.debug(
+            "Converting results to JSON; orient=%s lines=%s",
+            orient,
+            lines,
+        )
         return self.to_df(data, expand_nested_dicts=False).to_json(
             orient=orient, lines=lines, **json_kwargs
         )
@@ -199,9 +215,12 @@ class ResultsHandler:
             If no data is available to convert.
         """
 
+        logging.debug("Converting results to Polars DataFrame")
+
         _data = data or self.data
 
         if _data == [] or _data is None:
+            logging.debug("No data available for Polars DataFrame conversion")
             return None
 
         return pl.DataFrame(_data, **polars_kwargs)
@@ -218,10 +237,11 @@ class DiskCheckpointer:
         resource_str: str,
         config,
         results_store: Optional[dict] = None,
-        count: Optional[int] = None,
-        num_requests: Optional[int] = None,
+        count: Optional[Callable[[], int]] = None,
+        num_requests: Optional[Callable[[], int]] = None,
     ):
         """Initialize with explicit dependencies."""
+        logging.debug("Initializing DiskCheckpointer for %s", resource_str)
         self._params_getter = params_getter
         self._resource_val = resource_str
         self.config = config
@@ -262,7 +282,9 @@ class DiskCheckpointer:
             sort_keys=True,
             default=str,
         )
-        return hashlib.sha256(serial.encode("utf-8")).hexdigest()
+        cache_key = hashlib.sha256(serial.encode("utf-8")).hexdigest()
+        logging.debug("Computed cache key for %s: %s", self._resource_val, cache_key)
+        return cache_key
 
     @property
     def _cache_dir(self) -> Path:
@@ -276,19 +298,23 @@ class DiskCheckpointer:
 
     def write_results(self, request_num: int, items: Any) -> None:
         """Auto atomic write to disk."""
+        logging.info("Writing cached results for page %s", request_num)
         # ensure cache dir exists
         save_to = self._cache_dir
         save_to.mkdir(parents=True, exist_ok=True)
 
         # prep full filepath
         filepath = save_to / f"page_{request_num}.json"
+        logging.info(
+            f"Writing page {request_num} to {filepath} and manifest to {self._manifest_path}"
+        )
 
         # and data for manifest
         manifest = {
             "resource": self._resource_val,
             "params": self._params_getter(),
-            "count": self._total_records,
-            "total_pages": self._total_requests,
+            "count": self._total_records() if self._total_records else None,
+            "total_pages": (self._total_requests() if self._total_requests else None),
         }
 
         atomic_write_json(filepath, items)
@@ -296,16 +322,20 @@ class DiskCheckpointer:
 
     async def awrite_results(self, request_num: int, items: Any) -> None:
         """Async wrapper for write_results."""
+        logging.debug("Asynchronously writing cached results for page %s", request_num)
         await asyncio.to_thread(self.write_results, request_num, items)
 
     def load_cache_results(self) -> list[int]:
         """Load cached pages into self._results. Returns count loaded."""
         load_from = self._cache_dir
+        logging.info(f"Loading cached pages from {load_from}")
         if not load_from.exists():
+            logging.info(f"No cache directory found at {load_from}")
             return []
 
         pages_loaded = []
         for cache_file in sorted(load_from.glob("page_*.json")):
+            logging.info(f"Loading cached page from {cache_file}")
             try:
                 # read in pg data
                 with cache_file.open("r", encoding="utf-8") as fh:
@@ -325,6 +355,7 @@ class DiskCheckpointer:
         # Load manifest if present
         mpath = self._manifest_path
         if mpath.exists():
+            logging.info(f"Loading cache manifest from {mpath}")
             try:
                 with mpath.open("r", encoding="utf-8") as fh:
                     manifest = json.load(fh)
@@ -338,8 +369,10 @@ class DiskCheckpointer:
         return manifest
 
     def load_cache(self) -> int:
+        logging.info(f"Loading cache for {self._resource_val} from {self._cache_dir}")
         pages_loaded = self.load_cache_results()
         self.load_cache_manifest()
+        logging.info(f"Loaded {len(pages_loaded)} cached pages")
         return pages_loaded
 
     async def aload_cache(self) -> int:
@@ -350,8 +383,10 @@ class DiskCheckpointer:
         """Remove all cached pages for this query."""
         load_from = self._cache_dir
         if load_from.exists():
+            logging.info("Clearing cache directory %s", load_from)
             for cache_file in load_from.iterdir():
                 try:
+                    logging.debug("Deleting cache file %s", cache_file)
                     cache_file.unlink()
                 except Exception:
                     logging.warning(f"Failed to delete cache file: {cache_file}")
@@ -377,6 +412,7 @@ class BiomesTreeMixin:
         Tree
             A tree representation of the biomes and their relationships.
         """
+        logging.debug("Building tree from %s lineages", len(self.lineages))
         # TODO generate nodes first
         return Tree.from_list(self.lineages, sep=":")
 
@@ -396,6 +432,7 @@ class BiomesTreeMixin:
             "vprint",
         ] = "compact",
     ):
+        logging.info("Showing tree using method %s", method)
         if method in ["compact", "show", "print"]:
             # TODO print_tree(self._tree)
             self.tree.show()
@@ -417,6 +454,7 @@ class BiomesTreeMixin:
         parent_results = super().results
         # Always normalize if results exist
         if parent_results:
+            logging.debug("Normalizing lineage fields in results")
             self._normalise_lineage()
         return parent_results
 
@@ -425,6 +463,7 @@ class BiomesTreeMixin:
         Rename field "lineage" to "biome_lineage" for consistency with other resources.
         """
         if self._results:
+            logging.debug("Renaming lineage fields to biome_lineage")
             for page_data in self._results.values():
                 if isinstance(page_data, list):
                     for record in page_data:

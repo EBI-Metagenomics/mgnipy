@@ -38,7 +38,7 @@ class QueryExecutor:
         # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
         self._semaphore = get_semaphore()
         # tracking
-        self._last_successful_page = None
+        self._successful_pages = []
         self.reset_iterator()
 
     def query_setups(
@@ -48,25 +48,19 @@ class QueryExecutor:
             return self.qs.queries(**httpx_kwargs)
         return self.qs.queries(**httpx_kwargs).get(request_num, None)
 
-    def _init_iter_state(self, asyncio: bool = False) -> None:
+    def _init_iter_state(self, from_page: int = 0) -> None:
         """
         Setup internal state for iteration or async iteration.
 
         Examples
         --------
         >>> # Initialize iterator state for sync iteration
-        >>> executor._init_iter_state(asyncio=False)  # doctest: +SKIP
-        >>> # Initialize for async iteration
-        >>> executor._init_iter_state(asyncio=True)  # doctest: +SKIP
+        >>> executor._init_iter_state()  # doctest: +SKIP
         """
-        self.set_counts()
-        limited_pages = self._resolve_pages_to_collect(limit=ITEMS_LIMIT, safety=False)
-        if asyncio:
-            self._aiter_page_nums = limited_pages
-            self._aiter_index = 0
-        else:
-            self._iter_page_nums = limited_pages
-            self._iter_index = 0
+        self._iter_page_nums = self._resolve_pages_to_collect(
+            limit=ITEMS_LIMIT, safety=False, from_page=from_page
+        )
+        self._iter_index = 0
 
     def __iter__(self):
         """Initialize and return a synchronous iterator over pages.
@@ -77,7 +71,7 @@ class QueryExecutor:
         >>> for page in QueryExecutor(qs):  # doctest: +SKIP
         ...     pass
         """
-        self._init_iter_state(asyncio=False)
+        self._init_iter_state()
         return self
 
     def __next__(self):
@@ -90,19 +84,21 @@ class QueryExecutor:
         >>> executor = QueryExecutor(qs)  # doctest: +SKIP
         >>> next(executor)  # doctest: +SKIP
         """
+        # if no pages loaded, load with limits to next batch
         if not self._iter_page_nums:
-            self._init_iter_state(asyncio=False)
+            self._init_iter_state()
+        # check if we have exhausted the loaded pages
         if self._iter_index >= len(self._iter_page_nums):
             raise StopIteration
+        # get next page num and advance index
         page_num = self._iter_page_nums[self._iter_index]
+        print(f"Advancing to request num {page_num}")
         self._iter_index += 1
         try:
             result = self.page(page_num)
-            # mark success
-            self._last_successful_page = page_num
             return result
         except Exception as e:
-            logging.error(f"Error fetching page {page_num}: {e}")
+            logging.error(f"Error fetching request num {page_num}: {e}")
             raise
 
     def get(self):
@@ -132,7 +128,7 @@ class QueryExecutor:
         >>> async for page in QueryExecutor(qs):  # doctest: +SKIP
         ...     pass
         """
-        self._init_iter_state(asyncio=True)
+        self._init_iter_state()
         return self
 
     async def __anext__(self):
@@ -145,18 +141,18 @@ class QueryExecutor:
         >>> executor = QueryExecutor(qs)  # doctest: +SKIP
         >>> asyncio.run(executor.__anext__())  # doctest: +SKIP
         """
-        if not self._aiter_page_nums:
-            self._init_iter_state(asyncio=True)
-        if self._aiter_index >= len(self._aiter_page_nums):
+        if not self._iter_page_nums:
+            self._init_iter_state()
+        if self._iter_index >= len(self._iter_page_nums):
             raise StopAsyncIteration
-        p = self._aiter_page_nums[self._aiter_index]
-        self._aiter_index += 1
+        p = self._iter_page_nums[self._iter_index]
+        print(f"Advancing to request num {p} (async)")
+        self._iter_index += 1
         try:
             result = await self.apage(p)
-            self._last_successful_page = p
             return result
         except Exception as e:
-            logging.error(f"Error fetching page {p}: {e}")
+            logging.error(f"Error fetching request num {p}: {e}")
             raise
 
     async def aget(self):
@@ -188,8 +184,6 @@ class QueryExecutor:
         """
         self._iter_page_nums = []
         self._iter_index = 0
-        self._aiter_page_nums = []
-        self._aiter_index = 0
 
     def continue_iterator(self, start_page: Optional[int] = None):
         """
@@ -202,11 +196,6 @@ class QueryExecutor:
             The page number to start from.
             If None, starts from the next page after the current limit.
 
-        Returns
-        -------
-        self
-            Returns self for method chaining.
-
         Examples
         --------
         >>> # Continue from a specific page
@@ -215,31 +204,19 @@ class QueryExecutor:
         >>> # Continue from next batch after previous pages
         >>> executor.continue_iterator()  # doctest: +SKIP
         """
-        # how many items and pages
-        self.set_counts()
-        # list pages
-        all_page_nums = list(self.query_setups().keys())
-
+        # get potential start page
         if start_page is None:
             # then cont from last batch
-            start_page = max(self._iter_page_nums) + 1 if self._iter_page_nums else 1
+            start_page = (
+                max(self._successful_pages) + 1 if self._successful_pages else 1
+            )
 
-        # Get remaining pages from start_page onwards
-        remaining_pages = [p for p in all_page_nums if p >= start_page]
-
-        # still limits to next batch
-        limited_pages = self._resolve_pages_to_collect(
-            limit=ITEMS_LIMIT, pages=remaining_pages, safety=False
-        )
-
-        # set
-        self._iter_page_nums = limited_pages
-        self._iter_index = 0
+        # set with limits to next batch
+        self._init_iter_state(from_page=start_page)
         logging.info(
             f"Continuing iteration from page {start_page}, "
             f"loaded {len(self._iter_page_nums)} pages"
         )
-        return self
 
     def resume(self):
         """Resume iteration from the page after the last successful one.
@@ -249,15 +226,15 @@ class QueryExecutor:
         >>> executor = QueryExecutor(qs)  # doctest: +SKIP
         >>> executor.resume()  # doctest: +SKIP
         """
-        if self._last_successful_page is None:
+        if not self._successful_pages:
             logging.warning("No successful pages yet, so resuming from start")
             self.reset_iterator()
             return self
 
         # continuing from successful page
-        next_page = self._last_successful_page + 1
+        next_page = max(self._successful_pages) + 1
         logging.info(f"Resuming from page {next_page}")
-        return self.continue_iterator(start_page=next_page)
+        self.continue_iterator(start_page=next_page)
 
     def _init_client(
         self,
@@ -594,6 +571,9 @@ class QueryExecutor:
         # check if alrady in results first
         if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
+            # mark success
+            if page_num not in self._successful_pages:
+                self._successful_pages.append(page_num)
             return self.qs._results.get(page_num, None)
 
         # otherwise get page
@@ -601,6 +581,7 @@ class QueryExecutor:
         a_client = client or self._init_client()
         # getting params from qs
         params = self.query_setups(page_num).get("params", None)
+        logging.info(f"Fetching request num {page_num} with params: {params}")
         response = self._single_request(
             client=a_client,
             params=params,
@@ -614,6 +595,9 @@ class QueryExecutor:
             self.qs.cache_handler.write_results(page_num, page_items)
         except Exception:
             logging.exception(f"Failed to checkpoint page {page_num}")
+        # mark success
+        if page_num not in self._successful_pages:
+            self._successful_pages.append(page_num)
         return page_items
 
     async def apage(
@@ -632,10 +616,13 @@ class QueryExecutor:
         self.set_counts()
         if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
+            if page_num not in self._successful_pages:
+                self._successful_pages.append(page_num)
             return self.qs._results.get(page_num, None)
 
         a_client = client or self._init_client()
         params = self.query_setups(page_num).get("params", None)
+        logging.info(f"Fetching page {page_num} with params={params}")
         response = await self._asingle_request(client=a_client, params=params)
         page_items = self._page_items(response)
         self.qs._results.update({page_num: page_items})
@@ -645,6 +632,9 @@ class QueryExecutor:
 
         except Exception:
             logging.exception(f"Failed to checkpoint page {page_num}")
+        # mark success
+        if page_num not in self._successful_pages:
+            self._successful_pages.append(page_num)
         return page_items
 
     def _resolve_pages_to_collect(
@@ -652,6 +642,7 @@ class QueryExecutor:
         *,
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
+        from_page: int = 0,
         safety: bool = False,
     ) -> list[int]:
         """
@@ -663,6 +654,8 @@ class QueryExecutor:
             Maximum number of items to retrieve.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
+        from_page : int, default 0
+            The starting page number for collection.
         safety : bool, default True
             If True, raises an error if dry_run() or preview() has not been run to check total pages and counts before collecting.
 
@@ -690,6 +683,12 @@ class QueryExecutor:
                 )
                 self.set_counts()
 
+                if self.qs.count is None:
+                    raise RuntimeError(
+                        "Could not retrieve item count from API. Cannot resolve pages to collect."
+                    )
+
+        # item upper limit
         _upper_limits = min(
             ITEMS_LIMIT,
             self.qs.count,
@@ -703,44 +702,49 @@ class QueryExecutor:
         else:  # if no limit provided, just use upper limits
             limit = _upper_limits
 
+        # now limit pags / num requests (precedence)
+        num_req_limits = ceil(
+            limit
+            / self.qs.params.get("page_size", self.qs.emgapi_handler.default_page_size)
+        )
+
+        max_num_pages = min(num_req_limits, PAGES_LIMIT, self.qs.num_requests)
+
         logging.debug(
-            f"Resolved limit for collection: {limit} items (upper limits: {PAGES_LIMIT} pages or {ITEMS_LIMIT} items)"
+            f"Resolved number of requests for this collection round: {max_num_pages}. (upper caps: {ITEMS_LIMIT} items or {PAGES_LIMIT} pages)"
         )
 
         # prep page nums
         if isinstance(pages, list):
-            resolved = deepcopy(pages)
+            given_pages = sorted(deepcopy(pages))
         elif pages is None:
             # init all pages if not provided
-            resolved = list(range(1, self.qs.num_requests + 1))
+            given_pages = list(range(1, self.qs.num_requests + 1))
         else:
             raise TypeError("pages must be a list of integers or None")
 
-        # keep only valid page numbers
-        resolved = [
-            p for p in resolved if isinstance(p, int) and 0 < p <= self.qs.num_requests
+        # start page
+        after_from_page = [
+            p
+            for p in given_pages
+            if isinstance(p, int) and from_page <= p <= self.qs.num_requests
         ]
-
-        # limits
-        max_num_pages = ceil(
-            limit
-            / self.qs.params.get("page_size", self.qs.emgapi_handler.default_page_size)
-        )
-        max_num_pages = min(max_num_pages, PAGES_LIMIT, self.qs.num_requests)
         logging.debug(
-            f"Calculated max number of pages to collect based on limit: {max_num_pages}"
+            f"Pages to collect after applying from_page={from_page} filter: {after_from_page}"
         )
-        # filter out pages that are over the max
-        resolved = [p for p in resolved if p <= max_num_pages]
+
+        # now with limits on?
+        resolved = after_from_page[:max_num_pages]
+        logging.debug(
+            f"Pages to collect after applying limit of {limit} items (max page {max_num_pages}): {resolved}"
+        )
 
         return resolved
 
     def _collect_pages(
         self,
         client: Client,
-        limit: Optional[int] = None,
-        pages: Optional[list[int]] = None,
-        safety: bool = False,
+        pages: Optional[list[int]],
         hide_progress: bool = False,
     ):
         """
@@ -757,6 +761,8 @@ class QueryExecutor:
         safety : bool, default True
             If True, raises an error if dry_run() or preview()
             has not been run to check total pages and counts before collecting.
+        from_page : int, default 0
+            The page number to start collecting from.
 
         Example
         -------
@@ -766,25 +772,16 @@ class QueryExecutor:
         ...     executor._collect_pages(client, limit=10)  # doctest: +SKIP
         """
 
-        collect_pages = self._resolve_pages_to_collect(
-            limit=limit, pages=pages, safety=safety
-        )
-
         # get pages if not in results already
-        a_client = client or self._init_client()
-        for p in tqdm(collect_pages, desc="Retrieving pages", disable=hide_progress):
-            # skip if page already retrieved
-            if self.qs._is_in_results(p):
-                logging.info(f"Page {p} already retrieved, skipping...")
-            else:
-                self.page(p, client=a_client)
+        a_client = client
+        for p in tqdm(pages, desc="Retrieving pages", disable=hide_progress):
+            print(f"Advancing to request num {p}")
+            self.page(p, client=a_client)
 
     async def _acollect_pages(
         self,
         client: Client,
-        limit: Optional[int] = None,
-        pages: Optional[list[int]] = None,
-        safety: bool = False,
+        pages: list[int],
         hide_progress: bool = False,
     ):
         """
@@ -798,6 +795,8 @@ class QueryExecutor:
             Maximum number of records to retrieve. If None, retrieves all records.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
+        from_page : int, default 0
+            The page number to start collecting from.
         safety : bool, default True
             If True, raises an error if dry_run() or preview() has not been run.
 
@@ -809,12 +808,8 @@ class QueryExecutor:
         ...     await executor._acollect_pages(client, limit=10)  # doctest: +SKIP
         """
 
-        collect_pages = self._resolve_pages_to_collect(
-            limit=limit, pages=pages, safety=safety
-        )
-
         # creating async tasks
-        tasks = [asyncio.create_task(self.apage(p, client)) for p in collect_pages]
+        tasks = [asyncio.create_task(self.apage(p, client)) for p in pages]
 
         for done in tqdm_asyncio.as_completed(
             tasks, disable=hide_progress, desc="Retrieving pages"
@@ -823,7 +818,7 @@ class QueryExecutor:
 
     def bulk_fetch(
         self,
-        limit: Optional[int] = None,
+        limit: Optional[int] = 1000,
         *,
         pages: Optional[list[int]] = None,
         safety: bool = False,
@@ -837,18 +832,29 @@ class QueryExecutor:
         >>> executor = QueryExecutor(qs)  # doctest: +SKIP
         >>> executor.bulk_fetch(limit=50)  # doctest: +SKIP
         """
+
+        if pages is None:
+            # resume from last success
+            start_from = (
+                max(self._successful_pages) + 1 if self._successful_pages else 1
+            )
+        else:
+            start_from = min(pages)
+
+        collect_pages = self._resolve_pages_to_collect(
+            limit=limit, pages=pages, from_page=start_from, safety=safety
+        )
+
         with self._init_client() as client:
             self._collect_pages(
                 client,
-                limit=limit,
-                pages=pages,
-                safety=safety,
+                pages=collect_pages,
                 hide_progress=hide_progress,
             )
 
     async def abulk_fetch(
         self,
-        limit: Optional[int] = None,
+        limit: Optional[int] = 1000,
         *,
         pages: Optional[list[int]] = None,
         safety: bool = False,
@@ -863,12 +869,23 @@ class QueryExecutor:
         >>> import asyncio
         >>> asyncio.run(executor.abulk_fetch(limit=50))  # doctest: +SKIP
         """
+
+        if pages is None:
+            # resume from last success
+            start_from = (
+                max(self._successful_pages) + 1 if self._successful_pages else 1
+            )
+        else:
+            start_from = min(pages)
+
+        collect_pages = self._resolve_pages_to_collect(
+            limit=limit, pages=pages, from_page=start_from, safety=safety
+        )
+
         async with self._init_client() as client:
             await self._acollect_pages(
                 client,
-                limit=limit,
-                pages=pages,
-                safety=safety,
+                pages=collect_pages,
                 hide_progress=hide_progress,
             )
 
@@ -879,3 +896,21 @@ class QueryExecutor:
             return self._init_client().get_async_httpx_client()
         if name == "api_version":
             print(self.config.api_version)
+
+    @property
+    def progress(self):
+        completed = len(set(self._successful_pages))
+        total = len(self.query_setups().keys())
+        percent = completed / total if total > 0 else 0
+        # dummy bar for fun
+        bar_length = 20
+        filled = int(bar_length * percent)
+        bar = "█" * filled + "░" * (bar_length - filled)
+
+        progress_str = f"Retrieved pages: {percent:.0%}|{bar}| {completed}/{total}"
+        print(progress_str)
+
+    @property
+    def last_successful_page(self) -> Optional[int]:
+        if self._successful_pages:
+            print(max(self._successful_pages))

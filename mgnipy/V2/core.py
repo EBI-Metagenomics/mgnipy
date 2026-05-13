@@ -149,42 +149,6 @@ class MGnifier(QuerySet, ResultsHandler):
         """
         return self.exec.__anext__()
 
-    def reset_iterator(self):
-        """Reset the pagination state to the beginning.
-
-        Returns
-        -------
-        None
-
-        Examples
-        --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
-        >>> query = MGnifier("studies")  # doctest: +SKIP
-        >>> query.reset_iterator()  # doctest: +SKIP
-        """
-        return self.exec.reset_iterator()
-
-    def continue_iterator(self, start_page: Optional[int] = None):
-        """Resume iteration from a specific page.
-
-        Parameters
-        ----------
-        start_page : int, optional
-            Page number to resume from. If ``None``, continues from the
-            last interrupted position.
-
-        Returns
-        -------
-        None
-
-        Examples
-        --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
-        >>> query = MGnifier("studies")  # doctest: +SKIP
-        >>> query.continue_iterator(start_page=5)  # doctest: +SKIP
-        """
-        return self.exec.continue_iterator(start_page=start_page)
-
     def get(self):
         """Fetch all pages of results.
 
@@ -353,6 +317,10 @@ class MGnifier(QuerySet, ResultsHandler):
         """
 
         self.exec.set_counts()
+        if self.num_requests is None or self.count is None:
+            raise RuntimeError(
+                "Cannot explain API calls because the number of requests could not be determined. Ensure that the endpoint is valid and that the count of items can be retrieved."
+            )
 
         limit = head or self.num_requests
 
@@ -396,7 +364,7 @@ class MGnifier(QuerySet, ResultsHandler):
         """
 
         first = self.first()
-        return self.to_df({1: first})
+        return self.to_df(first)
 
     def list_supported_params(self) -> list[str]:
         """Get the valid query filter parameters for this resource.
@@ -584,7 +552,97 @@ class MGnifier(QuerySet, ResultsHandler):
             f"----------------------------------------\n"
             f"Base URL: {self.base_url}\n"
             f"Parameters: {self.params}\n"
-            f"Endpoint module: {self.endpoint_module.__name__ or 'None'}\n"
             f"Example request URL: {self._build_request_url()}\n"
+            f"Endpoint module: {self.endpoint_module.__name__ or 'None'}\n"
             f"Is list endpoint (returns paginated results): {self.emgapi_handler.is_list_endpoint}\n"
+            f"Cache directory: {self.cache_handler._cache_dir}\n"
         )
+
+    def continue_iterator(self, *args, **kwargs):
+        """
+        Continue iteration from a specific page.
+        THis is a facade of underlying QueryExecutor.continue_iterator,
+        allowing users to resume iteration after an interruption or to jump to a specific page.
+
+        Parameters
+        ----------
+        *args
+            Positional arguments forwarded to executor.
+        **kwargs
+            Keyword arguments forwarded to executor.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> query = MGnifier("studies")  # doctest: +SKIP
+        >>> query.continue_iterator(start_page=5)  # doctest: +SKIP
+        """
+        return self.exec.continue_iterator(*args, **kwargs)
+
+    def resume(self):
+        """
+        Again facade of QueryExecutor.resume, allowing users to easily continue fetching results after an interruption.
+
+        Examples
+        --------
+        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> query = MGnifier("studies")  # doctest: +SKIP
+        >>> query.resume()  # doctest: +SKIP
+        """
+        return self.exec.resume()
+
+    def reset_iterator(self):
+        """Reset the pagination state to the beginning.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> query = MGnifier("studies")  # doctest: +SKIP
+        >>> query.reset_iterator()  # doctest: +SKIP
+        """
+        return self.exec.reset_iterator()
+
+    @property
+    def progress(self):
+        """
+        Get the progress of the current query execution as a percentage.
+
+        Returns
+        -------
+        str
+            Progress percentage and counts (e.g., "75.00% (150/200 pages)").
+
+        Examples
+        --------
+        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> query = MGnifier("studies")  # doctest: +SKIP
+        >>> print(query.progress)  # doctest: +SKIP
+        """
+        return self.exec.progress
+
+    @property
+    def last_successful_page(self) -> Optional[int]:
+        """
+        Get the last successfully retrieved page number.
+
+        Returns
+        -------
+        int or None
+            The last successful page number, or None if no pages have been retrieved yet.
+
+        Examples
+        --------
+        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> query = MGnifier("studies")  # doctest: +SKIP
+        >>> query.get()  # doctest: +SKIP
+        >>> print(query.last_successful_page)  # doctest: +SKIP
+        """
+        return self.exec.last_successful_page

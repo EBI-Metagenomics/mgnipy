@@ -48,6 +48,8 @@ class QuerySet:
         **kwargs,
     ):
 
+        logging.debug("Initializing QuerySet for resource %s", resource)
+
         # attribute initialization
         self._resource: SupportedEndpoints = SupportedEndpoints.validate(resource)
         self.count: Optional[int] = None
@@ -80,18 +82,20 @@ class QuerySet:
         else:  # silently attemp to resolve but no pop up
             self.config.resolve_auth_token(interactive=False)
         # cache handler
+        logging.debug("Creating cache handler for %s", self._resource.value)
         self.cache_handler = DiskCheckpointer(
             params_getter=lambda: self.params,
             resource_str=self.resource.value,
             config=self.config,
             results_store=self._results,
-            count=self.count,
-            num_requests=self.num_requests,
+            count=lambda: self.count,
+            num_requests=lambda: self.num_requests,
         )
         self._try_load_cache()
 
     def _try_load_cache(self):
         # try to load from cache
+        logging.info("Attempting to load cached results for %s", self.resource.value)
         try:
             # results
             self._pages_from_cache = self.cache_handler.load_cache_results()
@@ -122,6 +126,7 @@ class QuerySet:
         When re-assigning, the QuerySet should be re-instantiated to update the urls and other info.
 
         """
+        logging.info("Reassigning endpoint module for %s", self.resource.value)
         self.emgapi_handler = DescribeEmgapiModule(endpoint_module=value)
         self.count: Optional[int] = None
         self.num_requests: Optional[int] = None
@@ -150,7 +155,11 @@ class QuerySet:
         str
             The constructed URL for the API request.
         """
-        return self._build_request_url()
+        request_url = self._build_request_url()
+        logging.debug(
+            "Resolved request URL for %s: %s", self.resource.value, request_url
+        )
+        return request_url
 
     @property
     def params(self) -> dict[str, Any]:
@@ -158,10 +167,15 @@ class QuerySet:
 
     @params.setter
     def params(self, new_params: dict[str, Any]):
+        logging.info("Updating params for %s", self.resource.value)
         self._params = new_params
         # check that params are valid for endpoint module
         _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
         # reset cache?
+        logging.debug(
+            "Rebuilding cache handler after params update for %s",
+            self.resource.value,
+        )
         self.cache_handler = DiskCheckpointer(
             params_getter=lambda: self.params,
             resource_str=self.resource.value,
@@ -179,8 +193,15 @@ class QuerySet:
         Results are stored in a dictionary with request number (e.g. page number) as keys.
         """
         if self._results is None:
+            logging.warning("No results available for %s", self.resource.value)
             print(
                 "No results available. Please execute a query first e.g. .get(), .page()"
+            )
+        else:
+            logging.debug(
+                "Returning results for %s with pages: %s",
+                self.resource.value,
+                list(self._results.keys()),
             )
         return self._results
 
@@ -195,6 +216,7 @@ class QuerySet:
         chain
             An iterator that yields individual metadata records from all pages.
         """
+        logging.debug("Flattening paginated results for %s", self.resource.value)
         _data = data or self.results
 
         def _page_to_records(page):
@@ -220,7 +242,9 @@ class QuerySet:
             An iterator that yields individual metadata records if results are available, otherwise None.
         """
         if self.results is None:
+            logging.debug("No record iterator available for %s", self.resource.value)
             return None
+        logging.debug("Returning record iterator for %s", self.resource.value)
         return self._unpageinate_results()
 
     @property
@@ -229,6 +253,7 @@ class QuerySet:
 
     @resource.setter
     def resource(self, value: str):
+        logging.info("Setting resource to %s", value)
         self._resource = SupportedEndpoints.validate(value)
         self.endpoint_module = RESOURCES_ALL_ENDPOINTS[self._resource]
 
@@ -249,8 +274,14 @@ class QuerySet:
 
         # validate num is positive int
         validated_int = validate_gt_int(request_num, 0)
-
-        return validated_int in (self._results or [])
+        in_results = validated_int in (self._results or [])
+        logging.debug(
+            "Result presence check for %s page %s: %s",
+            self.resource.value,
+            validated_int,
+            in_results,
+        )
+        return in_results
 
     # PARAM HANDLING
     def _spawn(
@@ -269,6 +300,12 @@ class QuerySet:
             A new QuerySet instance with other resource and parameters.
 
         """
+
+        logging.debug(
+            "Spawning QuerySet from %s to %s",
+            self.resource.value,
+            target_resource or self.resource,
+        )
 
         merged_params = {**(params or {}), **kwargs}
         resource_override = merged_params.pop("resource", None)
@@ -295,6 +332,11 @@ class QuerySet:
         QuerySet
             A new instance of the same class with the updated parameters.
         """
+        logging.debug(
+            "Cloning QuerySet for %s with overrides: %s",
+            self.resource.value,
+            sorted(param_overrides.keys()),
+        )
         merged_params = {**self.params, **param_overrides}
         resource_override = merged_params.pop("resource", None)
 
@@ -330,6 +372,11 @@ class QuerySet:
             A new QuerySet instance with updated parameters for filtering results.
         """
         # make a copy of current instance but with updated params
+        logging.info(
+            "Filtering QuerySet for %s with keys: %s",
+            self.resource.value,
+            sorted(filters.keys()),
+        )
         new_qs = self._clone(**filters)
         return new_qs
 
@@ -365,7 +412,9 @@ class QuerySet:
         # combine sub_url and encoded query params
         path = self.emgapi_handler.url_path(**_params)
         # return full url with base url+sub_url+encoded params
-        return f"{str(self.base_url).rstrip('/')}/{path.lstrip('/')}"
+        request_url = f"{str(self.base_url).rstrip('/')}/{path.lstrip('/')}"
+        logging.debug("Built request URL for %s: %s", self.resource.value, request_url)
+        return request_url
 
     def list_urls(self) -> list[str]:
         """
@@ -377,6 +426,7 @@ class QuerySet:
         list of str
             A list of URLs corresponding to each API request that would be made.
         """
+        logging.info("Listing request URLs for %s", self.resource.value)
 
         if self.num_requests is None:
             logging.warning(
@@ -395,6 +445,7 @@ class QuerySet:
         for pg in self.emgapi_handler.page_param_iter(total_pages):
             _parm.update(pg)
             urls.append(self._build_request_url(params=_parm))
+        logging.debug("Generated %s URLs for %s", len(urls), self.resource.value)
         return urls
 
     def __call__(self, **kwargs):
@@ -410,12 +461,14 @@ class QuerySet:
         list of dict
             A list of dictionaries, each containing the query parameters for a corresponding API request.
         """
+        logging.info("Building query plan for %s", self.resource.value)
 
         if not self.emgapi_handler.is_list_endpoint:
             query_setup = {
                 "url": self.emgapi_handler.sub_url(**self.params),
                 "params": self.params,
             }
+            logging.debug("Built single-query plan for %s", self.resource.value)
             return {1: query_setup}
 
         if self.num_requests is None:
@@ -439,4 +492,7 @@ class QuerySet:
                 "params": _parm,
             }
             queries[pg] = query_setup
+        logging.debug(
+            "Built %s query entries for %s", len(queries), self.resource.value
+        )
         return queries
