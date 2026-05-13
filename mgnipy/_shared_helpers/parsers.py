@@ -258,3 +258,39 @@ def parse_docstring(
         print(f"- {key}: {value}" if value else f"- {key}")
 
     return None
+
+
+def mirror_api(source):
+    """
+    Decorator to copy the docstring and signature from a source function to a target function.
+
+    Parameters
+    ----------
+    source : function
+        The function from which to copy the docstring and signature.
+
+    Returns
+    -------
+    function
+        A decorator that applies the docstring and signature from the source function to the target function.
+
+    Examples
+    --------
+    >>> def source_function(x: int) -> int:
+    ...     '''This is the source function.'''
+    ...     return x * 2
+    >>> @mirror_api(source_function)
+    ... def target_function(y: int) -> int:
+    ...     return y + 3
+    >>> target_function.__doc__
+    'This is the source function.'
+    >>> str(inspect.signature(target_function))
+    '(y: int) -> int'
+    """
+
+    def decorator(target):
+        target.__doc__ = source.__doc__
+        target.__signature__ = inspect.signature(source)
+        return target
+
+    return decorator
