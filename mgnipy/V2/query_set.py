@@ -2,6 +2,7 @@ import logging
 import os
 from copy import deepcopy
 from itertools import chain
+from pathlib import Path
 from typing import (
     Any,
     Callable,
@@ -9,7 +10,7 @@ from typing import (
     Optional,
 )
 
-from mgnipy._models.config import AuthMGnipyConfig
+from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.V2.describe import DescribeEmgapiModule
@@ -43,9 +44,9 @@ class QuerySet:
             "assembly",
         ],
         *,
-        config: Optional[dict] = None,
+        config: Optional[MGnipyConfig] = None,
         params: Optional[dict[str, Any]] = None,
-        **kwargs,
+        **param_kwargs,
     ):
 
         logging.debug("Initializing QuerySet for resource %s", resource)
@@ -56,9 +57,9 @@ class QuerySet:
         self.num_requests: Optional[int] = None
         self._results: dict[int, list[dict]] = None
         self._params: dict[str, Any] = params or {}
-        # add kwargs to params if provided, prioritizing kwargs
-        if kwargs:
-            self._params.update(kwargs)
+        # add param_kwargs to params if provided, prioritizing param_kwargs
+        if param_kwargs:
+            self._params.update(param_kwargs)
 
         # handlers
         # for emgapi_v2_client
@@ -66,13 +67,11 @@ class QuerySet:
             endpoint_module=RESOURCES_ALL_ENDPOINTS[self._resource]
         )
         # configuration and auth init
-        self.config: AuthMGnipyConfig = (
-            AuthMGnipyConfig(**config) if config else AuthMGnipyConfig()
-        )
+        self.config: MGnipyConfig = to_mgnipy_config(config)
         # interactive auth?
         if os.getenv("MGNIPY_AUTHENTICATION_OFF") == "1":
             logging.debug(
-                "Authentication disabled e.g. for docs build. Set MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
+                "Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
             )
         elif self.emgapi_handler.is_private:
             logging.debug(
@@ -88,8 +87,6 @@ class QuerySet:
             resource_str=self.resource.value,
             config=self.config,
             results_store=self._results,
-            count=lambda: self.count,
-            num_requests=lambda: self.num_requests,
         )
         self._try_load_cache()
 
@@ -114,6 +111,21 @@ class QuerySet:
             logging.warning(f"Failed to load from cache: {e}")
             self._pages_from_cache = []
             self._cached_manifest = {}
+
+    def clear_cache(self):
+        """
+        Clear the cached results for the current resource and parameters.
+        This will delete any cached files associated with the current query parameters.
+        """
+        logging.info("Clearing cache for %s", self.resource.value)
+        self.cache_handler.clear_cache()
+        # reset loaded cache state
+        self._pages_from_cache = []
+        self._cached_manifest = {}
+
+    @property
+    def cache_dir(self) -> Optional[Path]:
+        return self.cache_handler._cache_dir
 
     @property
     def endpoint_module(self) -> Callable:
