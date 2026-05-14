@@ -293,7 +293,15 @@ class QueryExecutor:
             self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
                 self.qs.count, page_size=self.qs.params.get("page_size", None)
             )
+            logging.debug(
+                f"Computed count and num_requests: {self.qs.count}, {self.qs.num_requests}"
+            )
 
+        # to the disk too
+        self.qs.cache_handler._total_records = self.qs.count
+        self.qs.cache_handler._total_requests = self.qs.num_requests
+
+        # also init results dict if not already for tracking pages results
         if self.qs._results is None:
             self.qs._results = {}
 

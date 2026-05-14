@@ -250,8 +250,8 @@ class DiskCheckpointer:
         self._total_requests = num_requests
 
     @property
-    def _cache_root(self) -> Path:
-        return self.config.cache_dir or Path(".mgnipy_cache")
+    def _cache_root(self) -> Optional[Path]:
+        return self.config.cache_dir
 
     @property
     def _cache_key(self) -> str:
@@ -287,38 +287,51 @@ class DiskCheckpointer:
         return cache_key
 
     @property
-    def _cache_dir(self) -> Path:
+    def _cache_dir(self) -> Optional[Path]:
         """Directory for this query's cached pages."""
-        return self._cache_root / self._cache_key
+        root = self._cache_root
+        if root is None:
+            return None
+        return root / self._cache_key
 
     @property
-    def _manifest_path(self) -> Path:
-        """Path to manifest.json storing metadata."""
-        return self._cache_dir / "manifest.json"
+    def _manifest_path(self) -> Optional[Path]:
+        """Path to mgnipy_manifest.json storing metadata."""
+        cache_dir = self._cache_dir
+        if cache_dir is None:
+            return None
+        return cache_dir / "mgnipy_manifest.json"
 
     def write_results(self, request_num: int, items: Any) -> None:
         """Auto atomic write to disk."""
-        logging.info("Writing cached results for page %s", request_num)
-        # ensure cache dir exists
         save_to = self._cache_dir
+        if save_to is None:
+            logging.debug(
+                "Skipping cache write for %s page %s because cache is disabled",
+                self._resource_val,
+                request_num,
+            )
+            return
+
+        logging.info("Writing cached results for page %s", request_num)
         save_to.mkdir(parents=True, exist_ok=True)
 
-        # prep full filepath
-        filepath = save_to / f"page_{request_num}.json"
+        filepath = save_to / f"mgnipy_page_{request_num}.json"
+        manifest_path = self._manifest_path
         logging.info(
-            f"Writing page {request_num} to {filepath} and manifest to {self._manifest_path}"
+            f"Writing page {request_num} to {filepath} and manifest to {manifest_path}"
         )
 
-        # and data for manifest
         manifest = {
             "resource": self._resource_val,
             "params": self._params_getter(),
-            "count": self._total_records() if self._total_records else None,
-            "total_pages": (self._total_requests() if self._total_requests else None),
+            "count": self._total_records,
+            "total_pages": self._total_requests,
         }
 
         atomic_write_json(filepath, items)
-        atomic_write_json(self._manifest_path, manifest)
+        if manifest_path is not None:
+            atomic_write_json(manifest_path, manifest)
 
     async def awrite_results(self, request_num: int, items: Any) -> None:
         """Async wrapper for write_results."""
@@ -328,13 +341,20 @@ class DiskCheckpointer:
     def load_cache_results(self) -> list[int]:
         """Load cached pages into self._results. Returns count loaded."""
         load_from = self._cache_dir
+        if load_from is None:
+            logging.debug(
+                "Skipping cache load for %s because cache is disabled",
+                self._resource_val,
+            )
+            return []
+
         logging.info(f"Loading cached pages from {load_from}")
         if not load_from.exists():
             logging.info(f"No cache directory found at {load_from}")
             return []
 
         pages_loaded = []
-        for cache_file in sorted(load_from.glob("page_*.json")):
+        for cache_file in sorted(load_from.glob("mgnipy_page_*.json")):
             logging.info(f"Loading cached page from {cache_file}")
             try:
                 # read in pg data
@@ -354,6 +374,8 @@ class DiskCheckpointer:
     def load_cache_manifest(self) -> dict:
         # Load manifest if present
         mpath = self._manifest_path
+        if mpath is None:
+            return {}
         if mpath.exists():
             logging.info(f"Loading cache manifest from {mpath}")
             try:
@@ -369,6 +391,14 @@ class DiskCheckpointer:
         return manifest
 
     def load_cache(self) -> int:
+        load_from = self._cache_dir
+        if load_from is None:
+            logging.debug(
+                "Skipping cache load for %s because cache is disabled",
+                self._resource_val,
+            )
+            return []
+
         logging.info(f"Loading cache for {self._resource_val} from {self._cache_dir}")
         pages_loaded = self.load_cache_results()
         self.load_cache_manifest()
@@ -382,14 +412,21 @@ class DiskCheckpointer:
     def clear_cache(self) -> None:
         """Remove all cached pages for this query."""
         load_from = self._cache_dir
+        if load_from is None:
+            return
         if load_from.exists():
             logging.info("Clearing cache directory %s", load_from)
             for cache_file in load_from.iterdir():
-                try:
-                    logging.debug("Deleting cache file %s", cache_file)
-                    cache_file.unlink()
-                except Exception:
-                    logging.warning(f"Failed to delete cache file: {cache_file}")
+                # extra check just in case
+                if cache_file.name == "mgnipy_manifest.json" or (
+                    cache_file.name.startswith("mgnipy_page_")
+                    and cache_file.suffix == ".json"
+                ):
+                    try:
+                        logging.debug("Deleting cache file %s", cache_file)
+                        cache_file.unlink()
+                    except Exception:
+                        logging.warning(f"Failed to delete cache file: {cache_file}")
             try:
                 load_from.rmdir()
             except Exception:
