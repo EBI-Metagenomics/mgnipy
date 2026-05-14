@@ -25,7 +25,7 @@ from skbio.io import read
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm as tqdm_async
 
-from mgnipy._models.config import MgnipyConfig
+from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy.emgapi_v2_client.api.analyses import (
     analysis_get_mgnify_analysis_with_annotations,
@@ -36,7 +36,7 @@ from mgnipy.emgapi_v2_client.models.m_gnify_analysis_with_annotations import (
 from mgnipy.V2.core import MGnifier
 
 semaphore = get_semaphore()
-BASE_URL = MgnipyConfig().base_url
+BASE_URL = MGnipyConfig().base_url
 
 
 class MGazine(MGnifyAnalysisWithAnnotations):

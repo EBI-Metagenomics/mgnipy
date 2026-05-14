@@ -14,6 +14,7 @@ from mgnipy.V2.endpoints import (
 from mgnipy.V2.mixins import ResultsHandler
 from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.query_set import QuerySet
+from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 
 ID_PARAM = {
     SupportedEndpoints.BIOMES: "biome_lineage",
@@ -65,9 +66,9 @@ class MGnifier(QuerySet, ResultsHandler):
             "catalogue",
         ],
         *,
-        config: Optional[dict] = None,
+        config: Optional[MGnipyConfig | dict] = None,
         params: Optional[dict[str, Any]] = None,
-        **kwargs,
+        **param_kwargs,
     ) -> None:
         """Initialize a query for a given MGnify resource.
 
@@ -79,7 +80,7 @@ class MGnifier(QuerySet, ResultsHandler):
             Configuration dictionary for authentication and base URL.
         params : dict, optional
             Query filter parameters.
-        **kwargs
+        **param_kwargs
             Additional parameters treated as query filters.
 
         Examples
@@ -92,9 +93,9 @@ class MGnifier(QuerySet, ResultsHandler):
         QuerySet.__init__(
             self,
             resource=resource,
-            config=config,
+            config=to_mgnipy_config(config),
             params=params,
-            **kwargs,
+            **param_kwargs,
         )
         # init executor
         self.exec = QueryExecutor(self)
@@ -555,7 +556,7 @@ class MGnifier(QuerySet, ResultsHandler):
             f"Example request URL: {self._build_request_url()}\n"
             f"Endpoint module: {self.endpoint_module.__name__ or 'None'}\n"
             f"Is list endpoint (returns paginated results): {self.emgapi_handler.is_list_endpoint}\n"
-            f"Cache directory: {self.cache_handler._cache_dir}\n"
+            f"Cache directory: {self.cache_dir}\n"
         )
 
     def continue_iterator(self, *args, **kwargs):
