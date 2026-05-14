@@ -13,22 +13,26 @@
 # ---
 
 # %% [markdown]
-# # &#x1F50D; Explore MGnify Biomes 	&#x1F3DE;
+# # 🔎 Intro to querying MGnify Resources
 #
 # [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/mgnify-biomes.ipynb)
 #
-# ## Introduction
+# On this page, which also serves as a runnable notebook (link above ^), we demonstrate the basic usability of MGni.py to see what items (e.g., biomes) are available in a given resource (e.g., the Biomes [endpoint of the MGnify API v2](https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes))
+#
+# ---
+#
+# ## 🎯 The Goal: Get a list of MGnify Biomes
 #
 # The [GOLD ecosystem classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like "Engineered" to specific environments like "Plant rhizosphere."
 #
 # This demo will show you how to:
 #
-# 1. **Query biomes** — Discover available biome classifications and explore the hierarchy
-# 2. **Preview before fetching** — Use filtering and preview methods to confirm your query before retrieving full results
-# 3. **Access results flexibly** — Retrieve biome data as lists, DataFrames, or hierarchical trees
-# 4. **Navigate relationships** — Follow links between biomes and associated studies
+# 1. **Prepare queries** — Learn different ways to initialize and configure your API requests using MGnipy or direct proxies
+# 2. **Preview before fetching** — Use filtering and preview methods (preview, dry_run, explain) to confirm your query before retrieving results
+# 3. **Fetch results** — Execute requests using iterative get(), specific page(), or bulk_fetch() methods (sync or async)
+# 4. **Monitor progress** — Track your requests and check completion status
 #
-# By the end, we hope you'll be comfortable querying the MGnify biome resource to find relevant studies.
+# By the end, we hope you'll be comfortable querying the MGnify resource -- or specifically the biomes resource at least
 
 # %%
 # uncomment below if colab
@@ -39,7 +43,7 @@
 # We can initiate using `mgnipy.MGnipy` or `proxies.Biomes`
 
 # %% [markdown]
-# ## &#x1f58d; The start: Preparing queries
+# ## 🖍️ The start: Preparing queries
 
 # %% [markdown]
 #
@@ -63,6 +67,7 @@ from mgnipy import MGnipy
 # init
 mg = MGnipy(
     # configuration
+    cache_dir=None,  # set to None to disable caching, or specify a directory for caching
 )
 
 # access proxy
@@ -119,7 +124,9 @@ print(biomes)
 from mgnipy.V2.proxies import Biomes
 
 biomes = Biomes(
-    # config = some_config, # if wanting custom configuration
+    config={
+        "cache_dir": None
+    },  # set to None to disable caching, or specify a directory for caching
     page_size=5,
 )
 
@@ -130,7 +137,7 @@ biomes = biomes.filter(
 print(biomes)
 
 # %% [markdown]
-# ## &#x1f50d; Previewing your requests
+# ## 👓 Previewing your requests
 #
 # There is an optional but recommended step to
 # - `.preview()` the first page of results as a `pandas.DataFrame`,  or
@@ -148,7 +155,7 @@ biomes.explain(head=5)
 biomes.preview()
 
 # %% [markdown]
-# ## &#x1f4e8; Carry out requests to list endpoints
+# ## 📨 Carry out requests to list endpoints
 # If happy with the plan, proceed with the async or sync get requests.
 #
 # There are multiple options:
@@ -232,7 +239,7 @@ biomes.bulk_fetch(
 await biomes.abulk_fetch(limit=50)
 
 # %% [markdown]
-# ## Checking progress
+# ## ⏳ Checking progress
 #
 # As we saw earlier in the notebook we can take a look at results as we go along. For a concise update on progress you can use `.progress` and `.last_successful_page`
 
@@ -241,3 +248,7 @@ biomes.progress
 
 # %%
 biomes.last_successful_page
+
+# %%
+# no cache for this isntance but we can clear anywahys
+biomes.clear_cache()
