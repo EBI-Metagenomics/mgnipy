@@ -7,30 +7,28 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: .venv (3.11.14)
 #     language: python
 #     name: python3
 # ---
 
 # %% [markdown]
-# #  &#x1F575; Exploring MGnify Resources &#x1F5C2;
+# #  📚 Intro to MGnify Resources
 #
 # [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/available-resources.ipynb)
 #
-#
-# The MGnify API provides access to multiple types of resources (or endpoints) such as studies, samples, analyses, runs, and more. This notebook shows you how to:
+# The MGnify API provides access to multiple types of resources (or endpoints) such as studies, samples, analyses, runs, and more. This notebook shows you how to
 #
 # 1. **Discover** what resources are available
-# 2. **Inspect** what parameters each resource accepts
-# 3. **Query** resources using two different approaches
+# 2. **Inspect** what query parameters each resource accepts
 #
-# ## &#x270C; Two Ways to Query Resources
+# ## Two starting points for querying resources
 #
 # MGnipy provides two main interfaces:
 # - **`MGnipy` client**: High-level interface with built-in helper functions for exploration
 # - **Resource proxies** (`mgnipy.V2.proxies`): Direct access to individual resource types
 #
-# Let's start by exploring available resources using the `MGnipy` client.
+# Let's start by exploring available resources via the `MGnipy` client.
 #
 # ---
 #
@@ -73,11 +71,11 @@ MG.describe_resources("analysis")
 # %%
 studies = MG.studies
 filtered_studies = studies.filter(search="chicken")
-print(filtered_studies.explain())
+filtered_studies.explain()
 # or
 print("\n----------\n")
 filtered_studies = MG.studies(search="chicken")
-print(filtered_studies.explain())
+filtered_studies.explain()
 
 # %% [markdown]
 # again to help there are helper functions for each resource proxy such as `.list_supported_params()` `.describe_endpoint()`
@@ -86,7 +84,7 @@ print(filtered_studies.explain())
 print(studies.list_supported_params())
 # or
 print("\n----------\n")
-print(studies.describe_endpoint())
+studies.describe_endpoint()
 
 # %% [markdown]
 # ## 2. Resource `mgnipy.V2.proxies`
@@ -98,10 +96,7 @@ from mgnipy.V2.proxies import Studies
 
 # %%
 chicken_studies = Studies(search="chicken")
-print(chicken_studies.describe_endpoint())
+chicken_studies.describe_endpoint()
+
 print("\n----------\n")
-print(chicken_studies.explain())
-
-# %%
-
-# %%
+chicken_studies.explain()
