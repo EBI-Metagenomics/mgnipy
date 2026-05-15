@@ -1,23 +1,28 @@
 # MGni.py
 
 ```{include} ../README.md
-:start-line: 0
+:start-line: 1
 :relative-docs: docs
 :relative-images:
 ```
 
 ```{toctree}
-:maxdepth: 2
-:caption: "Getting Started"
+:caption: "Quick Start"
 :hidden:
+tutorials/getting-started/installation.md
 tutorials/getting-started/available-resources
 tutorials/getting-started/mgnify-biomes
-tutorials/getting-started/study-analyses-simple
+tutorials/getting-started/demo-mgnify-tomatoes
+```
+
+```{toctree}
+:caption: "Configuration"
+:hidden:
+tutorials/getting-started/understanding-cache
 tutorials/getting-started/access-private-data
 ```
 
 ```{toctree}
-:maxdepth: 2
 :caption: "Demos"
 :hidden:
 <!-- tutorials/demo/pd-gut-microbiome -->
@@ -26,33 +31,20 @@ tutorials/getting-started/access-private-data
 ```
 
 ```{toctree}
-:maxdepth: 2
+:caption: "Reference"
+reference/mgnipy.mgnipy
+reference/mgnipy.V2
+reference/mgnipy.emgapi_v2_client.client
+reference/mgnipy.emgapi_v2_client.api
+```
+
+```{toctree}
 :caption: "Development Guide"
 :hidden:
-dev/README_emgapi-v2-client.md
-dev/intro-openapi-python-client.ipynb
-dev/capabilities_demo.ipynb
-```
-
-```{toctree}
-:maxdepth: 2
-:caption: "Reference"
-:hidden:
-
-reference/modules
-
-```
-
-```{toctree}
-:maxdepth: 2
-:caption: "Technical notes"
-:hidden:
-
+../Contributing.md
+dev/quick-emgapi-v2-client
+dev/readme-openapi-python-client
 README.md
-```
-
-```{include} ../Contributing.md
-:start-line: 0
 ```
 
 ```{include} ../CREDITS.md

@@ -2,6 +2,7 @@ mgnipy.emgapi\_v2\_client.api package
 =====================================
 
 .. automodule:: mgnipy.emgapi_v2_client.api
+   :inherited-members:
    :members:
    :show-inheritance:
    :undoc-members:
@@ -10,7 +11,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mgnipy.emgapi_v2_client.api.analyses
    mgnipy.emgapi_v2_client.api.assemblies

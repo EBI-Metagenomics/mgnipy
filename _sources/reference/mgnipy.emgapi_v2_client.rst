@@ -2,6 +2,7 @@ mgnipy.emgapi\_v2\_client package
 =================================
 
 .. automodule:: mgnipy.emgapi_v2_client
+   :inherited-members:
    :members:
    :show-inheritance:
    :undoc-members:
@@ -10,7 +11,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mgnipy.emgapi_v2_client.api
    mgnipy.emgapi_v2_client.models
@@ -18,26 +19,9 @@ Subpackages
 Submodules
 ----------
 
-mgnipy.emgapi\_v2\_client.client module
----------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mgnipy.emgapi_v2_client.client
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-mgnipy.emgapi\_v2\_client.errors module
----------------------------------------
-
-.. automodule:: mgnipy.emgapi_v2_client.errors
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-mgnipy.emgapi\_v2\_client.types module
---------------------------------------
-
-.. automodule:: mgnipy.emgapi_v2_client.types
-   :members:
-   :show-inheritance:
-   :undoc-members:
+   mgnipy.emgapi_v2_client.client
+   mgnipy.emgapi_v2_client.errors
+   mgnipy.emgapi_v2_client.types

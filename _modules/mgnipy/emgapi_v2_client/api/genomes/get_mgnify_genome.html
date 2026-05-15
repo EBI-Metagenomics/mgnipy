@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome &#8212; mgnipy 0.1.dev1+gd8457d5d1 documentation</title>
+    <title>mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome &#8212; mgnipy 0.1.dev1+g22bbb4f54 documentation</title>
   
   
   
@@ -31,13 +31,14 @@
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../../_static/documentation_options.js?v=29d4ac44"></script>
+    <script src="../../../../../_static/documentation_options.js?v=7c69bba1"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,8 +142,8 @@
       
     
     
-    <img src="../../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd8457d5d1 documentation - Home"/>
-    <script>document.write(`<img src="../../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd8457d5d1 documentation - Home"/>`);</script>
+    <img src="../../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g22bbb4f54 documentation - Home"/>
+    <script>document.write(`<img src="../../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g22bbb4f54 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -182,39 +183,24 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/available-resources.html">🕵 Exploring MGnify Resources 🗂</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/mgnify-biomes.html">🔍 Explore MGnify Biomes 	🏞</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/study-analyses-simple.html">🗃 Find all MGnify Analyses for a given Study</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/access-private-data.html">🔐 Accessing your private data 🔓</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dev/README_emgapi-v2-client.html">emgapi-v2-client submodule</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dev/intro-openapi-python-client.html">Quick guide to <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dev/capabilities_demo.html">MGnipy — Capabilities Demo</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../reference/modules.html">mgnipy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../reference/mgnipy.html">mgnipy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../reference/mgnipy.emgapi_v2_client.html">mgnipy.emgapi_v2_client package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../reference/mgnipy.emgapi_v2_client.models.html">mgnipy.emgapi_v2_client.models package</a></li>
-</ul>
-</details></li>
-</ul>
-</details></li>
-</ul>
-</details></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical notes</span></p>
-<ul class="nav bd-sidenav">
+        <ul class="list-caption"><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Quick Start</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/installation.html">📦 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/understanding-cache.html">🗄️ Getting to know the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/getting-started/access-private-data.html">🔐 Accessing your private data</a></li>
+</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dev/readme-openapi-python-client.html">🤝 What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../README.html">Docs creation</a></li>
-</ul>
-
+</ul></details></li></ul>
     </div>
 </nav></div>
     </div>
@@ -386,7 +372,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="sync_detailed">
-<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.sync_detailed">[docs]</a>
+<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.sync_detailed">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_detailed</span><span class="p">(</span>
     <span class="n">accession</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -420,7 +406,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="sync">
-<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.sync">[docs]</a>
+<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.sync">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span>
     <span class="n">accession</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -449,7 +435,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="asyncio_detailed">
-<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.asyncio_detailed">[docs]</a>
+<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.asyncio_detailed">[docs]</a>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">asyncio_detailed</span><span class="p">(</span>
     <span class="n">accession</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -481,7 +467,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="asyncio">
-<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.asyncio">[docs]</a>
+<a class="viewcode-back" href="../../../../../reference/mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.html#mgnipy.emgapi_v2_client.api.genomes.get_mgnify_genome.asyncio">[docs]</a>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">asyncio</span><span class="p">(</span>
     <span class="n">accession</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -560,6 +546,9 @@ By MGnify
   
   <div class="footer-item">
     
+<div class="extra_footer">
+  <div>hi there!</div>
+</div>
   </div>
   
 </div>

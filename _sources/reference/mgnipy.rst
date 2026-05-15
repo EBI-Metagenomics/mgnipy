@@ -2,6 +2,7 @@ mgnipy package
 ==============
 
 .. automodule:: mgnipy
+   :inherited-members:
    :members:
    :show-inheritance:
    :undoc-members:
@@ -10,7 +11,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mgnipy.V2
    mgnipy.emgapi_v2_client
@@ -18,18 +19,8 @@ Subpackages
 Submodules
 ----------
 
-mgnipy.cli module
------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mgnipy.cli
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-mgnipy.mgnipy module
---------------------
-
-.. automodule:: mgnipy.mgnipy
-   :members:
-   :show-inheritance:
-   :undoc-members:
+   mgnipy.cli
+   mgnipy.mgnipy
