@@ -361,7 +361,7 @@ class DiskCheckpointer:
                 with cache_file.open("r", encoding="utf-8") as fh:
                     data = json.load(fh)
                 # Extract page number from filename
-                request_num = int(cache_file.stem.split("_", 1)[1])
+                request_num = int(cache_file.stem.split("_")[-1])
                 # load page if avail in cache
                 self._results[request_num] = data
                 # tracking
