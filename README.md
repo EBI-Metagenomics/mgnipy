@@ -2,16 +2,28 @@
 
 MGni.py (pronounced MAG-nee-pie) is a Python wrapper for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/). It provides a high-level, Pythonic interface to query metagenomics data and metadata from the MGnify database.
 
-The Python client libraries were auto-generated using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) and provide data models and methods for API resources using `httpx` and `attrs`.
-
 ## Features
 
-- **Simple, Pythonic API** — Query studies, samples, analyses, and genomes with intuitive syntax
-- **Async-ready** — Built on `httpx` with async/await support for efficient I/O
-- **Data export** — Multiple output formats including pandas DataFrames and AnnData objects
-- **Caching** — Automatic caching to reduce redundant API calls
-- **Filtering & search** — Powerful filtering with support for custom parameters
-- **Biome hierarchy** — Navigate the GOLD ecosystem classification system
+- **Simple, Pythonic API** — Query MGnify studies, samples, analyses, etc. using an intuitive syntax
+- **Sync and Async support** — Built on `httpx` with async/await support
+- **Data export** — Multiple output formats including pandas and polars DataFrames
+- **Caching** — Option for disk caching to reduce redundant API calls and allow resuming
+
+## Available API Endpoints
+
+- **Studies**: MGnify studies (collections of samples, runs, assemblies and analyses derived from ENA studies/projects).
+- **Samples**: MGnify samples (based on ENA/BioSamples; individual biological samples).
+- **Runs**: Sequencing runs (ENA run accessions; individual sequencing runs of a sample).
+- **Assemblies**: Metagenome assemblies (equivalent to ENA assemblies for one or more runs).
+- **Analyses**: Pipeline analyses (results of running MGnify pipelines on runs or assemblies; includes taxonomic and functional annotations).
+- **Publications**: Publications that describe or analyse MGnify Studies/datasets.
+- **Genomes**: Annotated draft genomes (isolates or MAGs) arranged in biome-specific catalogues.
+- **Biomes**: List all biomes in the MGnify database.
+
+#### Note on private data:
+
+- To access your private data in any of these API endpoints you just need your MGnify user and password to obtain a valid sliding auth token via the [MGnify Authentication endpoints](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding).
+- `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py :)
 
 ## Installation
 
@@ -44,30 +56,34 @@ uv sync --all-groups  # or: pip install -e ".[dev,docs]"
 ```python
 from mgnipy import MGnipy
 
-# Create the main client
+# Create the main client, with default configuration
 mg = MGnipy()
 
 # See available endpoints
-print(mg.list_resources())
+mg.list_resources()
 ```
 
-### Query studies with filtering
+### Query resources with filtering
 
 ```python
-# Search for studies by biome and keyword
+# Search for studies keyword
 studies = mg.studies(
-    biomes_lineage="root:Host-associated:Plants:Rhizosphere",
-    search="tomato"
+    search="disease"
 )
 
-# Preview requests before fetching
-print(studies.explain())
-# or preview first page as df
-df = studies.preview()
+# Can preview requests before fetching
+studies.explain()
 
-# Get all results (async here but also sync option)
-import asyncio
-asyncio.run(studies.aget())
+# get page by page via .get(), getting 3 pages
+for _ in range(3)
+    studies.get()
+
+# or via .page(), getting another 3 pages
+for i in range(4,7):
+    studies.page(i)
+
+# OR potentially all at once in large batches (also async option .abulk_fetch())
+studies.bulk_fetch()
 ```
 
 ### Multiple output formats
@@ -82,39 +98,13 @@ pl_df = studies.to_polars()
 results_json = studies.to_json()
 ```
 
-## Available Endpoints
+## Additional Documentation
 
-- Studies — Browse and filter metagenomic studies
-- Samples — Query sample metadata
-- Runs — Access sequencing run information
-- Assemblies — Genome assembly data
-- Genomes — Genome-level information
-- Analyses — Analysis results and annotations
-- And more... — Use `mg.list_resources()` to see all available endpoints
-
-## Documentation
-
-- [MGnify API Docs](https://www.ebi.ac.uk/metagenomics/api/docs/)
+- [MGnify API Docs](https://www.ebi.ac.uk/metagenomics/api/v2)
 - [openapi-python-client](https://github.com/openapi-generators/openapi-python-client)
-- [package docs]()
+- [package docs](https://mgnipy.mgnify.org/)
 
 ## Development
-
-### Code quality
-
-```bash
-# Format and sort imports
-black mgnipy
-isort mgnipy
-
-# Lint
-ruff check mgnipy
-
-# Run tests
-pytest mgnipy tests
-```
-
-### Contributing
 
 see [Contributing.md](Contributing.md)
 

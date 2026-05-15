@@ -39,7 +39,11 @@ exclude_patterns = [
     "conf.py",
 ]
 
+# -- Theme configurations ---------------------------------------------------
+
 templates_path = ["_templates"]
+html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 
 html_theme = "sphinx_book_theme"
 html_logo = "assets/mgnipy.svg"
@@ -50,16 +54,20 @@ html_theme_options = {
     "repository_branch": "main",
     "home_page_in_toc": True,
     "path_to_docs": "docs",
-    "show_navbar_depth": 1,
+    "show_navbar_depth": 0,
+    "max_navbar_depth": 2,
+    "collapse_navbar": True,
+    "show_toc_level": 4,
     "use_edit_page_button": True,
     "use_repository_button": True,
     "use_download_button": True,
     "launch_buttons": {
-        "colab_url": "https://colab.research.google.com"
-        #     "binderhub_url": "https://mybinder.org",
-        #     "notebook_interface": "jupyterlab",
+        "colab_url": "https://colab.research.google.com",
+        "binderhub_url": "https://mybinder.org",
+        "notebook_interface": "jupyterlab",
     },
     "navigation_with_keys": False,
+    "extra_footer": "<div>hi there!</div>",
 }
 html_js_files = [
     "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"
@@ -72,17 +80,6 @@ html_js_files = [
 autosummary_generate = True
 
 ## autodoc options
-
-autodoc_default_options = {
-    "members": True,
-    "undoc-members": False,
-    "private-members": False,  # Exclude _private attributes
-    "special-members": False,  # Exclude __special__ methods
-    "inherited-members": True,  # Exclude inherited members
-    "show-inheritance": True,  # Show class inheritance diagram
-    "member-order": "bysource",  # Order members by source code order
-}
-
 autodoc_typehints = "description"
 
 ## sphinx_new_tab_link
@@ -90,15 +87,12 @@ new_tab_link_show_external_link_icon = True
 
 ## myst_nb
 # https://myst-nb.readthedocs.io/en/latest/configuration.html
-
 myst_enable_extensions = ["dollarmath", "amsmath"]
-
 # Execution
 #  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
 nb_execution_mode = "auto"
 nb_execution_timeout = -1  # -1 means no timeout
 nb_execution_raise_on_error = True  # fail the build if a notebook cell raises an error
-
 # Rendering
 nb_merge_streams = True
 
@@ -109,37 +103,3 @@ intersphinx_mapping = {
     "anndata": ("https://anndata.readthedocs.io/en/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
 }
-
-
-# -- Setup for sphinx-apidoc -------------------------------------------------
-
-# Read the Docs doesn't support running arbitrary commands like tox.
-# sphinx-apidoc needs to be called manually if Sphinx is running there.
-# https://github.com/readthedocs/readthedocs.org/issues/1139
-
-if os.environ.get("READTHEDOCS") == "True":
-    from pathlib import Path
-
-    PROJECT_ROOT = Path(__file__).parent.parent
-    print(f"PROJECT_ROOT: {PROJECT_ROOT}")
-    PACKAGE_ROOT = PROJECT_ROOT / "mgnipy"
-
-    def run_apidoc(_):
-        from sphinx.ext import apidoc
-
-        apidoc.main(
-            [
-                "--force",
-                "--implicit-namespaces",
-                "--module-first",
-                "--separate",
-                "-o",
-                str(PROJECT_ROOT / "docs" / "reference" / "mgnipy"),
-                str(PACKAGE_ROOT),
-                str(PACKAGE_ROOT / "*.c"),
-                str(PACKAGE_ROOT / "*.so"),
-            ]
-        )
-
-    def setup(app):
-        app.connect("builder-inited", run_apidoc)
