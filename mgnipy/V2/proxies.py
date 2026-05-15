@@ -128,7 +128,7 @@ class MGnifyList(MGnifier):
         # Merge with params, giving precedence to kwargs
         params.update(kwargs)
 
-        return self.__class__(config=self.config.model_dump(mode="json"), params=params)
+        return self.__class__(config=self.config, params=params)
 
     def __len__(self) -> int:
         """Return the number of child details based on results.
@@ -533,7 +533,7 @@ class MGnifyDetail(MGnifier):
 
         new_qs = self.__class__(
             id=detail_id,
-            config=self.config.model_dump(mode="json"),
+            config=self.config,
             params=merged_params,
         )
         new_qs.endpoint_module = self.endpoint_module
@@ -618,7 +618,7 @@ class MGnifyDetail(MGnifier):
             f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
-            config=self.config.model_dump(mode="json")
+            config=self.config
         )
         logging.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
 
@@ -682,9 +682,7 @@ class MGnifyDetail(MGnifier):
             self.identifier, param_name=custom_id_param_key
         )
         logging.debug(f"Resolved access param for list proxy: {id_param}")
-        list_endpoint = proxy_cls(
-            config=self.config.model_dump(mode="json"), **id_param
-        )
+        list_endpoint = proxy_cls(config=self.config, **id_param)
         list_endpoint.endpoint_module = self._next_rel_module(resource)
         logging.debug(
             f"Set endpoint module for list proxy: {list_endpoint.endpoint_module} with params {list_endpoint.params!r}"

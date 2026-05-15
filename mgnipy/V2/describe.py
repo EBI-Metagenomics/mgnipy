@@ -172,7 +172,7 @@ class DescribeEmgapiModule:
         self, num_items: Optional[int], page_size: Optional[int] = None
     ) -> Optional[int]:
         """Calculates the total number of pages based on the total count and default page size."""
-        if not num_items:
+        if num_items is None:
             return None
         ps = page_size or self.default_page_size
         return ceil(num_items / ps)

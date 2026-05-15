@@ -358,7 +358,7 @@ class QuerySet:
 
         new_qs = self.__class__(
             resource=target_resource,
-            config=self.config.model_dump(mode="json"),
+            config=self.config,
             params=merged_params,
         )
         new_qs.endpoint_module = self.endpoint_module

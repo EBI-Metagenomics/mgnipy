@@ -680,7 +680,7 @@ class QueryExecutor:
         """
 
         # not allow to run this without preview/plan first?
-        if self.qs.count is None:
+        if self.qs.count is None or self.qs.num_requests is None:
             if safety:
                 raise AssertionError(
                     "Total items is unknown. Please run .dry_run() or .preview() or .explain() before collecting metadata."
@@ -691,7 +691,7 @@ class QueryExecutor:
                 )
                 self.set_counts()
 
-                if self.qs.count is None:
+                if self.qs.count is None or self.qs.num_requests is None:
                     raise RuntimeError(
                         "Could not retrieve item count from API. Cannot resolve pages to collect."
                     )
