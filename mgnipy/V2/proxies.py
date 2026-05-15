@@ -283,10 +283,10 @@ class MGnifyList(MGnifier):
 
         Examples
         --------
-        >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
-        >>> studies = Studies()  # doctest: +SKIP
+        >>> from mgnipy.V2.proxies import Studies
+        >>> studies = Studies()
         >>> studies._detail_endpoint
-
+        <module 'mgnipy.emgapi_v2_client.api.studies.get_mgnify_study' from '/Users/phanthanourak/github/mgnipy/mgnipy/emgapi_v2_client/api/studies/get_mgnify_study.py'>
         """  # check
         if len(self.list_relationships()) == 0:
             raise AttributeError(f"{self.resource} does not have any linked resources.")

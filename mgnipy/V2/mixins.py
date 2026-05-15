@@ -20,6 +20,7 @@ from bigtree import (
     Tree,
 )
 
+from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.writers import atomic_write_json
 
 if TYPE_CHECKING:
@@ -233,9 +234,10 @@ class DiskCheckpointer:
 
     def __init__(
         self,
+        *,
         params_getter: Callable[[], dict],
         resource_str: str,
-        config,
+        config: MGnipyConfig,
         results_store: Optional[dict] = None,
         count: Optional[Callable[[], int]] = None,
         num_requests: Optional[Callable[[], int]] = None,
@@ -268,12 +270,16 @@ class DiskCheckpointer:
 
         Example
         -------
+        >>> # Imports
         >>> from mgnipy.V2.mixins import DiskCheckpointer
-        >>> from mgnipy.V2.config import MGnifyConfig
+        >>> from mgnipy import MGnipyConfig
+        >>> # Prepare parameters and config
         >>> params = {'lineage': 'root:Environmental:Terrestrial'}
-        >>> resource_str = 'biome'
-        >>> config = MGnifyConfig()
-        >>> cache_key = DiskCheckpointer(params, resource_str, config)._cache_key
+        >>> resource = 'biome'
+        >>> config = MGnipyConfig(cache_dir="/path/to/cache")
+        >>> # Create DiskCheckpointer instance and compute cache key
+        >>> cache_handler = DiskCheckpointer(params_getter=lambda: params, resource_str=resource, config=config)
+        >>> cache_handler._cache_key
         '1eb56ddf5a2e7d60d8155c8bbe01f032f959a2519d43e99f31f533abffa3166f'
         """
         params = self._params_getter().copy()

@@ -365,12 +365,12 @@ def to_mgnipy_config(input: MGnipyConfig | dict | None) -> MGnipyConfig:
     ...     "mg_user": "myuser",
     ...     "mg_password": "mypassword",
     ...     "cache_dir": "/path/to/cache",
-    ...
+    ... }
     >>> config = to_mgnipy_config(config_dict)
     >>> config.api_version
     <SupportedApiVersions.V2: 'v2'>
     >>> config.base_url
-    HttpUrl('https://www.ebi.ac.uk/', scheme='https')
+    HttpUrl('https://www.ebi.ac.uk/')
     >>> config.cache_dir
     PosixPath('/path/to/cache')
     """

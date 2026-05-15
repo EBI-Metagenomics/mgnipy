@@ -277,15 +277,15 @@ def mirror_api(source):
     Examples
     --------
     >>> def source_function(x: int) -> int:
-    ...     '''This is the source function.'''
+    ...     '''This is the source function documentation.'''
     ...     return x * 2
     >>> @mirror_api(source_function)
     ... def target_function(y: int) -> int:
     ...     return y + 3
     >>> target_function.__doc__
-    'This is the source function.'
+    'This is the source function documentation.'
     >>> str(inspect.signature(target_function))
-    '(y: int) -> int'
+    '(x: int) -> int'
     """
 
     def decorator(target):
