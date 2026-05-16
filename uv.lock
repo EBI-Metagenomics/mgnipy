@@ -1387,6 +1387,7 @@ docs = [
     { name = "sphinx-book-theme" },
     { name = "sphinx-copybutton" },
     { name = "sphinx-new-tab-link" },
+    { name = "sphinx-thebe" },
 ]
 
 [package.metadata]
@@ -1430,6 +1431,7 @@ docs = [
     { name = "sphinx-book-theme", specifier = ">=1.1.4" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinx-new-tab-link", specifier = ">=0.8.0" },
+    { name = "sphinx-thebe", specifier = ">=0.3.1" },
 ]
 
 [[package]]
@@ -3129,6 +3131,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/be/06/a407a7bcaf4c8109b0be8a584084c5bd0975422b862043b4f58a7378dbab/sphinx_new_tab_link-0.8.1.tar.gz", hash = "sha256:f8b3b369b660824664fd51bacf126deb8f800364dae17b7142b5d0e17385f77f", size = 6624, upload-time = "2025-10-12T14:50:27Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ba/2e/5f42ac3e8e68b3878fed18a986160a97b671e7c44bdb4c99c963618ebeb7/sphinx_new_tab_link-0.8.1-py3-none-any.whl", hash = "sha256:fd88be77deaab982b5fdd0be9ef63cfa93f14deab775ab423b6c856402a57ebd", size = 5624, upload-time = "2025-10-12T14:50:25.718Z" },
+]
+
+[[package]]
+name = "sphinx-thebe"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx", version = "8.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "sphinx", version = "9.0.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "sphinx", version = "9.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/da/fd/926ba4af1eb2708b1ac0fa4376e4bfb11d9a32b2a00e3614137a569c1ddf/sphinx_thebe-0.3.1.tar.gz", hash = "sha256:576047f45560e82f64aa5f15200b1eb094dcfe1c5b8f531a8a65bd208e25a493", size = 20789, upload-time = "2024-02-07T13:31:57.002Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ca/7c/a53bdb465fd364bc3d255d96d5d70e6ba5183cfb4e45b8aa91c59b099124/sphinx_thebe-0.3.1-py3-none-any.whl", hash = "sha256:e7e7edee9f0d601c76bc70156c471e114939484b111dd8e74fe47ac88baffc52", size = 9030, upload-time = "2024-02-07T13:31:55.286Z" },
 ]
 
 [[package]]
