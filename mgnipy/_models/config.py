@@ -39,7 +39,7 @@ APPAUTHOR = "MGnify"
 CACHE_DIR = user_cache_dir(APPNAME, APPAUTHOR)
 
 
-class MgnipyConfig(BaseSettings):
+class BaseMGnipyConfig(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -74,11 +74,12 @@ class MgnipyConfig(BaseSettings):
         repr=False,
     )
 
-    cache_dir: Path = Field(
+    cache_dir: Optional[Path] = Field(
         default_factory=lambda: Path(CACHE_DIR),
         description=(
             "Cache directory for storing API responses or other temp things. "
-            "Defaults to a platform-appropriate cache dir via `platformdirs`.",
+            "Defaults to a platform-appropriate cache dir via `platformdirs`. "
+            "Set to None to disable disk caching.",
         ),
     )
 
@@ -88,11 +89,11 @@ class MgnipyConfig(BaseSettings):
         return str(v)
 
 
-class AuthMGnipyConfig(MgnipyConfig):
+class MGnipyConfig(BaseMGnipyConfig):
     """
     Manage authentication credentials and tokens.
 
-    Extension of MgnipyConfig with methods for handling authentication,
+    Extension of BaseMGnipyConfig with methods for handling authentication,
     including obtaining, verifying, and refreshing tokens.
     """
 
@@ -100,10 +101,13 @@ class AuthMGnipyConfig(MgnipyConfig):
         """Client without auth for getting tokens"""
         return Client(base_url=str(self.base_url))
 
-    def _token_cache_path(self) -> Path:
+    def _token_cache_path(self) -> Optional[Path]:
         """
         Generate a cache file path for storing the authentication token based on the base URL and username.
         """
+        if self.cache_dir is None:
+            return None
+
         # create dir if not exist
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         # hash of url and username for filename
@@ -118,7 +122,7 @@ class AuthMGnipyConfig(MgnipyConfig):
         Also if cant read then return None to get new token
         """
         token_path = self._token_cache_path()
-        if not token_path.exists():
+        if token_path is None or not token_path.exists():
             return None
         try:
             data = json.loads(token_path.read_text())
@@ -138,6 +142,8 @@ class AuthMGnipyConfig(MgnipyConfig):
 
         """
         token_path = self._token_cache_path()
+        if token_path is None:
+            return
         to_cache = {"auth_token": auth_token, "ts": int(time())}
         token_path.write_text(json.dumps(to_cache))
 
@@ -146,7 +152,7 @@ class AuthMGnipyConfig(MgnipyConfig):
         Clear the cached authentication token by deleting the cache file if it exists.
         """
         token_path = self._token_cache_path()
-        if token_path.exists():
+        if token_path is not None and token_path.exists():
             token_path.unlink(missing_ok=True)
 
     def _get_login(
@@ -175,7 +181,7 @@ class AuthMGnipyConfig(MgnipyConfig):
 
         Example
         -------
-        config = AuthMGnipyConfig(mg_user="myuser", mg_password="mypassword")
+        config = MGnipyConfig(mg_user="myuser", mg_password="mypassword")
         username, password = config._get_login()
         """
         # if already configured return them
@@ -296,7 +302,7 @@ class AuthMGnipyConfig(MgnipyConfig):
 
         Example
         -------
-        config = AuthMGnipyConfig(mg_user="myuser", mg_password="mypassword")
+        config = MGnipyConfig(mg_user="myuser", mg_password="mypassword")
         config.resolve_auth_token()
         """
 
@@ -334,3 +340,46 @@ class AuthMGnipyConfig(MgnipyConfig):
             raise RuntimeError("Failed to resolve a valid authentication token.")
         if self.auth_token and self.verify_auth_token(self.auth_token):
             print("Authenticated successfully.")
+
+
+def to_mgnipy_config(input: MGnipyConfig | dict | None) -> MGnipyConfig:
+    """
+    Helper function to convert a dictionary or MGnipyConfig instance into an MGnipyConfig instance.
+
+    Parameters
+    ----------
+    input : MGnipyConfig or dict or None
+        The input configuration, which can be an instance of MGnipyConfig, a dictionary containing the configuration parameters, or None.
+        If None then default MGnipyConfig will be returned.
+
+    Returns
+    -------
+    MGnipyConfig
+        An instance of MGnipyConfig created from the input.
+
+    Examples
+    --------
+    >>> config_dict = {
+    ...     "api_version": "v2",
+    ...     "base_url": "https://www.ebi.ac.uk/",
+    ...     "mg_user": "myuser",
+    ...     "mg_password": "mypassword",
+    ...     "cache_dir": "/path/to/cache",
+    ... }
+    >>> config = to_mgnipy_config(config_dict)
+    >>> config.api_version
+    <SupportedApiVersions.V2: 'v2'>
+    >>> config.base_url
+    HttpUrl('https://www.ebi.ac.uk/')
+    >>> config.cache_dir
+    PosixPath('/path/to/cache')
+    """
+
+    if isinstance(input, MGnipyConfig):
+        return input
+    elif isinstance(input, dict):
+        return MGnipyConfig(**input)
+    elif input is None:
+        return MGnipyConfig()
+    else:
+        return MGnipyConfig()

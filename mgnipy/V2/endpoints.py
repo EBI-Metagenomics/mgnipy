@@ -40,7 +40,7 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_samples,
 )
 
-LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
+RESOURCES_LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
     SupportedEndpoints.SAMPLES: list_mgnify_samples,  # get all samples, filtering option or with study acc
@@ -53,7 +53,7 @@ LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.PRIVATE_STUDIES: list_private_mgnify_studies,
 }
 
-DETAIL_ENDPOINTS_BY_ID: dict[SupportedEndpoints, callable] = {
+RESOURCES_DETAIL_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.BIOME: list_mgnify_biomes,
     SupportedEndpoints.STUDY: get_mgnify_study,
     SupportedEndpoints.SAMPLE: get_mgnify_sample,
@@ -65,8 +65,8 @@ DETAIL_ENDPOINTS_BY_ID: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.CATALOGUE: get_genome_catalogue,
 }
 
-ALL_ENDPOINTS: dict[SupportedEndpoints, callable] = (
-    LIST_ENDPOINTS | DETAIL_ENDPOINTS_BY_ID
+RESOURCES_ALL_ENDPOINTS: dict[SupportedEndpoints, callable] = (
+    RESOURCES_LIST_ENDPOINTS | RESOURCES_DETAIL_ENDPOINTS
 )
 
 PARENT_CHILD_RESOURCES: dict[SupportedEndpoints, SupportedEndpoints] = {
@@ -84,7 +84,7 @@ PARENT_CHILD_RESOURCES: dict[SupportedEndpoints, SupportedEndpoints] = {
 WITHIN_RESOURCE_RELATIONSHIPS: dict[
     SupportedEndpoints, dict[SupportedEndpoints, callable]
 ] = {
-    parent: {child: DETAIL_ENDPOINTS_BY_ID[child]}
+    parent: {child: RESOURCES_DETAIL_ENDPOINTS[child]}
     for parent, child in PARENT_CHILD_RESOURCES.items()
 }
 
@@ -128,6 +128,10 @@ ALL_SUPPORTED_RELATIONSHIPS: dict[
 PRIVATE_ENDPOINTS: set[SupportedEndpoints] = {
     SupportedEndpoints.PRIVATE_STUDIES,
 }
+
+ALL_LIST_ENDPOINTS: list[callable] = list(RESOURCES_LIST_ENDPOINTS.values()) + [
+    v for d in BETWEEN_RESOURCE_RELATIONSHIPS.values() for v in d.values()
+]
 
 # so basically an agent could update this based on openapi.json spec changes,
 # and then the rest of the code should work without needing to change?

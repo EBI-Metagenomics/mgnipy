@@ -1,10 +1,11 @@
-# emgapi-v2-client submodule
+# 🤝 What is `openapi-python-client`
 
-A client library for accessing version 2 of the MGnify API
+The `emgapi_v2_client` sub-package is a Python client library for accessing version 2 of the MGnify API created using package [openapi-python-client](https://github.com/openapi-generators/openapi-python-client).
 
-<details>
-<summary style=color:lightgreen>
-Expand for more info on how the client library was generated using
+<br>
+<details style="font-size:16px">
+<summary style="color:green; font-size:18px; font-weight:600">
+    Expand for more info on how the client library was generated using
 <code style=color:lightgreen>openapi-python-client</code>
 </summary>
 <h1></h1>
@@ -21,29 +22,33 @@ openapi-python-client generate \
 
 Specifically [**_./autogen_clients.sh_**](https://github.com/EBI-Metagenomics/mgnipy/blob/main/autogen_clients.sh) was used to generate the python client library `emgapi_v2_client` using the command `openapi-python-client generate`
 
-The genereated python client was moved into the mgnipy package and is treated as a submodule in mgnipy.
+The genereated python client was moved into the mgnipy package and is treated as a sub-package in mgnipy.
 
 <h1></h1>
 </details>
 <br>
-<br>
 
-## Introduction
+---
 
-The `emgapi_v2_client` is a Python library that provides programmatic access to version 2 of the MGnify API. It serves as the core HTTP client within the MGni.py package, enabling seamless interaction with MGnify's comprehensive dataset of metagenomic analyses, samples, runs, assemblies, genomes, and more. It abstracts away the complexity of direct HTTP requests while maintaining type safety through `attrs`-based models.
+---
 
-### Purpose
+## Foreword
 
-This client library was automatically generated from the [MGnify API v2 OpenAPI specification](https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json) using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client), ensuring that it stays synchronized with the latest API endpoints and models.
+The `emgapi_v2_client` is a sub-package within MGni.py. It serves as the initial HTTP client to remove the complexity of direct HTTP requests to version 2 of the MGnify API while maintaining type safety through `attrs`-based models.
 
-### Key Features
+### Development
 
-- **Type-safe API interactions**: All requests and responses are validated using `attrs` models
-- **Flexible authentication**: Support for both public endpoints and authenticated requests via API tokens
-- **Synchronous and asynchronous support**: Call endpoints using either blocking `sync` operations or async/await patterns
-- **Detailed response information**: Access raw response data, status codes, and parsed models
+This client library was automatically generated from the [MGnify API v2 OpenAPI specification](https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json) using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client). This choice was made in the hopes that it would be easier for MGni.py to be updated with changes to the MGnify API endpoints and models.
 
-The rest of this readme was also initiated by [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) when using `generate` and provides instructions on how to use the generated client directly.
+### Maintenance
+
+To update the client library ideally (hopefully) you can just run [**_./autogen_clients.sh_**](https://github.com/EBI-Metagenomics/mgnipy/blob/main/autogen_clients.sh)
+
+---
+
+---
+
+The rest of this readme was also initiated by [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) and provides instructions on how to use the generated client directly.
 
 ## Usage
 

@@ -9,7 +9,7 @@ on:
   push:
     tags:
       - "v*"
-      
+
 permissions:
   contents: read
 
@@ -21,9 +21,6 @@ jobs:
       - uses: psf/black@stable
         with:
           src: "./mgnipy"
-      - uses: isort/isort-action@v1
-        with: 
-          sort-paths: "./mgnipy"
 
   lint:
     name: Lint with ruff
@@ -33,7 +30,7 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
           src: "./mgnipy"
-        
+
   test:
     name: Test
     runs-on: ubuntu-latest

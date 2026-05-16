@@ -11,17 +11,23 @@ from typing import (
 )
 
 from tqdm import tqdm
+from tqdm.asyncio import tqdm_asyncio
 
-from mgnipy._shared_helpers.async_helpers import get_semaphore
-from mgnipy._shared_helpers.pydantic_help import validate_gt_int
+from mgnipy._shared_helpers.async_helpers import (
+    get_semaphore,
+)
+from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.emgapi_v2_client import (
     AuthenticatedClient,
     Client,
 )
-from mgnipy.emgapi_v2_client.types import Response as mpy_Response
 
 if TYPE_CHECKING:
+    from mgnipy.emgapi_v2_client.types import Response as mpy_Response
     from mgnipy.V2.query_set import QuerySet
+
+PAGES_LIMIT = 100
+ITEMS_LIMIT = PAGES_LIMIT * 25
 
 
 class QueryExecutor:
@@ -31,17 +37,315 @@ class QueryExecutor:
         # question: should this be shared across all instances of QueryExecutor or should each have their own?
         # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
         self._semaphore = get_semaphore()
+        # tracking
+        self._successful_pages = []
+        self.reset_iterator()
 
-    def require_pagination(func):
-        def wrapper(self, *args, **kwargs):
-            if not self.qs.pagination_status:
-                raise RuntimeError(
-                    f"Current endpoint does not support pagination: {self.qs.endpoint_module}. "
-                    "Please check the documentation for supported parameters."
-                )
-            return func(self, *args, **kwargs)
+    def query_setups(
+        self, request_num: Optional[int] = None, **httpx_kwargs
+    ) -> dict[dict[str, Any]]:
+        if request_num is None:
+            return self.qs.queries(**httpx_kwargs)
+        return self.qs.queries(**httpx_kwargs).get(request_num, None)
 
-        return wrapper
+    def _init_iter_state(self, from_page: int = 0) -> None:
+        """
+        Setup internal state for iteration or async iteration.
+
+        Examples
+        --------
+        >>> # Initialize iterator state for sync iteration
+        >>> executor._init_iter_state()  # doctest: +SKIP
+        """
+        self._iter_page_nums = self._resolve_pages_to_collect(
+            limit=ITEMS_LIMIT, safety=False, from_page=from_page
+        )
+        self._iter_index = 0
+
+    def __iter__(self):
+        """Initialize and return a synchronous iterator over pages.
+
+        Example
+        -------
+        >>> # Iterate pages synchronously (network calls skipped in doctest)
+        >>> for page in QueryExecutor(qs):  # doctest: +SKIP
+        ...     pass
+        """
+        self._init_iter_state()
+        return self
+
+    def __next__(self):
+        """
+        Retrieve the next page of results in synchronous iteration.
+
+        Example
+        -------
+        >>> # Get next page via iterator
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> next(executor)  # doctest: +SKIP
+        """
+        # if no pages loaded, load with limits to next batch
+        if not self._iter_page_nums:
+            self._init_iter_state()
+        # check if we have exhausted the loaded pages
+        if self._iter_index >= len(self._iter_page_nums):
+            raise StopIteration
+        # get next page num and advance index
+        page_num = self._iter_page_nums[self._iter_index]
+        print(f"Advancing to request num {page_num}")
+        self._iter_index += 1
+        try:
+            result = self.page(page_num)
+            return result
+        except Exception as e:
+            logging.error(f"Error fetching request num {page_num}: {e}")
+            raise
+
+    def get(self):
+        """Alternative to getting the next page of results.
+
+        Returns
+        -------
+        The next page dict or ``None`` when iteration is complete.
+
+        Example
+        -------
+        >>> # Fetch next page via helper (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.get()  # doctest: +SKIP
+        """
+        try:
+            return next(self)
+        except StopIteration:
+            return None
+
+    def __aiter__(self):
+        """Initialize and return an asynchronous iterator over pages.
+
+        Example
+        -------
+        >>> # Async iteration pattern (doctest skipped)
+        >>> async for page in QueryExecutor(qs):  # doctest: +SKIP
+        ...     pass
+        """
+        self._init_iter_state()
+        return self
+
+    async def __anext__(self):
+        """
+        Retrieve the next page of results in asynchronous iteration.
+
+        Example
+        -------
+        >>> # Get next page via async iterator
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> asyncio.run(executor.__anext__())  # doctest: +SKIP
+        """
+        if not self._iter_page_nums:
+            self._init_iter_state()
+        if self._iter_index >= len(self._iter_page_nums):
+            raise StopAsyncIteration
+        p = self._iter_page_nums[self._iter_index]
+        print(f"Advancing to request num {p} (async)")
+        self._iter_index += 1
+        try:
+            result = await self.apage(p)
+            return result
+        except Exception as e:
+            logging.error(f"Error fetching request num {p}: {e}")
+            raise
+
+    async def aget(self):
+        """Async alternative to fetch the next page.
+
+        Returns
+        -------
+        The next page dict or ``None`` when iteration is complete.
+
+        Example
+        -------
+        >>> # Async fetch via helper (doctest skipped)
+        >>> import asyncio
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> asyncio.run(executor.aget())  # doctest: +SKIP
+        """
+        try:
+            return await self.__anext__()
+        except StopAsyncIteration:
+            return None
+
+    def reset_iterator(self):
+        """Reset the iterator to start from the beginning.
+
+        Example
+        -------
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.reset_iterator()  # doctest: +SKIP
+        """
+        self._iter_page_nums = []
+        self._iter_index = 0
+
+    def continue_iterator(self, start_page: Optional[int] = None):
+        """
+        - Continue iterating from a given page or next batch after pages_limit
+        - For resuming after hitting the page limit
+
+        Parameters
+        ----------
+        start_page : int, optional
+            The page number to start from.
+            If None, starts from the next page after the current limit.
+
+        Examples
+        --------
+        >>> # Continue from a specific page
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.continue_iterator(start_page=50)  # doctest: +SKIP
+        >>> # Continue from next batch after previous pages
+        >>> executor.continue_iterator()  # doctest: +SKIP
+        """
+        # get potential start page
+        if start_page is None:
+            # then cont from last batch
+            start_page = (
+                max(self._successful_pages) + 1 if self._successful_pages else 1
+            )
+
+        # set with limits to next batch
+        self._init_iter_state(from_page=start_page)
+        logging.info(
+            f"Continuing iteration from page {start_page}, "
+            f"loaded {len(self._iter_page_nums)} pages"
+        )
+
+    def resume(self):
+        """Resume iteration from the page after the last successful one.
+
+        Example
+        -------
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.resume()  # doctest: +SKIP
+        """
+        if not self._successful_pages:
+            logging.warning("No successful pages yet, so resuming from start")
+            self.reset_iterator()
+            return self
+
+        # continuing from successful page
+        next_page = max(self._successful_pages) + 1
+        logging.info(f"Resuming from page {next_page}")
+        self.continue_iterator(start_page=next_page)
+
+    def _init_client(
+        self,
+        auth_token: Optional[str] = None,
+        **httpx_kwargs,
+    ) -> Client:
+        """
+        Initialize and return a MGnify API client instance.
+
+        Returns
+        -------
+        Client
+            Configured MGnify API client.
+
+        Example
+        -------
+        >>> # Initialize an http client (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor._init_client()  # doctest: +SKIP
+        """
+
+        _auth = auth_token or self.qs.config.auth_token
+
+        if _auth:
+            logging.info("Initializing client with provided auth token.")
+            return AuthenticatedClient(
+                base_url=str(self.qs.base_url),
+                token=_auth,
+                **httpx_kwargs,
+            )
+
+        return Client(
+            base_url=str(self.qs.base_url),
+            **httpx_kwargs,
+        )
+
+    def set_counts(self):
+        """
+        Helper method to set the count and num_requests attributes
+        based on the current parameters and endpoint.
+
+        Example
+        -------
+        >>> # Populate qs.count and qs.num_requests (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.set_counts()  # doctest: +SKIP
+        """
+        if self.qs.count is not None and self.qs.num_requests is not None:
+            logging.debug(
+                f"Using cached count and num_requests vals: {self.qs.count}, {self.qs.num_requests}"
+            )
+        else:
+            self.qs.count = self.qs.emgapi_handler.get_num_items(
+                self._init_client(), params=self.qs.params
+            )
+            self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
+                self.qs.count, page_size=self.qs.params.get("page_size", None)
+            )
+            logging.debug(
+                f"Computed count and num_requests: {self.qs.count}, {self.qs.num_requests}"
+            )
+
+        # to the disk too
+        self.qs.cache_handler._total_records = self.qs.count
+        self.qs.cache_handler._total_requests = self.qs.num_requests
+
+        # also init results dict if not already for tracking pages results
+        if self.qs._results is None:
+            self.qs._results = {}
+
+    def first(self) -> dict:
+        """
+        Retrieve the first page of metadata for the current resource and parameters.
+        Same as preview() but returns the raw dictionary instead of a DataFrame.
+        """
+
+        if self.qs._is_in_results(1):
+            logging.info("First response already retrieved, using cached results.")
+        elif not self.qs.emgapi_handler.is_list_endpoint:
+            response_dict = self.exec.get()
+            self.qs._results[1] = response_dict
+
+        """Return the first page (cached or fetched).
+
+        Example
+        -------
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.first()  # doctest: +SKIP
+        """
+        return self.qs._results.get(1, [])
+
+    async def afirst(self) -> dict:
+        """
+        Asynchronously retrieve the first page of metadata for the current resource and parameters.
+        Same as preview() but returns the raw dictionary instead of a DataFrame.
+        """
+        if self.qs._is_in_results(1):
+            logging.info("First response already retrieved, using cached results.")
+        elif not self.qs.emgapi_handler.is_list_endpoint:
+            response_dict = await self.exec.aget()
+            self.qs._results[1] = response_dict
+
+        """Async variant returning the first page.
+
+        Example
+        -------
+        >>> import asyncio
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> asyncio.run(executor.afirst())  # doctest: +SKIP
+        """
+        return self.qs._results.get(1, [])
 
     async def _semaphore_guarded_request(
         self,
@@ -75,8 +379,6 @@ class QueryExecutor:
         self,
         items,
         worker,
-        *,
-        concurrency: Optional[int] = None,
         hide_progress: bool = False,
     ):
         """
@@ -85,65 +387,74 @@ class QueryExecutor:
 
         Example
         -------
-        results = await self.map_with_concurrency(
-            items=pages,
-            worker=lambda p: self.apage(p, client),
-            concurrency=8,
-        )
+        >>> # Map worker over pages with concurrency (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> pages = [1,2,3]  # doctest: +SKIP
+        >>> results = await executor.map_with_concurrency(
+        ...     items=pages,
+        ...     worker=lambda p: executor.apage(p),
+        ... )  # doctest: +SKIP
         """
-        # get semaphore for concurrency
-        semaphore = concurrency or self._semaphore
 
-        # helper to run worker with semaphore
+        # Define a helper coroutine that wraps the worker with semaphore protection.
+        # This ensures that at most `semaphore.value` workers run concurrently.
+        # The index `i` is captured and returned so we can reconstruct order later.
         async def _run_one(i, item):
-            async with semaphore:
+            # Acquire semaphore slot; block if all slots are taken.
+            # This throttles concurrency to protect the server.
+            async with self._semaphore:
+                # Run the worker and return both the index and the result value.
+                # The index is crucial for preserving order.
                 return i, await worker(item)
 
-        # create tasks for all items
+        # Create all async tasks upfront (one per item).
+        # enumerate() pairs each item with its original index (0, 1, 2, ...).
+        # asyncio.create_task() schedules the coroutine; it starts running soon
+        # but may not complete immediately (depends on semaphore availability).
         tasks = [asyncio.create_task(_run_one(i, item)) for i, item in enumerate(items)]
-        # collect results as they complete, preserving order
+
+        # Preallocate a list to hold results in their original order.
+        # Initialize with None so we can place results by index without knowing
+        # which task will finish first. This is key to preserving order.
         ordered = [None] * len(tasks)
-        # tqdm for progress bar
-        for task in tqdm(
-            asyncio.as_completed(tasks),
-            total=len(tasks),
-            desc="Processing",
-            disable=hide_progress,
+
+        # as_completed(tasks) yields tasks in completion order, NOT original order.
+        # So tasks that finish fast are yielded first, regardless of their original index.
+        # tqdm_asyncio wraps this to show a progress bar.
+        for task in tqdm_asyncio.as_completed(
+            tasks, disable=hide_progress, desc="Retrieving pages"
         ):
+            # Unpack the tuple (i, value) returned by the completed task.
+            # i = original index of this item
+            # value = result from worker(item)
             i, value = await task
+
+            # Place the result into its original position using the index.
+            # Example: if item[5] finishes first, its result goes to ordered[5],
+            # even though it's the first to complete.
+            # This is why we get back results in original order despite as_completed().
             ordered[i] = value
+
+        # Return results in their original order (same as input items order).
         return ordered
-
-    def _init_client(self, auth_token: Optional[str] = None) -> Client:
-        """
-        Initialize and return a MGnify API client instance.
-
-        Returns
-        -------
-        Client
-            Configured MGnify API client.
-        """
-
-        _auth = auth_token or self.qs.config.auth_token
-
-        if _auth:
-            logging.info("Initializing client with provided auth token.")
-            return AuthenticatedClient(
-                base_url=str(self.qs._base_url),
-                token=_auth,
-            )
-
-        return Client(
-            base_url=str(self.qs._base_url),
-        )
 
     def _parse_response(self, response: mpy_Response) -> Optional[dict[str, Any]]:
         logging.info(f"Response status code: {response.status_code}")
         if response.status_code == 200:
             return response.parsed.to_dict()
+        if response.status_code == 403:
+            raise PermissionError(
+                "Access forbidden: You do not have permission to access this resource. "
+                "Please check your authentication token and permissions."
+            )
+        if response.status_code == 404:
+            raise FileNotFoundError(
+                "Resource not found: The requested resource does not exist. "
+                "Please check the endpoint and parameters."
+            )
         return None
 
-    def _get_request(
+    def _single_request(
         self,
         client: Optional[Client] = None,
         params: Optional[dict[str, Any]] = None,
@@ -168,7 +479,7 @@ class QueryExecutor:
         # prep client
         a_client = client or self._init_client()
         # prep params
-        request_params = self.qs._build_request_params(params, **kwargs)
+        request_params = {**(params or self.qs.params), **kwargs}
         # request
         response = self.qs.endpoint_module.sync_detailed(
             client=a_client,
@@ -176,7 +487,7 @@ class QueryExecutor:
         )
         return self._parse_response(response)
 
-    async def _aget_request(
+    async def _asingle_request(
         self,
         client: Optional[Client] = None,
         params: Optional[dict[str, Any]] = None,
@@ -202,7 +513,7 @@ class QueryExecutor:
         # prep client
         a_client = client or self._init_client()
         # prep params
-        request_params = self.qs._build_request_params(params, **kwargs)
+        request_params = {**(params or self.qs.params), **kwargs}
         # request
         response = await self._semaphore_guarded_request(
             client=a_client,
@@ -210,66 +521,31 @@ class QueryExecutor:
         )
         return self._parse_response(response)
 
-    @require_pagination
-    def get_pageinated_counts(self):
-        """
-        Make a small get request with page_size=1 to determine if the endpoint is paginated and to get the total count of records.
-        """
+    def _page_items(self, response: "mpy_Response") -> Optional[dict]:
+        """Extract the 'items' from the API response.
 
-        # small get request to get count and calc total pages
-        response_dict = self._get_request(page_size=1)
-        self.qs.count = response_dict["count"]
-        self.qs.total_pages = ceil(
-            self.qs.count / self.qs.params.get("page_size", self.qs.default_page_size)
-        )
-
-    def get_any_first(self):
-        """
-        Retrieve the first page of metadata for the current resource and parameters.
-
-        For unpaginated endpoints, this will retrieve all metadata which is just one. For paginated endpoints, this will retrieve just the first page of results.
-        """
-
-        # already retrieved?
-        if self.qs._is_in_results(1):
-            logging.info("First response already retrieved, using cached results.")
-        # if not paginated
-        elif not self.qs.pagination_status:
-            # then just get and add to results
-            # pick up here
-            response_dict = self._get_request()
-            self.qs._results = {1: response_dict}
-        # otherwise, get first page
-        else:
-            self.page(1)
-
-    async def aget_any_first(self):
-        """
-        Asynchronously retrieve the first page of metadata for the current resource and parameters.
-
-        For unpaginated endpoints, this will retrieve all metadata which is just one. For paginated endpoints, this will retrieve just the first page of results.
-        """
-
-        if self.qs._is_in_results(1):
-            logging.info("First response already retrieved, using cached results.")
-        elif not self.qs.pagination_status:
-            response_dict = await self._aget_request()
-            self.qs._results = {1: response_dict}
-        else:
-            await self.apage(1)
-
-    @require_pagination
-    def _page_items(self, response: mpy_Response) -> Optional[dict]:
-        """
-        Extract the 'items' from the API response.
+        Example
+        -------
+        >>> # Parse items from response dict
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor._page_items({'items': [1,2,3]})  # doctest: +SKIP
         """
         if response is None:
             logging.warning("No response received from API.")
             return None
-        return response.get("items", None)
+
+        if self.qs.emgapi_handler.is_list_endpoint:
+            return response.get("items")
+        else:
+            logging.debug(
+                "Endpoint is not a list endpoint, returning full response as items."
+            )
+            try:
+                return response["items"]  # only because of biomes -_-
+            except Exception:
+                return response
 
     # getting specific page
-    @require_pagination
     def page(
         self, page_num: int, client: Optional[Client] = None
     ) -> Optional[dict[int, list[dict]]]:
@@ -290,47 +566,91 @@ class QueryExecutor:
         Optional[dict[int, list[dict]]]
             A dictionary containing the metadata from the specified page of results,
             or None if the page is not found.
+
+        Examples
+        --------
+        >>> # Fetch a single page (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.page(1)  # doctest: +SKIP
         """
+
+        self.set_counts()
 
         # check if alrady in results first
         if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
+            # mark success
+            if page_num not in self._successful_pages:
+                self._successful_pages.append(page_num)
             return self.qs._results.get(page_num, None)
 
         # otherwise get page
+        # init client if not provided
         a_client = client or self._init_client()
-        response = self._get_request(
+        # getting params from qs
+        params = self.query_setups(page_num).get("params", None)
+        logging.info(f"Fetching request num {page_num} with params: {params}")
+        response = self._single_request(
             client=a_client,
-            page=page_num,
+            params=params,
         )
         # get out items
         page_items = self._page_items(response)
         # add to results
         self.qs._results.update({page_num: page_items})
+        # checkpoint each page
+        try:
+            self.qs.cache_handler.write_results(page_num, page_items)
+        except Exception:
+            logging.exception(f"Failed to checkpoint page {page_num}")
+        # mark success
+        if page_num not in self._successful_pages:
+            self._successful_pages.append(page_num)
         return page_items
 
-    @require_pagination
     async def apage(
         self,
         page_num: int,
         client: Optional[Client] = None,
     ) -> Optional[dict[int, list[dict]]]:
+        """Async fetch for a single page.
+
+        Example
+        -------
+        >>> import asyncio
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> asyncio.run(executor.apage(1))  # doctest: +SKIP
+        """
+        self.set_counts()
         if self.qs._is_in_results(page_num):
             logging.info(f"Page {page_num} already retrieved.")
+            if page_num not in self._successful_pages:
+                self._successful_pages.append(page_num)
             return self.qs._results.get(page_num, None)
 
         a_client = client or self._init_client()
-        response = await self._aget_request(client=a_client, page=page_num)
+        params = self.query_setups(page_num).get("params", None)
+        logging.info(f"Fetching page {page_num} with params={params}")
+        response = await self._asingle_request(client=a_client, params=params)
         page_items = self._page_items(response)
         self.qs._results.update({page_num: page_items})
+        # checkpoint
+        try:
+            await self.qs.cache_handler.awrite_results(page_num, page_items)
+
+        except Exception:
+            logging.exception(f"Failed to checkpoint page {page_num}")
+        # mark success
+        if page_num not in self._successful_pages:
+            self._successful_pages.append(page_num)
         return page_items
 
-    @require_pagination
     def _resolve_pages_to_collect(
         self,
         *,
         limit: Optional[int] = None,
         pages: Optional[list[int]] = None,
+        from_page: int = 0,
         safety: bool = False,
     ) -> list[int]:
         """
@@ -339,9 +659,11 @@ class QueryExecutor:
         Parameters
         ----------
         limit : int, optional
-            Maximum number of records to retrieve. If None, retrieves all records.
+            Maximum number of items to retrieve.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
+        from_page : int, default 0
+            The starting page number for collection.
         safety : bool, default True
             If True, raises an error if dry_run() or preview() has not been run to check total pages and counts before collecting.
 
@@ -349,51 +671,88 @@ class QueryExecutor:
         -------
         list of int
             A list of page numbers to collect based on the provided parameters.
+
+        Example
+        -------
+        >>> # Resolve pages to collect (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor._resolve_pages_to_collect(limit=10)  # doctest: +SKIP
         """
 
         # not allow to run this without preview/plan first?
-        if self.qs.total_pages is None:
+        if self.qs.count is None or self.qs.num_requests is None:
             if safety:
                 raise AssertionError(
-                    "Total pages is unknown. Please run .dry_run() or .preview() or .explain() before collecting metadata."
+                    "Total items is unknown. Please run .dry_run() or .preview() or .explain() before collecting metadata."
                 )
             else:
-                self.get_any_first()
+                logging.debug(
+                    "Total items is unknown (no dry run) running set_counts() to retrieve count."
+                )
+                self.set_counts()
+
+                if self.qs.count is None or self.qs.num_requests is None:
+                    raise RuntimeError(
+                        "Could not retrieve item count from API. Cannot resolve pages to collect."
+                    )
+
+        # item upper limit
+        _upper_limits = min(
+            ITEMS_LIMIT,
+            self.qs.count,
+        )
+
+        if limit is not None:
+            # check if int and over zero
+            validate_gt_int(limit)
+            # cap limit to upper limits
+            limit = min(limit, _upper_limits)
+        else:  # if no limit provided, just use upper limits
+            limit = _upper_limits
+
+        # now limit pags / num requests (precedence)
+        num_req_limits = ceil(
+            limit
+            / self.qs.params.get("page_size", self.qs.emgapi_handler.default_page_size)
+        )
+
+        max_num_pages = min(num_req_limits, PAGES_LIMIT, self.qs.num_requests)
+
+        logging.debug(
+            f"Resolved number of requests for this collection round: {max_num_pages}. (upper caps: {ITEMS_LIMIT} items or {PAGES_LIMIT} pages)"
+        )
 
         # prep page nums
         if isinstance(pages, list):
-            resolved = deepcopy(pages)
+            given_pages = sorted(deepcopy(pages))
         elif pages is None:
             # init all pages if not provided
-            resolved = list(range(1, self.qs.total_pages + 1))
+            given_pages = list(range(1, self.qs.num_requests + 1))
         else:
             raise TypeError("pages must be a list of integers or None")
 
-        # keep only valid page numbers
-        resolved = [
-            p for p in resolved if isinstance(p, int) and 0 < p <= self.qs.total_pages
+        # start page
+        after_from_page = [
+            p
+            for p in given_pages
+            if isinstance(p, int) and from_page <= p <= self.qs.num_requests
         ]
+        logging.debug(
+            f"Pages to collect after applying from_page={from_page} filter: {after_from_page}"
+        )
 
-        if limit is not None:
-            # limit to number of records/items
-            # LIMITATION: since paginated cannot retrieve exact num sometimes
-            # check if int and over zero
-            validate_gt_int(limit)
-            max_num_pages = ceil(
-                limit / self.qs.params.get("page_size", self.qs.default_page_size)
-            )
-            # filter out pages that are over the max
-            resolved = [p for p in resolved if p <= max_num_pages]
+        # now with limits on?
+        resolved = after_from_page[:max_num_pages]
+        logging.debug(
+            f"Pages to collect after applying limit of {limit} items (max page {max_num_pages}): {resolved}"
+        )
 
         return resolved
 
-    @require_pagination
     def _collect_pages(
         self,
         client: Client,
-        limit: Optional[int] = None,
-        pages: Optional[list[int]] = None,
-        safety: bool = False,
+        pages: Optional[list[int]],
         hide_progress: bool = False,
     ):
         """
@@ -410,28 +769,27 @@ class QueryExecutor:
         safety : bool, default True
             If True, raises an error if dry_run() or preview()
             has not been run to check total pages and counts before collecting.
+        from_page : int, default 0
+            The page number to start collecting from.
+
+        Example
+        -------
+        >>> # Collect pages (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> with executor._init_client() as client:  # doctest: +SKIP
+        ...     executor._collect_pages(client, limit=10)  # doctest: +SKIP
         """
 
-        collect_pages = self._resolve_pages_to_collect(
-            limit=limit, pages=pages, safety=safety
-        )
-
         # get pages if not in results already
-        a_client = client or self._init_client()
-        for p in tqdm(collect_pages, desc="Retrieving pages", disable=hide_progress):
-            # skip if page already retrieved
-            if self.qs._is_in_results(p):
-                logging.info(f"Page {p} already retrieved, skipping...")
-            else:
-                self.page(p, client=a_client)
+        a_client = client
+        for p in tqdm(pages, desc="Retrieving pages", disable=hide_progress):
+            print(f"Advancing to request num {p}")
+            self.page(p, client=a_client)
 
-    @require_pagination
     async def _acollect_pages(
         self,
         client: Client,
-        limit: Optional[int] = None,
-        pages: Optional[list[int]] = None,
-        safety: bool = False,
+        pages: list[int],
         hide_progress: bool = False,
     ):
         """
@@ -445,66 +803,97 @@ class QueryExecutor:
             Maximum number of records to retrieve. If None, retrieves all records.
         pages : list of int, optional
             List of page numbers to retrieve. If None, retrieves all pages.
+        from_page : int, default 0
+            The page number to start collecting from.
         safety : bool, default True
             If True, raises an error if dry_run() or preview() has not been run.
+
+        Example
+        -------
+        >>> # Async collect pages (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> async with executor._init_client() as client:  # doctest: +SKIP
+        ...     await executor._acollect_pages(client, limit=10)  # doctest: +SKIP
         """
 
-        collect_pages = self._resolve_pages_to_collect(
-            limit=limit, pages=pages, safety=safety
-        )
-
         # creating async tasks
-        tasks = [asyncio.create_task(self.apage(p, client)) for p in collect_pages]
+        tasks = [asyncio.create_task(self.apage(p, client)) for p in pages]
 
-        for task in tqdm(
-            asyncio.as_completed(tasks),
-            total=len(tasks),
-            desc="Retrieving pages",
-            disable=hide_progress,
+        for done in tqdm_asyncio.as_completed(
+            tasks, disable=hide_progress, desc="Retrieving pages"
         ):
-            await task
+            await done
 
-    def get(
+    def bulk_fetch(
         self,
-        limit: Optional[int] = None,
+        limit: Optional[int] = 1000,
         *,
         pages: Optional[list[int]] = None,
         safety: bool = False,
         hide_progress: bool = False,
     ):
-        """Getting all"""
-        if not self.qs.pagination_status:
-            self.get_any_first()
-            return
+        """Fetch pages in bulk synchronously.
+
+        Example
+        -------
+        >>> # Bulk fetch usage (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.bulk_fetch(limit=50)  # doctest: +SKIP
+        """
+
+        if pages is None:
+            # resume from last success
+            start_from = (
+                max(self._successful_pages) + 1 if self._successful_pages else 1
+            )
+        else:
+            start_from = min(pages)
+
+        collect_pages = self._resolve_pages_to_collect(
+            limit=limit, pages=pages, from_page=start_from, safety=safety
+        )
 
         with self._init_client() as client:
             self._collect_pages(
                 client,
-                limit=limit,
-                pages=pages,
-                safety=safety,
+                pages=collect_pages,
                 hide_progress=hide_progress,
             )
 
-    async def aget(
+    async def abulk_fetch(
         self,
-        limit: Optional[int] = None,
+        limit: Optional[int] = 1000,
         *,
         pages: Optional[list[int]] = None,
         safety: bool = False,
         hide_progress: bool = False,
     ):
-        """Getting all asynchronously"""
-        if not self.qs.pagination_status:
-            await self.aget_any_first()
-            return
+        """Fetch pages in bulk asynchronously.
+
+        Example
+        -------
+        >>> # Async bulk fetch (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> import asyncio
+        >>> asyncio.run(executor.abulk_fetch(limit=50))  # doctest: +SKIP
+        """
+
+        if pages is None:
+            # resume from last success
+            start_from = (
+                max(self._successful_pages) + 1 if self._successful_pages else 1
+            )
+        else:
+            start_from = min(pages)
+
+        collect_pages = self._resolve_pages_to_collect(
+            limit=limit, pages=pages, from_page=start_from, safety=safety
+        )
 
         async with self._init_client() as client:
             await self._acollect_pages(
                 client,
-                limit=limit,
-                pages=pages,
-                safety=safety,
+                pages=collect_pages,
                 hide_progress=hide_progress,
             )
 
@@ -515,3 +904,21 @@ class QueryExecutor:
             return self._init_client().get_async_httpx_client()
         if name == "api_version":
             print(self.config.api_version)
+
+    @property
+    def progress(self):
+        completed = len(set(self._successful_pages))
+        total = len(self.query_setups().keys())
+        percent = completed / total if total > 0 else 0
+        # dummy bar for fun
+        bar_length = 20
+        filled = int(bar_length * percent)
+        bar = "█" * filled + "░" * (bar_length - filled)
+
+        progress_str = f"Retrieved pages: {percent:.0%}|{bar}| {completed}/{total}"
+        print(progress_str)
+
+    @property
+    def last_successful_page(self) -> Optional[int]:
+        if self._successful_pages:
+            print(max(self._successful_pages))
