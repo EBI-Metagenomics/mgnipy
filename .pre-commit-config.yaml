@@ -17,15 +17,20 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
+        files: '^(mgnipy|tests)/.*\.py$'
+        types: [python]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.7
     hooks:
       - id: ruff # Fixes issues (including unused imports)
         args: ["--fix"]
-        exclude: docs/
+        files: '^(mgnipy|tests)/.*\.py$'
+        types: [python]
 
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
       - id: black
+        files: '^(mgnipy|tests)/.*\.py$'
+        types: [python]
