@@ -73,8 +73,11 @@ html_js_files = [
     "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"
 ]  # plotly support
 
-
 # -- Extensions configurations ---------------------------------------------------
+
+## thebe
+thebe_config = {"selector": "div.highlight"}
+
 
 ## autosummary options
 autosummary_generate = True

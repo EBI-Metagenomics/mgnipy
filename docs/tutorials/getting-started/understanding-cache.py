@@ -15,7 +15,9 @@
 # %% [markdown]
 # # 🗄️ Getting to know the cache
 #
-# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/understanding-cache.ipynb)
+# <button title="Make live" class="thebe-button" onclick="initThebe()">
+#   Make live
+# </button>
 #
 # This page provides a quick guide to the cache handled by `DiskCheckpointer` of the `mgnipy.V2.mixins`.
 #
@@ -32,17 +34,17 @@
 # ### An example of what it looks like:
 #
 # ```bash
-#             the_main_cache_dir/
-#             ├── 3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48/
-#             │   ├── mgnipy_manifest.json
-#             │   ├── mgnipy_page_1.json
-#             │   ├── mgnipy_page_2.json
-#             │   └── ...
-#             ├── hash_for_some_other_query/
-#             │   ├── mgnipy_manifest.json
-#             │   ├── mgnipy_page_1.json
-#             │   └── ...
-#             └── ...
+#     the_main_cache_dir/
+#     ├── 3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48/
+#     │   ├── mgnipy_manifest.json
+#     │   ├── mgnipy_page_1.json
+#     │   ├── mgnipy_page_2.json
+#     │   └── ...
+#     ├── hash_for_some_other_query/
+#     │   ├── mgnipy_manifest.json
+#     │   ├── mgnipy_page_1.json
+#     │   └── ...
+#     └── ...
 # ```
 #
 # ### How writing to cache is handled
