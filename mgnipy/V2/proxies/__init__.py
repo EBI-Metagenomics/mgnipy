@@ -26,7 +26,6 @@ from mgnipy.V2.endpoints import (
     PARENT_CHILD_RESOURCES,
     WITHIN_RESOURCE_RELATIONSHIPS,
 )
-from mgnipy.V2.mixins import BiomesTreeMixin
 
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
@@ -425,16 +424,16 @@ class MGnifyList(MGnifier):
         return child
 
     @property
-    def collected_details(self) -> list[MGnifyDetail]:
+    def details(self) -> list[MGnifyDetail]:
         return self._collected_details
 
     @property
-    def collected_details_results(self) -> dict[str, dict]:
+    def details_results(self) -> dict[str, dict]:
         return self._collected_details_results
 
     @property
-    def collected_details_df(self) -> pd.DataFrame:
-        return pd.DataFrame.from_dict(self.collected_details_results, orient="index")
+    def details_df(self) -> pd.DataFrame:
+        return pd.DataFrame.from_dict(self.details_results, orient="index")
 
     def __getitem__(self, key: int | str) -> "MGnifyDetail":
         """
@@ -694,317 +693,19 @@ class MGnifyDetail(MGnifier):
         return list_endpoint
 
 
-class Analyses(MGnifyList):
-    RESOURCE: ClassVar[Literal["analyses"]] = "analyses"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Runs(MGnifyList):
-
-    RESOURCE: ClassVar[Literal["runs"]] = "runs"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Samples(MGnifyList):
-    RESOURCE: ClassVar[Literal["samples"]] = "samples"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Studies(MGnifyList):
-
-    RESOURCE: ClassVar[Literal["studies"]] = "studies"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class PrivateStudies(MGnifyList):
-
-    RESOURCE: ClassVar[Literal["private_studies"]] = "private_studies"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Biomes(BiomesTreeMixin, MGnifyList):
-    RESOURCE: ClassVar[Literal["biomes"]] = "biomes"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Assemblies(MGnifyList):
-    RESOURCE: ClassVar[Literal["assemblies"]] = "assemblies"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Genomes(MGnifyList):
-    RESOURCE: ClassVar[Literal["genomes"]] = "genomes"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Publications(MGnifyList):
-    RESOURCE: ClassVar[Literal["publications"]] = "publications"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class Catalogues(MGnifyList):
-    RESOURCE: ClassVar[Literal["catalogues"]] = "catalogues"
-
-    def __init__(
-        self,
-        *,
-        params: Optional[dict[str, Any]] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-        super().__init__(params=params, config=config, **kwargs)
-
-
-class StudyDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["study"]] = "study"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
-
-class SampleDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["sample"]] = "sample"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
-
-class RunDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["run"]] = "run"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
-
-class AnalysisDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["analysis"]] = "analysis"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
-
-class GenomeDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["genome"]] = "genome"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
-
-class AssemblyDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["assembly"]] = "assembly"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
-
-class BiomeDetail(BiomesTreeMixin, MGnifyDetail):
-    RESOURCE: ClassVar[Literal["biome"]] = "biome"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        biome_lineage: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or biome_lineage,
-            config=config,
-            **kwargs,
-        )
-
-
-class PublicationDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["publication"]] = "publication"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
-
-class CatalogueDetail(MGnifyDetail):
-    RESOURCE: ClassVar[Literal["catalogue"]] = "catalogue"
-
-    def __init__(
-        self,
-        id: Optional[str] = None,
-        *,
-        accession: Optional[str] = None,
-        config: Optional[dict] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            id=id or accession,
-            config=config,
-            **kwargs,
-        )
-
+# import concrete proxy classes from sibling modules. These imports occur
+# after the base `MGnifyList`/`MGnifyDetail` classes are defined to avoid
+# circular imports: concrete modules import the base classes from this
+# package during their import.
+from .analyses import Analyses, AnalysisDetail
+from .runs import Runs, RunDetail
+from .samples import Samples, SampleDetail
+from .studies import Studies, StudyDetail, PrivateStudies
+from .biomes import Biomes, BiomeDetail
+from .assemblies import Assemblies, AssemblyDetail
+from .genomes import Genomes, GenomeDetail
+from .publications import Publications, PublicationDetail
+from .catalogues import Catalogues, CatalogueDetail
 
 V2_ENDPOINT_LIST_PROXIES = {
     SupportedEndpoints.ANALYSES: Analyses,

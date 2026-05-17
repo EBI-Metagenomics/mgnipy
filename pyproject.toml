@@ -70,7 +70,7 @@ docs = [
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/tutorial/#rule-selection
 extend-select = ["E", "W", "F", "B"]
-ignore = ["E501"]  # ignore line length for now
+ignore = ["E501", "E402"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["mgnipy"]
@@ -81,12 +81,6 @@ force-sort-within-sections = true
 combine-as-imports = true
 force-wrap-aliases= true
 
-[tool.ruff.lint.isort.import-heading]
-future = "Future imports"
-standard-library = "Standard library imports"
-third-party = "Third party imports"
-first-party = "First party imports"
-local-folder = "Local folder imports"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
