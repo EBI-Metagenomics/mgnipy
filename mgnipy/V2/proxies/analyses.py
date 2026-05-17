@@ -39,3 +39,7 @@ class AnalysisDetail(MGnifyDetail):
             config=config,
             **kwargs,
         )
+
+    @property
+    def downloads(self):
+        return self.to_df().loc[0, "downloads"]

@@ -22,6 +22,10 @@ class Studies(MGnifyList):
 
         super().__init__(params=params, config=config, **kwargs)
 
+    @property
+    def details_downloads(self):
+        return self.details_df["downloads"]
+
 
 class StudyDetail(MGnifyDetail):
     RESOURCE: ClassVar[Literal["study"]] = "study"
@@ -41,6 +45,10 @@ class StudyDetail(MGnifyDetail):
             **kwargs,
         )
 
+    @property
+    def downloads(self):
+        return self.to_df().loc[0, "downloads"]
+
 
 class PrivateStudies(MGnifyList):
 
@@ -55,3 +63,7 @@ class PrivateStudies(MGnifyList):
     ):
 
         super().__init__(params=params, config=config, **kwargs)
+
+    @property
+    def downloads(self):
+        return self.to_df().loc[0, "downloads"]
