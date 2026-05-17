@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>🕵️‍♀️ Searching for MGnify Studies &#8212; mgnipy 0.0.5.dev0 documentation</title>
+    <title>🕵️‍♀️ Searching for MGnify Studies &#8212; mgnipy 0.1.dev1+g262497f0a documentation</title>
   
   
   
@@ -32,19 +32,22 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=4e02edeb"></script>
+    <script src="../../_static/documentation_options.js?v=1ef1313b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/getting-started/demo-mgnify-tomatoes';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../_static/mgnipy.svg"/>
@@ -143,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.0.5.dev0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.0.5.dev0 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g262497f0a documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g262497f0a documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -184,24 +187,37 @@
                 </a>
             </li>
         </ul>
-        <ul class="list-caption"><li class="toctree-l0 has-children"><details open><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Quick Start</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current nav bd-sidenav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Quick Start</span></p>
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">📦 Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">🕵️‍♀️ Searching for MGnify Studies</a></li>
-</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="understanding-cache.html">🗄️ Getting to know the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="access-private-data.html">🔐 Accessing your private data</a></li>
-</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
-</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dev/readme-openapi-python-client.html">🤝 What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
-</ul></details></li></ul>
+</ul>
+
     </div>
 </nav></div>
     </div>
@@ -285,6 +301,24 @@
   </span>
 <span class="btn__text-container">Colab</span>
 </a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
 </li>
       
   </ul>
@@ -444,9 +478,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-get-a-list-of-mgnify-studies-of-tomato-rhizospheres">🎯 The Goal: Get a list of MGnify studies of tomato rhizospheres</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-study-details">Getting the study details</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#now-getting-analyses-for-the-given-studies">Now getting analyses for the given studies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-get-a-list-of-mgnify-studies-of-tomato-rhizospheres">🎯 The Goal: Get a list of MGnify studies of tomato rhizospheres</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-their-study-details">Getting their study details</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps-getting-their-mgnify-analyses">🎯 Next Steps: Getting their MGnify analyses</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-example-mgys00006204">Step-by-step example: <code class="docutils literal notranslate"><span class="pre">MGYS00006204</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#on-repeat-getting-all-analyses-metadata">On Repeat: Getting all analyses metadata</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -460,12 +500,12 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="searching-for-mgnify-studies">
 <h1>🕵️‍♀️ Searching for MGnify Studies<a class="headerlink" href="#searching-for-mgnify-studies" title="Link to this heading">#</a></h1>
-<p><a class="reference external" href="https://colab.research.google.com/github/ebi-metagenomics/mgnipy/blob/main/docs/tutorials/getting-started/demo-mgnify-tomatoes.ipynb" rel="noreferrer" target="_blank"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:100px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;box-shadow:0 6px 18px rgba(15,118,110,.25);cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebe()">Activate Notebook</button></p>
 <p>On this page, which also serves as a runnable notebook (link above ^), we again demonstrate the basic usability of MGni.py to search the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/list_mgnify_studies" rel="noreferrer" target="_blank">Studies resource <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> for some studies of interest (e.g., tomaotos)</p>
 <hr class="docutils" />
 <section id="the-goal-get-a-list-of-mgnify-studies-of-tomato-rhizospheres">
 <h2>🎯 The Goal: Get a list of MGnify studies of tomato rhizospheres<a class="headerlink" href="#the-goal-get-a-list-of-mgnify-studies-of-tomato-rhizospheres" title="Link to this heading">#</a></h2>
-<p>WIP</p>
+<p>Let’s request tomato rhizosphere study metadata from the  MGnify Studies API.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
@@ -571,8 +611,8 @@ Total records to retrieve: 17
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># make the get request</span>
 <span class="k">await</span> <span class="n">filtered_studies</span><span class="o">.</span><span class="n">abulk_fetch</span><span class="p">()</span>
 
@@ -581,10 +621,15 @@ Total records to retrieve: 17
 </pre></div>
 </div>
 </div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.81it/s]
-Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.81it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.13it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.13it/s]
 </pre></div>
 </div>
 <div class="output text_html"><div>
@@ -752,16 +797,19 @@ Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.8
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
-</section>
-<section id="getting-the-study-details">
-<h2>Getting the study details<a class="headerlink" href="#getting-the-study-details" title="Link to this heading">#</a></h2>
+<section id="getting-their-study-details">
+<h3>Getting their study details<a class="headerlink" href="#getting-their-study-details" title="Link to this heading">#</a></h3>
 <p>From our filtered list of studies we can use <code class="docutils literal notranslate"><span class="pre">.get_detail()</span></code> to iteratively get their details from the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_study" rel="noreferrer" target="_blank"><strong>get_mgnify_study</strong> MGnify API endpoint <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get details for all studies (this will make multiple requests until all details are fetched)</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="c1"># get details for the next study</span>
     <span class="n">det</span> <span class="o">=</span> <span class="n">filtered_studies</span><span class="o">.</span><span class="n">get_detail</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># no more details to fetch</span>
+    <span class="c1"># if no more studies to fetch details for, break the loop</span>
+    <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished fetching details for all studies.&quot;</span><span class="p">)</span>
         <span class="k">break</span>
 </pre></div>
@@ -775,16 +823,21 @@ Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.8
 </div>
 <p>We can take a look at all study metadata details which are stored to</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.collected_details</span></code>: the <code class="docutils literal notranslate"><span class="pre">mgnipy.StudyDetail</span></code> instances</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.collected_details_rsults</span></code>: a dictionary where each item is a accession: detail</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.collected_details_df</span></code>: a pd.DataFrame where each study metadata detail is a row</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.details</span></code>: the <code class="docutils literal notranslate"><span class="pre">mgnipy.StudyDetail</span></code> instances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.details_rsults</span></code>: a dictionary where each item is a accession: detail</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.details_df</span></code>: a pd.DataFrame where each study metadata detail is a row</p></li>
 </ul>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_studies</span><span class="o">.</span><span class="n">collected_details_df</span>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_studies</span><span class="o">.</span><span class="n">details_df</span>
 </pre></div>
 </div>
 </div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -1005,16 +1058,28 @@ Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.8
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 </section>
-<section id="now-getting-analyses-for-the-given-studies">
-<h2>Now getting analyses for the given studies<a class="headerlink" href="#now-getting-analyses-for-the-given-studies" title="Link to this heading">#</a></h2>
-<p>We can see what relationships</p>
+</section>
+<section id="next-steps-getting-their-mgnify-analyses">
+<h2>🎯 Next Steps: Getting their MGnify analyses<a class="headerlink" href="#next-steps-getting-their-mgnify-analyses" title="Link to this heading">#</a></h2>
+<p>Using the StudyDetail instances we can also get a list of all their</p>
+<ul class="simple">
+<li><p>MGnify analyses i.e., <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies.Analyses</span></code> instance</p></li>
+<li><p>publications <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies.Publications</span></code></p></li>
+<li><p>samples <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies.Samples</span></code></p></li>
+</ul>
+<p>For example lets take a look at the study “MGYS00006204”.</p>
+<section id="step-by-step-example-mgys00006204">
+<h3>Step-by-step example: <code class="docutils literal notranslate"><span class="pre">MGYS00006204</span></code><a class="headerlink" href="#step-by-step-example-mgys00006204" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">study_details</span> <span class="o">=</span> <span class="n">filtered_studies</span><span class="o">.</span><span class="n">collected_details</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># getting the StudyDetail for the specific study</span>
+<span class="n">example_study_details</span> <span class="o">=</span> <span class="n">filtered_studies</span><span class="p">[</span><span class="s2">&quot;MGYS00006231&quot;</span><span class="p">]</span>
 
-<span class="n">study_details</span><span class="p">[</span><span class="s2">&quot;MGYS00010296&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">()</span>
+<span class="c1"># this is a helper method to list all relationships for the study</span>
+<span class="n">example_study_details</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1024,25 +1089,566 @@ Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  1.8
 </div>
 </div>
 </div>
+<p>we can access them as attributes form the StudyDetail. When called the requests will automatically be made to the MGnify API</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">study_details</span><span class="p">[</span><span class="s2">&quot;MGYS00010296&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">analyses</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_study_pub_list</span> <span class="o">=</span> <span class="n">example_study_details</span><span class="o">.</span><span class="n">publications</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example_study_pub_list</span><span class="p">)</span>
+
+<span class="n">example_study_sample_list</span> <span class="o">=</span> <span class="n">example_study_details</span><span class="o">.</span><span class="n">samples</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example_study_sample_list</span><span class="p">)</span>
+
+<span class="n">example_study_analysis_list</span> <span class="o">=</span> <span class="n">example_study_details</span><span class="o">.</span><span class="n">analyses</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example_study_analysis_list</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Advancing to request num 1
+MGnifier instance for resource: publications
+I.e., mgnipy.V2.proxies.publications.Publications
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {&#39;accession&#39;: &#39;MGYS00006231&#39;}
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00006231/publications?page=1
+Endpoint module: mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_publications
+Is list endpoint (returns paginated results): True
+Cache directory: /home/runner/.cache/mgnipy/9be351d43240b5e84bc0968397a25d600e05060b7e43fe51945d866f35d01c28
+Advancing to request num 1
+Advancing to request num 2
+Advancing to request num 3
+Advancing to request num 4
+Advancing to request num 5
+MGnifier instance for resource: samples
+I.e., mgnipy.V2.proxies.samples.Samples
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {&#39;accession&#39;: &#39;MGYS00006231&#39;}
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00006231/samples?page=1
+Endpoint module: mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_samples
+Is list endpoint (returns paginated results): True
+Cache directory: /home/runner/.cache/mgnipy/5ba3912237f2b3ec1baa3a302cd5c6ff7340cfc88d6512cd2c1eae5f8aa29648
+Advancing to request num 1
+Advancing to request num 2
+Advancing to request num 3
+Advancing to request num 4
+Advancing to request num 5
+MGnifier instance for resource: analyses
+I.e., mgnipy.V2.proxies.analyses.Analyses
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {&#39;accession&#39;: &#39;MGYS00006231&#39;}
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00006231/analyses?page=1
+Endpoint module: mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses
+Is list endpoint (returns paginated results): True
+Cache directory: /home/runner/.cache/mgnipy/e17f20b39bbe95d0d44c64473835e35ad2343868b51e44ecaca4d021a1a8cdd9
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.53it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.52it/s]
+Retrieving pages:   0%|          | 0/5 [00:00&lt;?, ?it/s]
+Retrieving pages:  20%|██        | 1/5 [00:01&lt;00:04,  1.00s/it]
+Retrieving pages:  40%|████      | 2/5 [00:01&lt;00:01,  1.98it/s]
+Retrieving pages:  60%|██████    | 3/5 [00:01&lt;00:00,  3.08it/s]
+Retrieving pages:  80%|████████  | 4/5 [00:01&lt;00:00,  4.18it/s]
+Retrieving pages: 100%|██████████| 5/5 [00:01&lt;00:00,  5.20it/s]
+Retrieving pages: 100%|██████████| 5/5 [00:01&lt;00:00,  3.36it/s]
+Retrieving pages:   0%|          | 0/5 [00:00&lt;?, ?it/s]
+Retrieving pages:  20%|██        | 1/5 [00:00&lt;00:03,  1.15it/s]
+Retrieving pages:  40%|████      | 2/5 [00:01&lt;00:01,  2.22it/s]
+Retrieving pages:  60%|██████    | 3/5 [00:01&lt;00:00,  3.41it/s]
+Retrieving pages:  80%|████████  | 4/5 [00:01&lt;00:00,  4.57it/s]
+Retrieving pages: 100%|██████████| 5/5 [00:01&lt;00:00,  5.58it/s]
+Retrieving pages: 100%|██████████| 5/5 [00:01&lt;00:00,  3.71it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<p>taking a look at the analyses metadata</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_study_analysis_list</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>experiment_type</th>
+      <th>study_accession</th>
+      <th>accession</th>
+      <th>run</th>
+      <th>sample</th>
+      <th>assembly</th>
+      <th>pipeline_version</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645526</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114695', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:40.680000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645548</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114734', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:41.667000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645551</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114802', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:42.609000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645559</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114786', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:43.561000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645571</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114738', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:44.649000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>109</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00793502</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114780', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:27:23.689000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>110</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00793503</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114748', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:27:24.599000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>111</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00793504</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114732', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:27:25.517000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>112</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00793505</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114749', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:27:26.440000+00:...</td>
+      <td>V5</td>
+    </tr>
+    <tr>
+      <th>113</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00793506</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114800', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:27:27.357000+00:...</td>
+      <td>V5</td>
+    </tr>
+  </tbody>
+</table>
+<p>114 rows × 7 columns</p>
+</div></div></div>
+</details>
+</div>
+<p>then we can get the details and so on</p>
+</section>
+<section id="on-repeat-getting-all-analyses-metadata">
+<h3>On Repeat: Getting all analyses metadata<a class="headerlink" href="#on-repeat-getting-all-analyses-metadata" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>loop through every study in <code class="docutils literal notranslate"><span class="pre">filtered_studies.detail</span></code></p></li>
+<li><p>for each study get the details on all sample analyses appending to a list <code class="docutils literal notranslate"><span class="pre">analyses_details</span></code></p></li>
+<li><p>then we will take a look as a dataframe</p></li>
+</ul>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="n">study_details_dict</span> <span class="o">=</span> <span class="n">filtered_studies</span><span class="o">.</span><span class="n">details</span>
+
+<span class="n">analyses_details</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">study_detail</span> <span class="ow">in</span> <span class="n">study_details_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+    <span class="c1"># verbose</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Study </span><span class="si">{</span><span class="n">study_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># populating list of analyses for the study</span>
+    <span class="n">study_analyses_list</span> <span class="o">=</span> <span class="n">study_detail</span><span class="o">.</span><span class="n">analyses</span>
+
+    <span class="c1"># get the analyses details</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># get details for the next analysis</span>
+        <span class="n">det</span> <span class="o">=</span> <span class="k">await</span> <span class="n">study_analyses_list</span><span class="o">.</span><span class="n">aget_detail</span><span class="p">()</span>
+        <span class="c1"># adding a delay to avoid overwhelming the API</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="c1"># if no more analyses to fetch details for, break the loop</span>
+        <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished fetching details for all analyses.&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of analyses for study </span><span class="si">{</span><span class="n">study_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">study_analyses_list</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">analyses_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">study_analyses_list</span><span class="o">.</span><span class="n">details_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Study MGYS00010296
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010296: 0
+
+Study MGYS00010297
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010297: 0
+
+Study MGYS00006231
+Advancing to request num 1
+Advancing to request num 2
+Advancing to request num 3
+Advancing to request num 4
+Advancing to request num 5
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00006231: 114
+
+Study MGYS00006204
+Advancing to request num 1
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00006204: 12
+
+Study MGYS00006205
+Advancing to request num 1
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00006205: 12
+
+Study MGYS00006230
+Advancing to request num 1
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00006230: 2
+
+Study MGYS00006208
+Advancing to request num 1
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00006208: 9
+
+Study MGYS00010257
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010257: 0
+
+Study MGYS00010258
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010258: 0
+
+Study MGYS00010324
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010324: 0
+
+Study MGYS00010245
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010245: 0
+
+Study MGYS00010298
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010298: 0
+
+Study MGYS00010262
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010262: 0
+
+Study MGYS00010250
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010250: 0
+
+Study MGYS00010264
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010264: 0
+
+Study MGYS00010251
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010251: 0
+
+Study MGYS00010253
+Finished fetching details for all analyses.
+Number of analyses for study MGYS00010253: 0
+</pre></div>
+</div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages:   0%|          | 0/5 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 5/5 [00:00&lt;00:00, 6880.42it/s]
+Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.21it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.20it/s]
+Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.22it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.22it/s]
+Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.43it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.43it/s]
+Retrieving pages:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.33it/s]
+Retrieving pages: 100%|██████████| 1/1 [00:00&lt;00:00,  2.33it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
+Retrieving pages: 0it [00:00, ?it/s]
 Retrieving pages: 0it [00:00, ?it/s]
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;mgnipy.V2.proxies.Analyses at 0x7fb93f1d6b10&gt;
+</div>
+</details>
+</div>
+<p>let’s look at all the sample analyses metadata in one df</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># concat the list of analyses details dataframes into one dataframe</span>
+<span class="n">tomato_analyses</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">analyses_details</span><span class="p">)</span>
+<span class="c1"># take a look</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tomato_analyses</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">tomato_analyses</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(149, 12)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>experiment_type</th>
+      <th>study_accession</th>
+      <th>accession</th>
+      <th>run</th>
+      <th>sample</th>
+      <th>assembly</th>
+      <th>pipeline_version</th>
+      <th>read_run</th>
+      <th>quality_control_summary</th>
+      <th>downloads</th>
+      <th>results_dir</th>
+      <th>metadata</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>MGYA00645526</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645526</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114695', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:40.680000+00:...</td>
+      <td>V5</td>
+      <td>[{'experiment_type': 'Metagenomic', 'instrumen...</td>
+      <td>{}</td>
+      <td>[{'file_type': 'fasta', 'download_type': 'Sequ...</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>MGYA00645548</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645548</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114734', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:41.667000+00:...</td>
+      <td>V5</td>
+      <td>[{'experiment_type': 'Metagenomic', 'instrumen...</td>
+      <td>{}</td>
+      <td>[{'file_type': 'fasta', 'download_type': 'Sequ...</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>MGYA00645551</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645551</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114802', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:42.609000+00:...</td>
+      <td>V5</td>
+      <td>[{'experiment_type': 'Metagenomic', 'instrumen...</td>
+      <td>{}</td>
+      <td>[{'file_type': 'fasta', 'download_type': 'Sequ...</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>MGYA00645559</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645559</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114786', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:43.561000+00:...</td>
+      <td>V5</td>
+      <td>[{'experiment_type': 'Metagenomic', 'instrumen...</td>
+      <td>{}</td>
+      <td>[{'file_type': 'fasta', 'download_type': 'Sequ...</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>MGYA00645571</th>
+      <td>Assembly</td>
+      <td>MGYS00006231</td>
+      <td>MGYA00645571</td>
+      <td>None</td>
+      <td>{'accession': 'SAMN24114738', 'ena_accessions'...</td>
+      <td>{'updated_at': '2026-04-30T22:25:44.649000+00:...</td>
+      <td>V5</td>
+      <td>[{'experiment_type': 'Metagenomic', 'instrumen...</td>
+      <td>{}</td>
+      <td>[{'file_type': 'fasta', 'download_type': 'Sequ...</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>{}</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</details>
 </div>
 </section>
 </section>
+</section>
 
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./tutorials/getting-started"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
                 </article>
               
@@ -1088,9 +1694,15 @@ Retrieving pages: 0it [00:00, ?it/s]
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-get-a-list-of-mgnify-studies-of-tomato-rhizospheres">🎯 The Goal: Get a list of MGnify studies of tomato rhizospheres</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-study-details">Getting the study details</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#now-getting-analyses-for-the-given-studies">Now getting analyses for the given studies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-get-a-list-of-mgnify-studies-of-tomato-rhizospheres">🎯 The Goal: Get a list of MGnify studies of tomato rhizospheres</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-their-study-details">Getting their study details</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps-getting-their-mgnify-analyses">🎯 Next Steps: Getting their MGnify analyses</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-example-mgys00006204">Step-by-step example: <code class="docutils literal notranslate"><span class="pre">MGYS00006204</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#on-repeat-getting-all-analyses-metadata">On Repeat: Getting all analyses metadata</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -1128,9 +1740,6 @@ By MGnify
   
   <div class="footer-item">
     
-<div class="extra_footer">
-  <div>hi there!</div>
-</div>
   </div>
   
 </div>

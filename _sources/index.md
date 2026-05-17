@@ -32,8 +32,14 @@ tutorials/getting-started/access-private-data
 
 ```{toctree}
 :caption: "Reference"
+:hidden:
 reference/mgnipy.mgnipy
-reference/mgnipy.V2
+reference/mgnipy.V2.proxies
+reference/mgnipy.V2.core
+reference/mgnipy.V2.query_executor
+reference/mgnipy.V2.query_set
+reference/mgnipy.V2.mixins
+reference/mgnipy.V2.describe
 reference/mgnipy.emgapi_v2_client.client
 reference/mgnipy.emgapi_v2_client.api
 ```

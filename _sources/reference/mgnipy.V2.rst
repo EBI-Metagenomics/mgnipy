@@ -7,6 +7,14 @@ mgnipy.V2 package
    :show-inheritance:
    :undoc-members:
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 1
+
+   mgnipy.V2.proxies
+
 Submodules
 ----------
 
@@ -18,6 +26,5 @@ Submodules
    mgnipy.V2.describe
    mgnipy.V2.endpoints
    mgnipy.V2.mixins
-   mgnipy.V2.proxies
    mgnipy.V2.query_executor
    mgnipy.V2.query_set

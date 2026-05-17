@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The emgapi_v2_client &#8212; mgnipy 0.0.5.dev0 documentation</title>
+    <title>The emgapi_v2_client &#8212; mgnipy 0.1.dev1+g262497f0a documentation</title>
   
   
   
@@ -32,19 +32,22 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=e57d5624" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=4e02edeb"></script>
+    <script src="../_static/documentation_options.js?v=1ef1313b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'dev/quick-emgapi-v2-client';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../_static/mgnipy.svg"/>
@@ -143,8 +146,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.0.5.dev0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.0.5.dev0 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g262497f0a documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g262497f0a documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -184,24 +187,37 @@
                 </a>
             </li>
         </ul>
-        <ul class="list-caption"><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Quick Start</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Quick Start</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/installation.html">📦 Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
-</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/understanding-cache.html">🗄️ Getting to know the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/access-private-data.html">🔐 Accessing your private data</a></li>
-</ul></details></li><li class="toctree-l0 has-children"><details><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="nav bd-sidenav">
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.V2.html">mgnipy.V2 package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
-</ul></details></li><li class="toctree-l0 has-children"><details open><summary><p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current nav bd-sidenav">
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme-openapi-python-client.html">🤝 What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">Docs creation</a></li>
-</ul></details></li></ul>
+</ul>
+
     </div>
 </nav></div>
     </div>
@@ -285,6 +301,24 @@
   </span>
 <span class="btn__text-container">Colab</span>
 </a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
 </li>
       
   </ul>
@@ -493,29 +527,29 @@ document.write(`
 <li><p>Every MGnify API v2 endpoint (e.g., <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes" rel="noreferrer" target="_blank">list_all_biomes <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>, <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Analyses/get_mgnify_analysis" rel="noreferrer" target="_blank">get_mgnify_analysis <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>) has their own module in emgapi_v2_client (e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes</span></code>, <code class="docutils literal notranslate"><span class="pre">mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis</span></code>)</p></li>
 <li><p>Within the emgapi_v2_client, the endpoint modules are in the <code class="docutils literal notranslate"><span class="pre">api</span></code> directory:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">                  </span>emgapi_v2_client/
-<span class="w">                  </span>├──<span class="w"> </span>api/
-<span class="w">                  </span>│<span class="w">   </span>├──<span class="w"> </span>analyses/
-<span class="w">                  </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>get_mgnify_analysis.py
-<span class="w">                  </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
-<span class="w">                  </span>│<span class="w">   </span>├──<span class="w"> </span>assemblies/
-<span class="w">                  </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>get_assembly.py
-<span class="w">                  </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
-<span class="w">                  </span>│<span class="w">   </span>├──<span class="w"> </span><span class="s1">&#39;other-api-tag&#39;</span>/
-<span class="w">                  </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
-<span class="w">                  </span>│<span class="w">   </span>├──<span class="w"> </span><span class="s1">&#39;another-api-tag&#39;</span>/
-<span class="w">                  </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
-<span class="w">                  </span>│<span class="w">   </span>└──<span class="w"> </span>...
-<span class="w">                  </span>├──<span class="w"> </span>models/
-<span class="w">                  </span>│<span class="w">   </span>├──<span class="w"> </span>analysed_run.py
-<span class="w">                  </span>│<span class="w">   </span>├──<span class="w"> </span>biome.py
-<span class="w">                  </span>│<span class="w">   </span>├──<span class="w"> </span><span class="s1">&#39;some-other-attrs-data-model&#39;</span>.py
-<span class="w">                  </span>│<span class="w">   </span>└──<span class="w"> </span>...
-<span class="w">                  </span>└──<span class="w"> </span>...
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">            </span>emgapi_v2_client/
+<span class="w">            </span>├──<span class="w"> </span>api/
+<span class="w">            </span>│<span class="w">   </span>├──<span class="w"> </span>analyses/
+<span class="w">            </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>get_mgnify_analysis.py
+<span class="w">            </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
+<span class="w">            </span>│<span class="w">   </span>├──<span class="w"> </span>assemblies/
+<span class="w">            </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>get_assembly.py
+<span class="w">            </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
+<span class="w">            </span>│<span class="w">   </span>├──<span class="w"> </span><span class="s1">&#39;other-api-tag&#39;</span>/
+<span class="w">            </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
+<span class="w">            </span>│<span class="w">   </span>├──<span class="w"> </span><span class="s1">&#39;another-api-tag&#39;</span>/
+<span class="w">            </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>...
+<span class="w">            </span>│<span class="w">   </span>└──<span class="w"> </span>...
+<span class="w">            </span>├──<span class="w"> </span>models/
+<span class="w">            </span>│<span class="w">   </span>├──<span class="w"> </span>analysed_run.py
+<span class="w">            </span>│<span class="w">   </span>├──<span class="w"> </span>biome.py
+<span class="w">            </span>│<span class="w">   </span>├──<span class="w"> </span><span class="s1">&#39;some-other-attrs-data-model&#39;</span>.py
+<span class="w">            </span>│<span class="w">   </span>└──<span class="w"> </span>...
+<span class="w">            </span>└──<span class="w"> </span>...
 
-<span class="w">         </span>-<span class="w"> </span>each<span class="w"> </span>subdir<span class="w"> </span><span class="k">in</span><span class="w"> </span>api/<span class="w"> </span>corresponds<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>tag<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>MGnify<span class="w"> </span>API<span class="w"> </span>e.g.,<span class="w"> </span>analyses,<span class="w"> </span>assemblies
-<span class="w">         </span>-<span class="w"> </span>the<span class="w"> </span>endpoints<span class="w"> </span><span class="k">for</span><span class="w"> </span>that<span class="w"> </span>tag<span class="w"> </span>are<span class="w"> </span><span class="k">in</span><span class="w"> </span>that<span class="w"> </span>tag<span class="err">&#39;</span>s<span class="w"> </span>subdir<span class="w"> </span><span class="o">(</span><span class="k">if</span><span class="w"> </span>multi<span class="w"> </span>tags,<span class="w"> </span>is<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>first<span class="o">)</span>
-<span class="w">         </span>-<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>attrs<span class="sb">`</span><span class="w"> </span>data<span class="w"> </span>models<span class="w"> </span>are<span class="w"> </span><span class="k">in</span><span class="w"> </span>models/
+<span class="w">   </span>-<span class="w"> </span>each<span class="w"> </span>subdir<span class="w"> </span><span class="k">in</span><span class="w"> </span>api/<span class="w"> </span>corresponds<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>tag<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>MGnify<span class="w"> </span>API<span class="w"> </span>e.g.,<span class="w"> </span>analyses,<span class="w"> </span>assemblies
+<span class="w">   </span>-<span class="w"> </span>the<span class="w"> </span>endpoints<span class="w"> </span><span class="k">for</span><span class="w"> </span>that<span class="w"> </span>tag<span class="w"> </span>are<span class="w"> </span><span class="k">in</span><span class="w"> </span>that<span class="w"> </span>tag<span class="err">&#39;</span>s<span class="w"> </span>subdir<span class="w"> </span><span class="o">(</span><span class="k">if</span><span class="w"> </span>multi<span class="w"> </span>tags,<span class="w"> </span>is<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>first<span class="o">)</span>
+<span class="w">   </span>-<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>attrs<span class="sb">`</span><span class="w"> </span>data<span class="w"> </span>models<span class="w"> </span>are<span class="w"> </span><span class="k">in</span><span class="w"> </span>models/
 </pre></div>
 </div>
 </section>
@@ -630,15 +664,15 @@ DEBUG:pydot.core:pydot core module initializing
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f5c1c823bc0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7f5c1c619dd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f5c1c5b6db0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f1e3ecb3ce0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7f1e3eb5e750&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f1e3ecd6db0&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sat, 16 May 2026 00:09:13 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;1311&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 17 May 2026 17:24:40 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;1311&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?biome_lineage=root%3AHost-associated%3APlants&amp;max_depth=6&amp;page=1&amp;page_size=25 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -743,15 +777,15 @@ DEBUG:httpcore.connection:close.complete
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7f5c6459b680&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7f5c179fe750&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7f5c1c6a3980&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7f1e3f702cf0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7f1e3ebca8d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7f1e3efbb740&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sat, 16 May 2026 00:09:14 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;429&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 17 May 2026 17:24:41 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;429&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?biome_lineage=root%3AHost-associated&amp;max_depth=6&amp;page=1&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -778,6 +812,25 @@ DEBUG:httpcore.connection:close.complete
 </section>
 </section>
 
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./dev"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
                 </article>
               
@@ -876,9 +929,6 @@ By MGnify
   
   <div class="footer-item">
     
-<div class="extra_footer">
-  <div>hi there!</div>
-</div>
   </div>
   
 </div>
