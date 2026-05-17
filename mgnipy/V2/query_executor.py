@@ -438,9 +438,11 @@ class QueryExecutor:
         # Return results in their original order (same as input items order).
         return ordered
 
-    def _parse_response(self, response: mpy_Response) -> Optional[dict[str, Any]]:
+    def _parse_response(self, response: mpy_Response) -> Optional[Any]:
         logging.info(f"Response status code: {response.status_code}")
         if response.status_code == 200:
+            if isinstance(response.parsed, (bytes, bytearray)):
+                return bytes(response.parsed)
             return response.parsed.to_dict()
         if response.status_code == 403:
             raise PermissionError(
@@ -521,7 +523,7 @@ class QueryExecutor:
         )
         return self._parse_response(response)
 
-    def _page_items(self, response: "mpy_Response") -> Optional[dict]:
+    def _page_items(self, response: "mpy_Response") -> Optional[Any]:
         """Extract the 'items' from the API response.
 
         Example
@@ -533,6 +535,9 @@ class QueryExecutor:
         if response is None:
             logging.warning("No response received from API.")
             return None
+
+        if isinstance(response, (bytes, bytearray)):
+            return bytes(response)
 
         if self.qs.emgapi_handler.is_list_endpoint:
             return response.get("items")

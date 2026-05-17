@@ -21,7 +21,7 @@ from bigtree import (
 )
 
 from mgnipy._models.config import MGnipyConfig
-from mgnipy._shared_helpers.writers import atomic_write_json
+from mgnipy._shared_helpers.writers import atomic_write_json, atomic_write_bytes
 
 if TYPE_CHECKING:
     pass
@@ -327,7 +327,6 @@ class DiskCheckpointer:
         logging.info(
             f"Writing page {request_num} to {filepath} and manifest to {manifest_path}"
         )
-
         manifest = {
             "resource": self._resource_val,
             "params": self._params_getter(),
@@ -335,7 +334,15 @@ class DiskCheckpointer:
             "total_pages": self._total_requests,
         }
 
-        atomic_write_json(filepath, items)
+        # Write bytes (binary downloads) using atomic_write_bytes, otherwise JSON
+        try:
+            if isinstance(items, (bytes, bytearray)):
+                bin_path = filepath.with_suffix(".bin")
+                atomic_write_bytes(bin_path, bytes(items))
+            else:
+                atomic_write_json(filepath, items)
+        except Exception:
+            logging.warning(f"Failed to write cache file for page {request_num}")
         if manifest_path is not None:
             atomic_write_json(manifest_path, manifest)
 
@@ -360,12 +367,17 @@ class DiskCheckpointer:
             return []
 
         pages_loaded = []
-        for cache_file in sorted(load_from.glob("mgnipy_page_*.json")):
+        for cache_file in sorted(load_from.glob("mgnipy_page_*.*")):
+            if cache_file.suffix not in {".json", ".bin"}:
+                continue
             logging.info(f"Loading cached page from {cache_file}")
             try:
-                # read in pg data
-                with cache_file.open("r", encoding="utf-8") as fh:
-                    data = json.load(fh)
+                if cache_file.suffix == ".bin":
+                    with cache_file.open("rb") as fh:
+                        data = fh.read()
+                else:
+                    with cache_file.open("r", encoding="utf-8") as fh:
+                        data = json.load(fh)
                 # Extract page number from filename
                 request_num = int(cache_file.stem.split("_")[-1])
                 # load page if avail in cache
@@ -426,7 +438,7 @@ class DiskCheckpointer:
                 # extra check just in case
                 if cache_file.name == "mgnipy_manifest.json" or (
                     cache_file.name.startswith("mgnipy_page_")
-                    and cache_file.suffix == ".json"
+                    and cache_file.suffix in {".json", ".bin"}
                 ):
                     try:
                         logging.debug("Deleting cache file %s", cache_file)
