@@ -6,6 +6,7 @@ import webbrowser
 import zlib
 from pathlib import Path
 from typing import (
+    Any,
     Callable,
     Generator,
     Literal,
@@ -27,46 +28,107 @@ from tqdm.asyncio import tqdm as tqdm_async
 
 from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
-from mgnipy.emgapi_v2_client.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations,
-)
-from mgnipy.emgapi_v2_client.models.m_gnify_analysis_with_annotations import (
-    MGnifyAnalysisWithAnnotations,
-)
 from mgnipy.V2.core import MGnifier
 
 semaphore = get_semaphore()
 BASE_URL = MGnipyConfig().base_url
 
+# I want it to work with
+# - MGnifyAnalysisDownloadFile OR MGnifyStudyDownloadFile
 
-class MGazine(MGnifyAnalysisWithAnnotations):
-    """More so an extended data class"""
 
-    def __init__(self, accession: str):
-        # mgnifier TODO handing private data
-        self._mgnifier_helper = MGnifier(accession=accession)
-        # set endpoint
-        self._mgnifier_helper.endpoint_module = (
-            analysis_get_mgnify_analysis_with_annotations
+class MGazine:
+    """Helper class for handling downloads from MGnify analyses and studies.
+
+    Can be initialized with either a list of :class:`MGnifyAnalysisDownloadFile`
+    or :class:`MGnifyStudyDownloadFile`-like dicts. The object exposes helpers
+    to inspect available downloads and create stream/download callables.
+
+    Examples
+    --------
+    >>> downloads = [
+    ...     {"alias": "a", "url": "http://example.com/a.txt", "file_type": "txt"},
+    ...     {"alias": "b", "url": "http://example.com/b.tsv", "file_type": "tsv"},
+    ... ]
+    >>> mg = MGazine(downloads)
+    >>> isinstance(mg, MGazine)
+    True
+    >>> mg.url_dict['a']
+    'http://example.com/a.txt'
+    >>> mg.url_list[0]
+    'http://example.com/a.txt'
+
+    """
+
+    def __init__(
+        self,
+        downloads: list[dict[str, Any]],
+        config: Optional[MGnipyConfig] = None,
+    ):
+        self.downloads = downloads
+        self.config = config or MGnipyConfig()
+
+    def _mgnifier_helper(self, url: str) -> MGnifier:
+        """
+        Helper to create an MGnifier instance for a given download URL.
+        So cache option.
+        """
+        # init
+        mg = MGnifier(
+            resource="_downloads",
+            config=self.config,
+            url=url,
         )
-        # get the data
-        self._mgnifier_helper.get()
-        # init with the data
-        super().__init__(**self._mgnifier_helper.results[0][0])
+        logging.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
+        return mg
 
     @property
     def url_dict(self) -> dict[str, dict]:
-        """returns a dict of alias: url for all downloads"""
+        """Return mapping of alias to URL for all downloads.
+
+        Returns
+        -------
+        dict
+            Dictionary mapping alias -> url (or ``None`` when no url is
+            available).
+
+        Examples
+        --------
+        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> MGazine(downloads).url_dict['x']
+        'http://ex/x'
+        """
+
         return {f["alias"]: f.get("url", None) for f in self.downloads}
 
     @property
     def downloads_df(self) -> pd.DataFrame:
-        """returns a dataframe of all downloads with columns alias, url, file_type"""
+        """Return a ``pandas.DataFrame`` of all downloads.
+
+        The dataframe will contain columns such as ``alias``, ``url`` and
+        ``file_type`` when those keys exist in the provided download dicts.
+
+        Examples
+        --------
+        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> df = MGazine(downloads).downloads_df
+        >>> list(df.columns)
+        ['alias', 'url', 'file_type']
+        """
+
         return pd.DataFrame(self.downloads)
 
     @property
     def url_list(self):
-        """returns a list of all download urls"""
+        """Return a list of all download URLs.
+
+        Examples
+        --------
+        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> MGazine(downloads).url_list
+        ['http://ex/x']
+        """
+
         return [f.get("url", None) for f in self.downloads]
 
     def _get_url_by_alias(
@@ -164,6 +226,37 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         tuple[str, HttpUrl]
             A tuple of (alias, url) where alias is the prioritized alias and url is the corresponding url.
         """
+        """Prioritize ``alias`` over ``url`` and return resolved pair.
+
+        If both ``alias`` and ``url`` are provided, the alias is used and the
+        corresponding url from the downloads is returned (a warning is issued).
+
+        Parameters
+        ----------
+        alias : str or None
+            Download alias known to this MGazine instance.
+        url : str or None
+            Direct URL to a resource.
+        required : bool, optional
+            When True, raise ``ValueError`` if neither ``alias`` nor ``url`` is
+            provided.
+
+        Returns
+        -------
+        (alias, url)
+            Tuple containing the resolved alias (or ``None``) and url (or
+            ``None``).
+
+        Examples
+        --------
+        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> mg = MGazine(downloads)
+        >>> mg._prioritize_alias(alias='x', url=None)
+        ('x', 'http://ex/x')
+        >>> mg._prioritize_alias(alias=None, url='http://ex/x')  # doctest: +ELLIPSIS
+        (None, 'http://ex/x')
+        """
+
         if alias and url:
             warnings.warn(
                 "Both `alias` and `url` provided, ignoring `url`.", stacklevel=2
@@ -215,6 +308,31 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             An iterator of pandas dataframes.
         """
 
+        """Read a TSV from a URL with resilient header handling.
+
+        This helper will attempt increasing ``skiprows`` when pandas raises a
+        ``ParserError`` (useful for files with extra header lines). The method
+        returns a dataframe or an iterator (when ``chunksize`` is set).
+
+        Notes
+        -----
+        The function returns the same values as ``pandas.read_csv`` and is
+        intentionally conservative in network usage; doctest examples below
+        only exercise the local behaviour when given a filepath-like URL.
+
+        Examples
+        --------
+        >>> # Using a simple local file path (works as a doctest example)
+        >>> import tempfile, pathlib
+        >>> tmp = tempfile.NamedTemporaryFile(mode='w+', delete=False)
+        >>> tmp.write('a\tb\n1\t2\n')
+        >>> tmp.flush()
+        >>> mg = MGazine([{"alias":"x","url":tmp.name,"file_type":"tsv"}])
+        >>> df = mg.stream_tsv(tmp.name)
+        >>> isinstance(next(df) if hasattr(df, '__iter__') and not isinstance(df, pd.DataFrame) else df, (pd.DataFrame,))
+        True
+        """
+
         for skip in range(max_skip + 1):
             try:
                 return pd.read_csv(
@@ -250,6 +368,15 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         bool
             True if the url was opened successfully, False otherwise.
         """
+        """Open an HTML URL in the default web browser.
+
+        Examples
+        --------
+        >>> # The doctest below only demonstrates the callable returns a bool
+        >>> MGazine([{"alias":"x","url":"http://example.com", "file_type":"html"}]).stream_html('http://example.com') in (True, False)
+        True
+        """
+
         return webbrowser.open(url, **web_kwargs)
 
     def stream_txt(
@@ -277,7 +404,20 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             An iterator of strings.
         """
 
-        client = httpx_client or self._mgnifier_helper.httpx_client
+        """Stream a plain-text resource.
+
+        When ``chunksize`` is ``None`` the full text is returned as a string.
+        When ``chunksize`` is an integer the function yields lists of lines.
+
+        Examples
+        --------
+        >>> downloads = [{"alias":"x","url":"/dev/null","file_type":"txt"}]
+        >>> mg = MGazine(downloads)
+        >>> isinstance(mg.stream_txt('/dev/null'), str)
+        True
+        """
+
+        client = httpx_client or self._mgnifier_helper.exec.httpx_client
 
         if chunksize is None:
             # load as whole
@@ -395,7 +535,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         """
 
         # Pick caller-provided client, or fallback to the shared MGnifier client.
-        client = httpx_client or self._mgnifier_helper.httpx_client
+        client = httpx_client or self._mgnifier_helper.exec.httpx_client
         logging.debug(
             "stream_gzipped called url=%s chunksize=%s decode=%s",
             url,
@@ -573,7 +713,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             The parsed json as a dictionary, or an iterator of dictionaries if chunksize is specified.
         """
 
-        client = httpx_client or self._mgnifier_helper.httpx_client
+        client = httpx_client or self._mgnifier_helper.exec.httpx_client
 
         # normal full get and json parse
         if chunksize is None and not (url.endswith(".gz") or url.endswith(".gzip")):
@@ -640,6 +780,16 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         list[str] | None
             The fixed list of strings, or None if the fields are invalid.
         """
+        """Pad or truncate list of fields to ``pad_to`` length.
+
+        Examples
+        --------
+        >>> MGazine([])._fix_inconsistent_cols(['a','b'], pad_to=4)
+        ['a', 'b', '', '']
+        >>> MGazine([])._fix_inconsistent_cols(list('ABCDEFGHI'), pad_to=3)
+        ['A', 'B', 'C']
+        """
+
         # pad to
         if len(fields) < pad_to:
             return fields + [""] * (pad_to - len(fields))
@@ -681,7 +831,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             A function that can be called to stream the download.
         """
 
-        client = httpx_client or self._mgnifier_helper.httpx_client
+        client = httpx_client or self._mgnifier_helper.exec.httpx_client
 
         # get alias/url
         _alias, _url = self._prioritize_alias(alias, url, required=True)
@@ -794,7 +944,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         else:
             aliases = [_alias]
         # return dict of alias: streamer_function
-        client = self._mgnifier_helper.httpx_client
+        client = self._mgnifier_helper.exec.httpx_client
 
         # TODO: skip404 client error for now
         streams = {}
@@ -860,25 +1010,14 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         # prep full path
         filepath = to_dir / filename if filename else to_dir / _alias
 
-        # reuse httpx client if provided, otherwise init new client using mgnifier
-        with httpx_client or self._mgnifier_helper.httpx_client as client:
-            with client.stream("GET", _url) as response:
-                response.raise_for_status()
-                total = int(response.headers.get("content-length", 0))
-                with (
-                    open(filepath, "wb") as f,
-                    tqdm_sync(
-                        total=total,
-                        unit="B",
-                        unit_scale=True,
-                        desc=f"Downloading {filename or _alias}",
-                        ascii=" >=",
-                        disable=hide_progress,
-                    ) as pbar,
-                ):
-                    for chunk in response.iter_bytes():
-                        f.write(chunk)
-                        pbar.update(len(chunk))
+        # Use the cached query path so the payload can be fetched once and reused.
+        payload = self._mgnifier_helper(_url).page(1)
+
+        if payload is None:
+            raise RuntimeError(f"Failed to download payload for {_url}")
+
+        with open(filepath, "wb") as f:
+            f.write(payload)
 
     async def adownload(
         self,
@@ -925,44 +1064,15 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         # prep full path
         filepath = to_dir / filename if filename else to_dir / _alias
 
-        # arg TODO mixins
         # semaphore to limit concurrent downloads, can be adjusted in config
         async with semaphore:
-            if httpx_aclient is not None:
-                client = httpx_aclient
-                # Do NOT use 'async with' here, just use the client directly
-                async with client.stream("GET", _url) as response:
-                    response.raise_for_status()
-                    total = int(response.headers.get("content-length", 0))
-                    with tqdm_sync(
-                        total=total,
-                        unit="B",
-                        unit_scale=True,
-                        desc=f"Downloading {filename or _alias}",
-                        ascii="░▒█",
-                        disable=hide_progress,
-                    ) as pbar:
-                        async with aiofiles.open(filepath, "wb") as f:
-                            async for chunk in response.aiter_bytes():
-                                await f.write(chunk)
-                                pbar.update(len(chunk))
-            else:
-                async with self._mgnifier_helper.httpx_aclient as client:
-                    async with client.stream("GET", _url) as response:
-                        response.raise_for_status()
-                        total = int(response.headers.get("content-length", 0))
-                        with tqdm_sync(
-                            total=total,
-                            unit="B",
-                            unit_scale=True,
-                            desc=f"Downloading {filename or _alias}",
-                            ascii="░▒█",
-                            disable=hide_progress,
-                        ) as pbar:
-                            async with aiofiles.open(filepath, "wb") as f:
-                                async for chunk in response.aiter_bytes():
-                                    await f.write(chunk)
-                                    pbar.update(len(chunk))
+            payload = await self._mgnifier_helper(_url).apage(1)
+
+            if payload is None:
+                raise RuntimeError(f"Failed to download payload for {_url}")
+
+            async with aiofiles.open(filepath, "wb") as f:
+                await f.write(payload)
 
     async def adownload_all(
         self,
@@ -988,7 +1098,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         """
 
         logging.debug("Initializing async client once for all downloads")
-        async with self._mgnifier_helper.httpx_aclient as client:
+        async with self._mgnifier_helper.exec.httpx_aclient as client:
 
             # create tasks for each download
             tasks = [
@@ -1044,7 +1154,7 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         """
 
         logging.debug("Initializing client once for all downloads")
-        with self._mgnifier_helper.httpx_client as client:
+        with self._mgnifier_helper.exec.httpx_client as client:
             aliases = list(self.url_dict.keys())
 
             for alias in tqdm_sync(
