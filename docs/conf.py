@@ -29,6 +29,7 @@ extensions = [
     "myst_nb",  # Markdown and Jupyter Notebook support
     "sphinx_copybutton",  # add copy button to code blocks
     "sphinx.ext.autosummary",
+    "sphinx_thebe",
 ]
 
 exclude_patterns = [
@@ -44,7 +45,7 @@ exclude_patterns = [
 templates_path = ["_templates"]
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
-
+# https://sphinx-book-theme.readthedocs.io/en/stable/index.html
 html_theme = "sphinx_book_theme"
 html_logo = "assets/mgnipy.svg"
 html_favicon = "assets/mgnipy.svg"
@@ -54,10 +55,9 @@ html_theme_options = {
     "repository_branch": "main",
     "home_page_in_toc": True,
     "path_to_docs": "docs",
-    "show_navbar_depth": 0,
-    "max_navbar_depth": 2,
+    "show_navbar_depth": 1,
     "collapse_navbar": True,
-    "show_toc_level": 4,
+    "show_toc_level": 3,
     "use_edit_page_button": True,
     "use_repository_button": True,
     "use_download_button": True,
@@ -65,16 +65,19 @@ html_theme_options = {
         "colab_url": "https://colab.research.google.com",
         "binderhub_url": "https://mybinder.org",
         "notebook_interface": "jupyterlab",
+        "thebe": True,
     },
-    "navigation_with_keys": False,
-    "extra_footer": "<div>hi there!</div>",
+    "navigation_with_keys": True,
 }
 html_js_files = [
     "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"
 ]  # plotly support
 
-
 # -- Extensions configurations ---------------------------------------------------
+
+## thebe
+thebe_config = {"selector": "div.highlight"}
+
 
 ## autosummary options
 autosummary_generate = True
@@ -92,7 +95,9 @@ myst_enable_extensions = ["dollarmath", "amsmath"]
 #  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
 nb_execution_mode = "auto"
 nb_execution_timeout = -1  # -1 means no timeout
-nb_execution_raise_on_error = True  # fail the build if a notebook cell raises an error
+nb_execution_raise_on_error = (
+    True  # fail the build if a notebook cell raises an error
+)
 # Rendering
 nb_merge_streams = True
 
