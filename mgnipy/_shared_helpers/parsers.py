@@ -18,6 +18,10 @@ HEADER_ALIASES = {
     "Warnings": "warnings",
 }
 
+NORMALIZED_HEADER_ALIASES = {
+    key.lower(): value for key, value in HEADER_ALIASES.items()
+}
+
 SECTION_FIELDS = tuple(
     sorted(set(HEADER_ALIASES.values()) | {"title", "description", "raw"})
 )
@@ -41,10 +45,10 @@ def is_numpy_header(lines: list[str], i: int) -> bool:
     """
     if i + 1 >= len(lines):
         return False
-    header = lines[i].strip()
+    header = lines[i].strip().lower()
     underline = lines[i + 1].strip()
     return (
-        header in HEADER_ALIASES
+        header in NORMALIZED_HEADER_ALIASES
         and len(underline) >= len(header)
         and set(underline) <= {"-"}
     )
@@ -107,12 +111,15 @@ def extract_doc_sections(doc: str) -> dict[str, str]:
 
     while i < len(lines):
         line = lines[i].rstrip()
+        normalized_header = (
+            line.strip()[:-1].lower() if line.strip().endswith(":") else ""
+        )
 
-        if line.strip().endswith(":") and line.strip()[:-1] in HEADER_ALIASES:
+        if normalized_header in NORMALIZED_HEADER_ALIASES:
             if buffer:
                 sections[current_key] = "\n".join(buffer).strip()
                 buffer = []
-            current_key = HEADER_ALIASES[line.strip()[:-1]]
+            current_key = NORMALIZED_HEADER_ALIASES[normalized_header]
             i += 1
             continue
 
@@ -120,7 +127,7 @@ def extract_doc_sections(doc: str) -> dict[str, str]:
             if buffer:
                 sections[current_key] = "\n".join(buffer).strip()
                 buffer = []
-            current_key = HEADER_ALIASES[lines[i].strip()]
+            current_key = NORMALIZED_HEADER_ALIASES[lines[i].strip().lower()]
             i += 2
             continue
 
@@ -147,18 +154,32 @@ def parse_args_block(args_block: str) -> dict[str, str]:
     -------
     dict[str, str]
         A dictionary mapping parameter names to their descriptions
+
+    Examples
+    --------
+    >>> block = '''
+    ... url : str
+    ...     Fully-qualified URL.
+    ... filename : str
+    ...     Output filename.
+    ... '''
+    >>> parse_args_block(block)
+    {'url': 'str Fully-qualified URL.', 'filename': 'str Output filename.'}
     """
     if not args_block.strip():
         return {}
 
     result: dict[str, str] = {}
     current_key: str | None = None
-    pattern = re.compile(r"^\s*([a-zA-Z_]\w*)\s*(?:\((.*?)\)|:\s*(.*?))\s*:\s*(.*)$")
+    numpy_pattern = re.compile(r"^\s*([a-zA-Z_]\w*)\s*:\s*(.+?)\s*$")
+    google_pattern = re.compile(
+        r"^\s*([a-zA-Z_]\w*)\s*(?:\((.*?)\)|:\s*(.*?))\s*:\s*(.*)$"
+    )
 
     for raw_line in args_block.splitlines():
         line = raw_line.rstrip()
 
-        match = pattern.match(line)
+        match = google_pattern.match(line)
         if match:
             name = match.group(1)
             type_a = match.group(2)
@@ -166,9 +187,15 @@ def parse_args_block(args_block: str) -> dict[str, str]:
             desc = match.group(4)
 
             type_text = type_a or type_b or ""
-            result[name] = (
-                f"({type_text}) {desc}".strip() if type_text else desc.strip()
-            )
+            result[name] = f"{type_text} {desc}".strip() if type_text else desc.strip()
+            current_key = name
+            continue
+
+        match = numpy_pattern.match(line)
+        if match:
+            name = match.group(1)
+            type_text = match.group(2).strip()
+            result[name] = type_text
             current_key = name
             continue
 
