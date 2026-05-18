@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.mixins &#8212; mgnipy 0.1.dev1+gb4755a37a documentation</title>
+    <title>mgnipy.V2.mixins &#8212; mgnipy 0.1.dev1+gda8d45bf5 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=35215d0f"></script>
+    <script src="../../../_static/documentation_options.js?v=b270e23c"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gb4755a37a documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gb4755a37a documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gda8d45bf5 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gda8d45bf5 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -342,9 +342,9 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Generator</span><span class="p">,</span>
     <span class="n">Literal</span><span class="p">,</span>
     <span class="n">Optional</span><span class="p">,</span>
 <span class="p">)</span>
@@ -354,12 +354,16 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">bigtree</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Tree</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ijson</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpUrl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skbio.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipyConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.writers</span><span class="w"> </span><span class="kn">import</span> <span class="n">atomic_write_json</span>
-
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="k">pass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.writers</span><span class="w"> </span><span class="kn">import</span> <span class="n">atomic_write_json</span><span class="p">,</span> <span class="n">atomic_write_bytes</span>
 
 
 <div class="viewcode-block" id="ResultsHandler">
@@ -424,23 +428,29 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data : list of dict, optional</span>
-<span class="sd">            List of records to convert. If None, uses self.qs._results or self._previewed_page.</span>
-<span class="sd">        expand_nested_dicts : list of str, optional</span>
-<span class="sd">            List of keys to expand into separate columns.</span>
+<span class="sd">            List of records to convert. If ``None``, uses :pyattr:`data`.</span>
+<span class="sd">        expand_nested_dicts : list of str or bool, optional</span>
+<span class="sd">            List of keys to expand into separate columns, or ``True`` to</span>
+<span class="sd">            expand defaults.</span>
 <span class="sd">        rename_columns : dict of str to str, optional</span>
 <span class="sd">            A dictionary mapping old column names to new column names.</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments passed to pd.DataFrame.</span>
+<span class="sd">            Additional keyword arguments passed to ``pd.DataFrame``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        pd.DataFrame | None</span>
-<span class="sd">            DataFrame containing the metadata.</span>
+<span class="sd">        pd.DataFrame or None</span>
+<span class="sd">            DataFrame containing the metadata or ``None`` when no data is</span>
+<span class="sd">            available.</span>
 
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        RuntimeError</span>
-<span class="sd">            If no data is available to convert.</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; handler = ResultsHandler(data=[{&quot;a&quot;: 1, &quot;b&quot;: 2}])</span>
+<span class="sd">        &gt;&gt;&gt; df = handler.to_df()</span>
+<span class="sd">        &gt;&gt;&gt; list(df.columns)</span>
+<span class="sd">        [&#39;a&#39;, &#39;b&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; df.iloc[0][&#39;a&#39;]</span>
+<span class="sd">        np.int64(1)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -478,18 +488,20 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data : dict of int to list of dict, optional</span>
-<span class="sd">            The paginated data to convert. If None, uses self.data.</span>
+<span class="sd">        data : optional</span>
+<span class="sd">            The paginated data to convert. If ``None``, uses :pyattr:`data`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        list of dict | None</span>
-<span class="sd">            A list of metadata records as dictionaries, or None if no data is available .</span>
+<span class="sd">        list</span>
+<span class="sd">            A list of metadata records as dictionaries, or ``None`` if no</span>
+<span class="sd">            data is available.</span>
 
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        RuntimeError</span>
-<span class="sd">            If no data is available to convert.</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; handler = ResultsHandler(data=[{&quot;x&quot;: 10}])</span>
+<span class="sd">        &gt;&gt;&gt; handler.to_list()</span>
+<span class="sd">        [{&#39;x&#39;: 10}]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Converting results to list&quot;</span><span class="p">)</span>
         <span class="n">_data</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
@@ -681,7 +693,6 @@ document.write(`
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Writing page </span><span class="si">{</span><span class="n">request_num</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2"> and manifest to </span><span class="si">{</span><span class="n">manifest_path</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-
         <span class="n">manifest</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;resource&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resource_val</span><span class="p">,</span>
             <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params_getter</span><span class="p">(),</span>
@@ -689,7 +700,15 @@ document.write(`
             <span class="s2">&quot;total_pages&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_requests</span><span class="p">,</span>
         <span class="p">}</span>
 
-        <span class="n">atomic_write_json</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span>
+        <span class="c1"># Write bytes (binary downloads) using atomic_write_bytes, otherwise JSON</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+                <span class="n">bin_path</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">)</span>
+                <span class="n">atomic_write_bytes</span><span class="p">(</span><span class="n">bin_path</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">items</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">atomic_write_json</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to write cache file for page </span><span class="si">{</span><span class="n">request_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">manifest_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">atomic_write_json</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">,</span> <span class="n">manifest</span><span class="p">)</span></div>
 
@@ -720,12 +739,17 @@ document.write(`
             <span class="k">return</span> <span class="p">[]</span>
 
         <span class="n">pages_loaded</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">cache_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">load_from</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;mgnipy_page_*.json&quot;</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">cache_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">load_from</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;mgnipy_page_*.*&quot;</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;.json&quot;</span><span class="p">,</span> <span class="s2">&quot;.bin&quot;</span><span class="p">}:</span>
+                <span class="k">continue</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading cached page from </span><span class="si">{</span><span class="n">cache_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># read in pg data</span>
-                <span class="k">with</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.bin&quot;</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
                 <span class="c1"># Extract page number from filename</span>
                 <span class="n">request_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cache_file</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                 <span class="c1"># load page if avail in cache</span>
@@ -798,7 +822,7 @@ document.write(`
                 <span class="c1"># extra check just in case</span>
                 <span class="k">if</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;mgnipy_manifest.json&quot;</span> <span class="ow">or</span> <span class="p">(</span>
                     <span class="n">cache_file</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;mgnipy_page_&quot;</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span>
+                    <span class="ow">and</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;.json&quot;</span><span class="p">,</span> <span class="s2">&quot;.bin&quot;</span><span class="p">}</span>
                 <span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Deleting cache file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cache_file</span><span class="p">)</span>
@@ -809,6 +833,552 @@ document.write(`
                 <span class="n">load_from</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to delete cache directory: </span><span class="si">{</span><span class="n">load_from</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="StreamMixin">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin providing streaming helpers for downloads.</span>
+
+<span class="sd">    # TODO remove below dependencies on mgnifier</span>
+<span class="sd">    This mixin assumes the host class provides the following helpers/properties:</span>
+<span class="sd">    - `_mgnifier_helper(url, cache_dir=None)` returning an object with</span>
+<span class="sd">      `.exec.httpx_client` and `.exec.httpx_aclient` attributes</span>
+<span class="sd">    - `_get_type_by_alias(alias)` to resolve file types</span>
+<span class="sd">    - `downloads_df` when needed for examples/tests</span>
+
+<span class="sd">    The implementation mirrors the streaming helpers previously defined</span>
+<span class="sd">    on :class:`MGazine` so they can be reused by other classes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StreamMixin.stream_tsv">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_tsv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_tsv</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">readers</span><span class="o">.</span><span class="n">TextFileReader</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read a TSV from a URL or local file with resilient header handling.</span>
+
+<span class="sd">        The helper will retry with increasing ``skiprows`` when ``pandas``</span>
+<span class="sd">        raises a ``ParserError`` (useful for files with extra header lines).</span>
+<span class="sd">        When ``chunksize`` is provided an iterator is returned.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The URL or local file path to read the TSV from.</span>
+<span class="sd">        sep : str</span>
+<span class="sd">            The delimiter to use (default is tab).</span>
+<span class="sd">        chunksize : int or None</span>
+<span class="sd">            If an integer is provided, returns an iterator that yields DataFrames</span>
+<span class="sd">            of that many rows. If None, returns a single DataFrame.</span>
+<span class="sd">        max_skip : int</span>
+<span class="sd">            The maximum number of lines to skip when trying to parse the TSV.</span>
+<span class="sd">        **pd_kwargs</span>
+<span class="sd">            Additional keyword arguments passed to ``pd.read_csv``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame or TextFileReader</span>
+<span class="sd">            A DataFrame containing the TSV data, or an iterator yielding DataFrames</span>
+<span class="sd">            if ``chunksize`` is specified.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``chunksize`` is not a positive integer or None.</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the TSV cannot be parsed after skipping up to ``max_skip`` lines.</span>
+<span class="sd">        Pandas ParserError</span>
+<span class="sd">            If the TSV cannot be parsed due to a format error (after retries).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">skip</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_skip</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+                    <span class="n">url</span><span class="p">,</span>
+                    <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span>
+                    <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                    <span class="n">skiprows</span><span class="o">=</span><span class="n">skip</span> <span class="k">if</span> <span class="n">skip</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ParserError</span><span class="p">:</span>
+                <span class="k">continue</span>  <span class="c1"># Try next skiprows value</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Error reading TSV from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> with skiprows=</span><span class="si">{</span><span class="n">skip</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+        <span class="k">raise</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ParserError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Failed to parse </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> after skipping up to </span><span class="si">{</span><span class="n">max_skip</span><span class="si">}</span><span class="s2"> rows.&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_html">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_html">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">web_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open an HTML URL in the default web browser.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The URL to open in the web browser.</span>
+<span class="sd">        **web_kwargs</span>
+<span class="sd">            Additional keyword arguments passed to `webbrowser.open()`, such as `new` and `autoraise`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the URL was opened successfully, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">web_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_txt">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_txt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_txt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stream a plain-text resource.</span>
+<span class="sd">        When ``chunksize`` is ``None`` the full text is returned as a string.</span>
+<span class="sd">        When ``chunksize`` is an integer the function yields lists of lines.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The URL to stream the text from.</span>
+<span class="sd">        chunksize : int or None</span>
+<span class="sd">            If an integer is provided, yields lists of lines of that size. If None, yields the entire text as a single string.</span>
+<span class="sd">        httpx_client : httpx.Client, optional</span>
+<span class="sd">            An optional httpx.Client to use for the request. If None, a new client will be created for the request.</span>
+<span class="sd">        **httpx_kwargs</span>
+<span class="sd">            Additional keyword arguments passed to the httpx.Client.request() method</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str or Generator</span>
+<span class="sd">            The full text as a string if chunksize is None, or a generator yielding lists of lines if chunksize is an integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">httpx_client</span>
+
+        <span class="k">if</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># load as whole</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chunksize</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chunksize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># load in chunks</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="n">chunk</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_text</span><span class="p">():</span>
+                    <span class="n">chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">==</span> <span class="n">chunksize</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">chunk</span>
+                        <span class="n">chunk</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">chunk</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`chunksize` must be a positive integer or None.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_fasta">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_fasta">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_fasta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stream a FASTA file from a URL using scikit-bio&#39;s read function. Refer there for more info.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The URL to the FASTA file to stream.</span>
+<span class="sd">        **skbio_kwargs</span>
+<span class="sd">            Additional keyword arguments passed to `skbio.io.read()`, such as `into` and `verify`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator</span>
+<span class="sd">            A generator yielding scikit-bio Sequence objects parsed from the FASTA file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;fasta&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_gff">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_gff">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_gff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stream a GFF file from a URL using scikit-bio&#39;s read function. Refer there for more info.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The URL to the GFF file to stream.</span>
+<span class="sd">        **skbio_kwargs</span>
+<span class="sd">            Additional keyword arguments passed to `skbio.io.read()`, such as `into` and `verify`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator</span>
+<span class="sd">            A generator yielding scikit-bio Sequence objects parsed from the GFF file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;gff3&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_biom">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_biom">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_biom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stream a biom file from a URL using scikit-bio&#39;s read function. Refer there for more info.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The URL to the biom file to stream.</span>
+<span class="sd">        **skbio_kwargs</span>
+<span class="sd">            Additional keyword arguments passed to `skbio.io.read()`, such as `into` and `verify`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Generator</span>
+<span class="sd">            A generator yielding scikit-bio Sequence objects parsed from the biom file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;biom&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_gzipped">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_gzipped">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_gzipped</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">decode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+        <span class="n">errors</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;replace&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span> <span class="o">|</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stream a gzipped HTTP resource and present a file-like interface.</span>
+
+<span class="sd">        When ``chunksize`` is None the entire compressed payload is fetched</span>
+<span class="sd">        and decompressed into memory. When ``chunksize`` is provided a</span>
+<span class="sd">        streaming file-like object is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">httpx_client</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;stream_gzipped called url=</span><span class="si">%s</span><span class="s2"> chunksize=</span><span class="si">%s</span><span class="s2"> decode=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">url</span><span class="p">,</span>
+            <span class="n">chunksize</span><span class="p">,</span>
+            <span class="n">decode</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using full-download mode (chunksize=None)&quot;</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="n">decompressor</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompressobj</span><span class="p">(</span><span class="mi">16</span> <span class="o">+</span> <span class="n">zlib</span><span class="o">.</span><span class="n">MAX_WBITS</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">decompressor</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">+</span> <span class="n">decompressor</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Full-download mode complete: compressed=</span><span class="si">%d</span><span class="s2"> decompressed=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">),</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span> <span class="k">if</span> <span class="n">decode</span> <span class="k">else</span> <span class="n">data</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chunksize</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">chunksize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`chunksize` must be a positive integer or None.&quot;</span><span class="p">)</span>
+
+        <span class="k">class</span><span class="w"> </span><span class="nc">_HTTPGzipRaw</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">RawIOBase</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cm</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cm</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resp</span><span class="o">.</span><span class="n">iter_raw</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="n">chunksize</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_decomp</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompressobj</span><span class="p">(</span><span class="mi">16</span> <span class="o">+</span> <span class="n">zlib</span><span class="o">.</span><span class="n">MAX_WBITS</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_eof</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flushed</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Streaming HTTP/gzip reader initialized&quot;</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">need</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">need</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eof</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">chunk</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flushed</span><span class="p">:</span>
+                            <span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decomp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">tail</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_flushed</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_eof</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reached end of HTTP stream&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+                    <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decomp</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">out</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">readinto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mi">0</span>
+                <span class="n">mv</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mv</span><span class="p">))</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mv</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mi">0</span>
+                <span class="n">mv</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">n</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cm</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">finally</span><span class="p">:</span>
+                        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Streaming HTTP/gzip reader closed&quot;</span><span class="p">)</span>
+
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">_HTTPGzipRaw</span><span class="p">()</span>
+        <span class="n">buffered</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="n">chunksize</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">buffered</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">buffered</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_jsonl">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_jsonl">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_jsonl</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">orient</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;records&quot;</span><span class="p">,</span> <span class="s2">&quot;split&quot;</span><span class="p">,</span> <span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="s2">&quot;table&quot;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span>
+            <span class="n">url</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="n">orient</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="o">**</span><span class="n">pd_kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamMixin.stream_json">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Generator</span><span class="p">:</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">httpx_client</span>
+
+        <span class="k">if</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">chunksize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">ijson</span><span class="o">.</span><span class="n">kvitems</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">iter_text</span><span class="p">(),</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">entry</span>
+        <span class="k">elif</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_gzipped</span><span class="p">(</span>
+                <span class="n">url</span><span class="p">,</span>
+                <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">httpx_kwargs</span><span class="p">,</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">gzipped_stream</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">ijson</span><span class="o">.</span><span class="n">kvitems</span><span class="p">(</span><span class="n">gzipped_stream</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">entry</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file type for URL: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fix_inconsistent_cols</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">pad_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pad or truncate list of fields to ``pad_to`` length.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fields : list of str</span>
+<span class="sd">            List of column names to adjust.</span>
+<span class="sd">        pad_to : int, optional</span>
+<span class="sd">            Desired length of the returned list. Defaults to 15.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str or None</span>
+<span class="sd">            The adjusted list of fields or ``None`` when ``pad_to`` is 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">pad_to</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fields</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">pad_to</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">pad_to</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fields</span><span class="p">[:</span><span class="n">pad_to</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">fields</span>
+
+<div class="viewcode-block" id="StreamMixin.stream_tree">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream_tree">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">skbio_kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_streamer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">httpx_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">httpx_client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">httpx_client</span>
+
+        <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">file_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_by_alias</span><span class="p">(</span><span class="n">_alias</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;tsv&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gzip&quot;</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tsv file type ends with .gz: </span><span class="si">{</span><span class="n">_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                        <span class="n">_url</span><span class="p">,</span>
+                        <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                        <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span>
+                        <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ParserError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ParserError: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                        <span class="n">_url</span><span class="p">,</span>
+                        <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                        <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span>
+                        <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+                        <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+                        <span class="n">on_bad_lines</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_inconsistent_cols</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.tsv&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                    <span class="n">_url</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tsv</span><span class="p">(</span>
+                <span class="n">_url</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_html</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_txt</span><span class="p">(</span>
+                <span class="n">_url</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;gff&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_gff</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;biom&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_biom</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;fasta&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_fasta</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;tree&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_tree</span><span class="p">(</span><span class="n">_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_jsonl</span><span class="p">(</span>
+                <span class="n">_url</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;other&quot;</span> <span class="ow">and</span> <span class="s2">&quot;.json&quot;</span> <span class="ow">in</span> <span class="n">_url</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;json.gz&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;json.gzip&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_json</span><span class="p">(</span>
+                    <span class="n">_url</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_alias</span><span class="si">}</span><span class="s2"> is only available for download (e.g., `.download(</span><span class="si">{</span><span class="n">_alias</span><span class="si">}</span><span class="s2">))`&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Alias: </span><span class="si">{</span><span class="n">_alias</span><span class="si">}</span><span class="se">\n</span><span class="s2">URL: </span><span class="si">{</span><span class="n">_url</span><span class="si">}</span><span class="se">\n</span><span class="s2">File type: </span><span class="si">{</span><span class="n">file_type</span><span class="si">}</span><span class="s2">. Only &#39;.json&#39; files can be streamed under &#39;other&#39; type, otherwise this download is only available for download.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file type for streaming: </span><span class="si">{</span><span class="n">file_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StreamMixin.stream">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin.stream">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Streams a single download based on its alias or url.</span>
+
+<span class="sd">        If ``chunksize`` is specified then iterators of dataframes or strings</span>
+<span class="sd">        will be returned; otherwise the full data will be returned as a single</span>
+<span class="sd">        object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alias : Optional[str]</span>
+<span class="sd">            The alias of the download to stream.</span>
+<span class="sd">        url : Optional[HttpUrl]</span>
+<span class="sd">            The url of the download to stream.</span>
+<span class="sd">        chunksize : Optional[int]</span>
+<span class="sd">            The size of the chunks to read from the stream.</span>
+<span class="sd">        max_skip : int, optional</span>
+<span class="sd">            The maximum number of rows to skip before raising an error. Default is 5.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments to pass to the streamer function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            The streamer result for the resolved alias or url.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># resolve a single alias/url target</span>
+        <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># return a single streamer result, not a dict of all streams</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgnifier_helper</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">httpx_client</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting up stream for alias=</span><span class="si">%s</span><span class="s2"> url=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_streamer</span><span class="p">(</span>
+                <span class="n">alias</span><span class="o">=</span><span class="n">_alias</span><span class="p">,</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">_url</span><span class="p">,</span>
+                <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span>
+                <span class="n">httpx_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                <span class="n">max_skip</span><span class="o">=</span><span class="n">max_skip</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;HTTP error for alias=</span><span class="si">%s</span><span class="s2"> url=</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">_alias</span><span class="p">,</span> <span class="n">_url</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span></div>
 </div>
 
 

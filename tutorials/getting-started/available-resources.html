@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>📚 Intro to MGnify Resources &#8212; mgnipy 0.1.dev1+gb4755a37a documentation</title>
+    <title>📚 Intro to MGnify Resources &#8212; mgnipy 0.1.dev1+gda8d45bf5 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=35215d0f"></script>
+    <script src="../../_static/documentation_options.js?v=b270e23c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gb4755a37a documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gb4755a37a documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gda8d45bf5 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gda8d45bf5 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -555,7 +555,8 @@ document.write(`
  &#39;catalogues&#39;,
  &#39;catalogue&#39;,
  &#39;annotations&#39;,
- &#39;private_studies&#39;]
+ &#39;private_studies&#39;,
+ &#39;_downloads&#39;]
 </pre></div>
 </div>
 </div>
@@ -580,12 +581,12 @@ List all studies analysed by MGnify
 MGnify studies inherit directly from studies (or projects) in ENA.
 
 Supported parameters:
-- order: (ListMgnifyStudiesOrderType0 | None | Unset)
-- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
-- has_analyses_from_pipeline: (None | PipelineVersions | Unset) If set, will only show studies with analyses from the specified MGnify pipeline version
-- search: (None | str | Unset) Search within study titles and accessions
-- page: (int | Unset) Default: 1.
-- page_size: (int | None | Unset)
+- order: ListMgnifyStudiesOrderType0 | None | Unset
+- biome_lineage: None | str | Unset The lineage to match, including all descendant biomes
+- has_analyses_from_pipeline: None | PipelineVersions | Unset If set, will only show studies with analyses from the specified MGnify pipeline version
+- search: None | str | Unset Search within study titles and accessions
+- page: int | Unset Default: 1.
+- page_size: int | None | Unset
 
 ----------
 
@@ -596,7 +597,7 @@ MGnify analyses are accessioned with an MYGA-prefixed identifier and correspond 
 or Assembly analysed by a Pipeline.
 
 Supported parameters:
-- accession: (str)
+- accession: str
 </pre></div>
 </div>
 </div>
@@ -645,12 +646,12 @@ List all studies analysed by MGnify
 MGnify studies inherit directly from studies (or projects) in ENA.
 
 Supported parameters:
-- order: (ListMgnifyStudiesOrderType0 | None | Unset)
-- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
-- has_analyses_from_pipeline: (None | PipelineVersions | Unset) If set, will only show studies with analyses from the specified MGnify pipeline version
-- search: (None | str | Unset) Search within study titles and accessions
-- page: (int | Unset) Default: 1.
-- page_size: (int | None | Unset)
+- order: ListMgnifyStudiesOrderType0 | None | Unset
+- biome_lineage: None | str | Unset The lineage to match, including all descendant biomes
+- has_analyses_from_pipeline: None | PipelineVersions | Unset If set, will only show studies with analyses from the specified MGnify pipeline version
+- search: None | str | Unset Search within study titles and accessions
+- page: int | Unset Default: 1.
+- page_size: int | None | Unset
 </pre></div>
 </div>
 </div>
@@ -682,12 +683,12 @@ Supported parameters:
 MGnify studies inherit directly from studies (or projects) in ENA.
 
 Supported parameters:
-- order: (ListMgnifyStudiesOrderType0 | None | Unset)
-- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
-- has_analyses_from_pipeline: (None | PipelineVersions | Unset) If set, will only show studies with analyses from the specified MGnify pipeline version
-- search: (None | str | Unset) Search within study titles and accessions
-- page: (int | Unset) Default: 1.
-- page_size: (int | None | Unset)
+- order: ListMgnifyStudiesOrderType0 | None | Unset
+- biome_lineage: None | str | Unset The lineage to match, including all descendant biomes
+- has_analyses_from_pipeline: None | PipelineVersions | Unset If set, will only show studies with analyses from the specified MGnify pipeline version
+- search: None | str | Unset Search within study titles and accessions
+- page: int | Unset Default: 1.
+- page_size: int | None | Unset
 
 ----------
 https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=1

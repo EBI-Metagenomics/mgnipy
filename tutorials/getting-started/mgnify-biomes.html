@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>🔎 Intro to querying MGnify Resources &#8212; mgnipy 0.1.dev1+gb4755a37a documentation</title>
+    <title>🔎 Intro to querying MGnify Resources &#8212; mgnipy 0.1.dev1+gda8d45bf5 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=35215d0f"></script>
+    <script src="../../_static/documentation_options.js?v=b270e23c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gb4755a37a documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gb4755a37a documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gda8d45bf5 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gda8d45bf5 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -606,10 +606,10 @@ Cache directory: None
 List all biomes in the MGnify database.
 
 Supported parameters:
-- biome_lineage: (None | str | Unset) The lineage to match, including all descendant biomes
-- max_depth: (int | None | Unset) Maximum depth of the biome lineage to include, e.g. `root` is 1 and `root:Host-Associated:Human` is level 3
-- page: (int | Unset) Default: 1.
-- page_size: (int | None | Unset)
+- biome_lineage: None | str | Unset The lineage to match, including all descendant biomes
+- max_depth: int | None | Unset Maximum depth of the biome lineage to include, e.g. `root` is 1 and `root:Host-Associated:Human` is level 3
+- page: int | Unset Default: 1.
+- page_size: int | None | Unset
 </pre></div>
 </div>
 </div>
@@ -977,17 +977,13 @@ Advancing to request num 20
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:05,  1.71it/s]
-Retrieving pages:  20%|██        | 2/10 [00:00&lt;00:02,  3.01it/s]
-Retrieving pages:  30%|███       | 3/10 [00:00&lt;00:01,  3.97it/s]
-Retrieving pages:  40%|████      | 4/10 [00:01&lt;00:01,  4.68it/s]
-Retrieving pages:  50%|█████     | 5/10 [00:01&lt;00:00,  5.15it/s]
-Retrieving pages:  60%|██████    | 6/10 [00:01&lt;00:00,  5.54it/s]
-Retrieving pages:  70%|███████   | 7/10 [00:01&lt;00:00,  5.82it/s]
-Retrieving pages:  80%|████████  | 8/10 [00:01&lt;00:00,  6.01it/s]
-Retrieving pages:  90%|█████████ | 9/10 [00:01&lt;00:00,  6.15it/s]
-Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  6.23it/s]
-Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  5.04it/s]
+Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:03,  2.45it/s]
+Retrieving pages:  30%|███       | 3/10 [00:00&lt;00:01,  5.33it/s]
+Retrieving pages:  50%|█████     | 5/10 [00:00&lt;00:00,  7.09it/s]
+Retrieving pages:  70%|███████   | 7/10 [00:01&lt;00:00,  8.03it/s]
+Retrieving pages:  90%|█████████ | 9/10 [00:01&lt;00:00,  8.72it/s]
+Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  8.76it/s]
+Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  7.48it/s]
 </pre></div>
 </div>
 </div>
@@ -1001,10 +997,9 @@ Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  5
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieving pages:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:05,  1.73it/s]
-Retrieving pages:  60%|██████    | 6/10 [00:00&lt;00:00, 10.32it/s]
-Retrieving pages: 100%|██████████| 10/10 [00:00&lt;00:00, 12.22it/s]
-Retrieving pages: 100%|██████████| 10/10 [00:00&lt;00:00, 10.07it/s]
+Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:03,  2.74it/s]
+Retrieving pages:  60%|██████    | 6/10 [00:00&lt;00:00, 15.90it/s]
+Retrieving pages: 100%|██████████| 10/10 [00:00&lt;00:00, 20.82it/s]
 </pre></div>
 </div>
 </div>
