@@ -1,3 +1,4 @@
+import pandas as pd
 from typing import (
     Any,
     ClassVar,
@@ -5,6 +6,7 @@ from typing import (
     Optional,
 )
 
+from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
@@ -24,7 +26,17 @@ class Studies(MGnifyList):
 
     @property
     def details_downloads(self):
-        return self.details_df["downloads"]
+        # return self.details_df["downloads"]
+
+        down_dict = self.details_df["downloads"]
+
+        okie = {x: y for x, y in down_dict.items() if len(y) > 0}
+        rows = [
+            dict(study_id=study, **item)
+            for study, items in okie.items()
+            for item in items
+        ]
+        return pd.DataFrame(rows)
 
 
 class StudyDetail(MGnifyDetail):
@@ -47,7 +59,11 @@ class StudyDetail(MGnifyDetail):
 
     @property
     def downloads(self):
-        return self.to_df().loc[0, "downloads"]
+        """A property that returns an MGazine instance containing the downloads information for the study."""
+        return MGazine(
+            downloads=self.to_df().loc[0, "downloads"],
+            config=self.config,
+        )
 
 
 class PrivateStudies(MGnifyList):
@@ -66,4 +82,10 @@ class PrivateStudies(MGnifyList):
 
     @property
     def downloads(self):
-        return self.to_df().loc[0, "downloads"]
+        """
+        A property that returns an MGazine instance containing the downloads information for the private studies.
+        """
+        return MGazine(
+            downloads=self.to_df().loc[0, "downloads"],
+            config=self.config,
+        )

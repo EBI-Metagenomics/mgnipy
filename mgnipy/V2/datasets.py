@@ -21,6 +21,7 @@ from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy.V2.core import MGnifier
 from mgnipy.V2.mixins import StreamMixin
+from pprint import pformat
 
 semaphore = get_semaphore()
 
@@ -63,6 +64,12 @@ class MGazine(StreamMixin):
     ):
         self.downloads = downloads
         self.config = config or MGnipyConfig()
+
+    def __str__(self):
+        return (
+            f"MGazine with {len(self.downloads)} downloads:\n"
+            f"{pformat(self.url_dict, width=120)}"
+        )
 
     def _mgnifier_helper(
         self, url: str = "", cache_dir: Optional[DirectoryPath] = None
