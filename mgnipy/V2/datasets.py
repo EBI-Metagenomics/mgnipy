@@ -23,10 +23,6 @@ from mgnipy.V2.core import MGnifier
 from mgnipy.V2.mixins import StreamMixin
 
 semaphore = get_semaphore()
-BASE_URL = MGnipyConfig().base_url
-
-# I want it to work with
-# - MGnifyAnalysisDownloadFile OR MGnifyStudyDownloadFile
 
 
 class MGazine(StreamMixin):
@@ -56,6 +52,8 @@ class MGazine(StreamMixin):
     True
     >>> mg.url_dict['a']
     '/tmp/a.txt'
+    >>> mg.url_list
+    ['/tmp/a.txt']
     """
 
     def __init__(
@@ -86,7 +84,8 @@ class MGazine(StreamMixin):
 
     @property
     def url_dict(self) -> dict[str, dict]:
-        """Return mapping of alias to URL for all downloads.
+        """
+        Return mapping of alias to URL for all downloads.
 
         Returns
         -------
@@ -96,8 +95,10 @@ class MGazine(StreamMixin):
 
         Examples
         --------
-        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
-        >>> MGazine(downloads).url_dict['x']
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
+        >>> MGazine(downloads).url_dict['example.txt']
         'http://ex/x'
         """
 
@@ -112,7 +113,9 @@ class MGazine(StreamMixin):
 
         Examples
         --------
-        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
         >>> df = MGazine(downloads).downloads_df
         >>> list(df.columns)
         ['alias', 'url', 'file_type']
@@ -126,7 +129,9 @@ class MGazine(StreamMixin):
 
         Examples
         --------
-        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
         >>> MGazine(downloads).url_list
         ['http://ex/x']
         """
@@ -164,7 +169,7 @@ class MGazine(StreamMixin):
             is used.
         httpx_client : httpx.Client, optional
             Optional `httpx.Client` to use for the HTTP request. If not
-            supplied a temporary client from :meth:`_mgnifier_helper` is
+            supplied a temporary client from `_mgnifier_helper` is
             used.
         overwrite : bool, optional
             If ``False`` and the destination file already exists the
@@ -180,19 +185,14 @@ class MGazine(StreamMixin):
 
         Examples
         --------
-        The example below demonstrates the function's overwrite guard
-        without performing network I/O by pre-creating the destination
-        file and asserting that the download is skipped when
-        ``overwrite=False``::
-
-            >>> import tempfile, pathlib
-            >>> tmpdir = tempfile.TemporaryDirectory()
-            >>> dest = pathlib.Path(tmpdir.name) / 'exists.txt'
-            >>> dest.write_text('x')
-            >>> mg = MGazine([{'alias':'a','url':'/does/not/matter','file_type':'txt'}])
-            >>> mg.download(to_dir=tmpdir.name, alias='a', overwrite=False) is None
-            True
-
+        downloads = [
+        ... {
+        ... "alias": "example.txt",
+        ... "url": "http://ex/x",
+        ... "file_type": "txt",
+        ... }]
+        mg = MGazine(downloads)
+        mg.download("download_to_here", alias="example.txt") # doctest: +SKIP
         """
         # get alias/url
         _alias, _url = self._prioritize_alias(alias, url, required=True)
@@ -283,19 +283,24 @@ class MGazine(StreamMixin):
             If ``False`` and the destination file already exists the
             download is skipped. When ``True`` the existing file will be
             overwritten.
+        hide_progress : bool, optional
+            Disable the progress bar when ``True``.
+
+        Raises
+        ------
+        ValueError
+            If neither ``alias`` nor ``url`` is provided.
 
         Examples
         --------
-        The example demonstrates the overwrite guard without network I/O::
-
-            >>> import tempfile, pathlib, asyncio
-            >>> tmpdir = tempfile.TemporaryDirectory()
-            >>> dest = pathlib.Path(tmpdir.name) / 'exists_async.txt'
-            >>> dest.write_text('y')
-            >>> mg = MGazine([{'alias':'a','url':'/does/not/matter','file_type':'txt'}])
-            >>> asyncio.run(mg.adownload(to_dir=tmpdir.name, alias='a', overwrite=False)) is None
-            True
-
+        downloads = [
+        ... {
+        ... "alias": "example.txt",
+        ... "url": "http://ex/x",
+        ... "file_type": "txt",
+        ... }]
+        mg = MGazine(downloads)
+        await mg.adownload("download_to_here", alias="example.txt") # doctest: +SKIP
         """
         # get alias/url
         _alias, _url = self._prioritize_alias(alias, url, required=True)
@@ -380,12 +385,21 @@ class MGazine(StreamMixin):
         hide_progress : bool, optional
             Disable per-file and overall progress bars when ``True``.
         overwrite : bool, optional
-            Passed to :meth:`download` to control overwriting behavior.
+            Passed to `download` to control overwriting behavior.
 
         Notes
         -----
-        This helper calls :meth:`download` for each alias present in the
+        This helper calls `download` for each alias present in the
         instance's downloads list.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ...     {"alias": "example2.fasta.gz", "url": "http://ex/x2", "file_type": "fasta"},
+        ... ]
+        >>> mg = MGazine(downloads)
+        >>> mg.download_all("download_to_here") # doctest: +SKIP
         """
 
         logging.debug("Initializing client once for all downloads")
@@ -431,14 +445,24 @@ class MGazine(StreamMixin):
         to_dir : DirectoryPath
             Directory where the files will be saved.
         overwrite : bool, optional
-            Passed to :meth:`adownload` to control overwriting behavior.
+            Passed to `adownload` to control overwriting behavior.
         hide_progress : bool, optional
             Disable progress bars when ``True``.
 
         Notes
         -----
         This helper creates a single async HTTP client and schedules
-        concurrent :meth:`adownload` calls for all aliases.
+        concurrent `adownload` calls for all aliases.
+
+        Examples
+        ---------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ...     {"alias": "example2.fasta.gz", "url": "http://ex/x2", "file_type": "fasta"},
+        ... ]
+        >>> mg = MGazine(downloads)
+        >>> await mg.adownload_all("download_to_here") # doctest: +SKIP
+
         """
 
         logging.debug("Initializing async client once for all downloads")

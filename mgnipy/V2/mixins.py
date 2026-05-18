@@ -89,23 +89,29 @@ class ResultsHandler:
         Parameters
         ----------
         data : list of dict, optional
-            List of records to convert. If None, uses self.qs._results or self._previewed_page.
-        expand_nested_dicts : list of str, optional
-            List of keys to expand into separate columns.
+            List of records to convert. If ``None``, uses :pyattr:`data`.
+        expand_nested_dicts : list of str or bool, optional
+            List of keys to expand into separate columns, or ``True`` to
+            expand defaults.
         rename_columns : dict of str to str, optional
             A dictionary mapping old column names to new column names.
         **kwargs
-            Additional keyword arguments passed to pd.DataFrame.
+            Additional keyword arguments passed to ``pd.DataFrame``.
 
         Returns
         -------
-        pd.DataFrame | None
-            DataFrame containing the metadata.
+        pd.DataFrame or None
+            DataFrame containing the metadata or ``None`` when no data is
+            available.
 
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
+        Examples
+        --------
+        >>> handler = ResultsHandler(data=[{"a": 1, "b": 2}])
+        >>> df = handler.to_df()
+        >>> list(df.columns)
+        ['a', 'b']
+        >>> df.iloc[0]['a']
+        np.int64(1)
         """
 
         logging.debug(
@@ -140,18 +146,20 @@ class ResultsHandler:
 
         Parameters
         ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self.data.
+        data : optional
+            The paginated data to convert. If ``None``, uses :pyattr:`data`.
 
         Returns
         -------
-        list of dict | None
-            A list of metadata records as dictionaries, or None if no data is available .
+        list
+            A list of metadata records as dictionaries, or ``None`` if no
+            data is available.
 
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
+        Examples
+        --------
+        >>> handler = ResultsHandler(data=[{"x": 10}])
+        >>> handler.to_list()
+        [{'x': 10}]
         """
         logging.debug("Converting results to list")
         _data = data or self.data
@@ -478,11 +486,41 @@ class StreamMixin:
         max_skip: int = 5,
         **pd_kwargs,
     ) -> pd.DataFrame | pd.io.parsers.readers.TextFileReader:
-        """Read a TSV from a URL with resilient header handling.
+        """
+        Read a TSV from a URL or local file with resilient header handling.
 
-        This helper will attempt increasing ``skiprows`` when pandas raises a
-        ``ParserError`` (useful for files with extra header lines). The method
-        returns a dataframe or an iterator (when ``chunksize`` is set).
+        The helper will retry with increasing ``skiprows`` when ``pandas``
+        raises a ``ParserError`` (useful for files with extra header lines).
+        When ``chunksize`` is provided an iterator is returned.
+
+        Parameters
+        ----------
+        url : str
+            The URL or local file path to read the TSV from.
+        sep : str
+            The delimiter to use (default is tab).
+        chunksize : int or None
+            If an integer is provided, returns an iterator that yields DataFrames
+            of that many rows. If None, returns a single DataFrame.
+        max_skip : int
+            The maximum number of lines to skip when trying to parse the TSV.
+        **pd_kwargs
+            Additional keyword arguments passed to ``pd.read_csv``.
+
+        Returns
+        -------
+        pd.DataFrame or TextFileReader
+            A DataFrame containing the TSV data, or an iterator yielding DataFrames
+            if ``chunksize`` is specified.
+
+        Raises
+        ------
+        ValueError
+            If ``chunksize`` is not a positive integer or None.
+        RuntimeError
+            If the TSV cannot be parsed after skipping up to ``max_skip`` lines.
+        Pandas ParserError
+            If the TSV cannot be parsed due to a format error (after retries).
         """
 
         for skip in range(max_skip + 1):
@@ -505,7 +543,21 @@ class StreamMixin:
         )
 
     def stream_html(self, url: str, **web_kwargs) -> bool:
-        """Open an HTML URL in the default web browser."""
+        """
+        Open an HTML URL in the default web browser.
+
+        Parameters
+        ----------
+        url : str
+            The URL to open in the web browser.
+        **web_kwargs
+            Additional keyword arguments passed to `webbrowser.open()`, such as `new` and `autoraise`.
+
+        Returns
+        -------
+        bool
+            True if the URL was opened successfully, False otherwise.
+        """
 
         return webbrowser.open(url, **web_kwargs)
 
@@ -515,11 +567,27 @@ class StreamMixin:
         chunksize: Optional[int] = None,
         httpx_client: Optional[httpx.Client] = None,
         **httpx_kwargs,
-    ) -> Generator:
-        """Stream a plain-text resource.
-
+    ) -> str | Generator:
+        """
+        Stream a plain-text resource.
         When ``chunksize`` is ``None`` the full text is returned as a string.
         When ``chunksize`` is an integer the function yields lists of lines.
+
+        Parameters
+        ----------
+        url : str
+            The URL to stream the text from.
+        chunksize : int or None
+            If an integer is provided, yields lists of lines of that size. If None, yields the entire text as a single string.
+        httpx_client : httpx.Client, optional
+            An optional httpx.Client to use for the request. If None, a new client will be created for the request.
+        **httpx_kwargs
+            Additional keyword arguments passed to the httpx.Client.request() method
+
+        Returns
+        -------
+        str or Generator
+            The full text as a string if chunksize is None, or a generator yielding lists of lines if chunksize is an integer.
         """
 
         client = httpx_client or self._mgnifier_helper().exec.httpx_client
@@ -545,12 +613,57 @@ class StreamMixin:
             raise ValueError("`chunksize` must be a positive integer or None.")
 
     def stream_fasta(self, url: str, **skbio_kwargs) -> Generator:
+        """
+        Stream a FASTA file from a URL using scikit-bio's read function. Refer there for more info.
+
+        Parameters
+        ----------
+        url : str
+            The URL to the FASTA file to stream.
+        **skbio_kwargs
+            Additional keyword arguments passed to `skbio.io.read()`, such as `into` and `verify`.
+
+        Returns
+        -------
+        Generator
+            A generator yielding scikit-bio Sequence objects parsed from the FASTA file.
+        """
         return read(url, format="fasta", **skbio_kwargs)
 
     def stream_gff(self, url: str, **skbio_kwargs) -> Generator:
+        """
+        Stream a GFF file from a URL using scikit-bio's read function. Refer there for more info.
+
+        Parameters
+        ----------
+        url : str
+            The URL to the GFF file to stream.
+        **skbio_kwargs
+            Additional keyword arguments passed to `skbio.io.read()`, such as `into` and `verify`.
+
+        Returns
+        -------
+        Generator
+            A generator yielding scikit-bio Sequence objects parsed from the GFF file.
+        """
         return read(url, format="gff3", **skbio_kwargs)
 
     def stream_biom(self, url: str, **skbio_kwargs) -> Generator:
+        """
+        Stream a biom file from a URL using scikit-bio's read function. Refer there for more info.
+
+        Parameters
+        ----------
+        url : str
+            The URL to the biom file to stream.
+        **skbio_kwargs
+            Additional keyword arguments passed to `skbio.io.read()`, such as `into` and `verify`.
+
+        Returns
+        -------
+        Generator
+            A generator yielding scikit-bio Sequence objects parsed from the biom file.
+        """
         return read(url, format="biom", **skbio_kwargs)
 
     def stream_gzipped(
@@ -705,7 +818,20 @@ class StreamMixin:
     def _fix_inconsistent_cols(
         self, fields: list[str], pad_to: int = 15
     ) -> list[str] | None:
-        """Pad or truncate list of fields to ``pad_to`` length."""
+        """Pad or truncate list of fields to ``pad_to`` length.
+
+        Parameters
+        ----------
+        fields : list of str
+            List of column names to adjust.
+        pad_to : int, optional
+            Desired length of the returned list. Defaults to 15.
+
+        Returns
+        -------
+        list of str or None
+            The adjusted list of fields or ``None`` when ``pad_to`` is 0.
+        """
 
         if len(fields) < pad_to:
             return fields + [""] * (pad_to - len(fields))
