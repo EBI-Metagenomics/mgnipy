@@ -7,7 +7,6 @@ import zlib
 from pathlib import Path
 from typing import (
     Any,
-    Callable,
     Generator,
     Literal,
     Optional,
@@ -38,26 +37,32 @@ BASE_URL = MGnipyConfig().base_url
 
 
 class MGazine:
-    """Helper class for handling downloads from MGnify analyses and studies.
+    """
+    Helper for handling MGnify analysis/study downloads.
 
-    Can be initialized with either a list of :class:`MGnifyAnalysisDownloadFile`
-    or :class:`MGnifyStudyDownloadFile`-like dicts. The object exposes helpers
-    to inspect available downloads and create stream/download callables.
+    This class accepts a list of download-like dictionaries (for example
+    the objects returned by the MGnify API for downloads) and provides
+    simple streaming and download helpers.
+
+    Parameters
+    ----------
+    downloads : list[dict]
+        List of download descriptors with keys such as ``alias``, ``url``
+        and ``file_type``.
+    config : MGnipyConfig, optional
+        Optional configuration to use; when omitted the global
+        :class:`MGnipyConfig` is used.
 
     Examples
     --------
     >>> downloads = [
-    ...     {"alias": "a", "url": "http://example.com/a.txt", "file_type": "txt"},
-    ...     {"alias": "b", "url": "http://example.com/b.tsv", "file_type": "tsv"},
+    ...     {"alias": "a", "url": "/tmp/a.txt", "file_type": "txt"},
     ... ]
     >>> mg = MGazine(downloads)
     >>> isinstance(mg, MGazine)
     True
     >>> mg.url_dict['a']
-    'http://example.com/a.txt'
-    >>> mg.url_list[0]
-    'http://example.com/a.txt'
-
+    '/tmp/a.txt'
     """
 
     def __init__(
@@ -148,34 +153,53 @@ class MGazine:
         hide_progress: bool = False,
     ):
         """
-        Downloads a file from a url or alias to a specified directory.
+        Download a file from an alias or URL to a local directory.
 
         Parameters
         ----------
         to_dir : DirectoryPath
-            The directory to download the file to.
-        alias : Optional[str], optional
-            The alias of the file to download. If not provided, `url` must be provided. Default is None.
-        url : Optional[str], optional
-            The url of the file to download. If not provided, `alias` must be provided. Default is None.
-        filename : Optional[str], optional
-            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
+            Directory where the file will be saved.
+        alias : str or None, optional
+            Download alias known to this ``MGazine`` instance. When
+            provided the corresponding URL from the instance's downloads
+            list is used.
+        url : str or None, optional
+            Direct URL to fetch. Either ``alias`` or ``url`` must be
+            provided.
+        filename : str or None, optional
+            Filename to use for the saved file. When omitted the alias
+            is used.
+        httpx_client : httpx.Client, optional
+            Optional `httpx.Client` to use for the HTTP request. If not
+            supplied a temporary client from :meth:`_mgnifier_helper` is
+            used.
         overwrite : bool, optional
-            Whether to overwrite the file if it already exists. Default is False.
+            If ``False`` and the destination file already exists the
+            download is skipped. When ``True`` the existing file will be
+            overwritten.
         hide_progress : bool, optional
-            Whether to hide the progress bar during download. Default is False.
-
+            Disable the progress bar when ``True``.
 
         Raises
         ------
         ValueError
-            If neither `alias` nor `url` is provided, or if `url` is provided without a corresponding `alias` in the downloads.
+            If neither ``alias`` nor ``url`` is provided.
 
-        Notes
-        -----
-        - The cache is not used for downloads.
-        - If `url` is provided without a corresponding `alias` in the downloads, `filename` must be provided since there is no alias to use as the filename.
-        - Overwrite behavior: if the target file already exists and `overwrite` is False, the download will be skipped to avoid unnecessary network requests and file writes. If `overwrite` is True, the existing file will be replaced with the new download.
+        Examples
+        --------
+        The example below demonstrates the function's overwrite guard
+        without performing network I/O by pre-creating the destination
+        file and asserting that the download is skipped when
+        ``overwrite=False``::
+
+            >>> import tempfile, pathlib
+            >>> tmpdir = tempfile.TemporaryDirectory()
+            >>> dest = pathlib.Path(tmpdir.name) / 'exists.txt'
+            >>> dest.write_text('x')
+            >>> mg = MGazine([{'alias':'a','url':'/does/not/matter','file_type':'txt'}])
+            >>> mg.download(to_dir=tmpdir.name, alias='a', overwrite=False) is None
+            True
+
         """
         # get alias/url
         _alias, _url = self._prioritize_alias(alias, url, required=True)
@@ -246,25 +270,39 @@ class MGazine:
         hide_progress: bool = False,
     ):
         """
-        Asynchronously downloads a file from a url or alias to a specified directory.
+        Asynchronously download a file from an alias or URL.
 
         Parameters
         ----------
         to_dir : DirectoryPath
-            The directory to download the file to.
-        alias : Optional[str], optional
-            The alias of the file to download. If not provided, `url` must be provided. Default is None.
-        url : Optional[str], optional
-            The url of the file to download. If not provided, `alias` must be provided. Default is None.
-        filename : Optional[str], optional
-            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
-            Note that if `url` is provided without a corresponding `alias` in the downloads,
-            `filename` must be provided since there is no alias to use as the filename.
-        httpx_aclient : Optional[httpx.AsyncClient], optional
-            An optional httpx.AsyncClient to use for the download.
-            If not provided, a new client will be created using the mgnifier helper. Default is None.
+            Directory where the file will be saved.
+        alias : str or None, optional
+            Download alias known to this ``MGazine`` instance.
+        url : str or None, optional
+            Direct URL to fetch. Either ``alias`` or ``url`` must be
+            provided.
+        filename : str or None, optional
+            Filename to use for the saved file. When omitted the alias
+            is used.
+        httpx_aclient : httpx.AsyncClient, optional
+            Optional `httpx.AsyncClient` to use for the HTTP request.
         overwrite : bool, optional
-            Whether to overwrite the file if it already exists. Default is False.
+            If ``False`` and the destination file already exists the
+            download is skipped. When ``True`` the existing file will be
+            overwritten.
+
+        Examples
+        --------
+        The example demonstrates the overwrite guard without network I/O::
+
+            >>> import tempfile, pathlib, asyncio
+            >>> tmpdir = tempfile.TemporaryDirectory()
+            >>> dest = pathlib.Path(tmpdir.name) / 'exists_async.txt'
+            >>> dest.write_text('y')
+            >>> mg = MGazine([{'alias':'a','url':'/does/not/matter','file_type':'txt'}])
+            >>> asyncio.run(mg.adownload(to_dir=tmpdir.name, alias='a', overwrite=False)) is None
+            True
+
         """
         # get alias/url
         _alias, _url = self._prioritize_alias(alias, url, required=True)
@@ -340,21 +378,21 @@ class MGazine:
         overwrite: bool = False,
     ):
         """
-        Downloads all files in the downloads to a specified directory.
+        Download all files known to this ``MGazine`` instance.
 
         Parameters
         ----------
         to_dir : DirectoryPath
-            The directory to download the files to.
+            Directory where the files will be saved.
         hide_progress : bool, optional
-            Whether to hide the progress bars. Default is False.
+            Disable per-file and overall progress bars when ``True``.
         overwrite : bool, optional
-            Whether to overwrite the file if it already exists. Default is False.
+            Passed to :meth:`download` to control overwriting behavior.
 
-        Note
-        ----
-        - This method will use the `download` method for each file, so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
-        - If you want to customize those parameters for each file, you can call `download` directly for each file instead of using this method.
+        Notes
+        -----
+        This helper calls :meth:`download` for each alias present in the
+        instance's downloads list.
         """
 
         logging.debug("Initializing client once for all downloads")
@@ -393,23 +431,21 @@ class MGazine:
         hide_progress: bool = False,
     ):
         """
-        Asynchronously downloads all files in the downloads to a specified directory.
+        Asynchronously download all files known to this ``MGazine``.
 
         Parameters
         ----------
         to_dir : DirectoryPath
-            The directory to download the files to.
+            Directory where the files will be saved.
         overwrite : bool, optional
-            Whether to overwrite the file if it already exists. Default is False.
+            Passed to :meth:`adownload` to control overwriting behavior.
         hide_progress : bool, optional
-            Whether to hide the progress bars. Default is False.
+            Disable progress bars when ``True``.
 
-        Note
-        ----
-        This method will use the `adownload` method for each file,
-        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
-        If you want to customize those parameters for each file,
-        you can call `adownload` directly for each file instead of using this method.
+        Notes
+        -----
+        This helper creates a single async HTTP client and schedules
+        concurrent :meth:`adownload` calls for all aliases.
         """
 
         logging.debug("Initializing async client once for all downloads")
@@ -735,7 +771,7 @@ class MGazine:
         True
         """
 
-        client = httpx_client or self._mgnifier_helper.exec.httpx_client
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         if chunksize is None:
             # load as whole
@@ -853,7 +889,7 @@ class MGazine:
         """
 
         # Pick caller-provided client, or fallback to the shared MGnifier client.
-        client = httpx_client or self._mgnifier_helper.exec.httpx_client
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
         logging.debug(
             f"stream_gzipped called url={url} chunksize={chunksize} decode={decode}"
         )
@@ -1026,7 +1062,7 @@ class MGazine:
             The parsed json as a dictionary, or an iterator of dictionaries if chunksize is specified.
         """
 
-        client = httpx_client or self._mgnifier_helper.exec.httpx_client
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         # normal full get and json parse
         if chunksize is None and not (url.endswith(".gz") or url.endswith(".gzip")):
@@ -1144,12 +1180,13 @@ class MGazine:
             A function that can be called to stream the download.
         """
 
-        client = httpx_client or self._mgnifier_helper.exec.httpx_client
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         # get alias/url
         _alias, _url = self._prioritize_alias(alias, url, required=True)
         # return stream based on file type
         file_type = self._get_type_by_alias(_alias)
+        # if a tsv, check if gzipped first, then try normal tsv, with error handling for inconsistent columns
         if file_type == "tsv":
             if _url.endswith(".gz") or _url.endswith(".gzip"):
                 logging.debug(f"tsv file type ends with .gz: {_url}")
@@ -1176,12 +1213,15 @@ class MGazine:
                 return self.stream_tsv(
                     _url, chunksize=chunksize, max_skip=max_skip, **kwargs
                 )
+        # if a csv, try normal csv, with error handling for inconsistent columns
         elif file_type == "csv":
             return self.stream_tsv(
                 _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
             )
+        # if html, open in web browser (not really streaming but for consistency with the interface)
         elif file_type == "html":
             return lambda: self.stream_html(_url, **kwargs)
+        # if txt
         elif file_type == "txt":  # TODO: to constants
             return self.stream_txt(
                 _url, chunksize=chunksize, httpx_client=client, **kwargs
@@ -1226,10 +1266,13 @@ class MGazine:
         chunksize: Optional[int] = None,
         max_skip: int = 5,
         **kwargs,
-    ) -> dict[str, Callable]:
+    ) -> Any:
         """
-        Streams a download based on its alias or url. If neither alias nor url is provided, streams all downloads.
-        (if chunksize is specified, it's kinda lazy loading)
+        Streams a single download based on its alias or url.
+
+        If ``chunksize`` is specified then iterators of dataframes or strings
+        will be returned; otherwise the full data will be returned as a single
+        object.
 
         Parameters
         ----------
@@ -1246,36 +1289,28 @@ class MGazine:
 
         Returns
         -------
-        dict[str, Callable]
-            A dictionary of alias: streamer_function for the requested downloads.
+        Any
+            The streamer result for the resolved alias or url.
         """
-        # get alias/url
-        _alias, _url = self._prioritize_alias(alias, url)
-        # if neither alias nor url provided, stream all downloads
-        if not _alias and not _url:
-            aliases = self.downloads_df["alias"].tolist()
-        else:
-            aliases = [_alias]
-        # return dict of alias: streamer_function
-        client = self._mgnifier_helper.exec.httpx_client
+        # resolve a single alias/url target
+        _alias, _url = self._prioritize_alias(alias, url, required=True)
 
-        # TODO: skip404 client error for now
-        streams = {}
-        for a in aliases:
-            try:
-                logging.info(f"Setting up stream for alias: {a}")
-                streams[a] = self._get_streamer(
-                    alias=a,
-                    chunksize=chunksize,
-                    httpx_client=client,
-                    max_skip=max_skip,
-                    **kwargs,
-                )
-            except HTTPError as err:
-                logging.error(f"HTTP error for alias {a} and url {_url}: {err}")
-                continue  # skip this stream but continue with others
+        # return a single streamer result, not a dict of all streams
+        client = self._mgnifier_helper().exec.httpx_client
+        logging.info("Setting up stream for alias=%s url=%s", _alias, _url)
 
-        return streams
+        try:
+            return self._get_streamer(
+                alias=_alias,
+                url=_url,
+                chunksize=chunksize,
+                httpx_client=client,
+                max_skip=max_skip,
+                **kwargs,
+            )
+        except HTTPError as err:
+            logging.error("HTTP error for alias=%s url=%s: %s", _alias, _url, err)
+            raise
 
 
 class MGazineCurator:
