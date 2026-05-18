@@ -7,9 +7,9 @@ import logging
 from itertools import chain
 from pathlib import Path
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
+    Generator,
     Literal,
     Optional,
 )
@@ -19,12 +19,16 @@ import polars as pl
 from bigtree import (
     Tree,
 )
+import io
+import zlib
+import webbrowser
+import httpx
+import ijson
+from pydantic import HttpUrl
+from skbio.io import read
 
 from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.writers import atomic_write_json, atomic_write_bytes
-
-if TYPE_CHECKING:
-    pass
 
 
 class ResultsHandler:
@@ -449,6 +453,398 @@ class DiskCheckpointer:
                 load_from.rmdir()
             except Exception:
                 logging.warning(f"Failed to delete cache directory: {load_from}")
+
+
+class StreamMixin:
+    """
+    Mixin providing streaming helpers for downloads.
+
+    # TODO remove below dependencies on mgnifier
+    This mixin assumes the host class provides the following helpers/properties:
+    - `_mgnifier_helper(url, cache_dir=None)` returning an object with
+      `.exec.httpx_client` and `.exec.httpx_aclient` attributes
+    - `_get_type_by_alias(alias)` to resolve file types
+    - `downloads_df` when needed for examples/tests
+
+    The implementation mirrors the streaming helpers previously defined
+    on :class:`MGazine` so they can be reused by other classes.
+    """
+
+    def stream_tsv(
+        self,
+        url: str,
+        sep: str = "\t",
+        chunksize: Optional[int] = None,
+        max_skip: int = 5,
+        **pd_kwargs,
+    ) -> pd.DataFrame | pd.io.parsers.readers.TextFileReader:
+        """Read a TSV from a URL with resilient header handling.
+
+        This helper will attempt increasing ``skiprows`` when pandas raises a
+        ``ParserError`` (useful for files with extra header lines). The method
+        returns a dataframe or an iterator (when ``chunksize`` is set).
+        """
+
+        for skip in range(max_skip + 1):
+            try:
+                return pd.read_csv(
+                    url,
+                    sep=sep,
+                    chunksize=chunksize,
+                    skiprows=skip if skip > 0 else None,
+                    **pd_kwargs,
+                )
+            except pd.errors.ParserError:
+                continue  # Try next skiprows value
+            except Exception as err:
+                raise RuntimeError(
+                    f"Error reading TSV from {url} with skiprows={skip}"
+                ) from err
+        raise pd.errors.ParserError(
+            f"Failed to parse {url} after skipping up to {max_skip} rows."
+        )
+
+    def stream_html(self, url: str, **web_kwargs) -> bool:
+        """Open an HTML URL in the default web browser."""
+
+        return webbrowser.open(url, **web_kwargs)
+
+    def stream_txt(
+        self,
+        url: str,
+        chunksize: Optional[int] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        **httpx_kwargs,
+    ) -> Generator:
+        """Stream a plain-text resource.
+
+        When ``chunksize`` is ``None`` the full text is returned as a string.
+        When ``chunksize`` is an integer the function yields lists of lines.
+        """
+
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
+
+        if chunksize is None:
+            # load as whole
+            with client.get(url, **httpx_kwargs) as response:
+                response.raise_for_status()
+                return response.text
+        elif isinstance(chunksize, int) and chunksize > 0:
+            # load in chunks
+            with client.stream("GET", url, **httpx_kwargs) as response:
+                response.raise_for_status()
+                chunk = []
+                for line in response.iter_text():
+                    chunk.append(line)
+                    if len(chunk) == chunksize:
+                        yield chunk
+                        chunk = []
+                if chunk:
+                    yield chunk
+        else:
+            raise ValueError("`chunksize` must be a positive integer or None.")
+
+    def stream_fasta(self, url: str, **skbio_kwargs) -> Generator:
+        return read(url, format="fasta", **skbio_kwargs)
+
+    def stream_gff(self, url: str, **skbio_kwargs) -> Generator:
+        return read(url, format="gff3", **skbio_kwargs)
+
+    def stream_biom(self, url: str, **skbio_kwargs) -> Generator:
+        return read(url, format="biom", **skbio_kwargs)
+
+    def stream_gzipped(
+        self,
+        url: str,
+        chunksize: Optional[int] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        decode: bool = False,
+        encoding: str = "utf-8",
+        errors: str = "replace",
+        **httpx_kwargs,
+    ) -> bytes | str | io.BufferedReader | io.TextIOWrapper:
+        """Stream a gzipped HTTP resource and present a file-like interface.
+
+        When ``chunksize`` is None the entire compressed payload is fetched
+        and decompressed into memory. When ``chunksize`` is provided a
+        streaming file-like object is returned.
+        """
+
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
+        logging.debug(
+            "stream_gzipped called url=%s chunksize=%s decode=%s",
+            url,
+            chunksize,
+            decode,
+        )
+
+        if chunksize is None:
+            logging.debug("Using full-download mode (chunksize=None)")
+            r = client.get(url, timeout=None, **httpx_kwargs)
+            r.raise_for_status()
+            decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            data = decompressor.decompress(r.content) + decompressor.flush()
+            logging.debug(
+                "Full-download mode complete: compressed=%d decompressed=%d",
+                len(r.content),
+                len(data),
+            )
+            return data.decode(encoding, errors=errors) if decode else data
+
+        if not isinstance(chunksize, int) or chunksize <= 0:
+            raise ValueError("`chunksize` must be a positive integer or None.")
+
+        class _HTTPGzipRaw(io.RawIOBase):
+            def __init__(self):
+                self._cm = client.stream("GET", url, timeout=None, **httpx_kwargs)
+                self._resp = self._cm.__enter__()
+                self._resp.raise_for_status()
+                self._iter = self._resp.iter_raw(chunk_size=chunksize)
+                self._decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                self._buf = bytearray()
+                self._eof = False
+                self._flushed = False
+                logging.debug("Streaming HTTP/gzip reader initialized")
+
+            def readable(self) -> bool:
+                return True
+
+            def _fill(self, need: int) -> None:
+                while len(self._buf) < need and not self._eof:
+                    try:
+                        chunk = next(self._iter)
+                    except StopIteration:
+                        if not self._flushed:
+                            tail = self._decomp.flush()
+                            if tail:
+                                self._buf.extend(tail)
+                            self._flushed = True
+                        self._eof = True
+                        logging.debug("Reached end of HTTP stream")
+                        break
+
+                    if chunk:
+                        out = self._decomp.decompress(chunk)
+                        if out:
+                            self._buf.extend(out)
+
+            def readinto(self, b) -> int:
+                if self.closed:
+                    return 0
+                mv = memoryview(b)
+                self._fill(len(mv))
+                n = min(len(mv), len(self._buf))
+                if n <= 0:
+                    return 0
+                mv[:n] = self._buf[:n]
+                del self._buf[:n]
+                return n
+
+            def close(self) -> None:
+                if not self.closed:
+                    try:
+                        self._cm.__exit__(None, None, None)
+                    finally:
+                        super().close()
+                        logging.debug("Streaming HTTP/gzip reader closed")
+
+        raw = _HTTPGzipRaw()
+        buffered = io.BufferedReader(raw, buffer_size=chunksize)
+
+        if decode:
+            return io.TextIOWrapper(buffered, encoding=encoding, errors=errors)
+
+        return buffered
+
+    def stream_jsonl(
+        self,
+        url: str,
+        orient: Optional[
+            Literal["records", "split", "index", "columns", "values", "table"]
+        ] = None,
+        chunksize: Optional[int] = None,
+        **pd_kwargs,
+    ) -> dict:
+        return pd.read_json(
+            url, orient=orient, lines=True, chunksize=chunksize, **pd_kwargs
+        )
+
+    def stream_json(
+        self,
+        url: str,
+        chunksize: Optional[int] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        **httpx_kwargs,
+    ) -> dict | Generator:
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
+
+        if chunksize is None and not (url.endswith(".gz") or url.endswith(".gzip")):
+            with client.get(url, **httpx_kwargs) as response:
+                response.raise_for_status()
+                return response.json()
+        elif chunksize is not None and not (
+            url.endswith(".gz") or url.endswith(".gzip")
+        ):
+            with client.stream("GET", url, **httpx_kwargs) as response:
+                response.raise_for_status()
+                for entry in ijson.kvitems(response.iter_text(), ""):
+                    yield entry
+        elif url.endswith(".gz") or url.endswith(".gzip"):
+            with self.stream_gzipped(
+                url,
+                chunksize=chunksize,
+                httpx_client=client,
+                decode=True,
+                **httpx_kwargs,
+            ) as gzipped_stream:
+                for entry in ijson.kvitems(gzipped_stream, ""):
+                    yield entry
+        else:
+            raise ValueError(f"Unsupported file type for URL: {url}")
+
+    def _fix_inconsistent_cols(
+        self, fields: list[str], pad_to: int = 15
+    ) -> list[str] | None:
+        """Pad or truncate list of fields to ``pad_to`` length."""
+
+        if len(fields) < pad_to:
+            return fields + [""] * (pad_to - len(fields))
+        if len(fields) > pad_to:
+            return fields[:pad_to]
+        return fields
+
+    def stream_tree(self, url: str, **skbio_kwargs) -> Generator:
+        return read(url, format="newick", **skbio_kwargs)
+
+    def _get_streamer(
+        self,
+        alias: Optional[str] = None,
+        url: Optional[HttpUrl] = None,
+        chunksize: int = 1000,
+        httpx_client: Optional[httpx.Client] = None,
+        max_skip: int = 5,
+        **kwargs,
+    ):
+        client = httpx_client or self._mgnifier_helper().exec.httpx_client
+
+        _alias, _url = self._prioritize_alias(alias, url, required=True)
+        file_type = self._get_type_by_alias(_alias)
+        if file_type == "tsv":
+            if _url.endswith(".gz") or _url.endswith(".gzip"):
+                logging.debug(f"tsv file type ends with .gz: {_url}")
+                try:
+                    return self.stream_tsv(
+                        _url,
+                        chunksize=chunksize,
+                        max_skip=max_skip,
+                        compression="gzip",
+                        **kwargs,
+                    )
+                except pd.errors.ParserError as e:
+                    logging.error(f"ParserError: {e}")
+                    return self.stream_tsv(
+                        _url,
+                        chunksize=chunksize,
+                        max_skip=max_skip,
+                        compression="gzip",
+                        engine="python",
+                        on_bad_lines=self._fix_inconsistent_cols,
+                        **kwargs,
+                    )
+            elif _url.endswith(".txt") or _url.endswith(".tsv"):
+                return self.stream_tsv(
+                    _url, chunksize=chunksize, max_skip=max_skip, **kwargs
+                )
+        elif file_type == "csv":
+            return self.stream_tsv(
+                _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
+            )
+        elif file_type == "html":
+            return lambda: self.stream_html(_url, **kwargs)
+        elif file_type == "txt":
+            return self.stream_txt(
+                _url, chunksize=chunksize, httpx_client=client, **kwargs
+            )
+        elif file_type == "gff":
+            return self.stream_gff(_url, **kwargs)
+        elif file_type == "biom":
+            return self.stream_biom(_url, **kwargs)
+        elif file_type == "fasta":
+            return self.stream_fasta(_url, **kwargs)
+        elif file_type == "tree":
+            return self.stream_tree(_url, **kwargs)
+        elif file_type == "json":
+            return self.stream_jsonl(
+                _url, orient="records", chunksize=chunksize, **kwargs
+            )
+        elif file_type == "other" and ".json" in _url:
+            if _url.endswith("json.gz") or _url.endswith("json.gzip"):
+                return self.stream_json(
+                    _url, chunksize=chunksize, httpx_client=client, **kwargs
+                )
+
+            logging.info(
+                f"{_alias} is only available for download (e.g., `.download({_alias}))`"
+            )
+            logging.debug(
+                f"Alias: {_alias}\nURL: {_url}\nFile type: {file_type}. Only '.json' files can be streamed under 'other' type, otherwise this download is only available for download."
+            )
+        else:
+            raise ValueError(f"Unsupported file type for streaming: {file_type}")
+
+    def stream(
+        self,
+        *,
+        alias: Optional[str] = None,
+        url: Optional[HttpUrl] = None,
+        chunksize: Optional[int] = None,
+        max_skip: int = 5,
+        **kwargs,
+    ) -> Any:
+        """
+        Streams a single download based on its alias or url.
+
+        If ``chunksize`` is specified then iterators of dataframes or strings
+        will be returned; otherwise the full data will be returned as a single
+        object.
+
+        Parameters
+        ----------
+        alias : Optional[str]
+            The alias of the download to stream.
+        url : Optional[HttpUrl]
+            The url of the download to stream.
+        chunksize : Optional[int]
+            The size of the chunks to read from the stream.
+        max_skip : int, optional
+            The maximum number of rows to skip before raising an error. Default is 5.
+        **kwargs
+            Additional keyword arguments to pass to the streamer function.
+
+        Returns
+        -------
+        Any
+            The streamer result for the resolved alias or url.
+        """
+        # resolve a single alias/url target
+        _alias, _url = self._prioritize_alias(alias, url, required=True)
+
+        # return a single streamer result, not a dict of all streams
+        client = self._mgnifier_helper().exec.httpx_client
+        logging.info("Setting up stream for alias=%s url=%s", _alias, _url)
+
+        try:
+            return self._get_streamer(
+                alias=_alias,
+                url=_url,
+                chunksize=chunksize,
+                httpx_client=client,
+                max_skip=max_skip,
+                **kwargs,
+            )
+        except httpx.HTTPError as err:
+            logging.error("HTTP error for alias=%s url=%s: %s", _alias, _url, err)
+            raise
 
 
 class BiomesTreeMixin:
