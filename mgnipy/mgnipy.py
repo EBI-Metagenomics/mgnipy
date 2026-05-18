@@ -53,7 +53,7 @@ class MGnipy:
         )
 
     def list_resources(self):
-        return [endpoint.value for endpoint in SupportedEndpoints]
+        return SupportedEndpoints.as_list()
 
     def describe_resource(
         self, resource: str, as_dict: bool = False
