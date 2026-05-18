@@ -68,15 +68,19 @@ class MGazine:
         self.downloads = downloads
         self.config = config or MGnipyConfig()
 
-    def _mgnifier_helper(self, url: str) -> MGnifier:
+    def _mgnifier_helper(
+        self, url: str = "", cache_dir: Optional[DirectoryPath] = None
+    ) -> MGnifier:
         """
         Helper to create an MGnifier instance for a given download URL.
-        So cache option.
+        Default settings is no cache (cache_dir=None)
         """
+        _config = self.config.model_copy(update={"cache_dir": cache_dir}, deep=True)
+
         # init
         mg = MGnifier(
             resource="_downloads",
-            config=self.config,
+            config=_config,
             url=url,
         )
         logging.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
@@ -131,6 +135,320 @@ class MGazine:
 
         return [f.get("url", None) for f in self.downloads]
 
+    # downloading methods
+    def download(
+        self,
+        to_dir: DirectoryPath,
+        alias: Optional[str] = None,
+        *,
+        url: Optional[str] = None,
+        filename: Optional[str] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        overwrite: bool = False,
+        hide_progress: bool = False,
+    ):
+        """
+        Downloads a file from a url or alias to a specified directory.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            The directory to download the file to.
+        alias : Optional[str], optional
+            The alias of the file to download. If not provided, `url` must be provided. Default is None.
+        url : Optional[str], optional
+            The url of the file to download. If not provided, `alias` must be provided. Default is None.
+        filename : Optional[str], optional
+            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
+        overwrite : bool, optional
+            Whether to overwrite the file if it already exists. Default is False.
+        hide_progress : bool, optional
+            Whether to hide the progress bar during download. Default is False.
+
+
+        Raises
+        ------
+        ValueError
+            If neither `alias` nor `url` is provided, or if `url` is provided without a corresponding `alias` in the downloads.
+
+        Notes
+        -----
+        - The cache is not used for downloads.
+        - If `url` is provided without a corresponding `alias` in the downloads, `filename` must be provided since there is no alias to use as the filename.
+        - Overwrite behavior: if the target file already exists and `overwrite` is False, the download will be skipped to avoid unnecessary network requests and file writes. If `overwrite` is True, the existing file will be replaced with the new download.
+        """
+        # get alias/url
+        _alias, _url = self._prioritize_alias(alias, url, required=True)
+
+        # if no alias then need filename
+        if not _alias and not filename:
+            raise ValueError(
+                "If `url` not from downloads, `filename` must be provided since no alias available."
+            )
+
+        # make dir if not exists
+        to_dir = Path(to_dir)
+        logging.debug(f"Ensuring download directory exists: {to_dir}")
+        to_dir.mkdir(parents=True, exist_ok=True)
+
+        # prep full path
+        filepath = to_dir / filename if filename else to_dir / _alias
+        logging.debug(f"Prepared file path for download: {filepath}")
+
+        # check if file exists and handle overwrite behavior
+        if filepath.exists() and not overwrite:
+            logging.info(
+                f"File already exists and overwrite is False, skipping download: {filepath}"
+            )
+            return
+        elif filepath.exists() and overwrite:
+            logging.info(
+                f"File already exists but overwrite is True, will overwrite: {filepath}"
+            )
+
+        # leveraging mgnifier for config, auth, but no cache for downloads
+        client = (
+            httpx_client
+            or self._mgnifier_helper(_url, cache_dir=None).exec.httpx_client
+        )
+        logging.debug(
+            f"Starting download: alias={_alias} url={_url} dest={filepath} overwrite={overwrite} client={getattr(client, '__class__', str(client))}",
+        )
+
+        with client.stream("GET", _url) as response:
+            # http errors raise here
+            response.raise_for_status()
+            # for progress bar, get total size from headers if available
+            total = int(response.headers.get("content-length", 0))
+            with (
+                open(filepath, "wb") as f,
+                tqdm_sync(
+                    total=total,
+                    unit="B",
+                    unit_scale=True,
+                    desc=f"Downloading {filename or _alias} to {filepath}",
+                    disable=hide_progress,
+                ) as pbar,
+            ):
+                for chunk in response.iter_bytes():
+                    f.write(chunk)
+                    pbar.update(len(chunk))
+
+    async def adownload(
+        self,
+        to_dir: DirectoryPath,
+        alias: Optional[str] = None,
+        *,
+        url: Optional[str] = None,
+        filename: Optional[str] = None,
+        httpx_aclient: Optional[httpx.AsyncClient] = None,
+        overwrite: bool = False,
+        hide_progress: bool = False,
+    ):
+        """
+        Asynchronously downloads a file from a url or alias to a specified directory.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            The directory to download the file to.
+        alias : Optional[str], optional
+            The alias of the file to download. If not provided, `url` must be provided. Default is None.
+        url : Optional[str], optional
+            The url of the file to download. If not provided, `alias` must be provided. Default is None.
+        filename : Optional[str], optional
+            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
+            Note that if `url` is provided without a corresponding `alias` in the downloads,
+            `filename` must be provided since there is no alias to use as the filename.
+        httpx_aclient : Optional[httpx.AsyncClient], optional
+            An optional httpx.AsyncClient to use for the download.
+            If not provided, a new client will be created using the mgnifier helper. Default is None.
+        overwrite : bool, optional
+            Whether to overwrite the file if it already exists. Default is False.
+        """
+        # get alias/url
+        _alias, _url = self._prioritize_alias(alias, url, required=True)
+
+        # if no alias then need filename
+        if not _alias and not filename:
+            raise ValueError(
+                "If `url` not from downloads, `filename` must be provided since no alias available."
+            )
+
+        # make dir if not exists
+        to_dir = Path(to_dir)
+        logging.debug(f"Creating directory (if not exists): {to_dir}")
+        to_dir.mkdir(parents=True, exist_ok=True)
+
+        # prep full path
+        filepath = to_dir / filename if filename else to_dir / _alias
+        logging.debug(f"Prepared file path for async download: {filepath}")
+        # check if file exists and handle overwrite behavior
+        if filepath.exists() and not overwrite:
+            logging.info(
+                f"File already exists and overwrite is False, skipping download: {filepath}"
+            )
+            return
+        elif filepath.exists() and overwrite:
+            logging.info(
+                f"File already exists but overwrite is True, will overwrite: {filepath}"
+            )
+
+        # semaphore to limit concurrent downloads, can be adjusted in config
+        async with semaphore:
+            # If caller provided an async client, use it (don't re-enter context).
+            if httpx_aclient is not None:
+                client = httpx_aclient
+                async with client.stream("GET", _url) as response:
+                    response.raise_for_status()
+                    total = int(response.headers.get("content-length", 0))
+                    with tqdm_sync(
+                        total=total,
+                        unit="B",
+                        unit_scale=True,
+                        desc=f"Downloading {filename or _alias}",
+                        disable=hide_progress,
+                    ) as pbar:
+                        async with aiofiles.open(filepath, "wb") as f:
+                            async for chunk in response.aiter_bytes():
+                                await f.write(chunk)
+                                pbar.update(len(chunk))
+            else:
+                # create a temporary client from the MGnifier helper
+                async with self._mgnifier_helper(
+                    _url, cache_dir=None
+                ).exec.httpx_aclient as client:
+                    async with client.stream("GET", _url) as response:
+                        response.raise_for_status()
+                        total = int(response.headers.get("content-length", 0))
+                        with tqdm_sync(
+                            total=total,
+                            unit="B",
+                            unit_scale=True,
+                            desc=f"Downloading {filename or _alias}",
+                            disable=hide_progress,
+                        ) as pbar:
+                            async with aiofiles.open(filepath, "wb") as f:
+                                async for chunk in response.aiter_bytes():
+                                    await f.write(chunk)
+                                    pbar.update(len(chunk))
+
+    def download_all(
+        self,
+        to_dir: DirectoryPath,
+        hide_progress: bool = False,
+        overwrite: bool = False,
+    ):
+        """
+        Downloads all files in the downloads to a specified directory.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            The directory to download the files to.
+        hide_progress : bool, optional
+            Whether to hide the progress bars. Default is False.
+        overwrite : bool, optional
+            Whether to overwrite the file if it already exists. Default is False.
+
+        Note
+        ----
+        - This method will use the `download` method for each file, so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
+        - If you want to customize those parameters for each file, you can call `download` directly for each file instead of using this method.
+        """
+
+        logging.debug("Initializing client once for all downloads")
+        mg = self._mgnifier_helper()
+        logging.debug(f"MGnifier helper created: {mg}")
+
+        with mg.exec.httpx_client as client:
+            aliases = list(self.url_dict.keys())
+
+            for alias in tqdm_sync(
+                aliases,
+                total=len(aliases),
+                desc="Overall Progress",
+                ascii=" >=",
+                disable=hide_progress,
+            ):
+                try:
+                    self.download(
+                        to_dir=to_dir,
+                        alias=alias,
+                        httpx_client=client,
+                        hide_progress=hide_progress,
+                        overwrite=overwrite,
+                    )
+                except httpx.ConnectError as ce:
+                    logging.error(
+                        f"Connection error occurred while downloading {alias}: {ce}"
+                    )
+                except Exception as e:
+                    logging.error(f"Error occurred while downloading {alias}: {e}")
+
+    async def adownload_all(
+        self,
+        to_dir: DirectoryPath,
+        overwrite: bool = False,
+        hide_progress: bool = False,
+    ):
+        """
+        Asynchronously downloads all files in the downloads to a specified directory.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            The directory to download the files to.
+        overwrite : bool, optional
+            Whether to overwrite the file if it already exists. Default is False.
+        hide_progress : bool, optional
+            Whether to hide the progress bars. Default is False.
+
+        Note
+        ----
+        This method will use the `adownload` method for each file,
+        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
+        If you want to customize those parameters for each file,
+        you can call `adownload` directly for each file instead of using this method.
+        """
+
+        logging.debug("Initializing async client once for all downloads")
+        mg = self._mgnifier_helper()
+        logging.debug(f"MGnifier helper created: {mg}")
+
+        async with mg.exec.httpx_aclient as client:
+
+            # create tasks for each download
+            tasks = [
+                self.adownload(
+                    to_dir=to_dir,
+                    alias=a,
+                    httpx_aclient=client,
+                    overwrite=overwrite,
+                    hide_progress=hide_progress,
+                )
+                for a in self.url_dict
+            ]
+            # Overall progress bar
+            for f in tqdm_async(
+                asyncio.as_completed(tasks),
+                total=len(tasks),
+                desc="Overall Progress",
+                ascii=" >=",
+                disable=hide_progress,
+            ):
+                try:
+                    await f
+                except httpx.ConnectError as ce:
+                    # flag and continue with downloads
+                    logging.error(
+                        f"Connection error occurred while downloading {f}: {ce}"
+                    )
+                except Exception as e:
+                    # flag and continue with downloads ..
+                    logging.error(f"Error occurred while downloading {f}: {e}")
+
+    # helpers for getting naming things
     def _get_url_by_alias(
         self, alias: str, df: Optional[pd.DataFrame] = None
     ) -> Optional[str]:
@@ -537,10 +855,7 @@ class MGazine:
         # Pick caller-provided client, or fallback to the shared MGnifier client.
         client = httpx_client or self._mgnifier_helper.exec.httpx_client
         logging.debug(
-            "stream_gzipped called url=%s chunksize=%s decode=%s",
-            url,
-            chunksize,
-            decode,
+            f"stream_gzipped called url={url} chunksize={chunksize} decode={decode}"
         )
 
         # Backward-compatible mode: no chunksize means full download into memory.
@@ -555,9 +870,7 @@ class MGazine:
             # Decompress full payload bytes and flush remaining tail bytes.
             data = decompressor.decompress(r.content) + decompressor.flush()
             logging.debug(
-                "Full-download mode complete: compressed=%d decompressed=%d",
-                len(r.content),
-                len(data),
+                f"Full-download mode complete: compressed={len(r.content)} decompressed={len(data)}"
             )
             # Return text if decode=True, else raw bytes.
             return data.decode(encoding, errors=errors) if decode else data
@@ -963,226 +1276,6 @@ class MGazine:
                 continue  # skip this stream but continue with others
 
         return streams
-
-    def download(
-        self,
-        to_dir: DirectoryPath,
-        alias: Optional[str] = None,
-        *,
-        url: Optional[str] = None,
-        filename: Optional[str] = None,
-        httpx_client: Optional[httpx.Client] = None,
-        hide_progress: bool = False,
-    ):
-        """
-        Downloads a file from a url or alias to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the file to.
-        alias : Optional[str], optional
-            The alias of the file to download. If not provided, `url` must be provided. Default is None.
-        url : Optional[str], optional
-            The url of the file to download. If not provided, `alias` must be provided. Default is None.
-        filename : Optional[str], optional
-            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
-
-
-        Raises
-        ------
-        ValueError
-            If neither `alias` nor `url` is provided, or if `url` is provided without a corresponding `alias` in the downloads.
-        """
-        # get alias/url
-        _alias, _url = self._prioritize_alias(alias, url, required=True)
-
-        # if no alias then need filename
-        if not _alias and not filename:
-            raise ValueError(
-                "If `url` not from downloads, `filename` must be provided since no alias available."
-            )
-
-        # make dir if not exists
-        to_dir = Path(to_dir)
-        to_dir.mkdir(parents=True, exist_ok=True)
-
-        # prep full path
-        filepath = to_dir / filename if filename else to_dir / _alias
-
-        # Use the cached query path so the payload can be fetched once and reused.
-        payload = self._mgnifier_helper(_url).page(1)
-
-        if payload is None:
-            raise RuntimeError(f"Failed to download payload for {_url}")
-
-        with open(filepath, "wb") as f:
-            f.write(payload)
-
-    async def adownload(
-        self,
-        to_dir: DirectoryPath,
-        alias: Optional[str] = None,
-        *,
-        url: Optional[str] = None,
-        filename: Optional[str] = None,
-        httpx_aclient: Optional[httpx.AsyncClient] = None,
-        hide_progress: bool = False,
-    ):
-        """
-        Asynchronously downloads a file from a url or alias to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the file to.
-        alias : Optional[str], optional
-            The alias of the file to download. If not provided, `url` must be provided. Default is None.
-        url : Optional[str], optional
-            The url of the file to download. If not provided, `alias` must be provided. Default is None.
-        filename : Optional[str], optional
-            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
-            Note that if `url` is provided without a corresponding `alias` in the downloads,
-            `filename` must be provided since there is no alias to use as the filename.
-        httpx_aclient : Optional[httpx.AsyncClient], optional
-            An optional httpx.AsyncClient to use for the download.
-            If not provided, a new client will be created using the mgnifier helper. Default is None.
-        """
-        # get alias/url
-        _alias, _url = self._prioritize_alias(alias, url, required=True)
-
-        # if no alias then need filename
-        if not _alias and not filename:
-            raise ValueError(
-                "If `url` not from downloads, `filename` must be provided since no alias available."
-            )
-
-        # make dir if not exists
-        to_dir = Path(to_dir)
-        to_dir.mkdir(parents=True, exist_ok=True)
-
-        # prep full path
-        filepath = to_dir / filename if filename else to_dir / _alias
-
-        # semaphore to limit concurrent downloads, can be adjusted in config
-        async with semaphore:
-            payload = await self._mgnifier_helper(_url).apage(1)
-
-            if payload is None:
-                raise RuntimeError(f"Failed to download payload for {_url}")
-
-            async with aiofiles.open(filepath, "wb") as f:
-                await f.write(payload)
-
-    async def adownload_all(
-        self,
-        to_dir: DirectoryPath,
-        hide_progress: bool = False,
-    ):
-        """
-        Asynchronously downloads all files in the downloads to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the files to.
-        hide_progress : bool, optional
-            Whether to hide the progress bars. Default is False.
-
-        Note
-        ----
-        This method will use the `adownload` method for each file,
-        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
-        If you want to customize those parameters for each file,
-        you can call `adownload` directly for each file instead of using this method.
-        """
-
-        logging.debug("Initializing async client once for all downloads")
-        async with self._mgnifier_helper.exec.httpx_aclient as client:
-
-            # create tasks for each download
-            tasks = [
-                self.adownload(
-                    to_dir=to_dir,
-                    alias=a,
-                    httpx_aclient=client,
-                    hide_progress=hide_progress,
-                )
-                for a in self.url_dict
-            ]
-            # Overall progress bar
-            for f in tqdm_async(
-                asyncio.as_completed(tasks),
-                total=len(tasks),
-                desc="Overall Progress",
-                ascii=" >=",
-                disable=hide_progress,
-            ):
-                try:
-                    await f
-                except httpx.ConnectError as ce:
-                    # flag and continue with downloads
-                    logging.error(
-                        f"Connection error occurred while downloading {f}: {ce}"
-                    )
-                except Exception as e:
-                    # flag and continue with downloads ..
-                    logging.error(f"Error occurred while downloading {f}: {e}")
-
-    def download_all(
-        self,
-        to_dir: DirectoryPath,
-        hide_progress: bool = False,
-    ):
-        """
-        TODO fix
-        Downloads all files in the downloads to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the files to.
-        hide_progress : bool, optional
-            Whether to hide the progress bars. Default is False.
-
-        Note
-        ----
-        This method will use the `download` method for each file,
-        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
-        If you want to customize those parameters for each file,
-        you can call `download` directly for each file instead of using this method.
-        """
-
-        logging.debug("Initializing client once for all downloads")
-        with self._mgnifier_helper.exec.httpx_client as client:
-            aliases = list(self.url_dict.keys())
-
-            for alias in tqdm_sync(
-                aliases,
-                total=len(aliases),
-                desc="Overall Progress",
-                ascii=" >=",
-                disable=hide_progress,
-            ):
-                try:
-                    self.download(
-                        to_dir=to_dir,
-                        alias=alias,
-                        httpx_client=client,
-                        hide_progress=hide_progress,
-                    )
-                except httpx.ConnectError as ce:
-                    logging.error(
-                        "Connection error occurred while downloading %s: %s",
-                        alias,
-                        ce,
-                    )
-                except Exception as e:
-                    logging.error(
-                        "Error occurred while downloading %s: %s",
-                        alias,
-                        e,
-                    )
 
 
 class MGazineCurator:
