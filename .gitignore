@@ -60,3 +60,5 @@ reference/*
 
 *.ignore
 *.ignoreme
+docs/tutorials/demos/cache/
+docs/tutorials/demos/downloads/

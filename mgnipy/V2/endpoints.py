@@ -1,3 +1,13 @@
+"""
+Configuration for MGnify API V2 to emgapi_v2_client endpoints.
+Mapping of API endpoints to corresponding emgapi_v2_client module, also
+relationships between endpoints (e.g., within resource [Study List -> Study Detail] and
+between resources [Study Detail -> Study Samples]).
+
+Ideally, only this endpoints.py file (and mgnipy._models.CONSTANTS) should need to be updated
+if any endpoints added or removed from the API and emgapi_v2_client re-installed via ./autogen_clients.sh.
+"""
+
 from mgnipy._models.CONSTANTS import SupportedEndpoints
 from mgnipy.emgapi_v2_client.api.analyses import (
     analysis_get_mgnify_analysis_with_annotations,
@@ -40,6 +50,12 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_samples,
 )
 
+from mgnipy.V2 import custom_endpoint
+
+CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
+    SupportedEndpoints._DOWNLOADS: custom_endpoint,
+}
+
 RESOURCES_LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
     SupportedEndpoints.STUDIES: list_mgnify_studies,  # get all studies, filtering option
@@ -66,7 +82,7 @@ RESOURCES_DETAIL_ENDPOINTS: dict[SupportedEndpoints, callable] = {
 }
 
 RESOURCES_ALL_ENDPOINTS: dict[SupportedEndpoints, callable] = (
-    RESOURCES_LIST_ENDPOINTS | RESOURCES_DETAIL_ENDPOINTS
+    RESOURCES_LIST_ENDPOINTS | RESOURCES_DETAIL_ENDPOINTS | CUSTOM_ENDPOINTS
 )
 
 PARENT_CHILD_RESOURCES: dict[SupportedEndpoints, SupportedEndpoints] = {
@@ -132,7 +148,3 @@ PRIVATE_ENDPOINTS: set[SupportedEndpoints] = {
 ALL_LIST_ENDPOINTS: list[callable] = list(RESOURCES_LIST_ENDPOINTS.values()) + [
     v for d in BETWEEN_RESOURCE_RELATIONSHIPS.values() for v in d.values()
 ]
-
-# so basically an agent could update this based on openapi.json spec changes,
-# and then the rest of the code should work without needing to change?
-# maybe some edge cases but ideally this is how we can future proof against API changes

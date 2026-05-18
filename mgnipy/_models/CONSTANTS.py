@@ -15,7 +15,7 @@ class SpecialEnum(Enum):
     @classmethod
     def as_list(cls):
         """Return a list of the values of all enum members."""
-        return [field.value for field in cls]
+        return [field.value for field in cls if not field.name.startswith("_")]
 
     @classmethod
     def validate(cls, input):
@@ -96,7 +96,7 @@ class SpecialEnum(Enum):
         >>> pipe_sep
         'analyses|analysis|...|biomes|biome|...|private_studies'
         """
-        return sep.join(field.value for field in cls)
+        return sep.join(field.value for field in cls if not field.name.startswith("_"))
 
 
 class SupportedApiVersions(SpecialEnum):
@@ -128,3 +128,4 @@ class SupportedEndpoints(SpecialEnum):
         "annotations"  # not really an endpoint but fits better here than acc detail
     )
     PRIVATE_STUDIES = "private_studies"
+    _DOWNLOADS = "_downloads"  # for internal use only, not an actual endpoint

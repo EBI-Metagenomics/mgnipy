@@ -559,6 +559,11 @@ class MGnifyDetail(MGnifier):
                 explain=False,
             )
 
+        # if not a supported attr then raise error
+        raise AttributeError(
+            f"{self.__class__.__name__} object has no attribute {name!r}."
+        )
+
     @property
     def identifier(self) -> Optional[str]:
         """Get the identifier value from the query parameters.

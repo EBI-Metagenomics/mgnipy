@@ -1,74 +1,514 @@
 import asyncio
-import io
 import logging
 import warnings
-import webbrowser
-import zlib
 from pathlib import Path
 from typing import (
-    Callable,
-    Generator,
-    Literal,
+    Any,
     Optional,
 )
 
 import aiofiles
 import httpx
-import ijson
 import pandas as pd
 from pydantic import (
     DirectoryPath,
     HttpUrl,
 )
-from requests.exceptions import HTTPError
-from skbio.io import read
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm as tqdm_async
 
 from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
-from mgnipy.emgapi_v2_client.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations,
-)
-from mgnipy.emgapi_v2_client.models.m_gnify_analysis_with_annotations import (
-    MGnifyAnalysisWithAnnotations,
-)
 from mgnipy.V2.core import MGnifier
+from mgnipy.V2.mixins import StreamMixin
+from pprint import pformat
 
 semaphore = get_semaphore()
-BASE_URL = MGnipyConfig().base_url
 
 
-class MGazine(MGnifyAnalysisWithAnnotations):
-    """More so an extended data class"""
+class MGazine(StreamMixin):
+    """
+    Helper for handling MGnify analysis/study downloads.
 
-    def __init__(self, accession: str):
-        # mgnifier TODO handing private data
-        self._mgnifier_helper = MGnifier(accession=accession)
-        # set endpoint
-        self._mgnifier_helper.endpoint_module = (
-            analysis_get_mgnify_analysis_with_annotations
+    This class accepts a list of download-like dictionaries (for example
+    the objects returned by the MGnify API for downloads) and provides
+    simple streaming and download helpers.
+
+    Parameters
+    ----------
+    downloads : list[dict]
+        List of download descriptors with keys such as ``alias``, ``url``
+        and ``file_type``.
+    config : MGnipyConfig, optional
+        Optional configuration to use; when omitted the global
+        :class:`MGnipyConfig` is used.
+
+    Examples
+    --------
+    >>> downloads = [
+    ...     {"alias": "a", "url": "/tmp/a.txt", "file_type": "txt"},
+    ... ]
+    >>> mg = MGazine(downloads)
+    >>> isinstance(mg, MGazine)
+    True
+    >>> mg.url_dict['a']
+    '/tmp/a.txt'
+    >>> mg.url_list
+    ['/tmp/a.txt']
+    """
+
+    def __init__(
+        self,
+        downloads: list[dict[str, Any]],
+        config: Optional[MGnipyConfig] = None,
+    ):
+        self.downloads = downloads
+        self.config = config or MGnipyConfig()
+
+    def __str__(self):
+        return (
+            f"MGazine with {len(self.downloads)} downloads:\n"
+            f"{pformat(self.url_dict, width=120)}"
         )
-        # get the data
-        self._mgnifier_helper.get()
-        # init with the data
-        super().__init__(**self._mgnifier_helper.results[0][0])
+
+    def _mgnifier_helper(
+        self, url: str = "", cache_dir: Optional[DirectoryPath] = None
+    ) -> MGnifier:
+        """
+        Helper to create an MGnifier instance for a given download URL.
+        Default settings is no cache (cache_dir=None)
+        """
+        _config = self.config.model_copy(update={"cache_dir": cache_dir}, deep=True)
+
+        # init
+        mg = MGnifier(
+            resource="_downloads",
+            config=_config,
+            url=url,
+        )
+        logging.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
+        return mg
 
     @property
     def url_dict(self) -> dict[str, dict]:
-        """returns a dict of alias: url for all downloads"""
+        """
+        Return mapping of alias to URL for all downloads.
+
+        Returns
+        -------
+        dict
+            Dictionary mapping alias -> url (or ``None`` when no url is
+            available).
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
+        >>> MGazine(downloads).url_dict['example.txt']
+        'http://ex/x'
+        """
+
         return {f["alias"]: f.get("url", None) for f in self.downloads}
 
     @property
     def downloads_df(self) -> pd.DataFrame:
-        """returns a dataframe of all downloads with columns alias, url, file_type"""
+        """Return a ``pandas.DataFrame`` of all downloads.
+
+        The dataframe will contain columns such as ``alias``, ``url`` and
+        ``file_type`` when those keys exist in the provided download dicts.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
+        >>> df = MGazine(downloads).downloads_df
+        >>> list(df.columns)
+        ['alias', 'url', 'file_type']
+        """
+
         return pd.DataFrame(self.downloads)
 
     @property
     def url_list(self):
-        """returns a list of all download urls"""
+        """Return a list of all download URLs.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
+        >>> MGazine(downloads).url_list
+        ['http://ex/x']
+        """
+
         return [f.get("url", None) for f in self.downloads]
 
+    # downloading methods
+    def download(
+        self,
+        to_dir: DirectoryPath,
+        alias: Optional[str] = None,
+        *,
+        url: Optional[str] = None,
+        filename: Optional[str] = None,
+        httpx_client: Optional[httpx.Client] = None,
+        overwrite: bool = False,
+        hide_progress: bool = False,
+    ):
+        """
+        Download a file from an alias or URL to a local directory.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            Directory where the file will be saved.
+        alias : str or None, optional
+            Download alias known to this ``MGazine`` instance. When
+            provided the corresponding URL from the instance's downloads
+            list is used.
+        url : str or None, optional
+            Direct URL to fetch. Either ``alias`` or ``url`` must be
+            provided.
+        filename : str or None, optional
+            Filename to use for the saved file. When omitted the alias
+            is used.
+        httpx_client : httpx.Client, optional
+            Optional `httpx.Client` to use for the HTTP request. If not
+            supplied a temporary client from `_mgnifier_helper` is
+            used.
+        overwrite : bool, optional
+            If ``False`` and the destination file already exists the
+            download is skipped. When ``True`` the existing file will be
+            overwritten.
+        hide_progress : bool, optional
+            Disable the progress bar when ``True``.
+
+        Raises
+        ------
+        ValueError
+            If neither ``alias`` nor ``url`` is provided.
+
+        Examples
+        --------
+        downloads = [
+        ... {
+        ... "alias": "example.txt",
+        ... "url": "http://ex/x",
+        ... "file_type": "txt",
+        ... }]
+        mg = MGazine(downloads)
+        mg.download("download_to_here", alias="example.txt") # doctest: +SKIP
+        """
+        # get alias/url
+        _alias, _url = self._prioritize_alias(alias, url, required=True)
+
+        # if no alias then need filename
+        if not _alias and not filename:
+            raise ValueError(
+                "If `url` not from downloads, `filename` must be provided since no alias available."
+            )
+
+        # make dir if not exists
+        to_dir = Path(to_dir)
+        logging.debug(f"Ensuring download directory exists: {to_dir}")
+        to_dir.mkdir(parents=True, exist_ok=True)
+
+        # prep full path
+        filepath = to_dir / filename if filename else to_dir / _alias
+        logging.debug(f"Prepared file path for download: {filepath}")
+
+        # check if file exists and handle overwrite behavior
+        if filepath.exists() and not overwrite:
+            logging.info(
+                f"File already exists and overwrite is False, skipping download: {filepath}"
+            )
+            return
+        elif filepath.exists() and overwrite:
+            logging.info(
+                f"File already exists but overwrite is True, will overwrite: {filepath}"
+            )
+
+        # leveraging mgnifier for config, auth, but no cache for downloads
+        client = (
+            httpx_client
+            or self._mgnifier_helper(_url, cache_dir=None).exec.httpx_client
+        )
+        logging.debug(
+            f"Starting download: alias={_alias} url={_url} dest={filepath} overwrite={overwrite} client={getattr(client, '__class__', str(client))}",
+        )
+
+        with client.stream("GET", _url) as response:
+            # http errors raise here
+            response.raise_for_status()
+            # for progress bar, get total size from headers if available
+            total = int(response.headers.get("content-length", 0))
+            with (
+                open(filepath, "wb") as f,
+                tqdm_sync(
+                    total=total,
+                    unit="B",
+                    unit_scale=True,
+                    desc=f"Downloading {filename or _alias} to {filepath}",
+                    disable=hide_progress,
+                ) as pbar,
+            ):
+                for chunk in response.iter_bytes():
+                    f.write(chunk)
+                    pbar.update(len(chunk))
+
+    async def adownload(
+        self,
+        to_dir: DirectoryPath,
+        alias: Optional[str] = None,
+        *,
+        url: Optional[str] = None,
+        filename: Optional[str] = None,
+        httpx_aclient: Optional[httpx.AsyncClient] = None,
+        overwrite: bool = False,
+        hide_progress: bool = False,
+    ):
+        """
+        Asynchronously download a file from an alias or URL.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            Directory where the file will be saved.
+        alias : str or None, optional
+            Download alias known to this ``MGazine`` instance.
+        url : str or None, optional
+            Direct URL to fetch. Either ``alias`` or ``url`` must be
+            provided.
+        filename : str or None, optional
+            Filename to use for the saved file. When omitted the alias
+            is used.
+        httpx_aclient : httpx.AsyncClient, optional
+            Optional `httpx.AsyncClient` to use for the HTTP request.
+        overwrite : bool, optional
+            If ``False`` and the destination file already exists the
+            download is skipped. When ``True`` the existing file will be
+            overwritten.
+        hide_progress : bool, optional
+            Disable the progress bar when ``True``.
+
+        Raises
+        ------
+        ValueError
+            If neither ``alias`` nor ``url`` is provided.
+
+        Examples
+        --------
+        downloads = [
+        ... {
+        ... "alias": "example.txt",
+        ... "url": "http://ex/x",
+        ... "file_type": "txt",
+        ... }]
+        mg = MGazine(downloads)
+        await mg.adownload("download_to_here", alias="example.txt") # doctest: +SKIP
+        """
+        # get alias/url
+        _alias, _url = self._prioritize_alias(alias, url, required=True)
+
+        # if no alias then need filename
+        if not _alias and not filename:
+            raise ValueError(
+                "If `url` not from downloads, `filename` must be provided since no alias available."
+            )
+
+        # make dir if not exists
+        to_dir = Path(to_dir)
+        logging.debug(f"Creating directory (if not exists): {to_dir}")
+        to_dir.mkdir(parents=True, exist_ok=True)
+
+        # prep full path
+        filepath = to_dir / filename if filename else to_dir / _alias
+        logging.debug(f"Prepared file path for async download: {filepath}")
+        # check if file exists and handle overwrite behavior
+        if filepath.exists() and not overwrite:
+            logging.info(
+                f"File already exists and overwrite is False, skipping download: {filepath}"
+            )
+            return
+        elif filepath.exists() and overwrite:
+            logging.info(
+                f"File already exists but overwrite is True, will overwrite: {filepath}"
+            )
+
+        # semaphore to limit concurrent downloads, can be adjusted in config
+        async with semaphore:
+            # If caller provided an async client, use it (don't re-enter context).
+            if httpx_aclient is not None:
+                client = httpx_aclient
+                async with client.stream("GET", _url) as response:
+                    response.raise_for_status()
+                    total = int(response.headers.get("content-length", 0))
+                    with tqdm_sync(
+                        total=total,
+                        unit="B",
+                        unit_scale=True,
+                        desc=f"Downloading {filename or _alias}",
+                        disable=hide_progress,
+                    ) as pbar:
+                        async with aiofiles.open(filepath, "wb") as f:
+                            async for chunk in response.aiter_bytes():
+                                await f.write(chunk)
+                                pbar.update(len(chunk))
+            else:
+                # create a temporary client from the MGnifier helper
+                async with self._mgnifier_helper(
+                    _url, cache_dir=None
+                ).exec.httpx_aclient as client:
+                    async with client.stream("GET", _url) as response:
+                        response.raise_for_status()
+                        total = int(response.headers.get("content-length", 0))
+                        with tqdm_sync(
+                            total=total,
+                            unit="B",
+                            unit_scale=True,
+                            desc=f"Downloading {filename or _alias}",
+                            disable=hide_progress,
+                        ) as pbar:
+                            async with aiofiles.open(filepath, "wb") as f:
+                                async for chunk in response.aiter_bytes():
+                                    await f.write(chunk)
+                                    pbar.update(len(chunk))
+
+    def download_all(
+        self,
+        to_dir: DirectoryPath,
+        hide_progress: bool = False,
+        overwrite: bool = False,
+    ):
+        """
+        Download all files known to this ``MGazine`` instance.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            Directory where the files will be saved.
+        hide_progress : bool, optional
+            Disable per-file and overall progress bars when ``True``.
+        overwrite : bool, optional
+            Passed to `download` to control overwriting behavior.
+
+        Notes
+        -----
+        This helper calls `download` for each alias present in the
+        instance's downloads list.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ...     {"alias": "example2.fasta.gz", "url": "http://ex/x2", "file_type": "fasta"},
+        ... ]
+        >>> mg = MGazine(downloads)
+        >>> mg.download_all("download_to_here") # doctest: +SKIP
+        """
+
+        logging.debug("Initializing client once for all downloads")
+        mg = self._mgnifier_helper()
+        logging.debug(f"MGnifier helper created: {mg}")
+
+        with mg.exec.httpx_client as client:
+            aliases = list(self.url_dict.keys())
+
+            for alias in tqdm_sync(
+                aliases,
+                total=len(aliases),
+                desc="Overall Progress",
+                ascii=" >=",
+                disable=hide_progress,
+            ):
+                try:
+                    self.download(
+                        to_dir=to_dir,
+                        alias=alias,
+                        httpx_client=client,
+                        hide_progress=hide_progress,
+                        overwrite=overwrite,
+                    )
+                except httpx.ConnectError as ce:
+                    logging.error(
+                        f"Connection error occurred while downloading {alias}: {ce}"
+                    )
+                except Exception as e:
+                    logging.error(f"Error occurred while downloading {alias}: {e}")
+
+    async def adownload_all(
+        self,
+        to_dir: DirectoryPath,
+        overwrite: bool = False,
+        hide_progress: bool = False,
+    ):
+        """
+        Asynchronously download all files known to this ``MGazine``.
+
+        Parameters
+        ----------
+        to_dir : DirectoryPath
+            Directory where the files will be saved.
+        overwrite : bool, optional
+            Passed to `adownload` to control overwriting behavior.
+        hide_progress : bool, optional
+            Disable progress bars when ``True``.
+
+        Notes
+        -----
+        This helper creates a single async HTTP client and schedules
+        concurrent `adownload` calls for all aliases.
+
+        Examples
+        ---------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ...     {"alias": "example2.fasta.gz", "url": "http://ex/x2", "file_type": "fasta"},
+        ... ]
+        >>> mg = MGazine(downloads)
+        >>> await mg.adownload_all("download_to_here") # doctest: +SKIP
+
+        """
+
+        logging.debug("Initializing async client once for all downloads")
+        mg = self._mgnifier_helper()
+        logging.debug(f"MGnifier helper created: {mg}")
+
+        async with mg.exec.httpx_aclient as client:
+
+            # create tasks for each download
+            tasks = [
+                self.adownload(
+                    to_dir=to_dir,
+                    alias=a,
+                    httpx_aclient=client,
+                    overwrite=overwrite,
+                    hide_progress=hide_progress,
+                )
+                for a in self.url_dict
+            ]
+            # Overall progress bar
+            for f in tqdm_async(
+                asyncio.as_completed(tasks),
+                total=len(tasks),
+                desc="Overall Progress",
+                ascii=" >=",
+                disable=hide_progress,
+            ):
+                try:
+                    await f
+                except httpx.ConnectError as ce:
+                    # flag and continue with downloads
+                    logging.error(
+                        f"Connection error occurred while downloading {f}: {ce}"
+                    )
+                except Exception as e:
+                    # flag and continue with downloads ..
+                    logging.error(f"Error occurred while downloading {f}: {e}")
+
+    # helpers for getting naming things
     def _get_url_by_alias(
         self, alias: str, df: Optional[pd.DataFrame] = None
     ) -> Optional[str]:
@@ -164,6 +604,37 @@ class MGazine(MGnifyAnalysisWithAnnotations):
         tuple[str, HttpUrl]
             A tuple of (alias, url) where alias is the prioritized alias and url is the corresponding url.
         """
+        """Prioritize ``alias`` over ``url`` and return resolved pair.
+
+        If both ``alias`` and ``url`` are provided, the alias is used and the
+        corresponding url from the downloads is returned (a warning is issued).
+
+        Parameters
+        ----------
+        alias : str or None
+            Download alias known to this MGazine instance.
+        url : str or None
+            Direct URL to a resource.
+        required : bool, optional
+            When True, raise ``ValueError`` if neither ``alias`` nor ``url`` is
+            provided.
+
+        Returns
+        -------
+        (alias, url)
+            Tuple containing the resolved alias (or ``None``) and url (or
+            ``None``).
+
+        Examples
+        --------
+        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> mg = MGazine(downloads)
+        >>> mg._prioritize_alias(alias='x', url=None)
+        ('x', 'http://ex/x')
+        >>> mg._prioritize_alias(alias=None, url='http://ex/x')  # doctest: +ELLIPSIS
+        (None, 'http://ex/x')
+        """
+
         if alias and url:
             warnings.warn(
                 "Both `alias` and `url` provided, ignoring `url`.", stacklevel=2
@@ -182,897 +653,6 @@ class MGazine(MGnifyAnalysisWithAnnotations):
             raise ValueError("Either `alias` or `url` must be provided.")
 
         return alias, url
-
-    def stream_tsv(
-        self,
-        url: str,
-        sep: str = "\t",
-        chunksize: Optional[int] = None,
-        max_skip: int = 5,
-        **pd_kwargs,
-    ) -> pd.DataFrame | pd.io.parsers.readers.TextFileReader:
-        """
-        Reads a tsv file from a url and returns an iterator of pandas dataframes.
-        Handles potential issues with extra header rows (causing pd.errors.ParserError)
-        by trying to read the file with increasing skiprows until it succeeds or reaches max_skip.
-
-        Parameters
-        ----------
-        url : str
-            The url of the tsv file to stream.
-        sep : str, optional
-            The separator used in the tsv file. Default is tab.
-        chunksize : int, optional
-            The number of rows to include in each chunk. Default is None.
-        max_skip : int, optional
-            The maximum number of rows to skip before raising an error. Default is 5.
-        pd_kwargs : dict, optional
-            Additional keyword arguments to pass to pandas read_csv.
-
-        Returns
-        -------
-        pd.DataFrame | pd.io.parsers.readers.TextFileReader
-            An iterator of pandas dataframes.
-        """
-
-        for skip in range(max_skip + 1):
-            try:
-                return pd.read_csv(
-                    url,
-                    sep=sep,
-                    chunksize=chunksize,
-                    skiprows=skip if skip > 0 else None,
-                    **pd_kwargs,
-                )
-            except pd.errors.ParserError:
-                continue  # Try next skiprows value
-            except Exception as err:
-                raise RuntimeError(
-                    f"Error reading TSV from {url} with skiprows={skip}"
-                ) from err
-        raise pd.errors.ParserError(
-            f"Failed to parse {url} after skipping up to {max_skip} rows."
-        )
-
-    def stream_html(self, url: str, **web_kwargs) -> bool:
-        """
-        Streams an html file from a url and opens it in the default web browser.
-
-        Parameters
-        ----------
-        url : str
-            The url of the html file to stream.
-        web_kwargs : dict, optional
-            Additional keyword arguments to pass to webbrowser.open.
-
-        Returns
-        -------
-        bool
-            True if the url was opened successfully, False otherwise.
-        """
-        return webbrowser.open(url, **web_kwargs)
-
-    def stream_txt(
-        self,
-        url: str,
-        chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
-        **httpx_kwargs,
-    ) -> Generator:
-        """
-        Streams a txt file from a url and returns an iterator of strings.
-
-        Parameters
-        ----------
-        url : str
-            The url of the txt file to stream.
-        chunksize : Optional[int], optional
-            The number of characters to include in each chunk. Default is None.
-        httpx_kwargs : dict, optional
-            Additional keyword arguments to pass to the httpx client.
-
-        Returns
-        -------
-        Generator[str, None, None]
-            An iterator of strings.
-        """
-
-        client = httpx_client or self._mgnifier_helper.httpx_client
-
-        if chunksize is None:
-            # load as whole
-            with client.get(url, **httpx_kwargs) as response:
-                response.raise_for_status()
-                return response.text
-        elif isinstance(chunksize, int) and chunksize > 0:
-            # load in chunks
-            with client.stream("GET", url, **httpx_kwargs) as response:
-                response.raise_for_status()
-                chunk = []
-                for line in response.iter_text():
-                    chunk.append(line)
-                    if len(chunk) == chunksize:
-                        yield chunk
-                        chunk = []
-                if chunk:
-                    yield chunk
-        else:
-            raise ValueError("`chunksize` must be a positive integer or None.")
-
-    def stream_fasta(self, url: str, **skbio_kwargs) -> Generator:
-        """
-        Streams a fasta file from a url and returns an iterator of tuples (header, sequence).
-
-        Parameters
-        ----------
-        url : str
-            The url of the fasta file to stream.
-        skbio_kwargs : dict, optional
-            Additional keyword arguments to pass to the skbio parsers.
-            https://scikit.bio/docs/latest/generated/skbio.io.format.fasta.html
-
-        Returns
-        -------
-        Generator[tuple[str, str], None, None]
-            An iterator of tuples (header, sequence).
-        """
-        return read(url, format="fasta", **skbio_kwargs)
-
-    def stream_gff(self, url: str, **skbio_kwargs) -> Generator:
-        """
-        Streams a gff file from a url and returns an iterator of parsed gff records.
-
-        Parameters
-        ----------
-        url : str
-            The url of the gff file to stream.
-        skbio_kwargs : dict, optional
-            Additional keyword arguments to pass to the skbio parser.
-            https://scikit.bio/docs/latest/generated/skbio.io.format.gff3.html
-
-        Returns
-        -------
-        Generator[skbio.io._gff3.GFF3Record, None, None]
-            "generator of tuple (seq_id of str type, skbio.metadata.IntervalMetadata)"
-        """
-        return read(url, format="gff3", **skbio_kwargs)
-
-    def stream_biom(self, url: str, **skbio_kwargs) -> Generator:
-        """
-        Streams a biom file from a url and returns an iterator of parsed biom records.
-
-        Parameters
-        ----------
-        url : str
-            The url of the biom file to stream.
-        skbio_kwargs : dict, optional
-            Additional keyword arguments to pass to the skbio parser.
-        Returns
-        -------
-        Generator[dict, None, None]
-            An iterator of parsed biom records as dictionaries.
-        """
-        return read(url, format="biom", **skbio_kwargs)
-
-    def stream_gzipped(
-        self,
-        url: str,
-        chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
-        decode: bool = False,
-        encoding: str = "utf-8",
-        errors: str = "replace",
-        **httpx_kwargs,
-    ) -> bytes | str | io.BufferedReader | io.TextIOWrapper:
-        """
-        Streams a gzipped file from a url and returns a file-like object that can be read in chunks.
-        Written using GPT-5.3-Codex.
-        Uses httpx for streaming and zlib for decompression.
-
-        Parameters
-        ----------
-        url : str
-            The url of the gzipped file to stream.
-        chunksize : int, optional
-            The size of each chunk to read from the stream.
-        httpx_client : httpx.Client, optional
-            The httpx client to use for streaming.
-        decode : bool, default False
-            Whether to decode the decompressed bytes to a string.
-        encoding : str, default "utf-8"
-            The encoding to use for decoding bytes to a string.
-        errors : str, default "replace"
-            The error handling strategy for decoding bytes to a string.
-        **httpx_kwargs : dict
-            Additional keyword arguments to pass to the httpx client.
-
-        Returns
-        -------
-        bytes | str | io.BufferedReader | io.TextIOWrapper
-            A file-like object that can be read in chunks.
-            If `chunksize` is None, returns the full decompressed content as bytes,
-            or string based on `decode`.
-        """
-
-        # Pick caller-provided client, or fallback to the shared MGnifier client.
-        client = httpx_client or self._mgnifier_helper.httpx_client
-        logging.debug(
-            "stream_gzipped called url=%s chunksize=%s decode=%s",
-            url,
-            chunksize,
-            decode,
-        )
-
-        # Backward-compatible mode: no chunksize means full download into memory.
-        if chunksize is None:
-            logging.debug("Using full-download mode (chunksize=None)")
-            # Perform a normal blocking GET.
-            r = client.get(url, timeout=None, **httpx_kwargs)
-            # Raise if HTTP status is not 2xx.
-            r.raise_for_status()
-            # Create gzip-compatible streaming decompressor (16 + MAX_WBITS enables gzip header).
-            decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
-            # Decompress full payload bytes and flush remaining tail bytes.
-            data = decompressor.decompress(r.content) + decompressor.flush()
-            logging.debug(
-                "Full-download mode complete: compressed=%d decompressed=%d",
-                len(r.content),
-                len(data),
-            )
-            # Return text if decode=True, else raw bytes.
-            return data.decode(encoding, errors=errors) if decode else data
-
-        # Validate chunksize for streaming mode.
-        if not isinstance(chunksize, int) or chunksize <= 0:
-            raise ValueError("`chunksize` must be a positive integer or None.")
-
-        # Custom raw stream that adapts httpx streamed gzip bytes to a readable file-like object.
-        class _HTTPGzipRaw(io.RawIOBase):
-            def __init__(self):
-                # Open streaming HTTP response context.
-                self._cm = client.stream("GET", url, timeout=None, **httpx_kwargs)
-                # Enter context manually so this object controls lifecycle.
-                self._resp = self._cm.__enter__()
-                # Fail fast on non-2xx.
-                self._resp.raise_for_status()
-                # Iterate compressed bytes in fixed-size network chunks.
-                self._iter = self._resp.iter_raw(chunk_size=chunksize)
-                # Incremental gzip decompressor.
-                self._decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-                # Internal decompressed byte buffer.
-                self._buf = bytearray()
-                # End-of-stream marker.
-                self._eof = False
-                # Track whether decompressor.flush() has been called.
-                self._flushed = False
-                logging.debug("Streaming HTTP/gzip reader initialized")
-
-            def readable(self) -> bool:
-                # Required by BufferedReader to know this raw stream supports reading.
-                return True
-
-            def _fill(self, need: int) -> None:
-                # Keep buffering until we have enough bytes or we hit EOF.
-                while len(self._buf) < need and not self._eof:
-                    try:
-                        # Pull next compressed network chunk.
-                        chunk = next(self._iter)
-                    except StopIteration:
-                        # Network stream finished; flush remaining decompressor tail once.
-                        if not self._flushed:
-                            tail = self._decomp.flush()
-                            if tail:
-                                self._buf.extend(tail)
-                            self._flushed = True
-                        # Mark EOF so future reads stop pulling.
-                        self._eof = True
-                        logging.debug("Reached end of HTTP stream")
-                        break
-
-                    # If chunk is non-empty, incrementally decompress and append output.
-                    if chunk:
-                        out = self._decomp.decompress(chunk)
-                        if out:
-                            self._buf.extend(out)
-
-            def readinto(self, b) -> int:
-                # If already closed, signal EOF.
-                if self.closed:
-                    return 0
-                # Create writable view into caller-provided buffer.
-                mv = memoryview(b)
-                # Ensure internal buffer has enough data for requested read.
-                self._fill(len(mv))
-                # Compute how many bytes we can actually return.
-                n = min(len(mv), len(self._buf))
-                # No bytes available means EOF.
-                if n <= 0:
-                    return 0
-                # Copy decompressed bytes into caller buffer.
-                mv[:n] = self._buf[:n]
-                # Remove consumed bytes from internal buffer.
-                del self._buf[:n]
-                # Return byte count copied.
-                return n
-
-            def close(self) -> None:
-                # Close HTTP stream context exactly once.
-                if not self.closed:
-                    try:
-                        self._cm.__exit__(None, None, None)
-                    finally:
-                        super().close()
-                        logging.debug("Streaming HTTP/gzip reader closed")
-
-        # Wrap raw stream in BufferedReader for efficient file-like reads.
-        raw = _HTTPGzipRaw()
-        buffered = io.BufferedReader(raw, buffer_size=chunksize)
-
-        # If decode requested, wrap bytes stream as text stream.
-        if decode:
-            return io.TextIOWrapper(buffered, encoding=encoding, errors=errors)
-
-        # Default return: binary buffered reader (works with ijson.kvitems).
-        return buffered
-
-    def stream_jsonl(
-        self,
-        url: str,
-        orient: Optional[
-            Literal["records", "split", "index", "columns", "values", "table"]
-        ] = None,
-        chunksize: Optional[int] = None,
-        **pd_kwargs,
-    ) -> dict:
-        """
-        Streams a jsonl file from a url and returns the parsed json as a dictionary.
-
-        Parameters
-        ----------
-        url : str
-            The url of the json file to stream.
-        sep : str, optional
-            The separator to use when parsing the json file. Default is "\t".
-        chunksize : Optional[int], optional
-            The size of the chunks to read from the stream. Default is None.
-        max_skip : int, optional
-            The maximum number of rows to skip before raising an error. Default is 5.
-        **pd_kwargs : dict
-            Additional keyword arguments to pass to the pandas parser.
-        Returns
-        -------
-        dict
-            The parsed json as a dictionary.
-        """
-
-        return pd.read_json(
-            url, orient=orient, lines=True, chunksize=chunksize, **pd_kwargs
-        )
-
-    def stream_json(
-        self,
-        url: str,
-        chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
-        **httpx_kwargs,
-    ) -> dict | Generator:
-        """
-        Streams a json file from a url and returns the parsed json as a dictionary or an iterator of dictionaries if chunksize is specified.
-
-        Parameters
-        ----------
-        url : str
-            The url of the json file to stream.
-        chunksize : Optional[int], optional
-            The size of the chunks to read from the stream. Default is None.
-        **httpx_kwargs : dict
-            Additional keyword arguments to pass to the httpx client.
-        Returns
-        -------
-        dict | Generator
-            The parsed json as a dictionary, or an iterator of dictionaries if chunksize is specified.
-        """
-
-        client = httpx_client or self._mgnifier_helper.httpx_client
-
-        # normal full get and json parse
-        if chunksize is None and not (url.endswith(".gz") or url.endswith(".gzip")):
-            # If no chunksize and not gzipped, do a normal full GET and parse as JSON.
-            with client.get(url, **httpx_kwargs) as response:
-                response.raise_for_status()
-                return response.json()
-        # streaming json, not zipped
-        elif chunksize is not None and not (
-            url.endswith(".gz") or url.endswith(".gzip")
-        ):
-            # If chunksize specified and not gzipped, stream text and parse JSON objects one by one.
-            with client.stream("GET", url, **httpx_kwargs) as response:
-                response.raise_for_status()
-                for entry in ijson.kvitems(response.iter_text(), ""):
-                    yield entry
-        # gzipped json (with or without chunksize)
-        elif url.endswith(".gz") or url.endswith(".gzip"):
-            # If gzipped, use the stream_gzipped method to get a file-like object and parse JSON objects one by one.
-            with self.stream_gzipped(
-                url,
-                chunksize=chunksize,
-                httpx_client=client,
-                decode=True,
-                **httpx_kwargs,
-            ) as gzipped_stream:
-                for entry in ijson.kvitems(gzipped_stream, ""):
-                    yield entry
-        else:
-            raise ValueError(f"Unsupported file type for URL: {url}")
-
-    def stream_tree(self, url: str, **skbio_kwargs) -> Generator:
-        """
-        Streams a tree file from a url and returns an iterator of parsed tree records.
-
-        Parameters
-        ----------
-        url : str
-            The url of the tree file to stream.
-        skbio_kwargs : dict, optional
-            Additional keyword arguments to pass to the skbio parser.
-        Returns
-        -------
-        Generator[dict, None, None]
-            An iterator of parsed tree records as dictionaries.
-        """
-        return read(url, format="newick", **skbio_kwargs)
-
-    def _fix_inconsistent_cols(
-        self, fields: list[str], pad_to: int = 15
-    ) -> list[str] | None:
-        """
-        Fixes inconsistent columns in a list of strings.
-
-        Parameters
-        ----------
-        fields : list[str]
-            The list of strings to fix.
-        pad_to : int, optional
-            The number of columns to pad or truncate to. Default is 15.
-
-        Returns
-        -------
-        list[str] | None
-            The fixed list of strings, or None if the fields are invalid.
-        """
-        # pad to
-        if len(fields) < pad_to:
-            return fields + [""] * (pad_to - len(fields))
-        # truncate
-        if len(fields) > pad_to:
-            return fields[:pad_to]
-        return fields
-
-    def _get_streamer(
-        self,
-        alias: Optional[str] = None,
-        url: Optional[HttpUrl] = None,
-        chunksize: int = 1000,
-        httpx_client: Optional[httpx.Client] = None,
-        max_skip: int = 5,
-        **kwargs,
-    ):
-        """
-        Gets the appropriate streamer function based on the file type of the download.
-
-        Parameters
-        ----------
-        alias : Optional[str]
-            The alias of the download to stream.
-        url : Optional[HttpUrl]
-            The url of the download to stream.
-        chunksize : int, optional
-            The size of the chunks to read from the stream. Default is 1000.
-        httpx_client : Optional[httpx.Client], optional
-            The httpx client to use for making requests. Default is None.
-        max_skip : int, optional
-            The maximum number of rows to skip before raising an error. Default is 5.
-        kwargs : dict
-            Additional keyword arguments to pass to the streamer function.
-
-        Returns
-        -------
-        Callable
-            A function that can be called to stream the download.
-        """
-
-        client = httpx_client or self._mgnifier_helper.httpx_client
-
-        # get alias/url
-        _alias, _url = self._prioritize_alias(alias, url, required=True)
-        # return stream based on file type
-        file_type = self._get_type_by_alias(_alias)
-        if file_type == "tsv":
-            if _url.endswith(".gz") or _url.endswith(".gzip"):
-                logging.debug(f"tsv file type ends with .gz: {_url}")
-                try:
-                    return self.stream_tsv(
-                        _url,
-                        chunksize=chunksize,
-                        max_skip=max_skip,
-                        compression="gzip",
-                        **kwargs,
-                    )
-                except pd.errors.ParserError as e:
-                    logging.error(f"ParserError: {e}")
-                    return self.stream_tsv(
-                        _url,
-                        chunksize=chunksize,
-                        max_skip=max_skip,
-                        compression="gzip",
-                        engine="python",
-                        on_bad_lines=self._fix_inconsistent_cols,
-                        **kwargs,
-                    )
-            elif _url.endswith(".txt") or _url.endswith(".tsv"):
-                return self.stream_tsv(
-                    _url, chunksize=chunksize, max_skip=max_skip, **kwargs
-                )
-        elif file_type == "csv":
-            return self.stream_tsv(
-                _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
-            )
-        elif file_type == "html":
-            return lambda: self.stream_html(_url, **kwargs)
-        elif file_type == "txt":  # TODO: to constants
-            return self.stream_txt(
-                _url, chunksize=chunksize, httpx_client=client, **kwargs
-            )
-        elif file_type == "gff":
-            return self.stream_gff(_url, **kwargs)
-        elif file_type == "biom":
-            return self.stream_biom(_url, **kwargs)
-        elif file_type == "fasta":
-            return self.stream_fasta(_url, **kwargs)
-        elif file_type == "tree":
-            return self.stream_tree(_url, **kwargs)
-        elif file_type == "json":
-            return self.stream_jsonl(
-                _url, orient="records", chunksize=chunksize, **kwargs
-            )
-        elif file_type == "other" and ".json" in _url:
-            if _url.endswith("json.gz") or _url.endswith("json.gzip"):
-                return self.stream_json(
-                    _url, chunksize=chunksize, httpx_client=client, **kwargs
-                )
-
-            logging.info(
-                f"{_alias} is only available for download "
-                f"(e.g., `.download({_alias}))`"
-            )
-            # more info
-            logging.debug(
-                f"Alias: {_alias}\nURL: {_url}\nFile type: {file_type}. "
-                "Only '.json' files can be streamed under 'other' type, "
-                "otherwise this download is only available for download."
-            )
-
-        else:
-            raise ValueError(f"Unsupported file type for streaming: {file_type}")
-
-    def stream(
-        self,
-        *,
-        alias: Optional[str] = None,
-        url: Optional[HttpUrl] = None,
-        chunksize: Optional[int] = None,
-        max_skip: int = 5,
-        **kwargs,
-    ) -> dict[str, Callable]:
-        """
-        Streams a download based on its alias or url. If neither alias nor url is provided, streams all downloads.
-        (if chunksize is specified, it's kinda lazy loading)
-
-        Parameters
-        ----------
-        alias : Optional[str]
-            The alias of the download to stream.
-        url : Optional[HttpUrl]
-            The url of the download to stream.
-        chunksize : Optional[int]
-            The size of the chunks to read from the stream.
-        max_skip : int, optional
-            The maximum number of rows to skip before raising an error. Default is 5.
-        **kwargs
-            Additional keyword arguments to pass to the streamer function.
-
-        Returns
-        -------
-        dict[str, Callable]
-            A dictionary of alias: streamer_function for the requested downloads.
-        """
-        # get alias/url
-        _alias, _url = self._prioritize_alias(alias, url)
-        # if neither alias nor url provided, stream all downloads
-        if not _alias and not _url:
-            aliases = self.downloads_df["alias"].tolist()
-        else:
-            aliases = [_alias]
-        # return dict of alias: streamer_function
-        client = self._mgnifier_helper.httpx_client
-
-        # TODO: skip404 client error for now
-        streams = {}
-        for a in aliases:
-            try:
-                logging.info(f"Setting up stream for alias: {a}")
-                streams[a] = self._get_streamer(
-                    alias=a,
-                    chunksize=chunksize,
-                    httpx_client=client,
-                    max_skip=max_skip,
-                    **kwargs,
-                )
-            except HTTPError as err:
-                logging.error(f"HTTP error for alias {a} and url {_url}: {err}")
-                continue  # skip this stream but continue with others
-
-        return streams
-
-    def download(
-        self,
-        to_dir: DirectoryPath,
-        alias: Optional[str] = None,
-        *,
-        url: Optional[str] = None,
-        filename: Optional[str] = None,
-        httpx_client: Optional[httpx.Client] = None,
-        hide_progress: bool = False,
-    ):
-        """
-        Downloads a file from a url or alias to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the file to.
-        alias : Optional[str], optional
-            The alias of the file to download. If not provided, `url` must be provided. Default is None.
-        url : Optional[str], optional
-            The url of the file to download. If not provided, `alias` must be provided. Default is None.
-        filename : Optional[str], optional
-            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
-
-
-        Raises
-        ------
-        ValueError
-            If neither `alias` nor `url` is provided, or if `url` is provided without a corresponding `alias` in the downloads.
-        """
-        # get alias/url
-        _alias, _url = self._prioritize_alias(alias, url, required=True)
-
-        # if no alias then need filename
-        if not _alias and not filename:
-            raise ValueError(
-                "If `url` not from downloads, `filename` must be provided since no alias available."
-            )
-
-        # make dir if not exists
-        to_dir = Path(to_dir)
-        to_dir.mkdir(parents=True, exist_ok=True)
-
-        # prep full path
-        filepath = to_dir / filename if filename else to_dir / _alias
-
-        # reuse httpx client if provided, otherwise init new client using mgnifier
-        with httpx_client or self._mgnifier_helper.httpx_client as client:
-            with client.stream("GET", _url) as response:
-                response.raise_for_status()
-                total = int(response.headers.get("content-length", 0))
-                with (
-                    open(filepath, "wb") as f,
-                    tqdm_sync(
-                        total=total,
-                        unit="B",
-                        unit_scale=True,
-                        desc=f"Downloading {filename or _alias}",
-                        ascii=" >=",
-                        disable=hide_progress,
-                    ) as pbar,
-                ):
-                    for chunk in response.iter_bytes():
-                        f.write(chunk)
-                        pbar.update(len(chunk))
-
-    async def adownload(
-        self,
-        to_dir: DirectoryPath,
-        alias: Optional[str] = None,
-        *,
-        url: Optional[str] = None,
-        filename: Optional[str] = None,
-        httpx_aclient: Optional[httpx.AsyncClient] = None,
-        hide_progress: bool = False,
-    ):
-        """
-        Asynchronously downloads a file from a url or alias to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the file to.
-        alias : Optional[str], optional
-            The alias of the file to download. If not provided, `url` must be provided. Default is None.
-        url : Optional[str], optional
-            The url of the file to download. If not provided, `alias` must be provided. Default is None.
-        filename : Optional[str], optional
-            The name to save the file as. If not provided, the alias will be used as the filename. Default is None.
-            Note that if `url` is provided without a corresponding `alias` in the downloads,
-            `filename` must be provided since there is no alias to use as the filename.
-        httpx_aclient : Optional[httpx.AsyncClient], optional
-            An optional httpx.AsyncClient to use for the download.
-            If not provided, a new client will be created using the mgnifier helper. Default is None.
-        """
-        # get alias/url
-        _alias, _url = self._prioritize_alias(alias, url, required=True)
-
-        # if no alias then need filename
-        if not _alias and not filename:
-            raise ValueError(
-                "If `url` not from downloads, `filename` must be provided since no alias available."
-            )
-
-        # make dir if not exists
-        to_dir = Path(to_dir)
-        to_dir.mkdir(parents=True, exist_ok=True)
-
-        # prep full path
-        filepath = to_dir / filename if filename else to_dir / _alias
-
-        # arg TODO mixins
-        # semaphore to limit concurrent downloads, can be adjusted in config
-        async with semaphore:
-            if httpx_aclient is not None:
-                client = httpx_aclient
-                # Do NOT use 'async with' here, just use the client directly
-                async with client.stream("GET", _url) as response:
-                    response.raise_for_status()
-                    total = int(response.headers.get("content-length", 0))
-                    with tqdm_sync(
-                        total=total,
-                        unit="B",
-                        unit_scale=True,
-                        desc=f"Downloading {filename or _alias}",
-                        ascii="░▒█",
-                        disable=hide_progress,
-                    ) as pbar:
-                        async with aiofiles.open(filepath, "wb") as f:
-                            async for chunk in response.aiter_bytes():
-                                await f.write(chunk)
-                                pbar.update(len(chunk))
-            else:
-                async with self._mgnifier_helper.httpx_aclient as client:
-                    async with client.stream("GET", _url) as response:
-                        response.raise_for_status()
-                        total = int(response.headers.get("content-length", 0))
-                        with tqdm_sync(
-                            total=total,
-                            unit="B",
-                            unit_scale=True,
-                            desc=f"Downloading {filename or _alias}",
-                            ascii="░▒█",
-                            disable=hide_progress,
-                        ) as pbar:
-                            async with aiofiles.open(filepath, "wb") as f:
-                                async for chunk in response.aiter_bytes():
-                                    await f.write(chunk)
-                                    pbar.update(len(chunk))
-
-    async def adownload_all(
-        self,
-        to_dir: DirectoryPath,
-        hide_progress: bool = False,
-    ):
-        """
-        Asynchronously downloads all files in the downloads to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the files to.
-        hide_progress : bool, optional
-            Whether to hide the progress bars. Default is False.
-
-        Note
-        ----
-        This method will use the `adownload` method for each file,
-        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
-        If you want to customize those parameters for each file,
-        you can call `adownload` directly for each file instead of using this method.
-        """
-
-        logging.debug("Initializing async client once for all downloads")
-        async with self._mgnifier_helper.httpx_aclient as client:
-
-            # create tasks for each download
-            tasks = [
-                self.adownload(
-                    to_dir=to_dir,
-                    alias=a,
-                    httpx_aclient=client,
-                    hide_progress=hide_progress,
-                )
-                for a in self.url_dict
-            ]
-            # Overall progress bar
-            for f in tqdm_async(
-                asyncio.as_completed(tasks),
-                total=len(tasks),
-                desc="Overall Progress",
-                ascii=" >=",
-                disable=hide_progress,
-            ):
-                try:
-                    await f
-                except httpx.ConnectError as ce:
-                    # flag and continue with downloads
-                    logging.error(
-                        f"Connection error occurred while downloading {f}: {ce}"
-                    )
-                except Exception as e:
-                    # flag and continue with downloads ..
-                    logging.error(f"Error occurred while downloading {f}: {e}")
-
-    def download_all(
-        self,
-        to_dir: DirectoryPath,
-        hide_progress: bool = False,
-    ):
-        """
-        TODO fix
-        Downloads all files in the downloads to a specified directory.
-
-        Parameters
-        ----------
-        to_dir : DirectoryPath
-            The directory to download the files to.
-        hide_progress : bool, optional
-            Whether to hide the progress bars. Default is False.
-
-        Note
-        ----
-        This method will use the `download` method for each file,
-        so it will respect the same parameters and behavior for handling aliases, urls, filenames, and httpx clients.
-        If you want to customize those parameters for each file,
-        you can call `download` directly for each file instead of using this method.
-        """
-
-        logging.debug("Initializing client once for all downloads")
-        with self._mgnifier_helper.httpx_client as client:
-            aliases = list(self.url_dict.keys())
-
-            for alias in tqdm_sync(
-                aliases,
-                total=len(aliases),
-                desc="Overall Progress",
-                ascii=" >=",
-                disable=hide_progress,
-            ):
-                try:
-                    self.download(
-                        to_dir=to_dir,
-                        alias=alias,
-                        httpx_client=client,
-                        hide_progress=hide_progress,
-                    )
-                except httpx.ConnectError as ce:
-                    logging.error(
-                        "Connection error occurred while downloading %s: %s",
-                        alias,
-                        ce,
-                    )
-                except Exception as e:
-                    logging.error(
-                        "Error occurred while downloading %s: %s",
-                        alias,
-                        e,
-                    )
 
 
 class MGazineCurator:

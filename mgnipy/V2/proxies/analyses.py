@@ -7,6 +7,8 @@ from typing import (
 
 from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
+from mgnipy.V2.datasets import MGazine
+
 
 class Analyses(MGnifyList):
     RESOURCE: ClassVar[Literal["analyses"]] = "analyses"
@@ -38,4 +40,12 @@ class AnalysisDetail(MGnifyDetail):
             id=id or accession,
             config=config,
             **kwargs,
+        )
+
+    @property
+    def downloads(self):
+        """Access the downloads for this analysis as a MGazine object."""
+        return MGazine(
+            downloads=self.to_df().loc[0, "downloads"],
+            config=self.config,
         )
