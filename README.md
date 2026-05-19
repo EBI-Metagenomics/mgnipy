@@ -23,23 +23,18 @@ MGni.py (pronounced MAG-nee-pie) is a Python wrapper for the [MGnify API](https:
 #### Note on private data:
 
 - To access your private data in any of these API endpoints you just need your MGnify user and password to obtain a valid sliding auth token via the [MGnify Authentication endpoints](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding).
-- `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py :)
+- for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
+- `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉
+
 
 ## Installation
 
-### From PyPI (stable)
+### From PyPI
 
 ```bash
 pip install mgnipy
 ```
 
-### From TestPyPI (development)
-
-```bash
-pip install mgnipy \
---index-url https://test.pypi.org/simple/ \
---extra-index-url https://pypi.org/simple
-```
 
 ### Development installation
 
@@ -89,13 +84,29 @@ studies.bulk_fetch()
 ### Multiple output formats
 
 ```python
-pd_df = studies.to_df()
+pd_metadata = studies.to_df()
 
 # As polars DataFrame
-pl_df = studies.to_polars()
+pl_metadata = studies.to_polars()
 
 # as json
-results_json = studies.to_json()
+json_metadata = studies.to_json()
+```
+
+### Downloading the analyzed data
+
+```python
+# accessing the mgazine of datasets
+mgazine = studies.datasets
+
+# preview
+print(mgazine)
+
+# download file by file 
+mgazine.download(to_dir="downloads_folder", alias="mgnify_file_alias.fasta.gz")
+
+# or download all 
+mgazine.download_all(to_dir="downloads_folder")
 ```
 
 ## Additional Documentation
