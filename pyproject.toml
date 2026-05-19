@@ -8,10 +8,10 @@ authors = [
   { name = "SandyRogers" },
   { name = "Sebastian Ayala Ruano" },
   { name = "Alberto Santos" },
-  { name = "MGnify" },
-  { name = "Robert Finn" }
+  { name = "Robert Finn" },
+  { name = "MGnify" }
 ]
-description = "python driver for mgnipy api"
+description = "MGni.py: A Python Wrapper for the MGnify API"
 name = "mgnipy"
 # See the section below: [tools.setuptools.dynamic]
 dynamic = [
@@ -81,7 +81,6 @@ force-sort-within-sections = true
 combine-as-imports = true
 force-wrap-aliases= true
 
-
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 testpaths = ["tests", "mgnipy/_shared_helpers", "mgnipy/mgnipy.py"]
@@ -106,5 +105,8 @@ mgnipy-hello = "mgnipy.cli:main"
 
 
 [project.urls]
+"Homepage" = "https://mgnipy.mgnify.org/"
+"GitHub" = "https://github.com/EBI-Metagenomics/mgnipy"
+"Documentation" = "https://mgnipy.mgnify.org/"
 "Bug Tracker" = "https://github.com/EBI-Metagenomics/mgnipy/issues"
-"Homepage" = "https://github.com/EBI-Metagenomics/mgnipy"
+
