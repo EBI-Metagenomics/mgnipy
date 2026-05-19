@@ -15,7 +15,7 @@
 # %% [markdown]
 # # 🗄️ Getting to know the cache
 #
-# <button title="Make live" class="thebe-button" onclick="initThebe()">
+# <button title="Make live" class="thebe-button" onclick="initThebeSBT()">
 #   Make live
 # </button>
 #
@@ -151,7 +151,9 @@ print("general cache dir:", samples.config.cache_dir)
 
 # %%
 # option 1: .cache_dir
-print("Planned cache directory based on params and resource:\n", samples.cache_dir)
+print(
+    "Planned cache directory based on params and resource:\n", samples.cache_dir
+)
 
 # %% [markdown]
 # The cache directory path is also included in the string representation of the proxy instance :)

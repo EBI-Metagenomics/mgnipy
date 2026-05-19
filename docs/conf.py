@@ -76,8 +76,10 @@ html_js_files = [
 # -- Extensions configurations ---------------------------------------------------
 
 ## thebe
-thebe_config = {"selector": "div.highlight"}
-
+thebe_config = {
+    "selector": "div.highlight",
+    # "always_load": True
+}
 
 ## autosummary options
 autosummary_generate = True

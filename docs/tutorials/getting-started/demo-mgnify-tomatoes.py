@@ -15,7 +15,7 @@
 # %% [markdown]
 # # 🕵️‍♀️ Searching for MGnify Studies
 #
-# <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:100px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;box-shadow:0 6px 18px rgba(15,118,110,.25);cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebe()">Activate Notebook</button>
+# <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:100px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;box-shadow:0 6px 18px rgba(15,118,110,.25);cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
 #
 # On this page, which also serves as a runnable notebook (link above ^), we again demonstrate the basic usability of MGni.py to search the [Studies resource](https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/list_mgnify_studies) for some studies of interest (e.g., tomaotos)
 #
@@ -183,7 +183,9 @@ for study_id, study_detail in study_details_dict.items():
             print("Finished fetching details for all analyses.")
             break
 
-    print(f"Number of analyses for study {study_id}: {len(study_analyses_list)}\n")
+    print(
+        f"Number of analyses for study {study_id}: {len(study_analyses_list)}\n"
+    )
 
     analyses_details.append(study_analyses_list.details_df)
 
