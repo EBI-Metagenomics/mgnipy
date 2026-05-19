@@ -101,6 +101,7 @@ class MGnifyList(MGnifier):
 
         self._collected_details: dict[str, "MGnifyDetail"] = {}
         self._collected_details_results: dict[str, dict] = {}
+        self._collected_details_downloads: dict[str, list[dict[str, Any]]] = {}
 
     def __call__(self, **kwargs) -> "MGnifyList":
         """Return a cloned list proxy with updated parameters.
@@ -384,6 +385,7 @@ class MGnifyList(MGnifier):
         # cache detail data mem
         self._collected_details_results[resolved_id] = child.page(1)
         self._collected_details[resolved_id] = child
+        self._collected_details_downloads[resolved_id] = child.downloads
         return child
 
     async def _asingle_detail(
@@ -421,6 +423,8 @@ class MGnifyList(MGnifier):
         # cache detail data mem
         self._collected_details_results[resolved_id] = await child.apage(1)
         self._collected_details[resolved_id] = child
+        self._collected_details_downloads[resolved_id] = child.downloads
+
         return child
 
     @property
@@ -434,6 +438,14 @@ class MGnifyList(MGnifier):
     @property
     def details_df(self) -> pd.DataFrame:
         return pd.DataFrame.from_dict(self.details_results, orient="index")
+
+    @property
+    def details_downloads(self) -> list[dict[str, Any]] | None:
+        return [
+            item
+            for sublist in self._collected_details_downloads.values()
+            for item in sublist
+        ]
 
     def __getitem__(self, key: int | str) -> "MGnifyDetail":
         """
@@ -696,6 +708,37 @@ class MGnifyDetail(MGnifier):
         if fetch:
             await list_endpoint.abulk_fetch()
         return list_endpoint
+
+    @property
+    def downloads(self) -> list[dict[str, Any]]:
+        """
+        A list of download information dicts for the detail, extracted from the details results.
+
+        Each dict is updated with the identifier of the detail.
+        The identifier key is determined by the id_param_key of the detail class,
+        e.g. "accession" for studies, samples, runs, analyses, genomes, assemblies;
+        "biome_lineage" for biomes; "pubmed_id" for publications; "catalogue_id" for catalogues.
+        """
+
+        if "downloads" not in self.to_df().columns:
+            logging.debug(
+                "Details DataFrame does not have 'downloads' column. Returning empty list."
+            )
+            return []
+
+        logging.debug(
+            f"Updating download info with identifier {self.identifier!r} to id_param_key {self.id_param_key!r}"
+        )
+
+        # updates the dicts with the id from the index
+        for _, row in self.to_df().iterrows():
+            downloads_list = row["downloads"]
+            for each_download in downloads_list:
+                each_download.update({self.id_param_key: self.identifier})
+
+        return [
+            item for sublist in self.to_df()["downloads"].values for item in sublist
+        ]
 
 
 # import concrete proxy classes from sibling modules. These imports occur
