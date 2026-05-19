@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import warnings
 from pathlib import Path
 from typing import (
     Any,
@@ -88,6 +87,21 @@ class MGazine(StreamMixin):
         )
         logging.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
         return mg
+
+    @property
+    def aliases(self) -> list[str]:
+        """Return a list of all download aliases.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
+        >>> MGazine(downloads).aliases
+        ['example.txt']
+        """
+
+        return [f["alias"] for f in self.downloads if "alias" in f]
 
     @property
     def url_dict(self) -> dict[str, dict]:
@@ -587,27 +601,10 @@ class MGazine(StreamMixin):
         url: Optional[HttpUrl],
         required: bool = False,
     ) -> tuple[str, HttpUrl]:
-        """
-        Prioritizes alias over url. If both are provided, alias is used and url is ignored with a warning.
-
-        Parameters
-        ----------
-        alias : Optional[str]
-            The alias of the download.
-        url : Optional[HttpUrl]
-            The url of the download.
-        required : bool, optional
-            If required is True, raises an error if neither alias nor url is provided.
-
-        Returns
-        -------
-        tuple[str, HttpUrl]
-            A tuple of (alias, url) where alias is the prioritized alias and url is the corresponding url.
-        """
         """Prioritize ``alias`` over ``url`` and return resolved pair.
 
         If both ``alias`` and ``url`` are provided, the alias is used and the
-        corresponding url from the downloads is returned (a warning is issued).
+        corresponding url from the downloads is returned.
 
         Parameters
         ----------
@@ -631,14 +628,12 @@ class MGazine(StreamMixin):
         >>> mg = MGazine(downloads)
         >>> mg._prioritize_alias(alias='x', url=None)
         ('x', 'http://ex/x')
-        >>> mg._prioritize_alias(alias=None, url='http://ex/x')  # doctest: +ELLIPSIS
-        (None, 'http://ex/x')
+        >>> mg._prioritize_alias(alias=None, url='http://ex/x')
+        ('x', 'http://ex/x')
         """
 
         if alias and url:
-            warnings.warn(
-                "Both `alias` and `url` provided, ignoring `url`.", stacklevel=2
-            )
+            logging.debug("Both `alias` and `url` provided, ignoring `url`.")
             url = self._get_url_by_alias(alias)
         elif alias and not url:
             url = self._get_url_by_alias(alias)
