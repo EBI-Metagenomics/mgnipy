@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>🗄️ Getting to know the cache &#8212; mgnipy 0.1.0 documentation</title>
+    <title>🗄️ Getting to know the cache &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=a2693998"></script>
+    <script src="../../_static/documentation_options.js?v=97f971d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="🔐 Accessing your private data" href="access-private-data.html" />
-    <link rel="prev" title="🕵️‍♀️ Searching for MGnify Studies" href="demo-mgnify-tomatoes.html" />
+    <link rel="prev" title="🎁 Downloading MGnify Analyses for a given Study" href="../demos/get_all_analyses_for_study.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.0 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -193,6 +193,7 @@
 <li class="toctree-l1"><a class="reference internal" href="available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
 <ul class="current nav bd-sidenav">
@@ -203,6 +204,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -518,7 +520,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="getting-to-know-the-cache">
 <h1>🗄️ Getting to know the cache<a class="headerlink" href="#getting-to-know-the-cache" title="Link to this heading">#</a></h1>
-<button title="Make live" class="thebe-button" onclick="initThebe()">
+<button title="Make live" class="thebe-button" onclick="initThebeSBT()">
   Make live
 </button>
 <p>This page provides a quick guide to the cache handled by <code class="docutils literal notranslate"><span class="pre">DiskCheckpointer</span></code> of the <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.mixins</span></code>.</p>
@@ -670,7 +672,9 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># option 1: .cache_dir</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Planned cache directory based on params and resource:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Planned cache directory based on params and resource:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">cache_dir</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -816,12 +820,12 @@ Cache directory: tmp/3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e0
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="demo-mgnify-tomatoes.html"
+       href="../demos/get_all_analyses_for_study.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">🕵️‍♀️ Searching for MGnify Studies</p>
+        <p class="prev-next-title">🎁 Downloading MGnify Analyses for a given Study</p>
       </div>
     </a>
     <a class="right-next"

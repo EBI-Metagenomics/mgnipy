@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.proxies.analyses &#8212; mgnipy 0.1.0 documentation</title>
+    <title>mgnipy.V2.proxies.analyses &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=a2693998"></script>
+    <script src="../../../../_static/documentation_options.js?v=97f971d4"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.0 documentation - Home"/>`);</script>
+    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -192,6 +192,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
 <ul class="nav bd-sidenav">
@@ -202,6 +203,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -339,7 +341,7 @@ document.write(`
     <span class="n">Literal</span><span class="p">,</span>
     <span class="n">Optional</span><span class="p">,</span>
 <span class="p">)</span>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnifyDetail</span><span class="p">,</span> <span class="n">MGnifyList</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGazine</span>
@@ -358,7 +360,35 @@ document.write(`
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">details_downloads_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">details_df</span><span class="p">[</span><span class="s2">&quot;downloads&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span>
+        <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">details_downloads_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="c1"># return self.details_df[&quot;downloads&quot;]</span>
+
+        <span class="n">down_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">details_df</span><span class="p">[</span><span class="s2">&quot;downloads&quot;</span><span class="p">]</span>
+
+        <span class="n">okie</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">down_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">study_id</span><span class="o">=</span><span class="n">study</span><span class="p">,</span> <span class="o">**</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">study</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">okie</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A property that returns an MGazine instance containing the downloads information for the study.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MGazine</span><span class="p">(</span>
+            <span class="n">downloads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">details_downloads_list</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 
@@ -383,7 +413,7 @@ document.write(`
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Access the downloads for this analysis as a MGazine object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MGazine</span><span class="p">(</span>
             <span class="n">downloads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;downloads&quot;</span><span class="p">],</span>

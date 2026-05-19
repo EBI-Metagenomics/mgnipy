@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>MGni.py &#8212; mgnipy 0.1.0 documentation</title>
+    <title>MGni.py &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=a2693998"></script>
+    <script src="_static/documentation_options.js?v=97f971d4"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -147,8 +147,8 @@
       
     
     
-    <img src="_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.0 documentation - Home"/>`);</script>
+    <img src="_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -194,6 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
 <ul class="nav bd-sidenav">
@@ -204,6 +205,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -419,8 +421,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-pypi-stable">From PyPI (stable)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-testpypi-development">From TestPyPI (development)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-pypi">From PyPI</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#development-installation">Development installation</a></li>
 </ul>
 </li>
@@ -428,6 +429,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initialize-and-explore">Initialize and explore</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-resources-with-filtering">Query resources with filtering</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-output-formats">Multiple output formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#downloading-the-analyzed-data">Downloading the analyzed data</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-documentation">Additional Documentation</a></li>
@@ -484,23 +486,16 @@ document.write(`
 <h3>Note on private data:<a class="headerlink" href="#note-on-private-data" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>To access your private data in any of these API endpoints you just need your MGnify user and password to obtain a valid sliding auth token via the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding" rel="noreferrer" target="_blank">MGnify Authentication endpoints <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> takes care of getting and caching the auth token so that you can easily access your private data using MGni.py :)</p></li>
+<li><p>for example you can put your login credentials in a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in your working directory (see <a class="reference external" href="https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example" rel="noreferrer" target="_blank">.env.example <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>) and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉</p></li>
 </ul>
 </section>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
-<section id="from-pypi-stable">
-<h3>From PyPI (stable)<a class="headerlink" href="#from-pypi-stable" title="Link to this heading">#</a></h3>
+<section id="from-pypi">
+<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mgnipy
-</pre></div>
-</div>
-</section>
-<section id="from-testpypi-development">
-<h3>From TestPyPI (development)<a class="headerlink" href="#from-testpypi-development" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mgnipy<span class="w"> </span><span class="se">\</span>
---index-url<span class="w"> </span>https://test.pypi.org/simple/<span class="w"> </span><span class="se">\</span>
---extra-index-url<span class="w"> </span>https://pypi.org/simple
 </pre></div>
 </div>
 </section>
@@ -552,13 +547,29 @@ uv<span class="w"> </span>sync<span class="w"> </span>--all-groups<span class="w
 </section>
 <section id="multiple-output-formats">
 <h3>Multiple output formats<a class="headerlink" href="#multiple-output-formats" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd_df</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd_metadata</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
 
 <span class="c1"># As polars DataFrame</span>
-<span class="n">pl_df</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
+<span class="n">pl_metadata</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
 
 <span class="c1"># as json</span>
-<span class="n">results_json</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="n">json_metadata</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="downloading-the-analyzed-data">
+<h3>Downloading the analyzed data<a class="headerlink" href="#downloading-the-analyzed-data" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># accessing the mgazine of datasets</span>
+<span class="n">mgazine</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">datasets</span>
+
+<span class="c1"># preview</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mgazine</span><span class="p">)</span>
+
+<span class="c1"># download file by file </span>
+<span class="n">mgazine</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">to_dir</span><span class="o">=</span><span class="s2">&quot;downloads_folder&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;mgnify_file_alias.fasta.gz&quot;</span><span class="p">)</span>
+
+<span class="c1"># or download all </span>
+<span class="n">mgazine</span><span class="o">.</span><span class="n">download_all</span><span class="p">(</span><span class="n">to_dir</span><span class="o">=</span><span class="s2">&quot;downloads_folder&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -691,8 +702,7 @@ https://github.com/OpenTTD/OpenTTD/blob/master/CREDITS.md -->
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-pypi-stable">From PyPI (stable)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-testpypi-development">From TestPyPI (development)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-pypi">From PyPI</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#development-installation">Development installation</a></li>
 </ul>
 </li>
@@ -700,6 +710,7 @@ https://github.com/OpenTTD/OpenTTD/blob/master/CREDITS.md -->
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initialize-and-explore">Initialize and explore</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-resources-with-filtering">Query resources with filtering</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-output-formats">Multiple output formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#downloading-the-analyzed-data">Downloading the analyzed data</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-documentation">Additional Documentation</a></li>

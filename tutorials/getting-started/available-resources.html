@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>📚 Intro to MGnify Resources &#8212; mgnipy 0.1.0 documentation</title>
+    <title>📚 Intro to MGnify Resources &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=a2693998"></script>
+    <script src="../../_static/documentation_options.js?v=97f971d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.0 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -193,6 +193,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
 <ul class="nav bd-sidenav">
@@ -203,6 +204,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -494,7 +496,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="intro-to-mgnify-resources">
 <h1>📚 Intro to MGnify Resources<a class="headerlink" href="#intro-to-mgnify-resources" title="Link to this heading">#</a></h1>
-<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:100px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;box-shadow:0 6px 18px rgba(15,118,110,.25);cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebe()">Activate Notebook</button></p>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:100px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;box-shadow:0 6px 18px rgba(15,118,110,.25);cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
 <p>The MGnify API provides access to multiple types of resources (or endpoints) such as studies, samples, analyses, runs, and more. This notebook shows you how to</p>
 <ol class="arabic simple">
 <li><p><strong>Discover</strong> what resources are available</p></li>
@@ -512,7 +514,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
-<span class="c1">#!pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple mgnipy</span>
+<span class="c1">#!pip install mgnipy</span>
 <span class="c1">#!pip install asyncio</span>
 </pre></div>
 </div>
@@ -555,8 +557,7 @@ document.write(`
  &#39;catalogues&#39;,
  &#39;catalogue&#39;,
  &#39;annotations&#39;,
- &#39;private_studies&#39;,
- &#39;_downloads&#39;]
+ &#39;private_studies&#39;]
 </pre></div>
 </div>
 </div>

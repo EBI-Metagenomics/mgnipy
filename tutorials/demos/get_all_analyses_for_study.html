@@ -1,0 +1,1291 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>🎁 Downloading MGnify Analyses for a given Study &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=97f971d4"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/demos/get_all_analyses_for_study';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="🗄️ Getting to know the cache" href="../getting-started/understanding-cache.html" />
+    <link rel="prev" title="🕵️‍♀️ Searching for MGnify Studies" href="../getting-started/demo-mgnify-tomatoes.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Quick Start</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/installation.html">📦 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">🎁 Downloading MGnify Analyses for a given Study</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/understanding-cache.html">🗄️ Getting to know the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/access-private-data.html">🔐 Accessing your private data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/readme-openapi-python-client.html">🤝 What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/tutorials/demos/get_all_analyses_for_study.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/tutorials/demos/get_all_analyses_for_study.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/tutorials/demos/get_all_analyses_for_study.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/tutorials/demos/get_all_analyses_for_study.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>🎁 Downloading MGnify Analyses for a given Study</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-view-mgnify-analyses-for-study-mgys00010442">🎯 The Goal: View MGnify Analyses for study: MGYS00010442</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-study-s-details">🔎 Getting the Study’s details</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgazine-for-accessing-the-study-s-datasets">📒 <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> for accessing the study’s datasets</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#downloading-a-copy-of-the-files-using-download-or-download-all">⬇️ Downloading a copy of the files using <code class="docutils literal notranslate"><span class="pre">.download()</span></code> or <code class="docutils literal notranslate"><span class="pre">.download_all()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alternatively-reading-in-the-files-using-stream">📖 Alternatively, reading in the files using <code class="docutils literal notranslate"><span class="pre">stream</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#todo-getting-sample-and-analyses-metadata">TODO getting sample and analyses metadata</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="downloading-mgnify-analyses-for-a-given-study">
+<h1>🎁 Downloading MGnify Analyses for a given Study<a class="headerlink" href="#downloading-mgnify-analyses-for-a-given-study" title="Link to this heading">#</a></h1>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:100px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;box-shadow:0 6px 18px rgba(15,118,110,.25);cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<p>In this notebook, is starting code for retrieving all the MGnify Analyses for a given study accession. We use <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/v6-early-data-release/studies/MGYS00010442/overview" rel="noreferrer" target="_blank">MGYS00010442 <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> as an example.</p>
+<hr class="docutils" />
+<section id="the-goal-view-mgnify-analyses-for-study-mgys00010442">
+<h2>🎯 The Goal: View MGnify Analyses for study: <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/v6-early-data-release/studies/MGYS00010442/overview" rel="noreferrer" target="_blank">MGYS00010442 <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><a class="headerlink" href="#the-goal-view-mgnify-analyses-for-study-mgys00010442" title="Link to this heading">#</a></h2>
+<p>In this tutorial we demonstrate how MGni.py can be used to get MGnify Analyses datasets for a study.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install mgnipy</span>
+<span class="c1">#!pip install asyncio</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># our study of interset</span>
+<span class="n">study_accession</span> <span class="o">=</span> <span class="s2">&quot;MGYS00010442&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="getting-the-study-s-details">
+<h2>🔎 Getting the Study’s details<a class="headerlink" href="#getting-the-study-s-details" title="Link to this heading">#</a></h2>
+<p>Here we import and configuire our MGnipy client</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span> <span class="c1"># optional, for async requests</span>
+
+<span class="c1"># init</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
+    <span class="c1">#cache_dir=&quot;cache&quot; # default dir is platform-specific,set to None to disable caching</span>
+<span class="p">)</span>
+
+<span class="c1"># access study resource</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">study</span><span class="p">(</span><span class="n">study_accession</span><span class="p">)</span>
+
+<span class="c1"># check out call before making it</span>
+<span class="n">study</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planning the API call with params:
+{&#39;accession&#39;: &#39;MGYS00010442&#39;}
+Total requests to make: 1
+Total records to retrieve: 1
+</pre></div>
+</div>
+</div>
+</div>
+<p>let’s go ahead and get the study’s details:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get</span>
+<span class="n">study</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+<span class="c1"># can clear cache now optionally or later or never</span>
+<span class="n">study</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
+
+<span class="c1"># stored to results, so can view as list, dfs etc</span>
+<span class="n">study</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Advancing to request num 1
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+      <th>downloads</th>
+      <th>metadata</th>
+      <th>first_accession</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00010442</td>
+      <td>[PRJEB37289, ERP120598]</td>
+      <td>TKI</td>
+      <td>{'biome_name': 'Digestive system', 'lineage': ...</td>
+      <td>2026-04-21T08:55:57.196000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>{}</td>
+      <td>ERP120598</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="mgazine-for-accessing-the-study-s-datasets">
+<h2>📒 <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> for accessing the study’s datasets<a class="headerlink" href="#mgazine-for-accessing-the-study-s-datasets" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>study details have a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGazine</span></code> which allow us to download and interact with study-level datasets outputed from MGnify.</p></li>
+<li><p>We can use <code class="docutils literal notranslate"><span class="pre">mgnipy.MGazine</span></code> to download the datasets onto disk or read them into our notebook.</p></li>
+<li><p>To access the study’s mgazine use <code class="docutils literal notranslate"><span class="pre">.datasets</span></code></p></li>
+<li><p>the str representaiton of mgazine tells us the number of download files and their {alias: url}</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># getting mgazine</span>
+<span class="n">mgazine</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">datasets</span>
+<span class="c1"># see info</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mgazine</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine with 8 downloads:
+{&#39;ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv&#39;,
+ &#39;ERP120598_DADA2-PR2_16S-V3-V4_study_summary.tsv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-PR2_16S-V3-V4_study_summary.tsv&#39;,
+ &#39;ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv&#39;,
+ &#39;ERP120598_DADA2-SILVA_16S-V3-V4_study_summary.tsv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-SILVA_16S-V3-V4_study_summary.tsv&#39;,
+ &#39;ERP120598_PR2_study_summary.tsv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_PR2_study_summary.tsv&#39;,
+ &#39;ERP120598_SILVA-SSU_study_summary.tsv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_SILVA-SSU_study_summary.tsv&#39;,
+ &#39;ERP120598_closedref_PR2_dwcready.csv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_closedref_PR2_dwcready.csv&#39;,
+ &#39;ERP120598_closedref_SILVA-SSU_dwcready.csv&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_closedref_SILVA-SSU_dwcready.csv&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+<section id="downloading-a-copy-of-the-files-using-download-or-download-all">
+<h3>⬇️ Downloading a copy of the files using <code class="docutils literal notranslate"><span class="pre">.download()</span></code> or <code class="docutils literal notranslate"><span class="pre">.download_all()</span></code><a class="headerlink" href="#downloading-a-copy-of-the-files-using-download-or-download-all" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>also with async support</p></li>
+<li><p>for downloading only need to pass a destination dir and the file alias (helper list <code class="docutils literal notranslate"><span class="pre">.aliases</span></code>) or url (helpers <code class="docutils literal notranslate"><span class="pre">.url_list</span></code>, <code class="docutils literal notranslate"><span class="pre">.url_dict</span></code>)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check out file aliases</span>
+<span class="n">aa</span> <span class="o">=</span> <span class="n">mgazine</span><span class="o">.</span><span class="n">aliases</span>
+
+<span class="n">aa</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;ERP120598_DADA2-PR2_16S-V3-V4_study_summary.tsv&#39;,
+ &#39;ERP120598_PR2_study_summary.tsv&#39;,
+ &#39;ERP120598_DADA2-SILVA_16S-V3-V4_study_summary.tsv&#39;,
+ &#39;ERP120598_SILVA-SSU_study_summary.tsv&#39;,
+ &#39;ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv&#39;,
+ &#39;ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv&#39;,
+ &#39;ERP120598_closedref_SILVA-SSU_dwcready.csv&#39;,
+ &#39;ERP120598_closedref_PR2_dwcready.csv&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># download one file by alias</span>
+<span class="n">mgazine</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">to_dir</span><span class="o">=</span><span class="s2">&quot;downloads&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">aa</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Downloading ERP120598_PR2_study_summary.tsv to downloads/ERP120598_PR2_study_summary.tsv:   0%|          | 0.00/103k [00:00&lt;?, ?B/s]
+Downloading ERP120598_PR2_study_summary.tsv to downloads/ERP120598_PR2_study_summary.tsv:  46%|████▌     | 47.7k/103k [00:00&lt;00:00, 335kB/s]
+Downloading ERP120598_PR2_study_summary.tsv to downloads/ERP120598_PR2_study_summary.tsv: 100%|██████████| 103k/103k [00:00&lt;00:00, 472kB/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># downloading all, async optional</span>
+<span class="k">await</span> <span class="n">mgazine</span><span class="o">.</span><span class="n">adownload_all</span><span class="p">(</span><span class="n">to_dir</span><span class="o">=</span><span class="s2">&quot;downloads&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overall Progress:   0%|          | 0/8 [00:00&lt;?, ?it/s]
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_study_summary.tsv:   0%|          | 0.00/44.0k [00:00&lt;?, ?B/s]
+
+Downloading ERP120598_SILVA-SSU_study_summary.tsv:   0%|          | 0.00/162k [00:00&lt;?, ?B/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_study_summary.tsv: 100%|██████████| 44.0k/44.0k [00:00&lt;00:00, 583kB/s]
+
+Overall Progress:  25%|==&gt;       | 2/8 [00:00&lt;00:01,  3.96it/s]
+Downloading ERP120598_closedref_PR2_dwcready.csv:   0%|          | 0.00/1.40M [00:00&lt;?, ?B/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:   0%|          | 0.00/2.58M [00:00&lt;?, ?B/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_study_summary.tsv:   0%|          | 0.00/35.4k [00:00&lt;?, ?B/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:   0%|          | 0.00/1.72M [00:00&lt;?, ?B/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_study_summary.tsv: 100%|██████████| 35.4k/35.4k [00:00&lt;00:00, 471kB/s]
+Overall Progress:  38%|===&gt;      | 3/8 [00:00&lt;00:00,  5.02it/s]
+Downloading ERP120598_SILVA-SSU_study_summary.tsv:  29%|██▉       | 47.7k/162k [00:00&lt;00:00, 324kB/s]
+
+Downloading ERP120598_closedref_PR2_dwcready.csv:   3%|▎         | 47.7k/1.40M [00:00&lt;00:04, 325kB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:   2%|▏         | 47.7k/2.58M [00:00&lt;00:07, 323kB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:   0%|          | 0.00/2.44M [00:00&lt;?, ?B/s]
+
+Downloading ERP120598_SILVA-SSU_study_summary.tsv: 100%|██████████| 162k/162k [00:00&lt;00:00, 710kB/s]
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:   7%|▋         | 112k/1.72M [00:00&lt;00:02, 738kB/s]
+
+Downloading ERP120598_closedref_PR2_dwcready.csv:  13%|█▎        | 176k/1.40M [00:00&lt;00:01, 630kB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:   7%|▋         | 184k/2.58M [00:00&lt;00:03, 654kB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:   5%|▍         | 112k/2.44M [00:00&lt;00:03, 739kB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:  18%|█▊        | 312k/1.72M [00:00&lt;00:01, 1.08MB/s]
+
+Downloading ERP120598_closedref_PR2_dwcready.csv:  32%|███▏      | 448k/1.40M [00:00&lt;00:00, 1.14MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  17%|█▋        | 448k/2.58M [00:00&lt;00:01, 1.13MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  14%|█▍        | 344k/2.44M [00:00&lt;00:01, 1.19MB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:  33%|███▎      | 560k/1.72M [00:00&lt;00:00, 1.33MB/s]
+
+Downloading ERP120598_closedref_PR2_dwcready.csv:  49%|████▊     | 680k/1.40M [00:00&lt;00:00, 1.28MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  25%|██▌       | 656k/2.58M [00:00&lt;00:01, 1.22MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  26%|██▌       | 624k/2.44M [00:00&lt;00:01, 1.47MB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:  45%|████▌     | 776k/1.72M [00:00&lt;00:00, 1.34MB/s]
+
+Downloading ERP120598_closedref_PR2_dwcready.csv:  67%|██████▋   | 944k/1.40M [00:00&lt;00:00, 1.43MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  40%|███▉      | 1.02M/2.58M [00:00&lt;00:00, 1.63MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  37%|███▋      | 896k/2.44M [00:00&lt;00:00, 1.59MB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:  69%|██████▊   | 1.18M/1.72M [00:00&lt;00:00, 1.79MB/s]
+
+Downloading ERP120598_closedref_PR2_dwcready.csv:  82%|████████▏ | 1.15M/1.40M [00:00&lt;00:00, 1.39MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  49%|████▊     | 1.26M/2.58M [00:00&lt;00:00, 1.58MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  48%|████▊     | 1.18M/2.44M [00:00&lt;00:00, 1.68MB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:  79%|███████▉  | 1.36M/1.72M [00:00&lt;00:00, 1.59MB/s]
+
+Downloading ERP120598_closedref_PR2_dwcready.csv: 100%|██████████| 1.40M/1.40M [00:01&lt;00:00, 1.38MB/s]
+
+Overall Progress:  62%|======    | 5/8 [00:01&lt;00:01,  2.95it/s]
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  55%|█████▌    | 1.42M/2.58M [00:01&lt;00:00, 1.41MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  63%|██████▎   | 1.53M/2.44M [00:00&lt;00:00, 1.85MB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:  89%|████████▊ | 1.52M/1.72M [00:01&lt;00:00, 1.41MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  66%|██████▌   | 1.70M/2.58M [00:01&lt;00:00, 1.52MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  72%|███████▏  | 1.77M/2.44M [00:01&lt;00:00, 1.75MB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv:  97%|█████████▋| 1.67M/1.72M [00:01&lt;00:00, 1.28MB/s]
+
+Downloading ERP120598_closedref_SILVA-SSU_dwcready.csv: 100%|██████████| 1.72M/1.72M [00:01&lt;00:00, 1.39MB/s]
+
+Overall Progress:  75%|=======&gt;  | 6/8 [00:01&lt;00:00,  3.10it/s]
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  77%|███████▋  | 1.98M/2.58M [00:01&lt;00:00, 1.61MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  80%|███████▉  | 1.94M/2.44M [00:01&lt;00:00, 1.56MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  84%|████████▍ | 2.17M/2.58M [00:01&lt;00:00, 1.49MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  88%|████████▊ | 2.16M/2.44M [00:01&lt;00:00, 1.50MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv:  94%|█████████▍| 2.42M/2.58M [00:01&lt;00:00, 1.54MB/s]
+
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv:  95%|█████████▌| 2.33M/2.44M [00:01&lt;00:00, 1.38MB/s]
+
+Downloading ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv: 100%|██████████| 2.58M/2.58M [00:01&lt;00:00, 1.44MB/s]
+
+Overall Progress:  88%|========&gt; | 7/8 [00:02&lt;00:00,  2.64it/s]
+Downloading ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv: 100%|██████████| 2.44M/2.44M [00:01&lt;00:00, 1.50MB/s]
+
+Overall Progress: 100%|==========| 8/8 [00:02&lt;00:00,  3.41it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="alternatively-reading-in-the-files-using-stream">
+<h3>📖 Alternatively, reading in the files using <code class="docutils literal notranslate"><span class="pre">stream</span></code><a class="headerlink" href="#alternatively-reading-in-the-files-using-stream" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>to continue working with the datasets before downloading</p></li>
+<li><p>support for csv/tsv (gzipped or not), txt, fasta, gff, biom, json, jsonl (see <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.mixins.StreamMixin</span></code>)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mgazine</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="n">aa</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>taxonomy</th>
+      <th>ERR5382938</th>
+      <th>ERR5382939</th>
+      <th>ERR5382940</th>
+      <th>ERR5382941</th>
+      <th>ERR5382942</th>
+      <th>ERR5382943</th>
+      <th>ERR5382944</th>
+      <th>ERR5382945</th>
+      <th>ERR5382946</th>
+      <th>...</th>
+      <th>ERR5382991</th>
+      <th>ERR5382992</th>
+      <th>ERR5382993</th>
+      <th>ERR5382994</th>
+      <th>ERR5382995</th>
+      <th>ERR5382996</th>
+      <th>ERR5382997</th>
+      <th>ERR5382998</th>
+      <th>ERR5382999</th>
+      <th>ERR5383000</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>d__Archaea;sg__Methanoteca;dv__Euryarchaeota;s...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>d__Archaea;sg__Methanoteca;dv__Euryarchaeota;s...</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>d__Bacteria</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>9</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>d__Bacteria;sg__CCD;dv__Chloroflexi;sdv__Chlor...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>d__Bacteria;sg__CCD;dv__Patescibacteria;sdv__P...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>374</th>
+      <td>d__Eukaryota:plas;sg__Archaeplastida:plas;dv__...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>771</td>
+      <td>0</td>
+      <td>0</td>
+      <td>11</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>4</td>
+      <td>4</td>
+      <td>7</td>
+      <td>68</td>
+      <td>59</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>88</td>
+    </tr>
+    <tr>
+      <th>375</th>
+      <td>d__Eukaryota:plas;sg__Archaeplastida:plas;dv__...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>376</th>
+      <td>d__Eukaryota:plas;sg__Archaeplastida:plas;dv__...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>377</th>
+      <td>d__Eukaryota:plas;sg__Haptista:plas</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>378</th>
+      <td>d__Eukaryota:plas;sg__TSAR:plas</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>379 rows × 64 columns</p>
+</div></div></div>
+</div>
+</section>
+<section id="todo-getting-sample-and-analyses-metadata">
+<h3>TODO getting sample and analyses metadata<a class="headerlink" href="#todo-getting-sample-and-analyses-metadata" title="Link to this heading">#</a></h3>
+<p>From the study detail we can list their analyses. We can check what other relationshiops are supported using <code class="docutils literal notranslate"><span class="pre">.list_relationships()</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">study</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;samples&#39;, &#39;analyses&#39;, &#39;publications&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./tutorials/demos"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../getting-started/demo-mgnify-tomatoes.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">🕵️‍♀️ Searching for MGnify Studies</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../getting-started/understanding-cache.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">🗄️ Getting to know the cache</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-view-mgnify-analyses-for-study-mgys00010442">🎯 The Goal: View MGnify Analyses for study: MGYS00010442</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-study-s-details">🔎 Getting the Study’s details</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgazine-for-accessing-the-study-s-datasets">📒 <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> for accessing the study’s datasets</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#downloading-a-copy-of-the-files-using-download-or-download-all">⬇️ Downloading a copy of the files using <code class="docutils literal notranslate"><span class="pre">.download()</span></code> or <code class="docutils literal notranslate"><span class="pre">.download_all()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alternatively-reading-in-the-files-using-stream">📖 Alternatively, reading in the files using <code class="docutils literal notranslate"><span class="pre">stream</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#todo-getting-sample-and-analyses-metadata">TODO getting sample and analyses metadata</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

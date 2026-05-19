@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; mgnipy 0.1.0 documentation</title>
+    <title>Index &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=a2693998"></script>
+    <script src="_static/documentation_options.js?v=97f971d4"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.0 documentation - Home"/>`);</script>
+    <img src="_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -192,6 +192,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
 <ul class="nav bd-sidenav">
@@ -202,6 +203,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -1399,6 +1401,8 @@ document.write(`
         <li><a href="reference/mgnipy.emgapi_v2_client.models.html#id253">(mgnipy.emgapi_v2_client.models.MGnifyStudyDownloadFile attribute)</a>, <a href="reference/mgnipy.emgapi_v2_client.models.html#mgnipy.emgapi_v2_client.models.MGnifyStudyDownloadFile.alias">[1]</a>
 </li>
       </ul></li>
+      <li><a href="reference/mgnipy.V2.datasets.html#mgnipy.V2.datasets.MGazine.aliases">aliases (mgnipy.V2.datasets.MGazine property)</a>
+</li>
       <li><a href="reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.DiskCheckpointer.aload_cache">aload_cache() (mgnipy.V2.mixins.DiskCheckpointer method)</a>
 </li>
       <li><a href="reference/mgnipy.emgapi_v2_client.models.ena_sample_fields.html#mgnipy.emgapi_v2_client.models.ena_sample_fields.ENASampleFields.ALTITUDE">ALTITUDE (mgnipy.emgapi_v2_client.models.ena_sample_fields.ENASampleFields attribute)</a>
@@ -3199,6 +3203,22 @@ document.write(`
         <li><a href="reference/mgnipy.emgapi_v2_client.models.html#mgnipy.emgapi_v2_client.models.ENAStudyFields.DATAHUB">(mgnipy.emgapi_v2_client.models.ENAStudyFields attribute)</a>
 </li>
       </ul></li>
+      <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Analyses.datasets">datasets (mgnipy.V2.Analyses property)</a>
+
+      <ul>
+        <li><a href="reference/mgnipy.V2.proxies.analyses.html#mgnipy.V2.proxies.analyses.Analyses.datasets">(mgnipy.V2.proxies.analyses.Analyses property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.proxies.analyses.html#mgnipy.V2.proxies.analyses.AnalysisDetail.datasets">(mgnipy.V2.proxies.analyses.AnalysisDetail property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.PrivateStudies.datasets">(mgnipy.V2.proxies.studies.PrivateStudies property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.Studies.datasets">(mgnipy.V2.proxies.studies.Studies property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.StudyDetail.datasets">(mgnipy.V2.proxies.studies.StudyDetail property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Studies.datasets">(mgnipy.V2.Studies property)</a>
+</li>
+      </ul></li>
       <li><a href="reference/mgnipy.emgapi_v2_client.models.ena_sample_fields.html#mgnipy.emgapi_v2_client.models.ena_sample_fields.ENASampleFields.DEPTH">DEPTH (mgnipy.emgapi_v2_client.models.ena_sample_fields.ENASampleFields attribute)</a>
 
       <ul>
@@ -3471,10 +3491,24 @@ document.write(`
         <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Studies.details_df">(mgnipy.V2.Studies property)</a>
 </li>
       </ul></li>
-      <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.Studies.details_downloads">details_downloads (mgnipy.V2.proxies.studies.Studies property)</a>
+      <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Analyses.details_downloads_df">details_downloads_df (mgnipy.V2.Analyses property)</a>
 
       <ul>
-        <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Studies.details_downloads">(mgnipy.V2.Studies property)</a>
+        <li><a href="reference/mgnipy.V2.proxies.analyses.html#mgnipy.V2.proxies.analyses.Analyses.details_downloads_df">(mgnipy.V2.proxies.analyses.Analyses property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.Studies.details_downloads_df">(mgnipy.V2.proxies.studies.Studies property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Studies.details_downloads_df">(mgnipy.V2.Studies property)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Analyses.details_downloads_list">details_downloads_list (mgnipy.V2.Analyses property)</a>
+
+      <ul>
+        <li><a href="reference/mgnipy.V2.proxies.analyses.html#mgnipy.V2.proxies.analyses.Analyses.details_downloads_list">(mgnipy.V2.proxies.analyses.Analyses property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.Studies.details_downloads_list">(mgnipy.V2.proxies.studies.Studies property)</a>
+</li>
+        <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Studies.details_downloads_list">(mgnipy.V2.Studies property)</a>
 </li>
       </ul></li>
       <li><a href="reference/mgnipy.V2.html#mgnipy.V2.Analyses.details_results">details_results (mgnipy.V2.Analyses property)</a>
@@ -3599,12 +3633,6 @@ document.write(`
         <li><a href="reference/mgnipy.emgapi_v2_client.models.html#id189">(mgnipy.emgapi_v2_client.models.MGnifyAnalysisWithAnnotations attribute)</a>, <a href="reference/mgnipy.emgapi_v2_client.models.html#mgnipy.emgapi_v2_client.models.MGnifyAnalysisWithAnnotations.downloads">[1]</a>
 </li>
         <li><a href="reference/mgnipy.emgapi_v2_client.models.html#id247">(mgnipy.emgapi_v2_client.models.MGnifyStudyDetail attribute)</a>, <a href="reference/mgnipy.emgapi_v2_client.models.html#mgnipy.emgapi_v2_client.models.MGnifyStudyDetail.downloads">[1]</a>
-</li>
-        <li><a href="reference/mgnipy.V2.proxies.analyses.html#mgnipy.V2.proxies.analyses.AnalysisDetail.downloads">(mgnipy.V2.proxies.analyses.AnalysisDetail property)</a>
-</li>
-        <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.PrivateStudies.downloads">(mgnipy.V2.proxies.studies.PrivateStudies property)</a>
-</li>
-        <li><a href="reference/mgnipy.V2.proxies.studies.html#mgnipy.V2.proxies.studies.StudyDetail.downloads">(mgnipy.V2.proxies.studies.StudyDetail property)</a>
 </li>
       </ul></li>
       <li><a href="reference/mgnipy.V2.datasets.html#mgnipy.V2.datasets.MGazine.downloads_df">downloads_df (mgnipy.V2.datasets.MGazine property)</a>

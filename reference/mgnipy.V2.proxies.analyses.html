@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.proxies.analyses module &#8212; mgnipy 0.1.0 documentation</title>
+    <title>mgnipy.V2.proxies.analyses module &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=a2693998"></script>
+    <script src="../_static/documentation_options.js?v=97f971d4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -193,6 +193,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
 <ul class="nav bd-sidenav">
@@ -214,6 +215,7 @@
 <li class="toctree-l2"><a class="reference internal" href="mgnipy.V2.proxies.studies.html">mgnipy.V2.proxies.studies module</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -439,10 +441,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.continue_iterator"><code class="docutils literal notranslate"><span class="pre">Analyses.continue_iterator()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.count"><code class="docutils literal notranslate"><span class="pre">Analyses.count</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.data"><code class="docutils literal notranslate"><span class="pre">Analyses.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.datasets"><code class="docutils literal notranslate"><span class="pre">Analyses.datasets</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">Analyses.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.describe_relationships"><code class="docutils literal notranslate"><span class="pre">Analyses.describe_relationships()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details"><code class="docutils literal notranslate"><span class="pre">Analyses.details</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_df"><code class="docutils literal notranslate"><span class="pre">Analyses.details_df</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_downloads_df"><code class="docutils literal notranslate"><span class="pre">Analyses.details_downloads_df</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_downloads_list"><code class="docutils literal notranslate"><span class="pre">Analyses.details_downloads_list</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_results"><code class="docutils literal notranslate"><span class="pre">Analyses.details_results</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.dry_run"><code class="docutils literal notranslate"><span class="pre">Analyses.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">Analyses.emgapi_handler</span></code></a></li>
@@ -493,9 +498,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.continue_iterator"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.continue_iterator()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.count"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.count</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.data"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.datasets"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.datasets</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.describe_relationships"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.describe_relationships()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.downloads"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.downloads</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.dry_run"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.emgapi_handler</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.endpoint_module"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.endpoint_module</span></code></a></li>
@@ -765,6 +770,12 @@ allowing users to resume iteration after an interruption or to jump to a specifi
 <dd><p>results based on the current resource.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.Analyses.datasets">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">datasets</span></span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.Analyses.datasets" title="Link to this definition">#</a></dt>
+<dd><p>A property that returns an MGazine instance containing the downloads information for the study.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.Analyses.describe_endpoint">
 <span class="sig-name descname"><span class="pre">describe_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.Analyses.describe_endpoint" title="Link to this definition">#</a></dt>
@@ -814,6 +825,16 @@ allowing users to resume iteration after an interruption or to jump to a specifi
 <dl class="py property">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.Analyses.details_df">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">details_df</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.Analyses.details_df" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.Analyses.details_downloads_df">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">details_downloads_df</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.Analyses.details_downloads_df" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.Analyses.details_downloads_list">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">details_downloads_list</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">list</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">dict</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">str</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">Any</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.Analyses.details_downloads_list" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1591,6 +1612,12 @@ allowing users to resume iteration after an interruption or to jump to a specifi
 <dd><p>results based on the current resource.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.AnalysisDetail.datasets">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">datasets</span></span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.datasets" title="Link to this definition">#</a></dt>
+<dd><p>Access the downloads for this analysis as a MGazine object.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.AnalysisDetail.describe_endpoint">
 <span class="sig-name descname"><span class="pre">describe_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.describe_endpoint" title="Link to this definition">#</a></dt>
@@ -1630,12 +1657,6 @@ allowing users to resume iteration after an interruption or to jump to a specifi
 <span class="gp">&gt;&gt;&gt; </span><span class="n">query</span><span class="o">.</span><span class="n">describe_relationships</span><span class="p">()</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.AnalysisDetail.downloads">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">downloads</span></span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.downloads" title="Link to this definition">#</a></dt>
-<dd><p>Access the downloads for this analysis as a MGazine object.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2262,10 +2283,13 @@ data is available.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.continue_iterator"><code class="docutils literal notranslate"><span class="pre">Analyses.continue_iterator()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.count"><code class="docutils literal notranslate"><span class="pre">Analyses.count</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.data"><code class="docutils literal notranslate"><span class="pre">Analyses.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.datasets"><code class="docutils literal notranslate"><span class="pre">Analyses.datasets</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">Analyses.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.describe_relationships"><code class="docutils literal notranslate"><span class="pre">Analyses.describe_relationships()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details"><code class="docutils literal notranslate"><span class="pre">Analyses.details</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_df"><code class="docutils literal notranslate"><span class="pre">Analyses.details_df</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_downloads_df"><code class="docutils literal notranslate"><span class="pre">Analyses.details_downloads_df</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_downloads_list"><code class="docutils literal notranslate"><span class="pre">Analyses.details_downloads_list</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.details_results"><code class="docutils literal notranslate"><span class="pre">Analyses.details_results</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.dry_run"><code class="docutils literal notranslate"><span class="pre">Analyses.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.Analyses.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">Analyses.emgapi_handler</span></code></a></li>
@@ -2316,9 +2340,9 @@ data is available.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.continue_iterator"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.continue_iterator()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.count"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.count</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.data"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.datasets"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.datasets</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.describe_relationships"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.describe_relationships()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.downloads"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.downloads</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.dry_run"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.emgapi_handler</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.endpoint_module"><code class="docutils literal notranslate"><span class="pre">AnalysisDetail.endpoint_module</span></code></a></li>

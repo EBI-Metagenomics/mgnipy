@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.datasets &#8212; mgnipy 0.1.0 documentation</title>
+    <title>mgnipy.V2.datasets &#8212; mgnipy 0.1.dev1+g254693352 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=a2693998"></script>
+    <script src="../../../_static/documentation_options.js?v=97f971d4"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.0 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g254693352 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -192,6 +192,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
 <ul class="nav bd-sidenav">
@@ -202,6 +203,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -335,7 +337,6 @@ document.write(`
   <h1>Source code for mgnipy.V2.datasets</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
@@ -425,6 +426,21 @@ document.write(`
         <span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MGnifier initialized with resource=</span><span class="si">{</span><span class="n">mg</span><span class="o">.</span><span class="n">resource</span><span class="si">}</span><span class="s2"> and url=</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mg</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of all download aliases.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; downloads = [</span>
+<span class="sd">        ...     {&quot;alias&quot;: &quot;example.txt&quot;, &quot;url&quot;: &quot;http://ex/x&quot;, &quot;file_type&quot;: &quot;txt&quot;},</span>
+<span class="sd">        ... ]</span>
+<span class="sd">        &gt;&gt;&gt; MGazine(downloads).aliases</span>
+<span class="sd">        [&#39;example.txt&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;alias&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span> <span class="k">if</span> <span class="s2">&quot;alias&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">url_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
@@ -936,27 +952,10 @@ document.write(`
         <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">],</span>
         <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">HttpUrl</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Prioritizes alias over url. If both are provided, alias is used and url is ignored with a warning.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        alias : Optional[str]</span>
-<span class="sd">            The alias of the download.</span>
-<span class="sd">        url : Optional[HttpUrl]</span>
-<span class="sd">            The url of the download.</span>
-<span class="sd">        required : bool, optional</span>
-<span class="sd">            If required is True, raises an error if neither alias nor url is provided.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        tuple[str, HttpUrl]</span>
-<span class="sd">            A tuple of (alias, url) where alias is the prioritized alias and url is the corresponding url.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prioritize ``alias`` over ``url`` and return resolved pair.</span>
 
 <span class="sd">        If both ``alias`` and ``url`` are provided, the alias is used and the</span>
-<span class="sd">        corresponding url from the downloads is returned (a warning is issued).</span>
+<span class="sd">        corresponding url from the downloads is returned.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -980,14 +979,12 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; mg = MGazine(downloads)</span>
 <span class="sd">        &gt;&gt;&gt; mg._prioritize_alias(alias=&#39;x&#39;, url=None)</span>
 <span class="sd">        (&#39;x&#39;, &#39;http://ex/x&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; mg._prioritize_alias(alias=None, url=&#39;http://ex/x&#39;)  # doctest: +ELLIPSIS</span>
-<span class="sd">        (None, &#39;http://ex/x&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; mg._prioritize_alias(alias=None, url=&#39;http://ex/x&#39;)</span>
+<span class="sd">        (&#39;x&#39;, &#39;http://ex/x&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">alias</span> <span class="ow">and</span> <span class="n">url</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Both `alias` and `url` provided, ignoring `url`.&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
-            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Both `alias` and `url` provided, ignoring `url`.&quot;</span><span class="p">)</span>
             <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_url_by_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">alias</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_url_by_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>

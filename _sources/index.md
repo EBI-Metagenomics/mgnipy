@@ -13,6 +13,7 @@ tutorials/getting-started/installation.md
 tutorials/getting-started/available-resources
 tutorials/getting-started/mgnify-biomes
 tutorials/getting-started/demo-mgnify-tomatoes
+tutorials/demos/get_all_analyses_for_study
 ```
 
 ```{toctree}
@@ -35,6 +36,7 @@ tutorials/getting-started/access-private-data
 :hidden:
 reference/mgnipy.mgnipy
 reference/mgnipy.V2.proxies
+reference/mgnipy.V2.datasets
 reference/mgnipy.V2.core
 reference/mgnipy.V2.query_executor
 reference/mgnipy.V2.query_set
