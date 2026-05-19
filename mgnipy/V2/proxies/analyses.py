@@ -43,7 +43,7 @@ class AnalysisDetail(MGnifyDetail):
         )
 
     @property
-    def downloads(self):
+    def datasets(self):
         """Access the downloads for this analysis as a MGazine object."""
         return MGazine(
             downloads=self.to_df().loc[0, "downloads"],
