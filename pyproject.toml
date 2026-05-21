@@ -36,6 +36,7 @@ dependencies = [
     "pandas>=2.3.3",
     "platformdirs>=4.5.1",
     "polars[rtcompat]>=1.39.3",
+    "pyarrow>=24.0.0",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.14.0",
     "python-dateutil>=2.9.0.post0",
