@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+from http.client import IncompleteRead
 import json
 import logging
 from itertools import chain
@@ -478,12 +479,28 @@ class StreamMixin:
     on :class:`MGazine` so they can be reused by other classes.
     """
 
+    def __init__(self, mgnifier_helper=None):
+        self._mgnifier_helper = mgnifier_helper or getattr(
+            self, "_mgnifier_helper", None
+        )
+
+    def _handle_incomplete_read(self, url: str):
+        # self._download_helper = DownloadMixin(self._mgnifier_helper)
+        # TODO
+        logging.warning(
+            f"You can also download the file {url} using the 'download' method instead of streaming and then read it into memory from disk, which may be more reliable for unstable connections."
+        )
+        raise IncompleteRead(
+            f"Incomplete read error encountered when streaming {url}. This may be due to a network issue or server timeout. Consider retrying the request or checking your connection."
+        ) from None
+
     def stream_pandas(
         self,
         url: str,
         sep: str = "\t",
         chunksize: Optional[int] = None,
         max_skip: int = 5,
+        low_memory: bool = False,
         **pd_kwargs,
     ) -> pd.DataFrame | pd.io.parsers.readers.TextFileReader:
         """
@@ -530,10 +547,13 @@ class StreamMixin:
                     sep=sep,
                     chunksize=chunksize,
                     skiprows=skip if skip > 0 else None,
+                    low_memory=low_memory,
                     **pd_kwargs,
                 )
             except pd.errors.ParserError:
                 continue  # Try next skiprows value
+            except IncompleteRead:
+                self._handle_incomplete_read(url)
             except Exception as err:
                 raise RuntimeError(
                     f"Error reading file from {url} with skiprows={skip}"
@@ -548,6 +568,7 @@ class StreamMixin:
         sep: str = "\t",
         chunksize: Optional[int] = None,
         max_skip: int = 5,
+        low_memory: bool = False,
         **pl_kwargs,
     ):
         """
@@ -598,15 +619,19 @@ class StreamMixin:
                     separator=sep,
                     skip_rows_after_header=skip,
                     truncate_ragged_lines=True,
+                    infer_schema_length=10000,
+                    low_memory=low_memory,
                     **pl_kwargs,
                 )
-            except pl.errors.PolarsError:
+            except pl.exceptions.PolarsError:
                 continue  # Try next skip_rows value
+            except IncompleteRead:
+                self._handle_incomplete_read(url)
             except Exception as err:
                 raise RuntimeError(
                     f"Error reading file from {url} with skip_rows_after_header={skip}"
                 ) from err
-        raise pl.errors.PolarsError(
+        raise pl.exceptions.PolarsError(
             f"Failed to parse {url} after skipping up to {max_skip} rows."
         )
 
@@ -853,9 +878,9 @@ class StreamMixin:
             )
         elif dataframe_engine == "polars":
             if chunksize is None:
-                return pl.read_ndjson(url, **df_kwargs)
+                return pl.read_ndjson(url, infer_schema_length=10000, **df_kwargs)
             else:
-                return pl.scan_ndjson(url, **df_kwargs)
+                return pl.scan_ndjson(url, infer_schema_length=10000, **df_kwargs)
 
     def stream_json(
         self,
@@ -925,6 +950,7 @@ class StreamMixin:
         httpx_client: Optional[httpx.Client] = None,
         max_skip: int = 5,
         dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
+        low_memory: bool = False,
         **kwargs,
     ):
         client = httpx_client or self._mgnifier_helper().exec.httpx_client
@@ -934,12 +960,22 @@ class StreamMixin:
 
         if dataframe_engine == "polars" and file_type == "tsv":
             return self.stream_polars(
-                _url, sep="\t", chunksize=chunksize, max_skip=max_skip, **kwargs
+                _url,
+                sep="\t",
+                chunksize=chunksize,
+                max_skip=max_skip,
+                low_memory=low_memory,
+                **kwargs,
             )
 
         if dataframe_engine == "polars" and file_type == "csv":
             return self.stream_polars(
-                _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
+                _url,
+                sep=",",
+                chunksize=chunksize,
+                max_skip=max_skip,
+                low_memory=low_memory,
+                **kwargs,
             )
 
         if file_type == "tsv":
@@ -966,12 +1002,21 @@ class StreamMixin:
                     )
             elif _url.endswith(".txt") or _url.endswith(".tsv"):
                 return self.stream_pandas(
-                    _url, chunksize=chunksize, max_skip=max_skip, **kwargs
+                    _url,
+                    chunksize=chunksize,
+                    max_skip=max_skip,
+                    low_memory=low_memory,
+                    **kwargs,
                 )
 
         if file_type == "csv":
             return self.stream_pandas(
-                _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
+                _url,
+                sep=",",
+                chunksize=chunksize,
+                max_skip=max_skip,
+                low_memory=low_memory,
+                **kwargs,
             )
 
         if file_type == "html":
@@ -996,6 +1041,7 @@ class StreamMixin:
                 orient="records",
                 chunksize=chunksize,
                 dataframe_engine=dataframe_engine,
+                low_memory=low_memory,
                 **kwargs,
             )
         if file_type == "other" and ".json" in _url:
@@ -1066,6 +1112,9 @@ class StreamMixin:
         except httpx.HTTPError as err:
             logging.error("HTTP error for alias=%s url=%s: %s", _alias, _url, err)
             raise
+
+
+# def DownloadMixin:
 
 
 class BiomesTreeMixin:
