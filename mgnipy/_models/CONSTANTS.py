@@ -98,6 +98,44 @@ class SpecialEnum(Enum):
         """
         return sep.join(field.value for field in cls if not field.name.startswith("_"))
 
+    @classmethod
+    def as_dict(cls) -> dict[str, str]:
+        """
+        Provides a dictionary mapping enum member names to their values.
+
+        Returns
+        -------
+        dict
+            A dictionary where keys are enum member names and values are their corresponding values.
+
+        Examples
+        --------
+        >>> SupportedEndpoints.as_dict()
+        {'ANALYSES': 'analyses', 'ANALYSIS': 'analysis', ..., 'PRIVATE_STUDIES': 'private_studies'}
+        """
+        return {
+            field.name: field.value for field in cls if not field.name.startswith("_")
+        }
+
+    @classmethod
+    def flipped_dict(cls) -> dict[str, str]:
+        """
+        Provides a dictionary mapping enum member values to their names.
+
+        Returns
+        -------
+        dict
+            A dictionary where keys are enum member values and values are their corresponding names.
+
+        Examples
+        --------
+        >>> SupportedEndpoints.flipped_dict()
+        {'analyses': 'ANALYSES', 'analysis': 'ANALYSIS', ..., 'private_studies': 'PRIVATE_STUDIES'}
+        """
+        return {
+            field.value: field.name for field in cls if not field.name.startswith("_")
+        }
+
 
 class SupportedApiVersions(SpecialEnum):
     # V1 = 'v1' # TODO: add support for v1 endpoints?
@@ -124,8 +162,17 @@ class SupportedEndpoints(SpecialEnum):
     BIOME = "biome"
     CATALOGUES = "catalogues"
     CATALOGUE = "catalogue"
-    ANNOTATIONS = (
-        "annotations"  # not really an endpoint but fits better here than acc detail
-    )
+    ANNOTATIONS = "annotations"  # not really
     PRIVATE_STUDIES = "private_studies"
     _DOWNLOADS = "_downloads"  # for internal use only, not an actual endpoint
+
+
+class PipelineVersions(SpecialEnum):
+    v1 = 1
+    v2 = 2
+    v3 = 3
+    v4 = 4
+    v4_1 = 4.1
+    v5 = 5
+    v6 = 6
+    v6_1 = 6.1

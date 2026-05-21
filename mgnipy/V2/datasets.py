@@ -17,6 +17,7 @@ from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm as tqdm_async
 
 from mgnipy._models.config import MGnipyConfig
+from mgnipy._models.CONSTANTS import PipelineVersions
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy.V2.core import MGnifier
 from mgnipy.V2.mixins import StreamMixin
@@ -66,8 +67,10 @@ class MGazine(StreamMixin):
 
     def __str__(self):
         return (
-            f"MGazine with {len(self.downloads)} downloads:\n"
-            f"{pformat(self.url_dict, width=120)}"
+            f"MGazine containing:\n"
+            f"- MGnify pipeline versions: {self.list_pipeline_vers()}\n"
+            f"- Number of downloads: {len(self.downloads)}\n"
+            f"- Short descriptions: {pformat(self.list_short_descriptions())}\n"
         )
 
     def _mgnifier_helper(
@@ -141,8 +144,108 @@ class MGazine(StreamMixin):
         >>> list(df.columns)
         ['alias', 'url', 'file_type']
         """
+        df = pd.DataFrame(self.downloads)
+        # add pipeline version column if possible
+        df = self._add_pipeline_col(df)
 
-        return pd.DataFrame(self.downloads)
+        return df
+
+    def by_pipeline_vers(self) -> dict[str, list[dict[str, Any]]]:
+        """
+        Group downloads by pipeline version based on the 'pipeline_vers' column in the downloads dataframe.
+
+        Returns
+        -------
+        dict
+            A dictionary where keys are pipeline versions and values are lists of download dictionaries.
+        """
+
+        df = self.downloads_df
+        if "pipeline_vers" not in df.columns:
+            raise ValueError(
+                "Cannot group by version because 'pipeline_vers' column is missing."
+            )
+        grouped = self.downloads_df.groupby("pipeline_vers")
+
+        groups = {
+            version: group.drop(columns=["pipeline_vers"]).to_dict(orient="records")
+            for version, group in grouped
+        }
+        return groups
+
+    def by_short_desc(self) -> dict[str, list[dict[str, Any]]]:
+        """
+        Group downloads by short description based on the 'short_description' column in the downloads dataframe.
+
+        Returns
+        -------
+        dict
+            A dictionary where keys are short descriptions and values are lists of download dictionaries.
+        """
+
+        df = self.downloads_df
+        if "short_description" not in df.columns:
+            raise ValueError(
+                "Cannot group by short description because 'short_description' column is missing."
+            )
+        grouped = self.downloads_df.groupby("short_description")
+
+        groups = {
+            desc: group.drop(columns=["short_description"]).to_dict(orient="records")
+            for desc, group in grouped
+        }
+        return groups
+
+    def list_pipeline_vers(self):
+        """Return a list of pipeline versions extracted from the download groups.
+
+        This looks for patterns like '.v4.1' in the 'download_group' field
+        of the downloads and extracts the version number.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.v4.1"},
+        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.v5"},
+        ... ]
+        >>> MGazine(downloads).list_pipeline_vers
+        [4.1, 5.0]
+        """
+
+        avail_vers = sorted(self.downloads_df["pipeline_vers"].unique().tolist())
+
+        return avail_vers
+
+    def list_short_descriptions(self):
+        """Return a list of short descriptions extracted from the download groups.
+
+        This looks for patterns like 'shortdesc' in the 'download_group' field
+        of the downloads and extracts the short description.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.shortdesc1"},
+        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.shortdesc2"},
+        ... ]
+        >>> MGazine(downloads).list_short_descriptions
+        ['shortdesc1', 'shortdesc2']
+        """
+
+        avail_descs = sorted(self.downloads_df["short_description"].unique().tolist())
+
+        return avail_descs
+
+    def __getattr__(self, name):
+        if name in self.list_pipeline_vers():
+            logging.info(
+                f"Setting up mgazine only for datasets of pipeline version {name} via attribute access."
+            )
+            return MGazine(self.by_pipeline_vers()[name], config=self.config)
+
+    def __getitem__(self, key):
+        if key in self.list_short_descriptions():
+            return MGazine(self.by_short_desc()[key], config=self.config)
 
     @property
     def url_list(self):
@@ -649,22 +752,32 @@ class MGazine(StreamMixin):
 
         return alias, url
 
+    def _add_pipeline_col(self, df: pd.DataFrame) -> pd.DataFrame:
+        # get out the version e.g. 4.1, 5 etc
+        df["pipeline_vers"] = df["download_group"].str.extract(r"\.v(\d+(?:\.\d+)?)")
+        # to float
+        df["pipeline_vers"] = df["pipeline_vers"].astype(float)
+
+        df["pipeline_vers"] = df["pipeline_vers"].apply(
+            lambda x: PipelineVersions(x).name
+        )
+
+        return df
+
 
 class MGazineCurator:
 
     def __init__(
         self,
-        *mgazines,
+        downloads: list[dict[str, Any]],
+        config: Optional[MGnipyConfig] = None,
     ):
+        self.downloads = downloads
+        self.config = config or MGnipyConfig()
 
-        if mgazines and all(isinstance(m, MGazine) for m in mgazines):
-            self.mgazines = mgazines
-        elif mgazines and all(isinstance(m, str) for m in mgazines):
-            self.mgazines = [MGazine(m) for m in mgazines]
-        else:
-            raise ValueError(
-                "Invalid input: all inputs must be either MGazine instances or accession strings."
-            )
+    def taxanomic_analyses(self, short_desc: Optional[str] = None):
+
+        pass
 
     def go_terms(self):
         pass
