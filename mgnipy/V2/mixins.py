@@ -478,7 +478,7 @@ class StreamMixin:
     on :class:`MGazine` so they can be reused by other classes.
     """
 
-    def stream_tsv(
+    def stream_pandas(
         self,
         url: str,
         sep: str = "\t",
@@ -536,9 +536,77 @@ class StreamMixin:
                 continue  # Try next skiprows value
             except Exception as err:
                 raise RuntimeError(
-                    f"Error reading TSV from {url} with skiprows={skip}"
+                    f"Error reading file from {url} with skiprows={skip}"
                 ) from err
         raise pd.errors.ParserError(
+            f"Failed to parse {url} after skipping up to {max_skip} rows."
+        )
+
+    def stream_polars(
+        self,
+        url: str,
+        sep: str = "\t",
+        chunksize: Optional[int] = None,
+        max_skip: int = 5,
+        **pl_kwargs,
+    ):
+        """
+        Read a TSV from a URL or local file into a Polars DataFrame with resilient header handling.
+
+        The helper will retry with increasing ``skip_rows`` when Polars raises an error
+        (useful for files with extra header lines). When ``chunksize`` is provided an iterator is returned.
+
+        Parameters
+        ----------
+        url : str
+            The URL or local file path to read the TSV from.
+        sep : str
+            The delimiter to use (default is tab).
+        chunksize : int or None
+            If an integer is provided, returns an iterator that yields DataFrames
+            of that many rows. If None, returns a single DataFrame.
+        max_skip : int
+            The maximum number of lines to skip when trying to parse the TSV.
+        **pl_kwargs
+            Additional keyword arguments passed to ``pl.read_csv``.
+
+        Returns
+        -------
+        pl.DataFrame or Iterator[pl.DataFrame]
+            A Polars DataFrame containing the TSV data, or an iterator yielding DataFrames
+            if ``chunksize`` is specified.
+
+        Raises
+        ------
+        ValueError
+            If ``chunksize`` is not a positive integer or None.
+        RuntimeError
+            If the TSV cannot be parsed after skipping up to ``max_skip`` lines.
+        Polars Error
+            If the TSV cannot be parsed due to a format error (after retries).
+        """
+
+        if chunksize is None:
+            the_chosen = pl.read_csv
+        else:
+            the_chosen = pl.scan_csv
+
+        for skip in range(max_skip + 1):
+            try:
+                return the_chosen(
+                    url,
+                    separator=sep,
+                    skip_rows_after_header=skip,
+                    truncate_ragged_lines=True,
+                    **pl_kwargs,
+                )
+            except pl.errors.PolarsError:
+                continue  # Try next skip_rows value
+            except Exception as err:
+                raise RuntimeError(
+                    f"Error reading file from {url} with skip_rows_after_header={skip}"
+                ) from err
+        raise pl.errors.PolarsError(
             f"Failed to parse {url} after skipping up to {max_skip} rows."
         )
 
@@ -776,11 +844,18 @@ class StreamMixin:
             Literal["records", "split", "index", "columns", "values", "table"]
         ] = None,
         chunksize: Optional[int] = None,
-        **pd_kwargs,
+        dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
+        **df_kwargs,
     ) -> dict:
-        return pd.read_json(
-            url, orient=orient, lines=True, chunksize=chunksize, **pd_kwargs
-        )
+        if dataframe_engine == "pandas":
+            return pd.read_json(
+                url, orient=orient, lines=True, chunksize=chunksize, **df_kwargs
+            )
+        elif dataframe_engine == "polars":
+            if chunksize is None:
+                return pl.read_ndjson(url, **df_kwargs)
+            else:
+                return pl.scan_ndjson(url, **df_kwargs)
 
     def stream_json(
         self,
@@ -849,17 +924,29 @@ class StreamMixin:
         chunksize: int = 1000,
         httpx_client: Optional[httpx.Client] = None,
         max_skip: int = 5,
+        dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
         **kwargs,
     ):
         client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         _alias, _url = self._prioritize_alias(alias, url, required=True)
         file_type = self._get_type_by_alias(_alias)
+
+        if dataframe_engine == "polars" and file_type == "tsv":
+            return self.stream_polars(
+                _url, sep="\t", chunksize=chunksize, max_skip=max_skip, **kwargs
+            )
+
+        if dataframe_engine == "polars" and file_type == "csv":
+            return self.stream_polars(
+                _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
+            )
+
         if file_type == "tsv":
             if _url.endswith(".gz") or _url.endswith(".gzip"):
                 logging.debug(f"tsv file type ends with .gz: {_url}")
                 try:
-                    return self.stream_tsv(
+                    return self.stream_pandas(
                         _url,
                         chunksize=chunksize,
                         max_skip=max_skip,
@@ -868,7 +955,7 @@ class StreamMixin:
                     )
                 except pd.errors.ParserError as e:
                     logging.error(f"ParserError: {e}")
-                    return self.stream_tsv(
+                    return self.stream_pandas(
                         _url,
                         chunksize=chunksize,
                         max_skip=max_skip,
@@ -878,32 +965,40 @@ class StreamMixin:
                         **kwargs,
                     )
             elif _url.endswith(".txt") or _url.endswith(".tsv"):
-                return self.stream_tsv(
+                return self.stream_pandas(
                     _url, chunksize=chunksize, max_skip=max_skip, **kwargs
                 )
-        elif file_type == "csv":
-            return self.stream_tsv(
+
+        if file_type == "csv":
+            return self.stream_pandas(
                 _url, sep=",", chunksize=chunksize, max_skip=max_skip, **kwargs
             )
-        elif file_type == "html":
+
+        if file_type == "html":
             return lambda: self.stream_html(_url, **kwargs)
-        elif file_type == "txt":
+
+        if file_type == "txt":
             return self.stream_txt(
                 _url, chunksize=chunksize, httpx_client=client, **kwargs
             )
-        elif file_type == "gff":
+
+        if file_type == "gff":
             return self.stream_gff(_url, **kwargs)
-        elif file_type == "biom":
+        if file_type == "biom":
             return self.stream_biom(_url, **kwargs)
-        elif file_type == "fasta":
+        if file_type == "fasta":
             return self.stream_fasta(_url, **kwargs)
-        elif file_type == "tree":
+        if file_type == "tree":
             return self.stream_tree(_url, **kwargs)
-        elif file_type == "json":
+        if file_type == "json":
             return self.stream_jsonl(
-                _url, orient="records", chunksize=chunksize, **kwargs
+                _url,
+                orient="records",
+                chunksize=chunksize,
+                dataframe_engine=dataframe_engine,
+                **kwargs,
             )
-        elif file_type == "other" and ".json" in _url:
+        if file_type == "other" and ".json" in _url:
             if _url.endswith("json.gz") or _url.endswith("json.gzip"):
                 return self.stream_json(
                     _url, chunksize=chunksize, httpx_client=client, **kwargs
