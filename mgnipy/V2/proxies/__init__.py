@@ -14,7 +14,7 @@ from typing import (
 
 import pandas as pd
 
-from mgnipy._models.CONSTANTS import (
+from mgnipy._models.constants.CONSTANTS import (
     SupportedEndpoints,
 )
 from mgnipy.V2.core import (

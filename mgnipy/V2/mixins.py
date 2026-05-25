@@ -29,6 +29,9 @@ from pydantic import HttpUrl
 from skbio.io import read
 
 from mgnipy._models.config import MGnipyConfig
+from mgnipy._shared_helpers.biosamples_helper import (
+    get_biosample_metadata_from_acc,
+)
 from mgnipy._shared_helpers.writers import atomic_write_json, atomic_write_bytes
 
 
@@ -67,12 +70,16 @@ class ResultsHandler:
             The expanded DataFrame.
         """
 
-        cols = cols or ["metadata"]
+        cols = cols or ["metadata", "sample", "study", "biome"]
 
         new_df = df.copy()
         for c in cols:
             if c in new_df.columns:
+                # expand the nested dict in column c into separate columns
                 attr_df = pd.json_normalize(new_df[c])
+                # rename the new columns to include the original column name as a prefix
+                attr_df.columns = [f"{c}__{subcol}" for subcol in attr_df.columns]
+                # drop c and concat new cols
                 new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
         return new_df
 
@@ -207,7 +214,13 @@ class ResultsHandler:
             orient=orient, lines=lines, **json_kwargs
         )
 
-    def to_polars(self, data: Optional[chain] = None, **polars_kwargs) -> pl.DataFrame:
+    def to_polars(
+        self,
+        data: Optional[chain] = None,
+        expand_nested_dicts: Optional[list[str] | bool] = False,
+        rename_columns: Optional[dict[str, str]] = None,
+        **polars_kwargs,
+    ) -> pl.DataFrame:
         """
         Convert the current metadata to a Polars DataFrame.
 
@@ -237,7 +250,14 @@ class ResultsHandler:
             logging.debug("No data available for Polars DataFrame conversion")
             return None
 
-        return pl.DataFrame(_data, **polars_kwargs)
+        # first convert to pandas and then to polars to leverage the nested dict expansion and column renaming already implemented in to_df
+        df_pd = self.to_df(
+            data=_data,
+            expand_nested_dicts=expand_nested_dicts,
+            rename_columns=rename_columns,
+        )
+
+        return pl.from_pandas(df_pd, **polars_kwargs)
 
 
 class DiskCheckpointer:
@@ -1190,3 +1210,131 @@ class BiomesTreeMixin:
                     for record in page_data:
                         if isinstance(record, dict) and "lineage" in record:
                             record["biome_lineage"] = record.pop("lineage")
+
+
+class BioSamplesMetadataMixin:
+
+    def __init__(self):
+        self._cache_biosamples_w_ena: pd.DataFrame | None = None
+        self._cache_biosamples_no_ena: pd.DataFrame | None = None
+        self._cache_biosamples_details_w_ena: pd.DataFrame | None = None
+        self._cache_biosamples_details_no_ena: pd.DataFrame | None = None
+
+    def details_biosamples_metadata(
+        self, incl_ena: bool = True, overwrite: bool = False
+    ) -> pd.DataFrame:
+        """
+        A pandas DataFrame containing the concatenated BioSamples metadata for all samples in the list.
+        Each row corresponds to a sample, and columns include 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the samples.
+
+        Parameters
+        ----------
+        incl_ena : bool, optional
+            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.
+        overwrite : bool, optional
+            Whether to overwrite the cached DataFrame if it already exists. Defaults to False.
+
+        Returns
+        -------
+        pd.DataFrame
+            A DataFrame containing the BioSamples metadata for all samples in the list.
+
+        Notes
+        -----
+        - This property relies on the `biosample_metadata` property of each `SampleDetail` instance, which retrieves the BioSamples metadata for each sample accession.
+        - The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.
+        """
+
+        if (
+            incl_ena
+            and self._cache_biosamples_details_w_ena is not None
+            and not overwrite
+        ):
+            logging.debug(
+                "Using cached BioSamples metadata with ENA fields for details"
+            )
+            return self._cache_biosamples_details_w_ena
+
+        if (
+            not incl_ena
+            and self._cache_biosamples_details_no_ena is not None
+            and not overwrite
+        ):
+            logging.debug(
+                "Using cached BioSamples metadata without ENA fields for details"
+            )
+            return self._cache_biosamples_details_no_ena
+
+        if incl_ena:
+            logging.debug("Fetching BioSamples metadata with ENA fields for details")
+            self._cache_biosamples_details_w_ena = pd.concat(
+                [
+                    detail.biosamples_metadata(incl_ena=incl_ena, overwrite=overwrite)
+                    for detail in self.details
+                ],
+                ignore_index=True,
+            )
+            return self._cache_biosamples_details_w_ena
+        else:
+            logging.debug("Fetching BioSamples metadata without ENA fields for details")
+            self._cache_biosamples_details_no_ena = pd.concat(
+                [
+                    detail.biosamples_metadata(incl_ena=incl_ena, overwrite=overwrite)
+                    for detail in self.details
+                ],
+                ignore_index=True,
+            )
+            return self._cache_biosamples_details_no_ena
+
+    def biosamples_metadata(
+        self, incl_ena: bool = True, overwrite: bool = False
+    ) -> pd.DataFrame:
+        """
+        A pandas DataFrame containing the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The DataFrame includes columns such as 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the sample.
+
+        Parameters
+        ----------
+        incl_ena : bool, optional
+            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.
+        overwrite : bool, optional
+            Whether to overwrite the cached DataFrame if it already exists. Defaults to False.
+
+        Returns
+        -------
+        pd.DataFrame
+            A DataFrame containing the BioSamples metadata for the sample associated with this `SampleDetail` instance.
+
+        Notes
+        -----
+        - This property retrieves the BioSamples metadata for the sample accession using the `get_biosample_metadata_from_acc` function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.
+        - The resulting DataFrame will have a single row corresponding to the sample accession, and columns for 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the sample, with missing values filled as 'NA'.
+        """
+
+        if incl_ena and self._cache_biosamples_w_ena is not None and not overwrite:
+            logging.debug(
+                f"Using cached BioSamples metadata with ENA fields for {self.identifier}"
+            )
+            return self._cache_biosamples_w_ena
+
+        if not incl_ena and self._cache_biosamples_no_ena is not None and not overwrite:
+            logging.debug(
+                f"Using cached BioSamples metadata without ENA fields for {self.identifier}"
+            )
+            return self._cache_biosamples_no_ena
+
+        if incl_ena:
+            logging.debug(
+                f"Fetching BioSamples metadata with ENA fields for {self.identifier}"
+            )
+            self._cache_biosamples_w_ena = get_biosample_metadata_from_acc(
+                self.identifier, incl_ena=incl_ena, overwrite=overwrite
+            )
+            return self._cache_biosamples_w_ena
+        else:
+            logging.debug(
+                f"Fetching BioSamples metadata without ENA fields for {self.identifier}"
+            )
+            self._cache_biosamples_no_ena = get_biosample_metadata_from_acc(
+                self.identifier, incl_ena=incl_ena, overwrite=overwrite
+            )
+            return self._cache_biosamples_no_ena

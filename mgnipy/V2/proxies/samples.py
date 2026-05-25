@@ -5,10 +5,11 @@ from typing import (
     Optional,
 )
 
+from mgnipy.V2.mixins import BioSamplesMetadataMixin
 from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
-class Samples(MGnifyList):
+class Samples(MGnifyList, BioSamplesMetadataMixin):
     RESOURCE: ClassVar[Literal["samples"]] = "samples"
 
     def __init__(
@@ -22,7 +23,7 @@ class Samples(MGnifyList):
         super().__init__(params=params, config=config, **kwargs)
 
 
-class SampleDetail(MGnifyDetail):
+class SampleDetail(MGnifyDetail, BioSamplesMetadataMixin):
     RESOURCE: ClassVar[Literal["sample"]] = "sample"
 
     def __init__(
