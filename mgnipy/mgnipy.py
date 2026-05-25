@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.proxies import (
     V2_ENDPOINT_DETAIL_PROXIES,
     V2_ENDPOINT_LIST_PROXIES,

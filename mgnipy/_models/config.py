@@ -19,7 +19,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from mgnipy._models.CONSTANTS import SupportedApiVersions
+from mgnipy._models.constants.CONSTANTS import SupportedApiVersions
 from mgnipy.emgapi_v2_client import Client
 from mgnipy.emgapi_v2_client.api.authentication import (
     token_obtain_sliding,
