@@ -11,7 +11,7 @@ from typing import (
 )
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.V2.describe import DescribeEmgapiModule
 from mgnipy.V2.endpoints import (

@@ -1,10 +1,9 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 from pathlib import Path
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Any, Optional
 
 import aiofiles
 import httpx
@@ -17,7 +16,7 @@ from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm as tqdm_async
 
 from mgnipy._models.config import MGnipyConfig
-from mgnipy._models.CONSTANTS import PipelineVersions
+from mgnipy._models.constants.CONSTANTS import PipelineVersions
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy.V2.core import MGnifier
 from mgnipy.V2.mixins import StreamMixin
@@ -190,10 +189,7 @@ class MGazine(StreamMixin):
             )
         grouped = self.downloads_df.groupby("short_description")
 
-        groups = {
-            desc: group.drop(columns=["short_description"]).to_dict(orient="records")
-            for desc, group in grouped
-        }
+        groups = {desc: group.to_dict(orient="records") for desc, group in grouped}
         return groups
 
     def list_pipeline_vers(self):
@@ -225,10 +221,10 @@ class MGazine(StreamMixin):
         Examples
         --------
         >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.shortdesc1"},
-        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.shortdesc2"},
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.shortdesc1", "pipeline_vers": 4.1, "short_description": "shortdesc1"},
+        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.shortdesc2", "pipeline_vers": 4.1, "short_description": "shortdesc2"},
         ... ]
-        >>> MGazine(downloads).list_short_descriptions
+        >>> MGazine(downloads).list_short_descriptions()
         ['shortdesc1', 'shortdesc2']
         """
 
@@ -245,7 +241,26 @@ class MGazine(StreamMixin):
 
     def __getitem__(self, key):
         if key in self.list_short_descriptions():
-            return MGazine(self.by_short_desc()[key], config=self.config)
+
+            new_mz = MGazine(self.by_short_desc()[key], config=self.config)
+
+            download_type = (
+                self.downloads_df[self.downloads_df["short_description"] == key][
+                    "download_type"
+                ]
+                .unique()[0]
+                .lower()
+            )
+            logging.info(f"Download type for {key}: {download_type}")
+
+            if "taxonom" in download_type:
+                logging.info(
+                    f"Setting up mgazine only for taxonomic datasets of short description {key} via item access."
+                )
+                return TaxonomicCurator(mgazine=new_mz, config=self.config)
+
+            # TODO other download types
+            return new_mz
 
     @property
     def url_list(self):
@@ -727,7 +742,7 @@ class MGazine(StreamMixin):
 
         Examples
         --------
-        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt"}]
+        >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt", "download_group":"blah", "short_description":"blah", "pipeline_vers":4.1}]
         >>> mg = MGazine(downloads)
         >>> mg._prioritize_alias(alias='x', url=None)
         ('x', 'http://ex/x')
@@ -765,47 +780,4 @@ class MGazine(StreamMixin):
         return df
 
 
-class MGazineCurator:
-
-    def __init__(
-        self,
-        downloads: list[dict[str, Any]],
-        config: Optional[MGnipyConfig] = None,
-    ):
-        self.downloads = downloads
-        self.config = config or MGnipyConfig()
-
-    def taxanomic_analyses(self, short_desc: Optional[str] = None):
-
-        pass
-
-    def go_terms(self):
-        pass
-
-
-# class DatasetBuilder(MGnifier):
-
-#     def __init__(
-#         self,
-#         accession: str,
-#     ):
-#         super().__init__(
-#             accession=accession,
-#         )
-#         self.mpy_module = analysis_get_mgnify_analysis_with_annotations
-
-#     def __getitem__(self, key):
-#         pass
-
-#     def __getattr__(self, name):
-#         if name == "annotations":
-#             return self
-#         else:
-#             raise KeyError(f"DatasetBuilder object has no attribute {name}")
-
-#     def export(self):
-#         pass
-
-
-# should there be different dataset builders?
-# and they can be added to dataset builder as attributes?
+from .taxonomic import TaxonomicCurator

@@ -4,11 +4,11 @@ Mapping of API endpoints to corresponding emgapi_v2_client module, also
 relationships between endpoints (e.g., within resource [Study List -> Study Detail] and
 between resources [Study Detail -> Study Samples]).
 
-Ideally, only this endpoints.py file (and mgnipy._models.CONSTANTS) should need to be updated
+Ideally, only this endpoints.py file (and mgnipy._models.constants.CONSTANTS) should need to be updated
 if any endpoints added or removed from the API and emgapi_v2_client re-installed via ./autogen_clients.sh.
 """
 
-from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy.emgapi_v2_client.api.analyses import (
     analysis_get_mgnify_analysis_with_annotations,
     get_mgnify_analysis,

@@ -7,7 +7,7 @@ from typing import (
 
 import pandas as pd
 
-from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.endpoints import (
     ALL_SUPPORTED_RELATIONSHIPS,
 )
