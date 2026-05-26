@@ -1,22 +1,25 @@
 from __future__ import annotations
-import logging
-from typing import Any, Optional, Literal, TYPE_CHECKING
+
 import functools as ft
-import polars as pl
+import logging
+from typing import TYPE_CHECKING, Any, Literal, Optional
+
 import anndata as ad
 import pandas as pd
-from mgnipy._models.config import MGnipyConfig
-from mgnipy.V2.proxies.runs import RunDetail
-from mgnipy.V2.mixins import DiskCheckpointer, ResultsHandler
-from tqdm import tqdm as tqdm_sync
+import polars as pl
 from mgnify_pipelines_toolkit.constants.tax_ranks import (
-    SILVA_TAX_RANKS,
-    PR2_TAX_RANKS,
     MOTUS_TAX_RANKS,
-    SHORT_SILVA_TAX_RANKS,
-    SHORT_PR2_TAX_RANKS,
+    PR2_TAX_RANKS,
     SHORT_MOTUS_TAX_RANKS,
+    SHORT_PR2_TAX_RANKS,
+    SHORT_SILVA_TAX_RANKS,
+    SILVA_TAX_RANKS,
 )
+from tqdm import tqdm as tqdm_sync
+
+from mgnipy._models.config import MGnipyConfig
+from mgnipy.V2.mixins import DiskCheckpointer, ResultsHandler
+from mgnipy.V2.proxies.runs import RunDetail
 
 if TYPE_CHECKING:
     from mgnipy.V2.datasets import MGazine
@@ -78,9 +81,7 @@ def prep_obs(
     return df_ranks
 
 
-class TaxonomicCurator:
-
-    TAX_COLS = ["taxonomy", "#SampleID"]
+class _CuratorSetup:
 
     def __init__(
         self,
@@ -108,7 +109,7 @@ class TaxonomicCurator:
             )
         self.short_desc = short_desc or self.mz.list_short_descriptions()[0]
         logging.info(
-            f"TaxonomicCurator initialized for short description: {self.short_desc}"
+            f"TaxaCurator initialized for short description: {self.short_desc}"
         )
 
         # determine mapping
@@ -127,11 +128,10 @@ class TaxonomicCurator:
                 zip(SILVA_TAX_RANKS, SHORT_SILVA_TAX_RANKS, strict=True)
             )
         logging.info(
-            f"TaxonomicCurator long to short rank mapping set: {self.long_short_mapping}"
+            f"{self.__class__.__name__} long to short rank mapping set: {self.long_short_mapping}"
         )
-
-        self.is_dwcready: bool = "dwc-ready" in self.short_desc.lower()
         # cache
+        self.cache_handler: DiskCheckpointer = None
         self._lazy_merged: pl.LazyFrame = None
         self._runs_accessions: list = None
         self._runs_results: list = runs_results or []
@@ -139,6 +139,7 @@ class TaxonomicCurator:
         self.studies_results: list = studies_results or []
         self.biosamples_results: list = biosamples_results or []
 
+    def _init_cache_handler_state(self):
         # getting merged lazyframe for runs acessions
         self._lazy_merger()
 
@@ -148,7 +149,7 @@ class TaxonomicCurator:
                 "short_desc": self.short_desc,
                 "runs_accessions": self.runs_accessions,
             },
-            resource_str=f"TaxonomicCurator_{self.short_desc}",
+            resource_str=f"TaxaCurator_{self.short_desc}",
             config=self.config,
         )
         self.cache_handler.load_cache()
@@ -156,12 +157,6 @@ class TaxonomicCurator:
         self.samples_results = self.cache_handler._results.get(2, [])
         self.studies_results = self.cache_handler._results.get(3, [])
         self.biosamples_results = self.cache_handler._results.get(4, [])
-
-    @property
-    def lazy_merged(self) -> pl.LazyFrame:
-        if self._lazy_merged is None:
-            self._lazy_merger()
-        return self._lazy_merged
 
     @property
     def runs_results(self) -> list[dict[str, Any]]:
@@ -173,36 +168,36 @@ class TaxonomicCurator:
         self.cache_handler.write_results(1, self._runs_results)
 
     @property
+    def lazy_merged(self) -> pl.LazyFrame:
+        if self._lazy_merged is None:
+            self._lazy_merger()
+        return self._lazy_merged
+
+    def _lazy_merger(self):
+
+        # lazyframes for given short_desc
+        lazyframes = [
+            self.mz.stream(url=u, chunksize=1000, dataframe_engine="polars")
+            for u in self.mz.url_list
+        ]
+
+        self._lazy_merged = pl.concat(lazyframes, how="vertical_relaxed")
+
+    def to_pandas(self, **pd_kwargs) -> pd.DataFrame:
+        return self.lazy_merged.collect().to_pandas(**pd_kwargs)
+
+    def to_polars(self) -> pl.DataFrame:
+        return self.lazy_merged.collect()
+
+    @property
     def runs_accessions(self) -> list:
         if self._runs_accessions is not None:
             return self._runs_accessions
 
-        if self.is_dwcready:
-            self._runs_accessions = self.lazy_merged["RunID"].to_list()
-            return self._runs_accessions
-        else:
-            not_run_id = (
-                self.TAX_COLS
-                + ["kingdom", "phylum"]
-                + SILVA_TAX_RANKS
-                + PR2_TAX_RANKS
-                + MOTUS_TAX_RANKS
-            )
-            self._runs_accessions = [
-                run
-                for run in self.lazy_merged.collect_schema().names()
-                if run not in not_run_id
-            ]
-            return self._runs_accessions
-
-    def clear_cache(self):
-        from mgnipy.mgnipy import MGnipy
-
-        MG = MGnipy(config=self.config)
-        MG.clear_subcaches()
-        logging.info("MGnipy cache cleared via TaxonomicCurator helper.")
-        self._lazy_merged = None
-        self._runs_accessions = None
+        self._runs_accessions = (
+            self.lazy_merged.select("RunID").collect().to_series().to_list()
+        )
+        return self._runs_accessions
 
     def _iter_runs(self) -> list[str]:
         run_results_accessions = [mg.get("accession") for mg in self.runs_results]
@@ -221,7 +216,7 @@ class TaxonomicCurator:
         Returns
         -------
         None
-            The function does not return anything. It updates the `run_results` attribute of the TaxonomicCurator instance with the enriched run metadata.
+            The function does not return anything. It updates the `run_results` attribute of the TaxaCurator instance with the enriched run metadata.
 
         """
 
@@ -267,6 +262,159 @@ class TaxonomicCurator:
     def enrich_biosamples(self):
         pass
 
+    def taxonomic_metadata(
+        self,
+        fill_na: Any = "NA",
+        df_engine: Literal["polars", "pandas"] = "pandas",
+    ) -> pl.DataFrame | pd.DataFrame:
+
+        df = self.lazy_merged.select(list(self.long_short_mapping.keys())).collect()
+        if df_engine == "pandas":
+            return df.to_pandas()
+        elif df_engine == "polars":
+            return df
+
+    def metadata(
+        self,
+        df_engine: Literal["polars", "pandas"] = "pandas",
+        strict: bool = False,
+        expand_nested_dicts: bool = True,
+    ) -> pl.DataFrame | pd.DataFrame:
+
+        if not self.runs_results:
+            logging.warning(
+                "No runs have been enriched yet. Returning empty metadata DataFrame. Please run `enrich_runs()` first to populate the metadata."
+            )
+            if df_engine == "pandas":
+                return pd.DataFrame(
+                    self.runs_accessions, columns=["accession"]
+                ).set_index("accession")
+            elif df_engine == "polars":
+                return pl.DataFrame(
+                    self.runs_accessions,
+                    columns=["accession"],
+                )
+
+        results_helper = ResultsHandler(
+            data=self.runs_results,
+        )
+
+        if strict and len(self.runs_results) < len(self.runs_accessions):
+            logging.warning(
+                f"Strict mode is on but only {len(self.runs_results)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
+            )
+            if df_engine == "pandas":
+                return pd.DataFrame(
+                    self.runs_accessions, columns=["accession"]
+                ).set_index("accession")
+            elif df_engine == "polars":
+                return pl.DataFrame(
+                    self.runs_accessions,
+                    columns=["accession"],
+                )
+
+        if df_engine == "pandas":
+            return results_helper.to_df(
+                expand_nested_dicts=expand_nested_dicts
+            ).set_index("accession")
+        elif df_engine == "polars":
+            return results_helper.to_polars(
+                expand_nested_dicts=expand_nested_dicts,
+            )  # .with_row_index("accession")
+
+    def clear_cache(self):
+        from mgnipy.mgnipy import MGnipy
+
+        MG = MGnipy(config=self.config)
+        MG.clear_subcaches()
+        logging.info("MGnipy cache cleared via TaxaCurator helper.")
+        self._lazy_merged = None
+        self._runs_accessions = None
+
+
+class DWCTaxaCurator:
+
+    def __init__(
+        self,
+        mgazine: "MGazine",
+        short_desc: Optional[str] = None,
+        config: Optional[MGnipyConfig] = None,
+        long_short_mapping: Optional[dict[str, str]] = None,
+        runs_results: Optional[list[dict[str, Any]]] = None,
+        samples_results: Optional[list[dict[str, Any]]] = None,
+        studies_results: Optional[list[dict[str, Any]]] = None,
+        biosamples_results: Optional[list[dict[str, Any]]] = None,
+    ):
+
+        super().__init__(
+            mgazine=mgazine,
+            short_desc=short_desc,
+            config=config,
+            long_short_mapping=long_short_mapping,
+            runs_results=runs_results,
+            samples_results=samples_results,
+            studies_results=studies_results,
+            biosamples_results=biosamples_results,
+        )
+        # extra dwc check
+        if ("dwc-ready" not in self.short_desc.lower()) or (
+            "dwcready" not in self.short_desc.lower()
+        ):
+            logging.warning(
+                f"Short description {self.short_desc} does not contain 'dwc-ready'. This curator is intended for DwC-ready datasets. Proceeding anyway but results may not be as expected."
+            )
+
+        self._init_cache_handler_state()
+
+
+class TaxaCurator(_CuratorSetup):
+    """not for dwc"""
+
+    def __init__(
+        self,
+        mgazine: "MGazine",
+        short_desc: Optional[str] = None,
+        config: Optional[MGnipyConfig] = None,
+        long_short_mapping: Optional[dict[str, str]] = None,
+        runs_results: Optional[list[dict[str, Any]]] = None,
+        samples_results: Optional[list[dict[str, Any]]] = None,
+        studies_results: Optional[list[dict[str, Any]]] = None,
+        biosamples_results: Optional[list[dict[str, Any]]] = None,
+    ):
+
+        self.TAX_COLS = (
+            ["taxonomy", "#SampleID"]
+            + ["kingdom", "phylum"]
+            + SILVA_TAX_RANKS
+            + PR2_TAX_RANKS
+            + MOTUS_TAX_RANKS
+        )
+        super().__init__(
+            mgazine=mgazine,
+            short_desc=short_desc,
+            config=config,
+            long_short_mapping=long_short_mapping,
+            runs_results=runs_results,
+            samples_results=samples_results,
+            studies_results=studies_results,
+            biosamples_results=biosamples_results,
+        )
+
+        self._init_cache_handler_state()
+
+    @property
+    def runs_accessions(self) -> list:
+        if self._runs_accessions is not None:
+            return self._runs_accessions
+
+        self._runs_accessions = [
+            run
+            for run in self.lazy_merged.collect_schema().names()
+            if run not in self.TAX_COLS
+        ]
+        return self._runs_accessions
+
+    # overwrite
     def _lazy_merger(self):
 
         # lazyframes for given short_desc
@@ -274,11 +422,6 @@ class TaxonomicCurator:
             self.mz.stream(url=u, chunksize=1000, dataframe_engine="polars")
             for u in self.mz.url_list
         ]
-
-        # if dwc then just concat
-        if self.is_dwcready:
-            self._lazy_merged = pl.concat(lazyframes, how="vertical_relaxed")
-            return
 
         # otherwise
         reader_cols = [r.collect_schema().names() for r in lazyframes]
@@ -308,74 +451,44 @@ class TaxonomicCurator:
             )
             self._lazy_merged = pl.concat(lazyframes, how="vertical_relaxed")
 
+    # overwrite
     def taxonomic_metadata(
         self,
         fill_na: Any = "NA",
         df_engine: Literal["polars", "pandas"] = "pandas",
     ) -> pl.DataFrame | pd.DataFrame:
 
-        if self.is_dwcready:
-            logging.warning(
-                "Dataset is dwc-ready. Returning concatenated lazyframes without taxonomic splitting."
-            )
-            df = self.lazy_merged.collect()
-            if df_engine == "pandas":
-                return df.to_pandas()
-            elif df_engine == "polars":
-                return df
+        col_names = self.lazy_merged.collect_schema().names()
 
-        try:
+        if "taxonomy" in col_names:
             df = prep_obs(
                 df=self.lazy_merged.collect(),
                 tax_col="taxonomy",
                 long_short_mapping=self.long_short_mapping,
                 fill_na=fill_na,
             )
-        except KeyError:
+        elif "#SampleID" in col_names:
             df = prep_obs(
                 df=self.lazy_merged.collect(),
                 tax_col="#SampleID",
                 long_short_mapping=self.long_short_mapping,
                 fill_na=fill_na,
             )
+        elif ("kingdom" in col_names) and ("phylum" in col_names):
+            df = self.lazy_merged.select(["kingdom", "phylum"]).collect()
+        else:
+            logging.warning(
+                f"Could not determine taxonomy column in taxonomic dataset. Expected one of 'taxonomy' or '#SampleID' or at least 'kingdom' and 'phylum'. Attempting to match known taxonomic ranks in `long_short_mapping`. e.g. {list(self.long_short_mapping.keys())}"
+            )
+            existing_tax_cols = [
+                col for col in self.long_short_mapping if col in col_names
+            ]
+            df = self.lazy_merged.select(existing_tax_cols).collect()
+
         if df_engine == "pandas":
             return df.to_pandas()
         elif df_engine == "polars":
             return df
-
-    def metadata(
-        self,
-        df_engine: Literal["polars", "pandas"] = "pandas",
-        strict: bool = False,
-        expand_nested_dicts: bool = True,
-    ) -> pl.DataFrame | pd.DataFrame:
-
-        results_helper = ResultsHandler(
-            data=self.runs_results,
-        )
-
-        if strict and len(self.runs_results) < len(self.runs_accessions):
-            logging.warning(
-                f"Strict mode is on but only {len(self.runs_results)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
-            )
-            if df_engine == "pandas":
-                return pd.DataFrame(
-                    self.runs_accessions, columns=["accession"]
-                ).set_index("accession")
-            elif df_engine == "polars":
-                return pl.DataFrame(
-                    self.runs_accessions,
-                    columns=["accession"],
-                )
-
-        if df_engine == "pandas":
-            return results_helper.to_df(
-                expand_nested_dicts=expand_nested_dicts
-            ).set_index("accession")
-        elif df_engine == "polars":
-            return results_helper.to_polars(
-                expand_nested_dicts=expand_nested_dicts,
-            )  # .with_row_index("accession")
 
     def X(
         self, df_engine: Literal["polars", "pandas"] = "pandas"

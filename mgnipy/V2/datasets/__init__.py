@@ -3,24 +3,20 @@ from __future__ import annotations
 import asyncio
 import logging
 from pathlib import Path
+from pprint import pformat
 from typing import Any, Optional
 
 import aiofiles
 import httpx
 import pandas as pd
-from pydantic import (
-    DirectoryPath,
-    HttpUrl,
-)
+from pydantic import DirectoryPath, HttpUrl
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm as tqdm_async
 
 from mgnipy._models.config import MGnipyConfig
-from mgnipy._models.constants.CONSTANTS import PipelineVersions
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy.V2.core import MGnifier
 from mgnipy.V2.mixins import StreamMixin
-from pprint import pformat
 
 semaphore = get_semaphore()
 
@@ -67,7 +63,7 @@ class MGazine(StreamMixin):
     def __str__(self):
         return (
             f"MGazine containing:\n"
-            f"- MGnify pipeline versions: {self.list_pipeline_vers()}\n"
+            f"- MGnify pipeline versions: {self.list_pipeline_version()}\n"
             f"- Number of downloads: {len(self.downloads)}\n"
             f"- Short descriptions: {pformat(self.list_short_descriptions())}\n"
         )
@@ -145,13 +141,13 @@ class MGazine(StreamMixin):
         """
         df = pd.DataFrame(self.downloads)
         # add pipeline version column if possible
-        df = self._add_pipeline_col(df)
+        #    df = self._add_pipeline_col(df)
 
         return df
 
-    def by_pipeline_vers(self) -> dict[str, list[dict[str, Any]]]:
+    def by_pipeline_version(self) -> dict[str, list[dict[str, Any]]]:
         """
-        Group downloads by pipeline version based on the 'pipeline_vers' column in the downloads dataframe.
+        Group downloads by pipeline version based on the 'pipeline_version' column in the downloads dataframe.
 
         Returns
         -------
@@ -160,14 +156,14 @@ class MGazine(StreamMixin):
         """
 
         df = self.downloads_df
-        if "pipeline_vers" not in df.columns:
+        if "pipeline_version" not in df.columns:
             raise ValueError(
-                "Cannot group by version because 'pipeline_vers' column is missing."
+                "Cannot group by version because 'pipeline_version' column is missing."
             )
-        grouped = self.downloads_df.groupby("pipeline_vers")
+        grouped = self.downloads_df.groupby("pipeline_version")
 
         groups = {
-            version: group.drop(columns=["pipeline_vers"]).to_dict(orient="records")
+            version: group.drop(columns=["pipeline_version"]).to_dict(orient="records")
             for version, group in grouped
         }
         return groups
@@ -192,7 +188,7 @@ class MGazine(StreamMixin):
         groups = {desc: group.to_dict(orient="records") for desc, group in grouped}
         return groups
 
-    def list_pipeline_vers(self):
+    def list_pipeline_version(self):
         """Return a list of pipeline versions extracted from the download groups.
 
         This looks for patterns like '.v4.1' in the 'download_group' field
@@ -204,11 +200,11 @@ class MGazine(StreamMixin):
         ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.v4.1"},
         ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.v5"},
         ... ]
-        >>> MGazine(downloads).list_pipeline_vers
+        >>> MGazine(downloads).list_pipeline_version
         [4.1, 5.0]
         """
 
-        avail_vers = sorted(self.downloads_df["pipeline_vers"].unique().tolist())
+        avail_vers = sorted(self.downloads_df["pipeline_version"].unique().tolist())
 
         return avail_vers
 
@@ -221,8 +217,8 @@ class MGazine(StreamMixin):
         Examples
         --------
         >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.shortdesc1", "pipeline_vers": 4.1, "short_description": "shortdesc1"},
-        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.shortdesc2", "pipeline_vers": 4.1, "short_description": "shortdesc2"},
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.shortdesc1", "pipeline_version": 4.1, "short_description": "shortdesc1"},
+        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.shortdesc2", "pipeline_version": 4.1, "short_description": "shortdesc2"},
         ... ]
         >>> MGazine(downloads).list_short_descriptions()
         ['shortdesc1', 'shortdesc2']
@@ -233,11 +229,11 @@ class MGazine(StreamMixin):
         return avail_descs
 
     def __getattr__(self, name):
-        if name in self.list_pipeline_vers():
+        if name in self.list_pipeline_version():
             logging.info(
                 f"Setting up mgazine only for datasets of pipeline version {name} via attribute access."
             )
-            return MGazine(self.by_pipeline_vers()[name], config=self.config)
+            return MGazine(self.by_pipeline_version()[name], config=self.config)
 
     def __getitem__(self, key):
         if key in self.list_short_descriptions():
@@ -253,11 +249,17 @@ class MGazine(StreamMixin):
             )
             logging.info(f"Download type for {key}: {download_type}")
 
-            if "taxonom" in download_type:
-                logging.info(
-                    f"Setting up mgazine only for taxonomic datasets of short description {key} via item access."
+            if "taxonom" in download_type and "dwc-ready" in key.lower():
+                logging.debug(
+                    f"getting dwc-ready taxonomic datasets of short description {key} via item access."
                 )
-                return TaxonomicCurator(mgazine=new_mz, config=self.config)
+                return DWCTaxaCurator(mgazine=new_mz, config=self.config)
+
+            if "taxonom" in download_type and "dwc-ready" not in key.lower():
+                logging.debug(
+                    f"getting taxonomic datasets of short description {key} via item access."
+                )
+                return TaxaCurator(mgazine=new_mz, config=self.config)
 
             # TODO other download types
             return new_mz
@@ -767,17 +769,5 @@ class MGazine(StreamMixin):
 
         return alias, url
 
-    def _add_pipeline_col(self, df: pd.DataFrame) -> pd.DataFrame:
-        # get out the version e.g. 4.1, 5 etc
-        df["pipeline_vers"] = df["download_group"].str.extract(r"\.v(\d+(?:\.\d+)?)")
-        # to float
-        df["pipeline_vers"] = df["pipeline_vers"].astype(float)
 
-        df["pipeline_vers"] = df["pipeline_vers"].apply(
-            lambda x: PipelineVersions(x).name
-        )
-
-        return df
-
-
-from .taxonomic import TaxonomicCurator
+from .taxonomic import DWCTaxaCurator, TaxaCurator

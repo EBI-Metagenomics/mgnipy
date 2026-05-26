@@ -49,7 +49,6 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_publications,
     list_mgnify_study_samples,
 )
-
 from mgnipy.V2 import custom_endpoint
 
 CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {

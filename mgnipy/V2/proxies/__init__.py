@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -15,12 +16,10 @@ from typing import (
 import pandas as pd
 
 from mgnipy._models.constants.CONSTANTS import (
+    PipelineVersions,
     SupportedEndpoints,
 )
-from mgnipy.V2.core import (
-    ID_PARAM,
-    MGnifier,
-)
+from mgnipy.V2.core import ID_PARAM, MGnifier
 from mgnipy.V2.endpoints import (
     BETWEEN_RESOURCE_RELATIONSHIPS,
     PARENT_CHILD_RESOURCES,
@@ -577,6 +576,71 @@ class MGnifyDetail(MGnifier):
         )
 
     @property
+    def downloads(self) -> list[dict[str, Any]]:
+        """
+        A list of download information dicts for the detail, extracted from the details results.
+
+        Each dict is updated with the identifier of the detail.
+        The identifier key is determined by the id_param_key of the detail class,
+        e.g. "accession" for studies, samples, runs, analyses, genomes, assemblies;
+        "biome_lineage" for biomes; "pubmed_id" for publications; "catalogue_id" for catalogues.
+        """
+
+        if not self.results:
+            logging.debug(
+                "No results found for detail; cannot extract downloads. Returning empty list."
+            )
+            return []
+
+        if "downloads" not in self.to_df().columns:
+            logging.debug(
+                "Details DataFrame does not have 'downloads' column. Returning empty list."
+            )
+            return []
+
+        logging.debug(
+            f"Updating download info with identifier {self.identifier!r} to id_param_key {self.id_param_key!r}"
+        )
+
+        # updates the dicts with the id from the index, maybe pipeline_version if available
+        for _, row in self.to_df().iterrows():
+            # get downloads list from row
+            downloads_list = row["downloads"]
+
+            # get pipeline_version from row if avail, i.e., analysisdetail
+            if "pipeline_version" in row and isinstance(row["pipeline_version"], str):
+                pipe = row["pipeline_version"].strip("V")
+            else:
+                pipe = None
+
+            # for each downlaod dict, add id and pipeline_version
+            for each_download in downloads_list:
+                # keep id
+                each_download.update({self.id_param_key: self.identifier})
+
+                # now pipe
+                if pipe is None:
+                    v_group = re.search(
+                        r"\.v(\d+(?:\.\d+)?)",
+                        each_download.get("download_group", ""),
+                    ).group(1)
+                    pipe = v_group
+
+                if pipe is not None:
+                    try:
+                        pipe = PipelineVersions(float(pipe)).name
+                    except Exception as e:
+                        logging.debug(
+                            f"Could not parse pipeline version from {pipe!r} for download {each_download!r}: {e}"
+                        )
+
+                each_download.update({"pipeline_version": pipe})
+
+        return [
+            item for sublist in self.to_df()["downloads"].values for item in sublist
+        ]
+
+    @property
     def identifier(self) -> Optional[str]:
         """Get the identifier value from the query parameters.
 
@@ -709,51 +773,20 @@ class MGnifyDetail(MGnifier):
             await list_endpoint.abulk_fetch()
         return list_endpoint
 
-    @property
-    def downloads(self) -> list[dict[str, Any]]:
-        """
-        A list of download information dicts for the detail, extracted from the details results.
-
-        Each dict is updated with the identifier of the detail.
-        The identifier key is determined by the id_param_key of the detail class,
-        e.g. "accession" for studies, samples, runs, analyses, genomes, assemblies;
-        "biome_lineage" for biomes; "pubmed_id" for publications; "catalogue_id" for catalogues.
-        """
-
-        if "downloads" not in self.to_df().columns:
-            logging.debug(
-                "Details DataFrame does not have 'downloads' column. Returning empty list."
-            )
-            return []
-
-        logging.debug(
-            f"Updating download info with identifier {self.identifier!r} to id_param_key {self.id_param_key!r}"
-        )
-
-        # updates the dicts with the id from the index
-        for _, row in self.to_df().iterrows():
-            downloads_list = row["downloads"]
-            for each_download in downloads_list:
-                each_download.update({self.id_param_key: self.identifier})
-
-        return [
-            item for sublist in self.to_df()["downloads"].values for item in sublist
-        ]
-
 
 # import concrete proxy classes from sibling modules. These imports occur
 # after the base `MGnifyList`/`MGnifyDetail` classes are defined to avoid
 # circular imports: concrete modules import the base classes from this
 # package during their import.
 from .analyses import Analyses, AnalysisDetail
-from .runs import Runs, RunDetail
-from .samples import Samples, SampleDetail
-from .studies import Studies, StudyDetail, PrivateStudies
-from .biomes import Biomes, BiomeDetail
 from .assemblies import Assemblies, AssemblyDetail
-from .genomes import Genomes, GenomeDetail
-from .publications import Publications, PublicationDetail
-from .catalogues import Catalogues, CatalogueDetail
+from .biomes import BiomeDetail, Biomes
+from .catalogues import CatalogueDetail, Catalogues
+from .genomes import GenomeDetail, Genomes
+from .publications import PublicationDetail, Publications
+from .runs import RunDetail, Runs
+from .samples import SampleDetail, Samples
+from .studies import PrivateStudies, Studies, StudyDetail
 
 V2_ENDPOINT_LIST_PROXIES = {
     SupportedEndpoints.ANALYSES: Analyses,
