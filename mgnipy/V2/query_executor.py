@@ -4,23 +4,14 @@ import asyncio
 import logging
 from copy import deepcopy
 from math import ceil
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Optional,
-)
+from typing import TYPE_CHECKING, Any, Optional
 
 from tqdm import tqdm
 from tqdm.asyncio import tqdm_asyncio
 
-from mgnipy._shared_helpers.async_helpers import (
-    get_semaphore,
-)
+from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.validators import validate_gt_int
-from mgnipy.emgapi_v2_client import (
-    AuthenticatedClient,
-    Client,
-)
+from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 
 if TYPE_CHECKING:
     from mgnipy.emgapi_v2_client.types import Response as mpy_Response
@@ -92,7 +83,7 @@ class QueryExecutor:
             raise StopIteration
         # get next page num and advance index
         page_num = self._iter_page_nums[self._iter_index]
-        print(f"Advancing to request num {page_num}")
+        logging.info(f"Advancing to request num {page_num}")
         self._iter_index += 1
         try:
             result = self.page(page_num)
@@ -146,7 +137,7 @@ class QueryExecutor:
         if self._iter_index >= len(self._iter_page_nums):
             raise StopAsyncIteration
         p = self._iter_page_nums[self._iter_index]
-        print(f"Advancing to request num {p} (async)")
+        logging.info(f"Advancing to request num {p} (async)")
         self._iter_index += 1
         try:
             result = await self.apage(p)
@@ -788,7 +779,7 @@ class QueryExecutor:
         # get pages if not in results already
         a_client = client
         for p in tqdm(pages, desc="Retrieving pages", disable=hide_progress):
-            print(f"Advancing to request num {p}")
+            logging.info(f"Advancing to request num {p}")
             self.page(p, client=a_client)
 
     async def _acollect_pages(

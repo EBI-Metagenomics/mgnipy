@@ -2,29 +2,21 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
-from http.client import IncompleteRead
+import io
 import json
 import logging
+import webbrowser
+import zlib
+from http.client import IncompleteRead
 from itertools import chain
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-    Generator,
-    Literal,
-    Optional,
-)
+from typing import Any, Callable, Generator, Literal, Optional
 
-import pandas as pd
-import polars as pl
-from bigtree import (
-    Tree,
-)
-import io
-import zlib
-import webbrowser
 import httpx
 import ijson
+import pandas as pd
+import polars as pl
+from bigtree import Tree
 from pydantic import HttpUrl
 from skbio.io import read
 
@@ -32,7 +24,7 @@ from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.biosamples_helper import (
     get_biosample_metadata_from_acc,
 )
-from mgnipy._shared_helpers.writers import atomic_write_json, atomic_write_bytes
+from mgnipy._shared_helpers.writers import atomic_write_bytes, atomic_write_json
 
 
 class ResultsHandler:
@@ -70,7 +62,7 @@ class ResultsHandler:
             The expanded DataFrame.
         """
 
-        cols = cols or ["metadata", "sample", "study", "biome"]
+        cols = cols or ["metadata", "sample", "study", "biome", "run"]
 
         new_df = df.copy()
         for c in cols:

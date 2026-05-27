@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import functools as ft
 import logging
+from pprint import pformat
 from typing import TYPE_CHECKING, Any, Literal, Optional
 
 import anndata as ad
@@ -86,19 +87,19 @@ class _CuratorSetup:
     def __init__(
         self,
         mgazine: "MGazine",
-        short_desc: Optional[str] = None,
         config: Optional[MGnipyConfig] = None,
         long_short_mapping: Optional[dict[str, str]] = None,
         runs_results: Optional[list[dict[str, Any]]] = None,
         samples_results: Optional[list[dict[str, Any]]] = None,
         studies_results: Optional[list[dict[str, Any]]] = None,
         biosamples_results: Optional[list[dict[str, Any]]] = None,
+        analyses_results: Optional[list[dict[str, Any]]] = None,
     ):
 
         self.mz = mgazine
         self.config = config or mgazine.config
 
-        if len(self.mz.list_pipeline_vers()) > 1:
+        if len(self.mz.list_pipeline_version()) > 1:
             logging.warning(
                 "Multiple pipeline versions detected in MGazine. Curator methods may not work as expected."
             )
@@ -107,7 +108,7 @@ class _CuratorSetup:
             logging.warning(
                 f"Multiple short descriptions detected in MGazine and `short_desc` was not specified. Only the first short description will be used (i.e., {self.mz.list_short_descriptions()[0]})."
             )
-        self.short_desc = short_desc or self.mz.list_short_descriptions()[0]
+        self.short_desc = self.mz.list_short_descriptions()[0]
         logging.info(
             f"TaxaCurator initialized for short description: {self.short_desc}"
         )
@@ -138,6 +139,15 @@ class _CuratorSetup:
         self.samples_results: list = samples_results or []
         self.studies_results: list = studies_results or []
         self.biosamples_results: list = biosamples_results or []
+        self.analyses_results: list = analyses_results or []
+
+    def __str__(self):
+        return (
+            f"MGazine Curation {self.__class__.__name__} containing:\n"
+            f"- MGnify pipeline versions: {self.mz.list_pipeline_version()}\n"
+            f"- Number of downloads: {len(self.mz.downloads)}\n"
+            f"- Short descriptions: {pformat(self.mz.list_short_descriptions())}\n"
+        )
 
     def _init_cache_handler_state(self):
         # getting merged lazyframe for runs acessions
@@ -157,6 +167,7 @@ class _CuratorSetup:
         self.samples_results = self.cache_handler._results.get(2, [])
         self.studies_results = self.cache_handler._results.get(3, [])
         self.biosamples_results = self.cache_handler._results.get(4, [])
+        self.analyses_results = self.cache_handler._results.get(5, [])
 
     @property
     def runs_results(self) -> list[dict[str, Any]]:
@@ -175,7 +186,6 @@ class _CuratorSetup:
 
     def _lazy_merger(self):
 
-        # lazyframes for given short_desc
         lazyframes = [
             self.mz.stream(url=u, chunksize=1000, dataframe_engine="polars")
             for u in self.mz.url_list
@@ -332,12 +342,11 @@ class _CuratorSetup:
         self._runs_accessions = None
 
 
-class DWCTaxaCurator:
+class DWCTaxaCurator(_CuratorSetup):
 
     def __init__(
         self,
         mgazine: "MGazine",
-        short_desc: Optional[str] = None,
         config: Optional[MGnipyConfig] = None,
         long_short_mapping: Optional[dict[str, str]] = None,
         runs_results: Optional[list[dict[str, Any]]] = None,
@@ -348,7 +357,6 @@ class DWCTaxaCurator:
 
         super().__init__(
             mgazine=mgazine,
-            short_desc=short_desc,
             config=config,
             long_short_mapping=long_short_mapping,
             runs_results=runs_results,
@@ -373,7 +381,6 @@ class TaxaCurator(_CuratorSetup):
     def __init__(
         self,
         mgazine: "MGazine",
-        short_desc: Optional[str] = None,
         config: Optional[MGnipyConfig] = None,
         long_short_mapping: Optional[dict[str, str]] = None,
         runs_results: Optional[list[dict[str, Any]]] = None,
@@ -391,7 +398,6 @@ class TaxaCurator(_CuratorSetup):
         )
         super().__init__(
             mgazine=mgazine,
-            short_desc=short_desc,
             config=config,
             long_short_mapping=long_short_mapping,
             runs_results=runs_results,

@@ -163,8 +163,7 @@ class MGazine(StreamMixin):
         grouped = self.downloads_df.groupby("pipeline_version")
 
         groups = {
-            version: group.drop(columns=["pipeline_version"]).to_dict(orient="records")
-            for version, group in grouped
+            version: group.to_dict(orient="records") for version, group in grouped
         }
         return groups
 
@@ -234,6 +233,10 @@ class MGazine(StreamMixin):
                 f"Setting up mgazine only for datasets of pipeline version {name} via attribute access."
             )
             return MGazine(self.by_pipeline_version()[name], config=self.config)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' has no version '{name}'. Available versions: {self.list_pipeline_version()}"
+        )
 
     def __getitem__(self, key):
         if key in self.list_short_descriptions():
