@@ -14,6 +14,8 @@ from typing import (
 )
 
 import pandas as pd
+from tqdm import tqdm as tqdm_sync
+from tqdm.asyncio import tqdm_asyncio
 
 from mgnipy._models.constants.CONSTANTS import (
     PipelineVersions,
@@ -25,6 +27,7 @@ from mgnipy.V2.endpoints import (
     PARENT_CHILD_RESOURCES,
     WITHIN_RESOURCE_RELATIONSHIPS,
 )
+from mgnipy.V2.mixins import ResultsHandler
 
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
@@ -431,12 +434,38 @@ class MGnifyList(MGnifier):
         return self._collected_details
 
     @property
-    def details_results(self) -> dict[str, dict]:
-        return self._collected_details_results
+    def _details_handler(self) -> ResultsHandler:
+        """Internal property to get a ResultsHandler for the collected details results."""
+        return ResultsHandler(list(self._collected_details_results.values()))
 
     @property
-    def details_df(self) -> pd.DataFrame:
-        return pd.DataFrame.from_dict(self.details_results, orient="index")
+    def details_results(self) -> list[dict[str, Any]]:
+        """A list of detail results dicts for the detail, extracted from the details results."""
+        return self._details_handler.to_list()
+
+    def details_df(self, *args, **kwargs) -> pd.DataFrame:
+        """
+        Convert the current or provided metadata to a pandas DataFrame.
+
+        Parameters
+        ----------
+        data : list of dict, optional
+            List of records to convert. If ``None``, uses :pyattr:`data`.
+        expand_nested_dicts : list of str or bool, optional
+            List of keys to expand into separate columns, or ``True`` to
+            expand defaults.
+        rename_columns : dict of str to str, optional
+            A dictionary mapping old column names to new column names.
+        **kwargs
+            Additional keyword arguments passed to ``pd.DataFrame``.
+
+        Returns
+        -------
+        pd.DataFrame or None
+            DataFrame containing the metadata or ``None`` when no data is
+            available.
+        """
+        return self._details_handler.to_df(*args, **kwargs)
 
     @property
     def details_downloads(self) -> list[dict[str, Any]] | None:
@@ -472,6 +501,79 @@ class MGnifyList(MGnifier):
         # make a copy of current instance
         new_qs = self._clone(page_size=n)
         return new_qs
+
+    def enrich_details(self, limit: Optional[int] = 200, hide_progress: bool = False):
+        """
+        Gets the details for each mgnify list item.
+        Iterates through the accessions/ids (`.results_ids`) and retrieves their details using the corresponding detail proxy (e.g., `RunDetail` for `Runs`).
+
+        Parameters
+        ----------
+        limit : Optional[int], default=200
+            An optional integer to limit the number of runs to enrich. If not provided, it defaults to 200. If set to None, there will be no limit on the number of runs enriched.
+        hide_progress : bool, default=False
+            A boolean flag to control the display of the progress bar. If set to True, the progress bar will be hidden.
+
+        Returns
+        -------
+        None
+            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
+        """
+
+        logging.debug(f"Starting enrichment of details with limit {limit}.")
+
+        details_todo: list[str] = [
+            x for x in self.results_ids if x not in self._collected_details_results
+        ][:limit]
+
+        for count, detail_id in enumerate(
+            tqdm_sync(
+                details_todo,
+                total=len(self.results_ids),
+                initial=len(self._collected_details_results),
+                desc="Enriching details",
+                disable=hide_progress,
+            )
+        ):
+            logging.info(f"Enriching detail {detail_id}. Count: {count}")
+            # get detail
+            self._single_detail(detail_id)
+
+    async def aenrich_details(
+        self, limit: Optional[int] = 200, hide_progress: bool = False
+    ):
+        """
+        Async version of `enrich_details` that retrieves details for each item in the MGnifyList asynchronously.
+
+        Parameters
+        ----------
+        limit : Optional[int], default=200
+            An optional integer to limit the number of items to enrich. If not provided, it defaults to 200. If set to None, there will be no limit on the number of items enriched.
+        hide_progress : bool, default=False
+            A boolean flag to control the display of the progress bar. If set to True, the progress bar will be hidden.
+
+        Returns
+        -------
+        None
+            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
+        """
+        logging.debug(f"Starting async enrichment of details with limit {limit}.")
+
+        details_todo: list[str] = [
+            x for x in self.results_ids if x not in self._collected_details_results
+        ][:limit]
+
+        for count, detail_id in enumerate(
+            tqdm_asyncio(
+                details_todo,
+                total=len(self.results_ids),
+                initial=len(self._collected_details_results),
+                desc="Enriching details",
+                disable=hide_progress,
+            )
+        ):
+            logging.info(f"Enriching detail {detail_id}. Count: {count}")
+            await self._asingle_detail(detail_id)
 
 
 class MGnifyDetail(MGnifier):
@@ -609,7 +711,7 @@ class MGnifyDetail(MGnifier):
 
             # get pipeline_version from row if avail, i.e., analysisdetail
             if "pipeline_version" in row and isinstance(row["pipeline_version"], str):
-                pipe = row["pipeline_version"].strip("V")
+                pipe = row["pipeline_version"].lower().strip("v")
             else:
                 pipe = None
 
@@ -623,6 +725,7 @@ class MGnifyDetail(MGnifier):
                     v_group = re.search(
                         r"\.v(\d+(?:\.\d+)?)",
                         each_download.get("download_group", ""),
+                        re.IGNORECASE,
                     ).group(1)
                     pipe = v_group
 
