@@ -62,7 +62,14 @@ class ResultsHandler:
             The expanded DataFrame.
         """
 
-        cols = cols or ["metadata", "sample", "study", "biome", "run"]
+        cols = cols or [
+            "metadata",
+            "sample",
+            "study",
+            "biome",
+            "run",
+            "assembly",
+        ]
 
         new_df = df.copy()
         for c in cols:
