@@ -1,20 +1,16 @@
 import logging
-from typing import (
-    Any,
-    Literal,
-    Optional,
-)
+
+logger = logging.getLogger(__name__)
+from typing import Any, Literal, Optional
 
 import pandas as pd
 
-from mgnipy._models.CONSTANTS import SupportedEndpoints
-from mgnipy.V2.endpoints import (
-    ALL_SUPPORTED_RELATIONSHIPS,
-)
+from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+from mgnipy.V2.endpoints import ALL_SUPPORTED_RELATIONSHIPS
 from mgnipy.V2.mixins import ResultsHandler
 from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.query_set import QuerySet
-from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 
 ID_PARAM = {
     SupportedEndpoints.BIOMES: "biome_lineage",
@@ -40,7 +36,24 @@ ID_PARAM = {
 
 class MGnifier(QuerySet, ResultsHandler):
     """
-    Orchestrates between query building, execution, and results handling to provide a user-friendly interface for retrieving and working with MGnify metadata.
+    MGnifier is a class that provides an interface for querying the MGnify API.
+    It allows users to specify a resource and query parameters, and then fetch results in a paginated manner.
+    The class also includes methods for fetching specific pages, performing bulk fetches, and planning API calls with a dry run.
+
+    Parameters
+    ----------
+    resource : str
+        The MGnify resource to query (e.g., "studies", "samples").
+    config : MGnipyConfig or dict, optional
+        Configuration for MGnipy, either as an MGnipyConfig instance or a dictionary of configuration parameters (default is None).
+    params : dict, optional
+        Query filter parameters (default is None).
+    **param_kwargs
+        Additional parameters treated as query filters.
+
+    Attributes
+    ----------
+    TODO
     """
 
     def __init__(
@@ -519,7 +532,7 @@ class MGnifier(QuerySet, ResultsHandler):
         >>> ids = query.results_ids  # doctest: +SKIP
         """
         if self.results is None:
-            logging.warning(
+            logger.warning(
                 "No attempts for results to be retieved yet (e.g., .get(), .page()), so no accessions/ids available."
             )
             return None

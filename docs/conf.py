@@ -1,12 +1,16 @@
 # Configuration file for the Sphinx documentation builder.
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+import logging
 
+logging.disable(logging.CRITICAL)
+logging.basicConfig(level=logging.CRITICAL, force=True)
 import os
 from importlib import metadata
 
 # compatibility with plotly6
 os.environ["PLOTLY_RENDERER"] = "notebook"
 os.environ["MGNIPY_AUTHENTICATION_OFF"] = "1"
+
 # -- Project information -----------------------------------------------------
 
 project = "mgnipy"
@@ -68,6 +72,7 @@ html_theme_options = {
         "thebe": True,
     },
     "navigation_with_keys": True,
+    "use_sidenotes": True,
 }
 html_js_files = [
     "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"

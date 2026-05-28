@@ -3,7 +3,7 @@ import json
 import sys
 
 from mgnipy import MGnipy
-from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.core import MGnifier
 
 

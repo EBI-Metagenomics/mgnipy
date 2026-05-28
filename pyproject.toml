@@ -18,7 +18,7 @@ dynamic = [
   "version",
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
@@ -32,10 +32,12 @@ dependencies = [
     "bigtree[image,rich]>=1.3.1",
     "httpx>=0.28.1",
     "ijson>=3.5.0",
+    "mgnify-pipelines-toolkit>=1.1.2",
     "numpy>=2.0.2",
     "pandas>=2.3.3",
     "platformdirs>=4.5.1",
     "polars[rtcompat]>=1.39.3",
+    "pyarrow>=24.0.0",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.14.0",
     "python-dateutil>=2.9.0.post0",

@@ -1,8 +1,10 @@
 import logging
+
+logger = logging.getLogger(__name__)
 from typing import Optional
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.proxies import (
     V2_ENDPOINT_DETAIL_PROXIES,
     V2_ENDPOINT_LIST_PROXIES,
@@ -12,7 +14,25 @@ V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 
 
 class MGnipy:
-    """ """
+    """
+    Main class for interacting with the MGnify API.
+    Provides methods to access different resources (e.g., studies, samples, analyses) and their details,
+    as well as utility methods for listing resources and describing endpoints.
+
+    Parameters
+    ----------
+    config : MGnipyConfig or dict, optional
+        Configuration for MGnipy, either as an MGnipyConfig instance or a dictionary of configuration parameters (default is None).
+    **config_kwargs
+        Additional keyword arguments to pass to the MGnipyConfig constructor if config is not provided.
+        For example, cache_dir can be specified as a keyword argument. e.g. MGnipy(cache_dir="/path/to/cache")
+
+    Examples
+    --------
+    >>> MG = MGnipy(cache_dir="/path/to/cache")
+    >>> print(MG.cache_dir)
+    /path/to/cache
+    """
 
     def __init__(
         self,
@@ -59,7 +79,7 @@ class MGnipy:
         self, resource: str, as_dict: bool = False
     ) -> dict[str, str] | None:
         """
-        Describe the supported parameters for a given resource by parsing the docstring of the corresponding endpoint module.
+        Provides a description of the endpoint from the openapi documentation i.e., https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json
 
         Parameters
         ----------
@@ -70,25 +90,42 @@ class MGnipy:
 
         Returns
         -------
-
         dict of str to str or None
             A dictionary mapping parameter names to their descriptions if as_dict is True, otherwise None.
+
         """
         try:
             endpoint = SupportedEndpoints.validate(resource)
         except ValueError:
-            print(
+            logger.error(
                 f"Resource '{resource}' is not supported. Supported resources are: {', '.join(self.list_resources())}"
             )
             return None
 
         proxy_cls = V2_ALL_PROXIES[endpoint]
+        logger.debug(f"Using proxy class {proxy_cls} to describe resource '{resource}'")
         proxy = proxy_cls(config=self._config)
         return proxy.emgapi_handler.describe_endpoint(as_dict=as_dict)
 
     def describe_resources(
         self, resource: Optional[str] = None, as_dict: bool = False
     ) -> dict[str, str] | None:
+        """
+        Provides a description of the endpoint from the openapi documentation i.e., https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json
+
+        Parameters
+        ----------
+        resource : str, optional
+            The name of the resource to describe.
+        as_dict : bool, optional
+            Whether to return the description as a dictionary mapping parameter names to their descriptions (default is False).
+
+        Returns
+        -------
+        dict of str to str or None
+            A dictionary mapping parameter names to their descriptions if as_dict is True, otherwise None.
+
+        """
 
         if resource is not None:
             return self.describe_resource(resource, as_dict=as_dict)
@@ -115,11 +152,11 @@ class MGnipy:
 
         if self.cache_dir.exists():
 
-            logging.warning(f"Clearing ALL cache subdirectories in {self.cache_dir}")
+            logger.warning(f"Clearing ALL cache subdirectories in {self.cache_dir}")
             # for each cache subdir
             for cache_key in self.cache_dir.iterdir():
                 if cache_key.is_dir():
-                    logging.debug(f"Processing cache subdirectory {cache_key}")
+                    logger.debug(f"Processing cache subdirectory {cache_key}")
 
                     # !!!! additional check of folder setup just in case?
                     # !!!! to avoid accidentally deleting something important if cache_dir is misconfigured
@@ -147,10 +184,10 @@ class MGnipy:
                             and cache_file.suffix == ".json"
                         ):
                             try:
-                                logging.debug(f"Clearing cache file {cache_file}")
+                                logger.debug(f"Clearing cache file {cache_file}")
                                 cache_file.unlink()
                             except Exception:
-                                logging.warning(
+                                logger.warning(
                                     f"Failed to delete cache file: {cache_file}"
                                 )
 
@@ -158,12 +195,13 @@ class MGnipy:
                     try:
                         cache_key.rmdir()
                     except Exception:
-                        logging.warning(
-                            f"Failed to delete cache directory: {cache_key}"
-                        )
+                        logger.warning(f"Failed to delete cache directory: {cache_key}")
                 else:  # don't delete the auth token cache which is not in a dir
-                    logging.info(f"Skipping non-directory cache item: {cache_key}")
+                    logger.info(f"Skipping non-directory cache item: {cache_key}")
         else:
-            logging.info(
+            logger.info(
                 f"Cache directory {self.cache_dir} does not exist, nothing to clear."
             )
+
+    def __str__(self):
+        return f"MGnipy(config={self._config})"

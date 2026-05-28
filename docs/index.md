@@ -7,25 +7,24 @@
 ```
 
 ```{toctree}
-:caption: "Quick Start"
+:caption: "Getting started"
+:glob:
 :hidden:
-tutorials/getting-started/installation.md
-tutorials/getting-started/available-resources
-tutorials/getting-started/mgnify-biomes
-tutorials/getting-started/demo-mgnify-tomatoes
-tutorials/demos/get_all_analyses_for_study
+notebooks/getting-started/*
 ```
 
 ```{toctree}
-:caption: "Configuration"
+:caption: "Fundamentals and usage"
+:glob:
 :hidden:
-tutorials/getting-started/understanding-cache
-tutorials/getting-started/access-private-data
+notebooks/fundamentals/*
 ```
 
+
 ```{toctree}
-:caption: "Demos"
+:caption: "Tutorials"
 :hidden:
+<!-- tutorials/demos/get_all_analyses_for_study -->
 <!-- tutorials/demo/pd-gut-microbiome -->
 <!-- tutorials/demo/MOFAR -->
 <!-- tutorials/demo/SpeSpeNet -->
@@ -37,6 +36,7 @@ tutorials/getting-started/access-private-data
 reference/mgnipy.mgnipy
 reference/mgnipy.V2.proxies
 reference/mgnipy.V2.datasets
+reference/mgnipy.V2.datasets
 reference/mgnipy.V2.core
 reference/mgnipy.V2.query_executor
 reference/mgnipy.V2.query_set
@@ -47,11 +47,11 @@ reference/mgnipy.emgapi_v2_client.api
 ```
 
 ```{toctree}
-:caption: "Development Guide"
+:caption: "Contributor's Guide"
+:glob:
 :hidden:
 ../Contributing.md
-dev/quick-emgapi-v2-client
-dev/readme-openapi-python-client
+notebooks/dev/*
 README.md
 ```
 
