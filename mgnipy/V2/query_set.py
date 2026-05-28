@@ -1,22 +1,17 @@
 import logging
+
+logger = logging.getLogger(__name__)
 import os
 from copy import deepcopy
 from itertools import chain
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-    Literal,
-    Optional,
-)
+from typing import Any, Callable, Literal, Optional
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.V2.describe import DescribeEmgapiModule
-from mgnipy.V2.endpoints import (
-    RESOURCES_ALL_ENDPOINTS,
-)
+from mgnipy.V2.endpoints import RESOURCES_ALL_ENDPOINTS
 from mgnipy.V2.mixins import DiskCheckpointer
 
 
@@ -49,7 +44,7 @@ class QuerySet:
         **param_kwargs,
     ):
 
-        logging.debug("Initializing QuerySet for resource %s", resource)
+        logger.debug("Initializing QuerySet for resource %s", resource)
 
         # attribute initialization
         self._resource: SupportedEndpoints = SupportedEndpoints.validate(resource)
@@ -70,18 +65,18 @@ class QuerySet:
         self.config: MGnipyConfig = to_mgnipy_config(config)
         # interactive auth?
         if os.getenv("MGNIPY_AUTHENTICATION_OFF") == "1":
-            logging.debug(
+            logger.debug(
                 "Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
             )
         elif self.emgapi_handler.is_private:
-            logging.debug(
+            logger.debug(
                 f"Endpoint module {self.emgapi_handler.endpoint_module.__name__} corresponds to a private endpoint. Authentication will be required."
             )
             self.config.resolve_auth_token(interactive=True)
         else:  # silently attemp to resolve but no pop up
             self.config.resolve_auth_token(interactive=False)
         # cache handler
-        logging.debug("Creating cache handler for %s", self._resource.value)
+        logger.debug("Creating cache handler for %s", self._resource.value)
         self.cache_handler = DiskCheckpointer(
             params_getter=lambda: self.params,
             resource_str=self.resource.value,
@@ -92,11 +87,11 @@ class QuerySet:
 
     def _try_load_cache(self):
         # try to load from cache
-        logging.info("Attempting to load cached results for %s", self.resource.value)
+        logger.info("Attempting to load cached results for %s", self.resource.value)
         try:
             # results
             self._pages_from_cache = self.cache_handler.load_cache_results()
-            logging.info(
+            logger.info(
                 f"Loaded pages {self._pages_from_cache} from cache for resource {self.resource.value}"
             )
             # if cache results loaded, update
@@ -108,7 +103,7 @@ class QuerySet:
             self.count = self._cached_manifest.get("count", None)
             self.num_requests = self._cached_manifest.get("total_pages", None)
         except Exception as e:
-            logging.warning(f"Failed to load from cache: {e}")
+            logger.warning(f"Failed to load from cache: {e}")
             self._pages_from_cache = []
             self._cached_manifest = {}
 
@@ -117,7 +112,7 @@ class QuerySet:
         Clear the cached results for the current resource and parameters.
         This will delete any cached files associated with the current query parameters.
         """
-        logging.info("Clearing cache for %s", self.resource.value)
+        logger.info("Clearing cache for %s", self.resource.value)
         self.cache_handler.clear_cache()
         # reset loaded cache state
         self._pages_from_cache = []
@@ -138,7 +133,7 @@ class QuerySet:
         When re-assigning, the QuerySet should be re-instantiated to update the urls and other info.
 
         """
-        logging.info("Reassigning endpoint module for %s", self.resource.value)
+        logger.info("Reassigning endpoint module for %s", self.resource.value)
         self.emgapi_handler = DescribeEmgapiModule(endpoint_module=value)
         self.count: Optional[int] = None
         self.num_requests: Optional[int] = None
@@ -168,7 +163,7 @@ class QuerySet:
             The constructed URL for the API request.
         """
         request_url = self._build_request_url()
-        logging.debug(
+        logger.debug(
             "Resolved request URL for %s: %s", self.resource.value, request_url
         )
         return request_url
@@ -179,12 +174,12 @@ class QuerySet:
 
     @params.setter
     def params(self, new_params: dict[str, Any]):
-        logging.info("Updating params for %s", self.resource.value)
+        logger.info("Updating params for %s", self.resource.value)
         self._params = new_params
         # check that params are valid for endpoint module
         _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
         # reset cache?
-        logging.debug(
+        logger.debug(
             "Rebuilding cache handler after params update for %s",
             self.resource.value,
         )
@@ -205,12 +200,12 @@ class QuerySet:
         Results are stored in a dictionary with request number (e.g. page number) as keys.
         """
         if self._results is None:
-            logging.warning("No results available for %s", self.resource.value)
+            logger.warning("No results available for %s", self.resource.value)
             print(
                 "No results available. Please execute a query first e.g. .get(), .page()"
             )
         else:
-            logging.debug(
+            logger.debug(
                 "Returning results for %s with pages: %s",
                 self.resource.value,
                 list(self._results.keys()),
@@ -228,7 +223,7 @@ class QuerySet:
         chain
             An iterator that yields individual metadata records from all pages.
         """
-        logging.debug("Flattening paginated results for %s", self.resource.value)
+        logger.debug("Flattening paginated results for %s", self.resource.value)
         _data = data or self.results
 
         def _page_to_records(page):
@@ -254,9 +249,9 @@ class QuerySet:
             An iterator that yields individual metadata records if results are available, otherwise None.
         """
         if self.results is None:
-            logging.debug("No record iterator available for %s", self.resource.value)
+            logger.debug("No record iterator available for %s", self.resource.value)
             return None
-        logging.debug("Returning record iterator for %s", self.resource.value)
+        logger.debug("Returning record iterator for %s", self.resource.value)
         return self._unpageinate_results()
 
     @property
@@ -265,7 +260,7 @@ class QuerySet:
 
     @resource.setter
     def resource(self, value: str):
-        logging.info("Setting resource to %s", value)
+        logger.info("Setting resource to %s", value)
         self._resource = SupportedEndpoints.validate(value)
         self.endpoint_module = RESOURCES_ALL_ENDPOINTS[self._resource]
 
@@ -287,7 +282,7 @@ class QuerySet:
         # validate num is positive int
         validated_int = validate_gt_int(request_num, 0)
         in_results = validated_int in (self._results or [])
-        logging.debug(
+        logger.debug(
             "Result presence check for %s page %s: %s",
             self.resource.value,
             validated_int,
@@ -313,7 +308,7 @@ class QuerySet:
 
         """
 
-        logging.debug(
+        logger.debug(
             "Spawning QuerySet from %s to %s",
             self.resource.value,
             target_resource or self.resource,
@@ -344,7 +339,7 @@ class QuerySet:
         QuerySet
             A new instance of the same class with the updated parameters.
         """
-        logging.debug(
+        logger.debug(
             "Cloning QuerySet for %s with overrides: %s",
             self.resource.value,
             sorted(param_overrides.keys()),
@@ -384,7 +379,7 @@ class QuerySet:
             A new QuerySet instance with updated parameters for filtering results.
         """
         # make a copy of current instance but with updated params
-        logging.info(
+        logger.info(
             "Filtering QuerySet for %s with keys: %s",
             self.resource.value,
             sorted(filters.keys()),
@@ -425,7 +420,7 @@ class QuerySet:
         path = self.emgapi_handler.url_path(**_params)
         # return full url with base url+sub_url+encoded params
         request_url = f"{str(self.base_url).rstrip('/')}/{path.lstrip('/')}"
-        logging.debug("Built request URL for %s: %s", self.resource.value, request_url)
+        logger.debug("Built request URL for %s: %s", self.resource.value, request_url)
         return request_url
 
     def list_urls(self) -> list[str]:
@@ -438,10 +433,10 @@ class QuerySet:
         list of str
             A list of URLs corresponding to each API request that would be made.
         """
-        logging.info("Listing request URLs for %s", self.resource.value)
+        logger.info("Listing request URLs for %s", self.resource.value)
 
         if self.num_requests is None:
-            logging.warning(
+            logger.warning(
                 "Number of requests is not set. Call planning helpers (e.g., .dry_run, explain) for accurate URL list"
             )
             total_pages = 0
@@ -457,7 +452,7 @@ class QuerySet:
         for pg in self.emgapi_handler.page_param_iter(total_pages):
             _parm.update(pg)
             urls.append(self._build_request_url(params=_parm))
-        logging.debug("Generated %s URLs for %s", len(urls), self.resource.value)
+        logger.debug("Generated %s URLs for %s", len(urls), self.resource.value)
         return urls
 
     def __call__(self, **kwargs):
@@ -473,18 +468,18 @@ class QuerySet:
         list of dict
             A list of dictionaries, each containing the query parameters for a corresponding API request.
         """
-        logging.info("Building query plan for %s", self.resource.value)
+        logger.info("Building query plan for %s", self.resource.value)
 
         if not self.emgapi_handler.is_list_endpoint:
             query_setup = {
                 "url": self.emgapi_handler.sub_url(**self.params),
                 "params": self.params,
             }
-            logging.debug("Built single-query plan for %s", self.resource.value)
+            logger.debug("Built single-query plan for %s", self.resource.value)
             return {1: query_setup}
 
         if self.num_requests is None:
-            logging.warning(
+            logger.warning(
                 "Number of requests is not set. Call planning helpers (e.g., .dry_run, explain) for accurate URL list"
             )
             total_pages = 0
@@ -504,7 +499,5 @@ class QuerySet:
                 "params": _parm,
             }
             queries[pg] = query_setup
-        logging.debug(
-            "Built %s query entries for %s", len(queries), self.resource.value
-        )
+        logger.debug("Built %s query entries for %s", len(queries), self.resource.value)
         return queries

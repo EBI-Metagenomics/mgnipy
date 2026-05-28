@@ -10,7 +10,6 @@ if any endpoints added or removed from the API and emgapi_v2_client re-installed
 
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy.emgapi_v2_client.api.analyses import (
-    analysis_get_mgnify_analysis_with_annotations,
     get_mgnify_analysis,
     list_mgnify_analyses,
 )
@@ -49,11 +48,12 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_publications,
     list_mgnify_study_samples,
 )
-from mgnipy.V2 import custom_endpoint
 
-CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
-    SupportedEndpoints._DOWNLOADS: custom_endpoint,
-}
+# from mgnipy.V2 import custom_endpoint
+
+# CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
+#     SupportedEndpoints._DOWNLOADS: custom_endpoint,
+# }
 
 RESOURCES_LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
@@ -81,7 +81,7 @@ RESOURCES_DETAIL_ENDPOINTS: dict[SupportedEndpoints, callable] = {
 }
 
 RESOURCES_ALL_ENDPOINTS: dict[SupportedEndpoints, callable] = (
-    RESOURCES_LIST_ENDPOINTS | RESOURCES_DETAIL_ENDPOINTS | CUSTOM_ENDPOINTS
+    RESOURCES_LIST_ENDPOINTS | RESOURCES_DETAIL_ENDPOINTS  # | CUSTOM_ENDPOINTS
 )
 
 PARENT_CHILD_RESOURCES: dict[SupportedEndpoints, SupportedEndpoints] = {
@@ -131,9 +131,9 @@ BETWEEN_RESOURCE_RELATIONSHIPS: dict[
     },
     # for an analysis detail, there is an endpoint to get the analysis with annotations
     # or should the analysis detail already have annotations?
-    SupportedEndpoints.ANALYSIS: {
-        SupportedEndpoints.ANNOTATIONS: analysis_get_mgnify_analysis_with_annotations
-    },
+    # SupportedEndpoints.ANALYSIS: {
+    #     SupportedEndpoints.ANNOTATIONS: analysis_get_mgnify_analysis_with_annotations
+    # },
 }
 
 ALL_SUPPORTED_RELATIONSHIPS: dict[

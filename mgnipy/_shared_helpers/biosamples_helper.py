@@ -19,14 +19,16 @@
 # modified for Biosamples metadata and to fit MGnipy codebase
 
 import logging
+
+logger = logging.getLogger(__name__)
 from collections import defaultdict
 from typing import Any, Dict, List, Union
+
+import pandas as pd
+import requests
 from mgnify_pipelines_toolkit.analysis.shared.dwc_summary_generator import (
     get_ena_metadata_from_run_acc,
 )
-import pandas as pd
-
-import requests
 
 URL = "https://www.ebi.ac.uk/biosamples/samples"
 HEADERS = {"Accept": "application/json"}
@@ -99,7 +101,7 @@ def get_biosample_metadata_from_acc(
             # note saving over given sample_acc
             sample_acc = ena_metadata.loc[0, "SampleID"]
 
-            logging.info(
+            logger.info(
                 f"ENA metadata found for sample {sample_acc}, including in BioSamples query parameters."
             )
 
@@ -107,7 +109,7 @@ def get_biosample_metadata_from_acc(
                 char_texts[col] = ena_metadata.loc[0, col]
 
         else:
-            logging.info(
+            logger.info(
                 f"No ENA metadata found for sample {sample_acc}, proceeding with BioSamples query without ENA parameters."
             )
             char_texts = {
@@ -122,25 +124,25 @@ def get_biosample_metadata_from_acc(
 
     # if not successful log and return false
     if results.status_code != 200:
-        logging.error(f"BioSamples record not found for sample {sample_acc}")
+        logger.error(f"BioSamples record not found for sample {sample_acc}")
         return False
 
     if "_embedded" not in results.json():
-        logging.error(f"BioSamples record not found for sample {sample_acc}")
+        logger.error(f"BioSamples record not found for sample {sample_acc}")
         return False
 
     try:
         # getting first sample record returned
         returned_samples: list[dict[str, Any]] = results.json()["_embedded"]["samples"]
     except (KeyError, TypeError):
-        logging.error(f"Error parsing BioSamples response for sample {sample_acc}")
+        logger.error(f"Error parsing BioSamples response for sample {sample_acc}")
         return False
 
     if not returned_samples:
-        logging.error(f"No BioSamples record found for sample {sample_acc}")
+        logger.error(f"No BioSamples record found for sample {sample_acc}")
         return False
     elif len(returned_samples) > 1:
-        logging.warning(
+        logger.warning(
             f"Multiple BioSamples records found for sample {sample_acc}, using the first one returned. Total records found: {len(returned_samples)}"
         )
     biosample_record: dict[str, Any] = returned_samples[0]

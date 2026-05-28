@@ -1,10 +1,7 @@
 # mainly Enum constants for pydantic models
 from enum import Enum
 
-from pydantic import (
-    TypeAdapter,
-    ValidationError,
-)
+from pydantic import TypeAdapter, ValidationError
 
 
 class SpecialEnum(Enum):
@@ -91,7 +88,7 @@ class SpecialEnum(Enum):
         --------
         >>> comma_sep = SupportedEndpoints.as_one_str()
         >>> comma_sep
-        'analyses,analysis,...,annotations,private_studies'
+        'analyses,analysis,...,private_studies'
         >>> pipe_sep = SupportedEndpoints.as_one_str(sep="|")
         >>> pipe_sep
         'analyses|analysis|...|biomes|biome|...|private_studies'
@@ -162,9 +159,9 @@ class SupportedEndpoints(SpecialEnum):
     BIOME = "biome"
     CATALOGUES = "catalogues"
     CATALOGUE = "catalogue"
-    ANNOTATIONS = "annotations"  # not really
+    # ANNOTATIONS = "annotations"  # not really
     PRIVATE_STUDIES = "private_studies"
-    _DOWNLOADS = "_downloads"  # for internal use only, not an actual endpoint
+    # _DOWNLOADS = "_downloads"  # for internal use only, not an actual endpoint
 
 
 class PipelineVersions(SpecialEnum):

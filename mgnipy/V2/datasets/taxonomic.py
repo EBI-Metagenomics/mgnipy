@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import functools as ft
 import logging
+
+logger = logging.getLogger(__name__)
 from pprint import pformat
 from typing import TYPE_CHECKING, Any, Literal, Optional
 
@@ -100,18 +102,16 @@ class _CuratorSetup:
         self.config = config or mgazine.config
 
         if len(self.mz.list_pipeline_version()) > 1:
-            logging.warning(
+            logger.warning(
                 "Multiple pipeline versions detected in MGazine. Curator methods may not work as expected."
             )
 
         if len(self.mz.list_short_descriptions()) > 1:
-            logging.warning(
+            logger.warning(
                 f"Multiple short descriptions detected in MGazine and `short_desc` was not specified. Only the first short description will be used (i.e., {self.mz.list_short_descriptions()[0]})."
             )
         self.short_desc = self.mz.list_short_descriptions()[0]
-        logging.info(
-            f"TaxaCurator initialized for short description: {self.short_desc}"
-        )
+        logger.info(f"TaxaCurator initialized for short description: {self.short_desc}")
 
         # determine mapping
         if long_short_mapping is not None:
@@ -128,7 +128,7 @@ class _CuratorSetup:
             self.long_short_mapping = dict(
                 zip(SILVA_TAX_RANKS, SHORT_SILVA_TAX_RANKS, strict=True)
             )
-        logging.info(
+        logger.info(
             f"{self.__class__.__name__} long to short rank mapping set: {self.long_short_mapping}"
         )
         # cache
@@ -230,7 +230,7 @@ class _CuratorSetup:
 
         """
 
-        logging.debug(
+        logger.debug(
             f"Starting enrichment of runs for short description {self.short_desc} with limit {limit}."
         )
 
@@ -245,17 +245,17 @@ class _CuratorSetup:
                 disable=hide_progress,
             )
         ):
-            logging.info(
+            logger.info(
                 f"Enriching run {run} for short description {self.short_desc}. Count: {count}"
             )
             # get metadata
             mg = RunDetail(id=run, config=self.config).get()
             if mg is not False:
-                logging.debug(f"Enriched metadata for run {run}: {mg}")
+                logger.debug(f"Enriched metadata for run {run}: {mg}")
                 self._runs_results.append(mg)
                 self.cache_handler.write_results(1, self._runs_results)
             else:
-                logging.warning(f"Run {run} could not be retrieved. Skipping.")
+                logger.warning(f"Run {run} could not be retrieved. Skipping.")
 
     async def aenrich_runs(
         self, limit: Optional[int] = 200, hide_progress: bool = False
@@ -292,7 +292,7 @@ class _CuratorSetup:
     ) -> pl.DataFrame | pd.DataFrame:
 
         if not self.runs_results:
-            logging.warning(
+            logger.warning(
                 "No runs have been enriched yet. Returning empty metadata DataFrame. Please run `enrich_runs()` first to populate the metadata."
             )
             if df_engine == "pandas":
@@ -310,7 +310,7 @@ class _CuratorSetup:
         )
 
         if strict and len(self.runs_results) < len(self.runs_accessions):
-            logging.warning(
+            logger.warning(
                 f"Strict mode is on but only {len(self.runs_results)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
             )
             if df_engine == "pandas":
@@ -337,7 +337,7 @@ class _CuratorSetup:
 
         MG = MGnipy(config=self.config)
         MG.clear_subcaches()
-        logging.info("MGnipy cache cleared via TaxaCurator helper.")
+        logger.info("MGnipy cache cleared via TaxaCurator helper.")
         self._lazy_merged = None
         self._runs_accessions = None
 
@@ -368,7 +368,7 @@ class DWCTaxaCurator(_CuratorSetup):
         if ("dwc-ready" not in self.short_desc.lower()) or (
             "dwcready" not in self.short_desc.lower()
         ):
-            logging.warning(
+            logger.warning(
                 f"Short description {self.short_desc} does not contain 'dwc-ready'. This curator is intended for DwC-ready datasets. Proceeding anyway but results may not be as expected."
             )
 
@@ -452,7 +452,7 @@ class TaxaCurator(_CuratorSetup):
             )
             self._lazy_merged = merged
         else:
-            logging.warning(
+            logger.warning(
                 "Could not determine common column to merge on in taxonomic datasets. Returning concatenated lazyframes without merging."
             )
             self._lazy_merged = pl.concat(lazyframes, how="vertical_relaxed")
@@ -483,7 +483,7 @@ class TaxaCurator(_CuratorSetup):
         elif ("kingdom" in col_names) and ("phylum" in col_names):
             df = self.lazy_merged.select(["kingdom", "phylum"]).collect()
         else:
-            logging.warning(
+            logger.warning(
                 f"Could not determine taxonomy column in taxonomic dataset. Expected one of 'taxonomy' or '#SampleID' or at least 'kingdom' and 'phylum'. Attempting to match known taxonomic ranks in `long_short_mapping`. e.g. {list(self.long_short_mapping.keys())}"
             )
             existing_tax_cols = [

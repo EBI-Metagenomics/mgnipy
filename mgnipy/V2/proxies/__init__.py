@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+
+logger = logging.getLogger(__name__)
 import re
 from typing import (
     TYPE_CHECKING,
@@ -185,7 +187,7 @@ class MGnifyList(MGnifier):
 
         # otherwise return next MGnifyDetail in the list
         the_id = self._detail_ids[self._detail_index]
-        logging.debug(
+        logger.debug(
             f"Fetching detail for {self.child_resource!r} with id {the_id!r} (index {self._detail_index})"
         )
         child = self._single_detail(the_id)
@@ -368,7 +370,7 @@ class MGnifyList(MGnifier):
             raise ValueError(
                 f"Unsupported child resource for detail: {self.child_resource}"
             )
-        logging.debug(
+        logger.debug(
             f"Got detail class {detail_cls} for child resource {self.child_resource!r}"
         )
 
@@ -376,11 +378,11 @@ class MGnifyList(MGnifier):
         custom_id_param_key = detail_cls.id_param_key
         id_param = self._resolve_id_param(key, param_name=custom_id_param_key)
         resolved_id = id_param[custom_id_param_key]
-        logging.debug(f"Resolved id param for detail: {id_param}")
+        logger.debug(f"Resolved id param for detail: {id_param}")
 
         # init detail proxy with id param
         child = detail_cls.filter(**id_param)
-        logging.debug(f"Initialized detail proxy {child} with params {child.params!r}")
+        logger.debug(f"Initialized detail proxy {child} with params {child.params!r}")
         # set endpoint module (might not be necessary actually)
         # child.endpoint_module = self._detail_endpoint
 
@@ -408,7 +410,7 @@ class MGnifyList(MGnifier):
         sample = await samples._asingle_detail({"accession": "MGYS00001234"})
         """
         detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)()
-        logging.debug(
+        logger.debug(
             f"Got detail class {detail_cls} for child resource {self.child_resource!r}"
         )
         if not detail_cls:
@@ -418,7 +420,7 @@ class MGnifyList(MGnifier):
         custom_id_param_key = detail_cls.id_param_key
         id_param = self._resolve_id_param(key, param_name=custom_id_param_key)
         resolved_id = id_param[custom_id_param_key]
-        logging.debug(f"Resolved id param for detail: {id_param}")
+        logger.debug(f"Resolved id param for detail: {id_param}")
         child = detail_cls.filter(**id_param)
         child.endpoint_module = self._detail_endpoint
 
@@ -520,7 +522,11 @@ class MGnifyList(MGnifier):
             This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
         """
 
-        logging.debug(f"Starting enrichment of details with limit {limit}.")
+        logger.debug(f"Starting enrichment of details with limit {limit}.")
+
+        if self.results_ids is None:
+            logger.warning("No results_ids found to enrich details.")
+            return
 
         details_todo: list[str] = [
             x for x in self.results_ids if x not in self._collected_details_results
@@ -535,7 +541,7 @@ class MGnifyList(MGnifier):
                 disable=hide_progress,
             )
         ):
-            logging.info(f"Enriching detail {detail_id}. Count: {count}")
+            logger.info(f"Enriching detail {detail_id}. Count: {count}")
             # get detail
             self._single_detail(detail_id)
 
@@ -557,7 +563,7 @@ class MGnifyList(MGnifier):
         None
             This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
         """
-        logging.debug(f"Starting async enrichment of details with limit {limit}.")
+        logger.debug(f"Starting async enrichment of details with limit {limit}.")
 
         details_todo: list[str] = [
             x for x in self.results_ids if x not in self._collected_details_results
@@ -572,7 +578,7 @@ class MGnifyList(MGnifier):
                 disable=hide_progress,
             )
         ):
-            logging.info(f"Enriching detail {detail_id}. Count: {count}")
+            logger.info(f"Enriching detail {detail_id}. Count: {count}")
             await self._asingle_detail(detail_id)
 
 
@@ -608,7 +614,7 @@ class MGnifyDetail(MGnifier):
             id_param_key = ID_PARAM[SupportedEndpoints.validate(resolved_resource)]
         except Exception:
             id_param_key = None
-        logging.debug(
+        logger.debug(
             f"Resolved id param key for {resolved_resource!r}: {id_param_key!r}"
         )
 
@@ -689,18 +695,18 @@ class MGnifyDetail(MGnifier):
         """
 
         if not self.results:
-            logging.debug(
+            logger.debug(
                 "No results found for detail; cannot extract downloads. Returning empty list."
             )
             return []
 
         if "downloads" not in self.to_df().columns:
-            logging.debug(
+            logger.debug(
                 "Details DataFrame does not have 'downloads' column. Returning empty list."
             )
             return []
 
-        logging.debug(
+        logger.debug(
             f"Updating download info with identifier {self.identifier!r} to id_param_key {self.id_param_key!r}"
         )
 
@@ -733,7 +739,7 @@ class MGnifyDetail(MGnifier):
                     try:
                         pipe = PipelineVersions(float(pipe)).name
                     except Exception as e:
-                        logging.debug(
+                        logger.debug(
                             f"Could not parse pipeline version from {pipe!r} for download {each_download!r}: {e}"
                         )
 
@@ -797,24 +803,24 @@ class MGnifyDetail(MGnifier):
         """
 
         # get related MGnifyList class for the resource, e.g. Samples for "samples"
-        logging.debug(
+        logger.debug(
             f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
             config=self.config
         )
-        logging.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
+        logger.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
 
-        logging.debug(
+        logger.debug(
             f"Resolving id param for identifier {self.identifier!r} with id_param_key {self.id_param_key!r}"
         )
         # prep access param e.g. {"accession": "MGYS00001234"} or {"biome_lineage": "root"}
         id_param = self._resolve_id_param(self.identifier)
-        logging.debug(f"Resolved access param for list proxy: {id_param}")
+        logger.debug(f"Resolved access param for list proxy: {id_param}")
 
         # init list endpoint
         list_endpoint = proxy_cls.filter(**id_param)
-        logging.debug(
+        logger.debug(
             f"Set endpoint module for list proxy: {list_endpoint.endpoint_module} with params {list_endpoint.params!r}"
         )
         list_endpoint.endpoint_module = self._next_rel_module(resource)
@@ -856,7 +862,7 @@ class MGnifyDetail(MGnifier):
         """
 
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))
-        logging.debug(f"Getting proxy class {proxy_cls} for resource {resource!r}")
+        logger.debug(f"Getting proxy class {proxy_cls} for resource {resource!r}")
         if not proxy_cls:
             raise ValueError(f"Unsupported resource: {resource}")
 
@@ -864,10 +870,10 @@ class MGnifyDetail(MGnifier):
         id_param = self._resolve_id_param(
             self.identifier, param_name=custom_id_param_key
         )
-        logging.debug(f"Resolved access param for list proxy: {id_param}")
+        logger.debug(f"Resolved access param for list proxy: {id_param}")
         list_endpoint = proxy_cls(config=self.config, **id_param)
         list_endpoint.endpoint_module = self._next_rel_module(resource)
-        logging.debug(
+        logger.debug(
             f"Set endpoint module for list proxy: {list_endpoint.endpoint_module} with params {list_endpoint.params!r}"
         )
         if explain:
@@ -914,5 +920,4 @@ V2_ENDPOINT_DETAIL_PROXIES = {
     SupportedEndpoints.GENOME: GenomeDetail,
     SupportedEndpoints.PUBLICATION: PublicationDetail,
     SupportedEndpoints.CATALOGUE: CatalogueDetail,
-    SupportedEndpoints.ANNOTATIONS: None,  # "MGazine",
 }

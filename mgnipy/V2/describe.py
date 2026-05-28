@@ -1,25 +1,18 @@
 import inspect
 import logging
+
+logger = logging.getLogger(__name__)
 import os
 from copy import deepcopy
 from math import ceil
 from types import ModuleType
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Any, Optional
 from urllib.parse import urlencode
 
 import httpx
 
-from mgnipy._shared_helpers.parsers import (
-    get_docstring,
-    parse_docstring,
-)
-from mgnipy.V2.endpoints import (
-    ALL_LIST_ENDPOINTS,
-    PRIVATE_ENDPOINTS,
-)
+from mgnipy._shared_helpers.parsers import get_docstring, parse_docstring
+from mgnipy.V2.endpoints import ALL_LIST_ENDPOINTS, PRIVATE_ENDPOINTS
 
 
 class DescribeEmgapiModule:
@@ -136,6 +129,21 @@ class DescribeEmgapiModule:
         return get_docstring(self.endpoint_module, "sync")
 
     def describe_endpoint(self, as_dict: bool = False) -> dict[str, str] | None:
+        """
+        Provides a description of the endpoint from the openapi documentation i.e., https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json
+
+        Parameters
+        ----------
+        as_dict : bool, optional
+            Whether to return the description as a dictionary mapping parameter names to their descriptions (default is False).
+
+        Returns
+        -------
+        dict of str to str or None
+            A dictionary mapping parameter names to their descriptions if as_dict is True, otherwise None.
+
+        """
+
         return parse_docstring(self.emgapi_docs, as_dict=as_dict)
 
     @property
@@ -164,7 +172,7 @@ class DescribeEmgapiModule:
         if response.status_code == 200:
             return response.parsed.to_dict().get("count", 0)
         else:
-            logging.warning(
+            logger.warning(
                 f"Failed to retrieve count for endpoint {self.emgapi_resource}. Status code: {response.status_code}"
             )
 

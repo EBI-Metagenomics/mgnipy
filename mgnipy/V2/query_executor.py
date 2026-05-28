@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
+
+logger = logging.getLogger(__name__)
 from copy import deepcopy
 from math import ceil
 from typing import TYPE_CHECKING, Any, Optional
@@ -83,13 +85,13 @@ class QueryExecutor:
             raise StopIteration
         # get next page num and advance index
         page_num = self._iter_page_nums[self._iter_index]
-        logging.info(f"Advancing to request num {page_num}")
+        logger.info(f"Advancing to request num {page_num}")
         self._iter_index += 1
         try:
             result = self.page(page_num)
             return result
         except Exception as e:
-            logging.error(f"Error fetching request num {page_num}: {e}")
+            logger.error(f"Error fetching request num {page_num}: {e}")
             raise
 
     def get(self):
@@ -137,13 +139,13 @@ class QueryExecutor:
         if self._iter_index >= len(self._iter_page_nums):
             raise StopAsyncIteration
         p = self._iter_page_nums[self._iter_index]
-        logging.info(f"Advancing to request num {p} (async)")
+        logger.info(f"Advancing to request num {p} (async)")
         self._iter_index += 1
         try:
             result = await self.apage(p)
             return result
         except Exception as e:
-            logging.error(f"Error fetching request num {p}: {e}")
+            logger.error(f"Error fetching request num {p}: {e}")
             raise
 
     async def aget(self):
@@ -204,7 +206,7 @@ class QueryExecutor:
 
         # set with limits to next batch
         self._init_iter_state(from_page=start_page)
-        logging.info(
+        logger.info(
             f"Continuing iteration from page {start_page}, "
             f"loaded {len(self._iter_page_nums)} pages"
         )
@@ -218,13 +220,13 @@ class QueryExecutor:
         >>> executor.resume()  # doctest: +SKIP
         """
         if not self._successful_pages:
-            logging.warning("No successful pages yet, so resuming from start")
+            logger.warning("No successful pages yet, so resuming from start")
             self.reset_iterator()
             return self
 
         # continuing from successful page
         next_page = max(self._successful_pages) + 1
-        logging.info(f"Resuming from page {next_page}")
+        logger.info(f"Resuming from page {next_page}")
         self.continue_iterator(start_page=next_page)
 
     def _init_client(
@@ -250,7 +252,7 @@ class QueryExecutor:
         _auth = auth_token or self.qs.config.auth_token
 
         if _auth:
-            logging.info("Initializing client with provided auth token.")
+            logger.info("Initializing client with provided auth token.")
             return AuthenticatedClient(
                 base_url=str(self.qs.base_url),
                 token=_auth,
@@ -274,7 +276,7 @@ class QueryExecutor:
         >>> executor.set_counts()  # doctest: +SKIP
         """
         if self.qs.count is not None and self.qs.num_requests is not None:
-            logging.debug(
+            logger.debug(
                 f"Using cached count and num_requests vals: {self.qs.count}, {self.qs.num_requests}"
             )
         else:
@@ -284,7 +286,7 @@ class QueryExecutor:
             self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
                 self.qs.count, page_size=self.qs.params.get("page_size", None)
             )
-            logging.debug(
+            logger.debug(
                 f"Computed count and num_requests: {self.qs.count}, {self.qs.num_requests}"
             )
 
@@ -303,7 +305,7 @@ class QueryExecutor:
         """
 
         if self.qs._is_in_results(1):
-            logging.info("First response already retrieved, using cached results.")
+            logger.info("First response already retrieved, using cached results.")
         elif not self.qs.emgapi_handler.is_list_endpoint:
             response_dict = self.exec.get()
             self.qs._results[1] = response_dict
@@ -323,7 +325,7 @@ class QueryExecutor:
         Same as preview() but returns the raw dictionary instead of a DataFrame.
         """
         if self.qs._is_in_results(1):
-            logging.info("First response already retrieved, using cached results.")
+            logger.info("First response already retrieved, using cached results.")
         elif not self.qs.emgapi_handler.is_list_endpoint:
             response_dict = await self.exec.aget()
             self.qs._results[1] = response_dict
@@ -430,7 +432,7 @@ class QueryExecutor:
         return ordered
 
     def _parse_response(self, response: mpy_Response) -> Optional[Any]:
-        logging.info(f"Response status code: {response.status_code}")
+        logger.info(f"Response status code: {response.status_code}")
         if response.status_code == 200:
             if isinstance(response.parsed, (bytes, bytearray)):
                 return bytes(response.parsed)
@@ -524,7 +526,7 @@ class QueryExecutor:
         >>> executor._page_items({'items': [1,2,3]})  # doctest: +SKIP
         """
         if response is None:
-            logging.warning("No response received from API.")
+            logger.warning("No response received from API.")
             return None
 
         if isinstance(response, (bytes, bytearray)):
@@ -533,7 +535,7 @@ class QueryExecutor:
         if self.qs.emgapi_handler.is_list_endpoint:
             return response.get("items")
         else:
-            logging.debug(
+            logger.debug(
                 "Endpoint is not a list endpoint, returning full response as items."
             )
             try:
@@ -574,7 +576,7 @@ class QueryExecutor:
 
         # check if alrady in results first
         if self.qs._is_in_results(page_num):
-            logging.info(f"Page {page_num} already retrieved.")
+            logger.info(f"Page {page_num} already retrieved.")
             # mark success
             if page_num not in self._successful_pages:
                 self._successful_pages.append(page_num)
@@ -585,7 +587,7 @@ class QueryExecutor:
         a_client = client or self._init_client()
         # getting params from qs
         params = self.query_setups(page_num).get("params", None)
-        logging.info(f"Fetching request num {page_num} with params: {params}")
+        logger.info(f"Fetching request num {page_num} with params: {params}")
         response = self._single_request(
             client=a_client,
             params=params,
@@ -619,14 +621,14 @@ class QueryExecutor:
         """
         self.set_counts()
         if self.qs._is_in_results(page_num):
-            logging.info(f"Page {page_num} already retrieved.")
+            logger.info(f"Page {page_num} already retrieved.")
             if page_num not in self._successful_pages:
                 self._successful_pages.append(page_num)
             return self.qs._results.get(page_num, None)
 
         a_client = client or self._init_client()
         params = self.query_setups(page_num).get("params", None)
-        logging.info(f"Fetching page {page_num} with params={params}")
+        logger.info(f"Fetching page {page_num} with params={params}")
         response = await self._asingle_request(client=a_client, params=params)
         page_items = self._page_items(response)
         self.qs._results.update({page_num: page_items})
@@ -682,7 +684,7 @@ class QueryExecutor:
                     "Total items is unknown. Please run .dry_run() or .preview() or .explain() before collecting metadata."
                 )
             else:
-                logging.debug(
+                logger.debug(
                     "Total items is unknown (no dry run) running set_counts() to retrieve count."
                 )
                 self.set_counts()
@@ -714,7 +716,7 @@ class QueryExecutor:
 
         max_num_pages = min(num_req_limits, PAGES_LIMIT, self.qs.num_requests)
 
-        logging.debug(
+        logger.debug(
             f"Resolved number of requests for this collection round: {max_num_pages}. (upper caps: {ITEMS_LIMIT} items or {PAGES_LIMIT} pages)"
         )
 
@@ -733,13 +735,13 @@ class QueryExecutor:
             for p in given_pages
             if isinstance(p, int) and from_page <= p <= self.qs.num_requests
         ]
-        logging.debug(
+        logger.debug(
             f"Pages to collect after applying from_page={from_page} filter: {after_from_page}"
         )
 
         # now with limits on?
         resolved = after_from_page[:max_num_pages]
-        logging.debug(
+        logger.debug(
             f"Pages to collect after applying limit of {limit} items (max page {max_num_pages}): {resolved}"
         )
 
@@ -779,7 +781,7 @@ class QueryExecutor:
         # get pages if not in results already
         a_client = client
         for p in tqdm(pages, desc="Retrieving pages", disable=hide_progress):
-            logging.info(f"Advancing to request num {p}")
+            logger.info(f"Advancing to request num {p}")
             self.page(p, client=a_client)
 
     async def _acollect_pages(

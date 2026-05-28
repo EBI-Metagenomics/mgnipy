@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
+
+logger = logging.getLogger(__name__)
 from pathlib import Path
 from pprint import pformat
 from typing import Any, Optional
@@ -83,7 +85,7 @@ class MGazine(StreamMixin):
             config=_config,
             url=url,
         )
-        logging.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
+        logger.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
         return mg
 
     @property
@@ -196,11 +198,11 @@ class MGazine(StreamMixin):
         Examples
         --------
         >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.v4.1"},
-        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.v5"},
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.v4.1", "pipeline_version": 'v4_1'},
+        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.v5", "pipeline_version": 'v5'},
         ... ]
-        >>> MGazine(downloads).list_pipeline_version
-        [4.1, 5.0]
+        >>> MGazine(downloads).list_pipeline_version()
+        ['v4_1', 'v5']
         """
 
         avail_vers = sorted(self.downloads_df["pipeline_version"].unique().tolist())
@@ -229,7 +231,7 @@ class MGazine(StreamMixin):
 
     def __getattr__(self, name):
         if name in self.list_pipeline_version():
-            logging.info(
+            logger.info(
                 f"Setting up mgazine only for datasets of pipeline version {name} via attribute access."
             )
             return MGazine(self.by_pipeline_version()[name], config=self.config)
@@ -250,16 +252,16 @@ class MGazine(StreamMixin):
                 .unique()[0]
                 .lower()
             )
-            logging.info(f"Download type for {key}: {download_type}")
+            logger.info(f"Download type for {key}: {download_type}")
 
             if "taxonom" in download_type and "dwc-ready" in key.lower():
-                logging.debug(
+                logger.debug(
                     f"getting dwc-ready taxonomic datasets of short description {key} via item access."
                 )
                 return DWCTaxaCurator(mgazine=new_mz, config=self.config)
 
             if "taxonom" in download_type and "dwc-ready" not in key.lower():
-                logging.debug(
+                logger.debug(
                     f"getting taxonomic datasets of short description {key} via item access."
                 )
                 return TaxaCurator(mgazine=new_mz, config=self.config)
@@ -349,21 +351,21 @@ class MGazine(StreamMixin):
 
         # make dir if not exists
         to_dir = Path(to_dir)
-        logging.debug(f"Ensuring download directory exists: {to_dir}")
+        logger.debug(f"Ensuring download directory exists: {to_dir}")
         to_dir.mkdir(parents=True, exist_ok=True)
 
         # prep full path
         filepath = to_dir / filename if filename else to_dir / _alias
-        logging.debug(f"Prepared file path for download: {filepath}")
+        logger.debug(f"Prepared file path for download: {filepath}")
 
         # check if file exists and handle overwrite behavior
         if filepath.exists() and not overwrite:
-            logging.info(
+            logger.info(
                 f"File already exists and overwrite is False, skipping download: {filepath}"
             )
             return
         elif filepath.exists() and overwrite:
-            logging.info(
+            logger.info(
                 f"File already exists but overwrite is True, will overwrite: {filepath}"
             )
 
@@ -372,7 +374,7 @@ class MGazine(StreamMixin):
             httpx_client
             or self._mgnifier_helper(_url, cache_dir=None).exec.httpx_client
         )
-        logging.debug(
+        logger.debug(
             f"Starting download: alias={_alias} url={_url} dest={filepath} overwrite={overwrite} client={getattr(client, '__class__', str(client))}",
         )
 
@@ -457,20 +459,20 @@ class MGazine(StreamMixin):
 
         # make dir if not exists
         to_dir = Path(to_dir)
-        logging.debug(f"Creating directory (if not exists): {to_dir}")
+        logger.debug(f"Creating directory (if not exists): {to_dir}")
         to_dir.mkdir(parents=True, exist_ok=True)
 
         # prep full path
         filepath = to_dir / filename if filename else to_dir / _alias
-        logging.debug(f"Prepared file path for async download: {filepath}")
+        logger.debug(f"Prepared file path for async download: {filepath}")
         # check if file exists and handle overwrite behavior
         if filepath.exists() and not overwrite:
-            logging.info(
+            logger.info(
                 f"File already exists and overwrite is False, skipping download: {filepath}"
             )
             return
         elif filepath.exists() and overwrite:
-            logging.info(
+            logger.info(
                 f"File already exists but overwrite is True, will overwrite: {filepath}"
             )
 
@@ -546,9 +548,9 @@ class MGazine(StreamMixin):
         >>> mg.download_all("download_to_here") # doctest: +SKIP
         """
 
-        logging.debug("Initializing client once for all downloads")
+        logger.debug("Initializing client once for all downloads")
         mg = self._mgnifier_helper()
-        logging.debug(f"MGnifier helper created: {mg}")
+        logger.debug(f"MGnifier helper created: {mg}")
 
         with mg.exec.httpx_client as client:
             aliases = list(self.url_dict.keys())
@@ -569,11 +571,11 @@ class MGazine(StreamMixin):
                         overwrite=overwrite,
                     )
                 except httpx.ConnectError as ce:
-                    logging.error(
+                    logger.error(
                         f"Connection error occurred while downloading {alias}: {ce}"
                     )
                 except Exception as e:
-                    logging.error(f"Error occurred while downloading {alias}: {e}")
+                    logger.error(f"Error occurred while downloading {alias}: {e}")
 
     async def adownload_all(
         self,
@@ -609,9 +611,9 @@ class MGazine(StreamMixin):
 
         """
 
-        logging.debug("Initializing async client once for all downloads")
+        logger.debug("Initializing async client once for all downloads")
         mg = self._mgnifier_helper()
-        logging.debug(f"MGnifier helper created: {mg}")
+        logger.debug(f"MGnifier helper created: {mg}")
 
         async with mg.exec.httpx_aclient as client:
 
@@ -638,12 +640,12 @@ class MGazine(StreamMixin):
                     await f
                 except httpx.ConnectError as ce:
                     # flag and continue with downloads
-                    logging.error(
+                    logger.error(
                         f"Connection error occurred while downloading {f}: {ce}"
                     )
                 except Exception as e:
                     # flag and continue with downloads ..
-                    logging.error(f"Error occurred while downloading {f}: {e}")
+                    logger.error(f"Error occurred while downloading {f}: {e}")
 
     # helpers for getting naming things
     def _get_url_by_alias(
@@ -756,7 +758,7 @@ class MGazine(StreamMixin):
         """
 
         if alias and url:
-            logging.debug("Both `alias` and `url` provided, ignoring `url`.")
+            logger.debug("Both `alias` and `url` provided, ignoring `url`.")
             url = self._get_url_by_alias(alias)
         elif alias and not url:
             url = self._get_url_by_alias(alias)

@@ -1,23 +1,16 @@
 import hashlib
 import json
 import logging
+
+logger = logging.getLogger(__name__)
 from getpass import getpass
 from pathlib import Path
 from time import time
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 from platformdirs import user_cache_dir
-from pydantic import (
-    Field,
-    HttpUrl,
-    field_serializer,
-)
-from pydantic_settings import (
-    BaseSettings,
-    SettingsConfigDict,
-)
+from pydantic import Field, HttpUrl, field_serializer
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from mgnipy._models.constants.CONSTANTS import SupportedApiVersions
 from mgnipy.emgapi_v2_client import Client
@@ -186,7 +179,7 @@ class MGnipyConfig(BaseMGnipyConfig):
         """
         # if already configured return them
         if self.mg_user and self.mg_password:
-            logging.debug("Using configured MGnify credentials")
+            logger.debug("Using configured MGnify credentials")
             return self.mg_user, self.mg_password
 
         if interactive:
@@ -217,11 +210,11 @@ class MGnipyConfig(BaseMGnipyConfig):
         Obtains an authentication token using the MGnify username and password.
         If credentials are not available, can prompt the user to enter them.
         """
-        logging.debug("getting username and password...")
+        logger.debug("getting username and password...")
         username, password = self._get_login(interactive=interactive)
-        logging.debug("retrieved username and password...")
+        logger.debug("retrieved username and password...")
         # prep body
-        logging.debug("prepping body for token request...")
+        logger.debug("prepping body for token request...")
         body = WebinTokenRequest(
             username=username,
             password=password,
@@ -229,17 +222,17 @@ class MGnipyConfig(BaseMGnipyConfig):
 
         try:
             # requesting token from API
-            logging.debug("requesting token from API...")
+            logger.debug("requesting token from API...")
             with self._unauth_client() as client:
                 resp = token_obtain_sliding.sync(client=client, body=body)
             token = resp.token if resp else None
             # if successful cache it and return
             if token:
-                logging.debug("successfully obtained auth token, caching it...")
+                logger.debug("successfully obtained auth token, caching it...")
                 self._save_cached_token(token)
             return token
         except Exception:
-            logging.debug("Failed to obtain authentication token.")
+            logger.debug("Failed to obtain authentication token.")
             return None
 
     def verify_auth_token(self, token: Optional[str] = None) -> bool:
@@ -309,18 +302,18 @@ class MGnipyConfig(BaseMGnipyConfig):
         # 1. check cache first
         cached = self._load_cached_token()
         if cached and not self.auth_token:
-            logging.debug("Loaded auth token from cache")
+            logger.debug("Loaded auth token from cache")
             self.auth_token = cached
 
         # 1.5. verify if is cached or existing token
         if self.auth_token:
             # if is valid try refresh
             if self.verify_auth_token(self.auth_token):
-                logging.debug("Valid auth token found, refreshing it...")
+                logger.debug("Valid auth token found, refreshing it...")
                 self.auth_token = self.refresh_auth_token(self.auth_token)
             else:
                 # then clear it from cache
-                logging.debug(
+                logger.debug(
                     "Invalid auth token found, clearing cache and trying to obtain new one..."
                 )
                 self._clear_cached_token()
@@ -328,10 +321,10 @@ class MGnipyConfig(BaseMGnipyConfig):
 
         # 2. try to obtain new token :) and caches
         if self.auth_token is None:
-            logging.debug("No valid auth token available, obtaining new one...")
+            logger.debug("No valid auth token available, obtaining new one...")
             self.auth_token = self.obtain_auth_token(interactive=interactive)
             if not self.mg_user and not self.mg_password:
-                logging.debug(
+                logger.debug(
                     "No login credentials provided, unable to obtain auth_token."
                 )
 
