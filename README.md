@@ -1,26 +1,38 @@
 # MGni.py
 
-MGni.py (pronounced MAG-nee-pie) is a Python wrapper for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/docs/). It provides a high-level, Pythonic interface to query metagenomics data and metadata from the MGnify database.
+MGni.py (pronounced MAG-nee-pie) is a lightweight python client and toolkit for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2/).
+
+![mgnipy schematic](docs/assets/mgnipy_figure.gif)
+
+## Contents
+
+- [Features](#features)
+- [Available API Endpoints](#available-api-endpoints)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Additional Documentation](#additional-documentation)
+- [Development](#development)
+- [License](#license)
+- [Citation](#citation)
 
 ## Features
 
-- **Simple, Pythonic API** — Query MGnify studies, samples, analyses, etc. using an intuitive syntax
-- **Sync and Async support** — Built on `httpx` with async/await support
-- **Data export** — Multiple output formats including pandas and polars DataFrames
-- **Caching** — Option for disk caching to reduce redundant API calls and allow resuming
+- **FAIR**: More findable MGnify analyses and metadata, returned in familiar metagenomics data formats (e.g., GFF, [Darwin Core](https://dwc.tdwg.org/), Dataframes[[pandas](https://pandas.pydata.org/docs/), [polars](https://docs.pola.rs/), [anndata](https://anndata.scverse.org/en/stable/)])
+- **Simplifies API interactions:** Let MGni.Py handle the complexity of building, executing, and parsing API calls so you can focus on the data!
+- **Fast:** MGni.Py uses caching to speed up API expolation, as well as supports both sync and async API calls
 
-## Available API Endpoints
+## [Available API Endpoints](https://www.ebi.ac.uk/metagenomics/api/v2/#/)
 
-- **Studies**: MGnify studies (collections of samples, runs, assemblies and analyses derived from ENA studies/projects).
-- **Samples**: MGnify samples (based on ENA/BioSamples; individual biological samples).
+- **Studies**: MGnify studies are based on ENA studies/projects, and are collections of samples, runs, assemblies, and analyses associated with a certain set of experiments.
+- **Samples**: MGnify samples are based on ENA/BioSamples samples, and represent individual biological samples.
 - **Runs**: Sequencing runs (ENA run accessions; individual sequencing runs of a sample).
 - **Assemblies**: Metagenome assemblies (equivalent to ENA assemblies for one or more runs).
-- **Analyses**: Pipeline analyses (results of running MGnify pipelines on runs or assemblies; includes taxonomic and functional annotations).
-- **Publications**: Publications that describe or analyse MGnify Studies/datasets.
-- **Genomes**: Annotated draft genomes (isolates or MAGs) arranged in biome-specific catalogues.
-- **Biomes**: List all biomes in the MGnify database.
+- **Analyses**: MGnify analyses are runs of a standard pipeline on an individual sequencing run or assembly. They can include collections of taxonomic and functional annotations.
+- **Publications**: Publications (e.g. journal articles) may describe or analyse the content of MGnify Studies or their corresponding datasets in ENA.
+- **Genomes**: MGnify Genomes are annotated draft genomes based on either isolates, or metagenome-assembled genomes (MAGs). They are arranged in biome-specific catalogues.
+- **Biomes**: The hierarchical [GOLD ecosystem classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) biomes represented in MGnify.
 
-#### Note on private data:
+### **Note:** Private Data
 
 - To access your private data in any of these API endpoints you just need your MGnify user and password to obtain a valid sliding auth token via the [MGnify Authentication endpoints](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding).
 - for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
@@ -46,7 +58,7 @@ uv sync --all-groups  # or: pip install -e ".[dev,docs]"
 
 ## Quick Start
 
-### Initialize and explore
+### 🚀 1. Initialize `mgnipy.MGnipy`
 
 ```python
 from mgnipy import MGnipy
@@ -58,8 +70,9 @@ mg = MGnipy()
 mg.list_resources()
 ```
 
-### Query resources with filtering
+### 🔎 2. Search resources with a `mgnipy.MGnifier`
 
+#### Building the query set
 ```python
 # Search for studies keyword
 studies = mg.studies(
@@ -68,7 +81,10 @@ studies = mg.studies(
 
 # Can preview requests before fetching
 studies.explain()
+```
 
+#### Executing the queries
+```python
 # get page by page via .get(), getting 3 pages
 for _ in range(3)
     studies.get()
@@ -79,11 +95,14 @@ for i in range(4,7):
 
 # OR potentially all at once in large batches (also async option .abulk_fetch())
 studies.bulk_fetch()
+
+# then can enrich with detailed metadata
+studies.enrich_details()
 ```
 
-### Multiple output formats
-
+#### Viewing the metadata
 ```python
+# as pandas
 pd_metadata = studies.to_df()
 
 # As polars DataFrame
@@ -91,9 +110,12 @@ pl_metadata = studies.to_polars()
 
 # as json
 json_metadata = studies.to_json()
+
+# with all details
+detailed_metadata = studies.details_df()
 ```
 
-### Downloading the analyzed data
+### 🗃️ 3. Explore a `mgnipy.MGzine` of datasets
 
 ```python
 # accessing the mgazine of datasets
@@ -101,12 +123,24 @@ mgazine = studies.datasets
 
 # preview
 print(mgazine)
+```
 
+### Downloading the data
+```python
 # download file by file 
 mgazine.download(to_dir="downloads_folder", alias="mgnify_file_alias.fasta.gz")
 
 # or download all 
 mgazine.download_all(to_dir="downloads_folder")
+```
+
+### Reading in the data
+```python
+# support for tsv, csv, txt, jsonl
+taxa_table = mgazine.stream(alias="mgnify_file_alias.tsv", df_engine="polars")
+
+# support for fasta, gff, biom via skbio
+skbio_fasta = mgazine.stream(alias="mgnify_file_alias.fasta.gz")
 ```
 
 ## Additional Documentation
