@@ -1,0 +1,1087 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Accessing MGnify API Resources &#8212; mgnipy 0.1.dev1+g0844edfe8 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=a30989c5"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/getting-started/3_searching_resources';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Downloading MGnify Study data" href="4_downloading_data.html" />
+    <link rel="prev" title="Installation" href="2_installation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0844edfe8 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0844edfe8 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_installation.html">Installation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Accessing MGnify API Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_downloading_data.html">Downloading MGnify Study data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/2_mgnifier_proxies.html"><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/3_mgnify_list_biomes.html">A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> of records</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/6_access_private_data.html">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/getting-started/3_searching_resources.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/getting-started/3_searching_resources.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/getting-started/3_searching_resources.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/getting-started/3_searching_resources.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Accessing MGnify API Resources</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-up-a-mgnipy-mgnipy-client">Starting up a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-the-available-resources">Exploring the available resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-a-resource">Accessing a Resource</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-a-resource">Searching a Resource</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wrap-up">Wrap Up:</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="accessing-mgnify-api-resources">
+<h1>Accessing MGnify API Resources<a class="headerlink" href="#accessing-mgnify-api-resources" title="Link to this heading">#</a></h1>
+<p>The MGnify API provides access to multiple types of resources (or endpoints) such as studies, samples, analyses, runs, and more. This notebook shows you how to</p>
+<ol class="arabic simple">
+<li><p><strong>Discover</strong> what resources are available</p></li>
+<li><p><strong>Inspect</strong> what query parameters each resource accepts</p></li>
+</ol>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install mgnipy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="starting-up-a-mgnipy-mgnipy-client">
+<h2>Starting up a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client<a class="headerlink" href="#starting-up-a-mgnipy-mgnipy-client" title="Link to this heading">#</a></h2>
+<p>For more details on configuring mgnipy and the detault configuration go to the “congifuration” page</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+<span class="c1"># init</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
+    <span class="c1"># add a configuration</span>
+    <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># print the MGnipy instance to see its configuration (credentials are not printed)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MG</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnipy(config=api_version=&lt;SupportedApiVersions.V2: &#39;v2&#39;&gt; base_url=HttpUrl(&#39;https://www.ebi.ac.uk/&#39;) cache_dir=None)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:numcodecs:Registering codec &#39;zlib&#39;
+DEBUG:numcodecs:Registering codec &#39;gzip&#39;
+DEBUG:numcodecs:Registering codec &#39;bz2&#39;
+DEBUG:numcodecs:Registering codec &#39;lzma&#39;
+DEBUG:numcodecs:Registering codec &#39;blosc&#39;
+DEBUG:numcodecs:Registering codec &#39;zstd&#39;
+DEBUG:numcodecs:Registering codec &#39;lz4&#39;
+DEBUG:numcodecs:Registering codec &#39;astype&#39;
+DEBUG:numcodecs:Registering codec &#39;delta&#39;
+DEBUG:numcodecs:Registering codec &#39;quantize&#39;
+DEBUG:numcodecs:Registering codec &#39;fixedscaleoffset&#39;
+DEBUG:numcodecs:Registering codec &#39;packbits&#39;
+DEBUG:numcodecs:Registering codec &#39;categorize&#39;
+DEBUG:numcodecs:Registering codec &#39;pickle&#39;
+DEBUG:numcodecs:Registering codec &#39;base64&#39;
+DEBUG:numcodecs:Registering codec &#39;shuffle&#39;
+DEBUG:numcodecs:Registering codec &#39;bitround&#39;
+DEBUG:numcodecs:Registering codec &#39;crc32&#39;
+DEBUG:numcodecs:Registering codec &#39;adler32&#39;
+DEBUG:numcodecs:Registering codec &#39;jenkins_lookup3&#39;
+DEBUG:numcodecs:Registering codec &#39;json2&#39;
+DEBUG:numcodecs:Registering codec &#39;vlen-utf8&#39;
+DEBUG:numcodecs:Registering codec &#39;vlen-bytes&#39;
+DEBUG:numcodecs:Registering codec &#39;vlen-array&#39;
+DEBUG:numcodecs:Registering codec &#39;fletcher32&#39;
+DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="exploring-the-available-resources">
+<h2>Exploring the available resources<a class="headerlink" href="#exploring-the-available-resources" title="Link to this heading">#</a></h2>
+<p>We can learn more about the MGnify API and its available resources via the <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># to list all avail resources</span>
+<span class="n">MG</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;analyses&#39;,
+ &#39;analysis&#39;,
+ &#39;assemblies&#39;,
+ &#39;assembly&#39;,
+ &#39;genomes&#39;,
+ &#39;genome&#39;,
+ &#39;publications&#39;,
+ &#39;publication&#39;,
+ &#39;samples&#39;,
+ &#39;sample&#39;,
+ &#39;studies&#39;,
+ &#39;study&#39;,
+ &#39;runs&#39;,
+ &#39;run&#39;,
+ &#39;biomes&#39;,
+ &#39;biome&#39;,
+ &#39;catalogues&#39;,
+ &#39;catalogue&#39;,
+ &#39;private_studies&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>For more detail here we can describe the resource using the helper method <code class="docutils literal notranslate"><span class="pre">.describe_resource()</span></code> or <code class="docutils literal notranslate"><span class="pre">.describe_resources()</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;studies list endpoint:&quot;</span><span class="p">)</span>
+<span class="n">MG</span><span class="o">.</span><span class="n">describe_resource</span><span class="p">(</span><span class="s2">&quot;studies&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;analysis detail endpoint:&quot;</span><span class="p">)</span>
+<span class="n">MG</span><span class="o">.</span><span class="n">describe_resource</span><span class="p">(</span><span class="s2">&quot;analysis&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>studies list endpoint:
+List all studies analysed by MGnify
+
+MGnify studies inherit directly from studies (or projects) in ENA.
+
+Supported parameters:
+- order: ListMgnifyStudiesOrderType0 | None | Unset
+- biome_lineage: None | str | Unset The lineage to match, including all descendant biomes
+- has_analyses_from_pipeline: None | PipelineVersions | Unset If set, will only show studies with analyses from the specified MGnify pipeline version
+- search: None | str | Unset Search within study titles and accessions
+- page: int | Unset Default: 1.
+- page_size: int | None | Unset
+
+----------
+
+analysis detail endpoint:
+Get MGnify analysis by accession
+
+MGnify analyses are accessioned with an MYGA-prefixed identifier and correspond to an individual Run
+or Assembly analysed by a Pipeline.
+
+Supported parameters:
+- accession: str
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.mgnipy:Using proxy class &lt;class &#39;mgnipy.V2.proxies.studies.Studies&#39;&gt; to describe resource &#39;studies&#39;
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource studies
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for studies
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for studies
+INFO:mgnipy.V2.query_set:Attempting to load cached results for studies
+DEBUG:mgnipy.V2.mixins:Skipping cache load for studies because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource studies
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+DEBUG:mgnipy.mgnipy:Using proxy class &lt;class &#39;mgnipy.V2.proxies.analyses.AnalysisDetail&#39;&gt; to describe resource &#39;analysis&#39;
+DEBUG:mgnipy.V2.proxies:Resolved id param key for &#39;analysis&#39;: &#39;accession&#39;
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource analysis
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for analysis
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for analysis
+INFO:mgnipy.V2.query_set:Attempting to load cached results for analysis
+DEBUG:mgnipy.V2.mixins:Skipping cache load for analysis because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource analysis
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+</pre></div>
+</div>
+</div>
+</div>
+<p>Each of the listed resource proxies above is a <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> that maps directly to a MGnify API endpoint. More information on the proxies can be found on the <a class="reference internal" href="../../reference/mgnipy.V2.html#mgnipy.V2.MGnifier.TODO" title="mgnipy.V2.MGnifier.TODO"><span class="xref myst py py-attr">proxies page</span></a>, but at a glance:</p>
+<ul>
+<li><p>the plural resources (e.g. <code class="docutils literal notranslate"><span class="pre">analyses</span></code> <code class="docutils literal notranslate"><span class="pre">studies</span></code>) represent collection/list endpoints from the API</p>
+<p>e.g.</p>
+<ul class="simple">
+<li><p><strong>Studies</strong>: Lists of MGnify studies</p></li>
+<li><p><strong>Analyses</strong>: Lists of MGnify pipeline analyses on runs or assemblies</p></li>
+</ul>
+<p>Usually we use <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> endpoints to search or filter for a list of the resource</p>
+</li>
+<li><p>the singular (e.g. <code class="docutils literal notranslate"><span class="pre">analysis</span></code> <code class="docutils literal notranslate"><span class="pre">study</span></code>) represent a detail endpoint (i.e., getting the details of a single study, analysis, etc)</p>
+<p>e.g.</p>
+<ul class="simple">
+<li><p><strong>Study</strong>: Details/metadata for a study given its study accession id</p></li>
+<li><p><strong>Analysis</strong>: Details/metadata for a MGnify Analysis given its MGnify analysis accession id</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">MGnifyDetail</span></code> endpoints are used to get the metadata for a given item.</p>
+</li>
+<li><p>typically one would:</p>
+<ol class="arabic simple">
+<li><p>first acquire a MGnifyList of <code class="docutils literal notranslate"><span class="pre">Studies</span></code></p></li>
+<li><p>and then for each item (study) in <code class="docutils literal notranslate"><span class="pre">Studies</span></code> get their MGnifyDetail <code class="docutils literal notranslate"><span class="pre">StudyDetail</span></code></p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="accessing-a-resource">
+<h2>Accessing a Resource<a class="headerlink" href="#accessing-a-resource" title="Link to this heading">#</a></h2>
+<p>To use a given endpoint you can access it as an attribute of your <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> instance.</p>
+<p>By using <code class="docutils literal notranslate"><span class="pre">MGnipy().&lt;chosen_resource&gt;</span></code> the resource proxy (aka endpoint-specific MGnifier) is automatically configured</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># accessing Studies proxy as an attribute of MGnipy instance</span>
+<span class="n">studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">studies</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource studies
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for studies
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for studies
+INFO:mgnipy.V2.query_set:Attempting to load cached results for studies
+DEBUG:mgnipy.V2.mixins:Skipping cache load for studies because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource studies
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+</pre></div>
+</div>
+</div>
+</div>
+<p>again to help there are helper functions for each resource proxy such as <code class="docutils literal notranslate"><span class="pre">.list_supported_params()</span></code> <code class="docutils literal notranslate"><span class="pre">.describe_endpoint()</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># print for more info </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">studies</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># or helper to list supported query params for the endpoint</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">studies</span><span class="o">.</span><span class="n">list_supported_params</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># or a helper to describe corresponding API endpoint </span>
+<span class="n">studies</span><span class="o">.</span><span class="n">describe_endpoint</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnifier instance for resource: studies
+I.e., mgnipy.V2.proxies.studies.Studies
+----------------------------------------
+Base URL: https://www.ebi.ac.uk/
+Parameters: {}
+Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/studies?page=1
+Endpoint module: mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies
+Is list endpoint (returns paginated results): True
+Cache directory: None
+ 
+----------
+
+[&#39;order&#39;, &#39;biome_lineage&#39;, &#39;has_analyses_from_pipeline&#39;, &#39;search&#39;, &#39;page&#39;, &#39;page_size&#39;] 
+----------
+
+List all studies analysed by MGnify
+
+MGnify studies inherit directly from studies (or projects) in ENA.
+
+Supported parameters:
+- order: ListMgnifyStudiesOrderType0 | None | Unset
+- biome_lineage: None | str | Unset The lineage to match, including all descendant biomes
+- has_analyses_from_pipeline: None | PipelineVersions | Unset If set, will only show studies with analyses from the specified MGnify pipeline version
+- search: None | str | Unset Search within study titles and accessions
+- page: int | Unset Default: 1.
+- page_size: int | None | Unset
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Built request URL for studies: https://www.ebi.ac.uk/metagenomics/api/v2/studies?page=1
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="searching-a-resource">
+<h2>Searching a Resource<a class="headerlink" href="#searching-a-resource" title="Link to this heading">#</a></h2>
+<p>Using the supported params we can filter our <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code>s.</p>
+<p>For example, for <code class="docutils literal notranslate"><span class="pre">Studies</span></code> list we can <code class="docutils literal notranslate"><span class="pre">.filter</span></code> by <code class="docutils literal notranslate"><span class="pre">search</span></code> and <code class="docutils literal notranslate"><span class="pre">has_analyses_from_pipeline</span></code></p>
+<p>We can pass our search params either:</p>
+<ol class="arabic simple">
+<li><p>using <code class="docutils literal notranslate"><span class="pre">.filter()</span></code> <strong>after</strong> accessing the resource from MGnipy (as we had a few cells earlier) OR</p></li>
+<li><p><strong>during</strong> accessing the resource from MGnipy (see cell below)</p></li>
+</ol>
+<p>Note: <code class="docutils literal notranslate"><span class="pre">explain</span></code> provides a preview of the urls to be called to fulfil our search and populate the Studies list</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># MGnifyList example with studies endpoint</span>
+<span class="c1"># 1. filter method </span>
+<span class="n">filtered_studies</span> <span class="o">=</span> <span class="n">studies</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;chicken&quot;</span><span class="p">)</span>
+<span class="n">filtered_studies</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+<span class="c1"># or</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. directly with query params in the MGnipy instance attribute</span>
+<span class="n">filtered_studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">studies</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;chicken&quot;</span><span class="p">)</span>
+<span class="n">filtered_studies</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=1
+https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=2
+
+----------
+https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=1
+https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=2
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:mgnipy.V2.query_set:Filtering QuerySet for studies with keys: [&#39;search&#39;]
+DEBUG:mgnipy.V2.query_set:Cloning QuerySet for studies with overrides: [&#39;search&#39;]
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource studies
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for studies
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for studies
+INFO:mgnipy.V2.query_set:Attempting to load cached results for studies
+DEBUG:mgnipy.V2.mixins:Skipping cache load for studies because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource studies
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+INFO:mgnipy.V2.query_set:Reassigning endpoint module for studies
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for studies
+INFO:mgnipy.V2.query_set:Attempting to load cached results for studies
+DEBUG:mgnipy.V2.mixins:Skipping cache load for studies because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource studies
+DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f23c3d18b60&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7f23c3a022d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f23c3d19430&gt;
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 12:04:25 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;297&#39;)])
+INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=chicken&amp;page=1&amp;page_size=1 &quot;HTTP/1.1 200 OK&quot;
+DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:mgnipy.V2.query_executor:Computed count and num_requests: 36, 2
+INFO:mgnipy.V2.query_set:Listing request URLs for studies
+DEBUG:mgnipy.V2.query_set:Built request URL for studies: https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=1
+DEBUG:mgnipy.V2.query_set:Built request URL for studies: https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=2
+DEBUG:mgnipy.V2.query_set:Generated 2 URLs for studies
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource studies
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for studies
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for studies
+INFO:mgnipy.V2.query_set:Attempting to load cached results for studies
+DEBUG:mgnipy.V2.mixins:Skipping cache load for studies because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource studies
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource studies
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for studies
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for studies
+INFO:mgnipy.V2.query_set:Attempting to load cached results for studies
+DEBUG:mgnipy.V2.mixins:Skipping cache load for studies because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource studies
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f23c4d823f0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7f23c412acd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7f23c3a2b9b0&gt;
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 12:04:27 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;297&#39;)])
+INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=chicken&amp;page=1&amp;page_size=1 &quot;HTTP/1.1 200 OK&quot;
+DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:mgnipy.V2.query_executor:Computed count and num_requests: 36, 2
+INFO:mgnipy.V2.query_set:Listing request URLs for studies
+DEBUG:mgnipy.V2.query_set:Built request URL for studies: https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=1
+DEBUG:mgnipy.V2.query_set:Built request URL for studies: https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=chicken&amp;page=2
+DEBUG:mgnipy.V2.query_set:Generated 2 URLs for studies
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note: <code class="docutils literal notranslate"><span class="pre">MGnifyDetail</span></code>s can also be “filtered” but basically only by accession/id… For example</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># MGnifyDetail example with .study</span>
+<span class="c1"># 1. filter method </span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">study</span><span class="p">()</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">accession</span><span class="o">=</span><span class="s2">&quot;MGYS00000653&quot;</span><span class="p">)</span>
+<span class="n">study</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+
+<span class="c1"># or</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. directly with query params in the MGnipy instance attribute</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">study</span><span class="p">(</span><span class="n">accession</span><span class="o">=</span><span class="s2">&quot;MGYS00000653&quot;</span><span class="p">)</span>
+<span class="n">study</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00000653
+
+----------
+
+https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00000653
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.proxies:Resolved id param key for &#39;study&#39;: &#39;accession&#39;
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource study
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for study
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for study
+INFO:mgnipy.V2.query_set:Attempting to load cached results for study
+DEBUG:mgnipy.V2.mixins:Skipping cache load for study because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource study
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+INFO:mgnipy.V2.query_set:Filtering QuerySet for study with keys: [&#39;accession&#39;]
+DEBUG:mgnipy.V2.proxies:Resolved id param key for &#39;study&#39;: &#39;accession&#39;
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource study
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for study
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for study
+INFO:mgnipy.V2.query_set:Attempting to load cached results for study
+DEBUG:mgnipy.V2.mixins:Skipping cache load for study because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource study
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+INFO:mgnipy.V2.query_set:Reassigning endpoint module for study
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for study
+INFO:mgnipy.V2.query_set:Attempting to load cached results for study
+DEBUG:mgnipy.V2.mixins:Skipping cache load for study because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource study
+DEBUG:mgnipy.V2.query_executor:Computed count and num_requests: 1, 1
+INFO:mgnipy.V2.query_set:Listing request URLs for study
+DEBUG:mgnipy.V2.query_set:Built request URL for study: https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00000653
+DEBUG:mgnipy.V2.proxies:Resolved id param key for &#39;study&#39;: &#39;accession&#39;
+DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource study
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for study
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for study
+INFO:mgnipy.V2.query_set:Attempting to load cached results for study
+DEBUG:mgnipy.V2.mixins:Skipping cache load for study because cache is disabled
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource study
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+DEBUG:mgnipy.V2.query_executor:Computed count and num_requests: 1, 1
+INFO:mgnipy.V2.query_set:Listing request URLs for study
+DEBUG:mgnipy.V2.query_set:Built request URL for study: https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00000653
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="wrap-up">
+<h2>Wrap Up:<a class="headerlink" href="#wrap-up" title="Link to this heading">#</a></h2>
+<p>This page was a quick start demonstration of:</p>
+<ol class="arabic simple">
+<li><p>✅ Start up a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client with your desired configuration</p></li>
+<li><p>✅ Search in MGnify resources using a MGnifier glass</p></li>
+<li><p>❌ ~~Receive a MGazine of MGnify datasets~~ (go to next page)</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/getting-started"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2_installation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Installation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4_downloading_data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Downloading MGnify Study data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-up-a-mgnipy-mgnipy-client">Starting up a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-the-available-resources">Exploring the available resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-a-resource">Accessing a Resource</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-a-resource">Searching a Resource</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wrap-up">Wrap Up:</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

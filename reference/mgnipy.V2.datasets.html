@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.datasets module &#8212; mgnipy 0.1.1 documentation</title>
+    <title>mgnipy.V2.datasets package &#8212; mgnipy 0.1.dev1+g0844edfe8 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=55ac272d"></script>
+    <script src="../_static/documentation_options.js?v=a30989c5"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <link rel="icon" href="../_static/mgnipy.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mgnipy.V2.core module" href="mgnipy.V2.core.html" />
+    <link rel="next" title="mgnipy.V2.datasets.taxonomic module" href="mgnipy.V2.datasets.taxonomic.html" />
     <link rel="prev" title="mgnipy.V2.proxies.studies module" href="mgnipy.V2.proxies.studies.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.1 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.1 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0844edfe8 documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0844edfe8 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -187,24 +187,35 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Quick Start</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/installation.html">📦 Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/available-resources.html">📚 Intro to MGnify Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/mgnify-biomes.html">🔎 Intro to querying MGnify Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/demo-mgnify-tomatoes.html">🕵️‍♀️ Searching for MGnify Studies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demos/get_all_analyses_for_study.html">🎁 Downloading MGnify Analyses for a given Study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/2_installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/3_searching_resources.html">Accessing MGnify API Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/4_downloading_data.html">Downloading MGnify Study data</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Configuration</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/understanding-cache.html">🗄️ Getting to know the cache</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started/access-private-data.html">🔐 Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/2_mgnifier_proxies.html"><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/3_mgnify_list_biomes.html">A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> of records</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">mgnipy.V2.datasets module</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">mgnipy.V2.datasets package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.V2.datasets.taxonomic.html">mgnipy.V2.datasets.taxonomic module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">mgnipy.V2.datasets package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mgnipy.V2.datasets.taxonomic.html">mgnipy.V2.datasets.taxonomic module</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
@@ -213,10 +224,10 @@
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development Guide</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">🤝 What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">Docs creation</a></li>
 </ul>
 
@@ -403,7 +414,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>mgnipy.V2.datasets module</h1>
+    <h1>mgnipy.V2.datasets package</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -417,9 +428,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.adownload"><code class="docutils literal notranslate"><span class="pre">MGazine.adownload()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.adownload_all"><code class="docutils literal notranslate"><span class="pre">MGazine.adownload_all()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.aliases"><code class="docutils literal notranslate"><span class="pre">MGazine.aliases</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.by_pipeline_version"><code class="docutils literal notranslate"><span class="pre">MGazine.by_pipeline_version()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.by_short_desc"><code class="docutils literal notranslate"><span class="pre">MGazine.by_short_desc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.download"><code class="docutils literal notranslate"><span class="pre">MGazine.download()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.download_all"><code class="docutils literal notranslate"><span class="pre">MGazine.download_all()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.downloads_df"><code class="docutils literal notranslate"><span class="pre">MGazine.downloads_df</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.list_pipeline_version"><code class="docutils literal notranslate"><span class="pre">MGazine.list_pipeline_version()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.list_short_descriptions"><code class="docutils literal notranslate"><span class="pre">MGazine.list_short_descriptions()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream"><code class="docutils literal notranslate"><span class="pre">MGazine.stream()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_biom"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_biom()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_fasta"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_fasta()</span></code></a></li>
@@ -428,17 +443,15 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_html"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_html()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_json"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_json()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_jsonl"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_jsonl()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_pandas"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_pandas()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_polars"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_polars()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_tree"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_tree()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_tsv"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_tsv()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_txt"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_txt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.url_dict"><code class="docutils literal notranslate"><span class="pre">MGazine.url_dict</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.url_list"><code class="docutils literal notranslate"><span class="pre">MGazine.url_list</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazineCurator"><code class="docutils literal notranslate"><span class="pre">MGazineCurator</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazineCurator.go_terms"><code class="docutils literal notranslate"><span class="pre">MGazineCurator.go_terms()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
             </nav>
         </div>
@@ -451,7 +464,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="module-mgnipy.V2.datasets">
-<span id="mgnipy-v2-datasets-module"></span><h1>mgnipy.V2.datasets module<a class="headerlink" href="#module-mgnipy.V2.datasets" title="Link to this heading">#</a></h1>
+<span id="mgnipy-v2-datasets-package"></span><h1>mgnipy.V2.datasets package<a class="headerlink" href="#module-mgnipy.V2.datasets" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.datasets.</span></span><span class="sig-name descname"><span class="pre">MGazine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">downloads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazine" title="Link to this definition">#</a></dt>
@@ -560,6 +573,34 @@ concurrent <cite>adownload</cite> calls for all aliases.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.by_pipeline_version">
+<span class="sig-name descname"><span class="pre">by_pipeline_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazine.by_pipeline_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.by_pipeline_version" title="Link to this definition">#</a></dt>
+<dd><p>Group downloads by pipeline version based on the ‘pipeline_version’ column in the downloads dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary where keys are pipeline versions and values are lists of download dictionaries.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)">dict <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.by_short_desc">
+<span class="sig-name descname"><span class="pre">by_short_desc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazine.by_short_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.by_short_desc" title="Link to this definition">#</a></dt>
+<dd><p>Group downloads by short description based on the ‘short_description’ column in the downloads dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary where keys are short descriptions and values are lists of download dictionaries.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)">dict <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.download">
 <span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">httpx_client</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazine.download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.download" title="Link to this definition">#</a></dt>
 <dd><p>Download a file from an alias or URL to a local directory.</p>
@@ -643,27 +684,112 @@ instance’s downloads list.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.list_pipeline_version">
+<span class="sig-name descname"><span class="pre">list_pipeline_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazine.list_pipeline_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.list_pipeline_version" title="Link to this definition">#</a></dt>
+<dd><p>Return a list of pipeline versions extracted from the download groups.</p>
+<p>This looks for patterns like ‘.v4.1’ in the ‘download_group’ field
+of the downloads and extracts the version number.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">downloads</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="s2">&quot;example.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://ex/x&quot;</span><span class="p">,</span> <span class="s2">&quot;file_type&quot;</span><span class="p">:</span> <span class="s2">&quot;txt&quot;</span><span class="p">,</span> <span class="s2">&quot;download_group&quot;</span><span class="p">:</span> <span class="s2">&quot;group.v4.1&quot;</span><span class="p">,</span> <span class="s2">&quot;pipeline_version&quot;</span><span class="p">:</span> <span class="s1">&#39;v4_1&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="s2">&quot;example2.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://ex/x2&quot;</span><span class="p">,</span> <span class="s2">&quot;file_type&quot;</span><span class="p">:</span> <span class="s2">&quot;txt&quot;</span><span class="p">,</span> <span class="s2">&quot;download_group&quot;</span><span class="p">:</span> <span class="s2">&quot;group.v5&quot;</span><span class="p">,</span> <span class="s2">&quot;pipeline_version&quot;</span><span class="p">:</span> <span class="s1">&#39;v5&#39;</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MGazine</span><span class="p">(</span><span class="n">downloads</span><span class="p">)</span><span class="o">.</span><span class="n">list_pipeline_version</span><span class="p">()</span>
+<span class="go">[&#39;v4_1&#39;, &#39;v5&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.list_short_descriptions">
+<span class="sig-name descname"><span class="pre">list_short_descriptions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazine.list_short_descriptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.list_short_descriptions" title="Link to this definition">#</a></dt>
+<dd><p>Return a list of short descriptions extracted from the download groups.</p>
+<p>This looks for patterns like ‘shortdesc’ in the ‘download_group’ field
+of the downloads and extracts the short description.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">downloads</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="s2">&quot;example.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://ex/x&quot;</span><span class="p">,</span> <span class="s2">&quot;file_type&quot;</span><span class="p">:</span> <span class="s2">&quot;txt&quot;</span><span class="p">,</span> <span class="s2">&quot;download_group&quot;</span><span class="p">:</span> <span class="s2">&quot;group.shortdesc1&quot;</span><span class="p">,</span> <span class="s2">&quot;pipeline_version&quot;</span><span class="p">:</span> <span class="mf">4.1</span><span class="p">,</span> <span class="s2">&quot;short_description&quot;</span><span class="p">:</span> <span class="s2">&quot;shortdesc1&quot;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="s2">&quot;example2.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://ex/x2&quot;</span><span class="p">,</span> <span class="s2">&quot;file_type&quot;</span><span class="p">:</span> <span class="s2">&quot;txt&quot;</span><span class="p">,</span> <span class="s2">&quot;download_group&quot;</span><span class="p">:</span> <span class="s2">&quot;group.shortdesc2&quot;</span><span class="p">,</span> <span class="s2">&quot;pipeline_version&quot;</span><span class="p">:</span> <span class="mf">4.1</span><span class="p">,</span> <span class="s2">&quot;short_description&quot;</span><span class="p">:</span> <span class="s2">&quot;shortdesc2&quot;</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MGazine</span><span class="p">(</span><span class="n">downloads</span><span class="p">)</span><span class="o">.</span><span class="n">list_short_descriptions</span><span class="p">()</span>
+<span class="go">[&#39;shortdesc1&#39;, &#39;shortdesc2&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.stream">
 <span class="sig-name descname"><span class="pre">stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream" title="Link to this definition">#</a></dt>
 <dd><p>Streams a single download based on its alias or url.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is specified then iterators of dataframes or strings
 will be returned; otherwise the full data will be returned as a single
 object.</p>
+<section id="supported-formats-and-their-handlers">
+<h2>Supported formats and their handlers<a class="headerlink" href="#supported-formats-and-their-handlers" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>tsv: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_pandas" title="mgnipy.V2.datasets.MGazine.stream_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_pandas()</span></code></a> (pandas) or <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_polars" title="mgnipy.V2.datasets.MGazine.stream_polars"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_polars()</span></code></a> (polars).
+Gzipped TSVs are supported via the gzip/compression options.</p></li>
+<li><p>csv: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_pandas" title="mgnipy.V2.datasets.MGazine.stream_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_pandas()</span></code></a> / <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_polars" title="mgnipy.V2.datasets.MGazine.stream_polars"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_polars()</span></code></a> (sep=”,”).</p></li>
+<li><p>txt: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_txt" title="mgnipy.V2.datasets.MGazine.stream_txt"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_txt()</span></code></a> (returns full text or yields line chunks).</p></li>
+<li><p>html: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_html" title="mgnipy.V2.datasets.MGazine.stream_html"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_html()</span></code></a> (opens URL in browser).</p></li>
+<li><p>fasta: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_fasta" title="mgnipy.V2.datasets.MGazine.stream_fasta"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_fasta()</span></code></a> (scikit-bio generator).</p></li>
+<li><p>gff: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_gff" title="mgnipy.V2.datasets.MGazine.stream_gff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_gff()</span></code></a> (scikit-bio generator).</p></li>
+<li><p>biom: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_biom" title="mgnipy.V2.datasets.MGazine.stream_biom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_biom()</span></code></a> (scikit-bio generator).</p></li>
+<li><p>gzipped HTTP resources: use <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_gzipped" title="mgnipy.V2.datasets.MGazine.stream_gzipped"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_gzipped()</span></code></a> for a file-like object,
+or <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_json" title="mgnipy.V2.datasets.MGazine.stream_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_json()</span></code></a> for gzipped JSON content.</p></li>
+<li><p>jsonl / ndjson: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_jsonl" title="mgnipy.V2.datasets.MGazine.stream_jsonl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_jsonl()</span></code></a> (pandas or polars modes).</p></li>
+<li><p>json: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_json" title="mgnipy.V2.datasets.MGazine.stream_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_json()</span></code></a> (returns full JSON or streams via ijson).</p></li>
+<li><p>tree/newick: handled by <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_tree" title="mgnipy.V2.datasets.MGazine.stream_tree"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_tree()</span></code></a> (scikit-bio newick reader).</p></li>
+<li><p>other: if the URL ends with <code class="docutils literal notranslate"><span class="pre">.json</span></code> it’s streamed via <a class="reference internal" href="#mgnipy.V2.datasets.MGazine.stream_json" title="mgnipy.V2.datasets.MGazine.stream_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stream_json()</span></code></a>;
+otherwise use the download helper for unsupported binary formats.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">param alias<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The alias of the download to stream.</p>
+</dd>
+<dt class="field-even">type alias<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[str]</p>
+</dd>
+<dt class="field-odd">param url<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The url of the download to stream.</p>
+</dd>
+<dt class="field-even">type url<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[HttpUrl]</p>
+</dd>
+<dt class="field-odd">param chunksize<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The size of the chunks to read from the stream.</p>
+</dd>
+<dt class="field-even">type chunksize<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[int]</p>
+</dd>
+<dt class="field-odd">param max_skip<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum number of rows to skip before raising an error. Default is 5.</p>
+</dd>
+<dt class="field-even">type max_skip<span class="colon">:</span></dt>
+<dd class="field-even"><p>int, optional</p>
+</dd>
+<dt class="field-odd">param **kwargs<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Additional keyword arguments to pass to the streamer function.</p>
+</dd>
+<dt class="field-even">returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The streamer result for the resolved alias or url.</p>
+</dd>
+<dt class="field-odd">rtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</section>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>alias</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>]</em>) – The alias of the download to stream.</p></li>
-<li><p><strong>url</strong> (<em>Optional</em><em>[</em><em>HttpUrl</em><em>]</em>) – The url of the download to stream.</p></li>
-<li><p><strong>chunksize</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>]</em>) – The size of the chunks to read from the stream.</p></li>
-<li><p><strong>max_skip</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – The maximum number of rows to skip before raising an error. Default is 5.</p></li>
-<li><p><strong>**kwargs</strong> – Additional keyword arguments to pass to the streamer function.</p></li>
+<li><p><strong>alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>url</strong> (<em>HttpUrl</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>max_skip</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The streamer result for the resolved alias or url.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Any</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Any</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -791,13 +917,14 @@ streaming file-like object is returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.stream_jsonl">
-<span class="sig-name descname"><span class="pre">stream_jsonl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pd_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream_jsonl" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stream_jsonl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe_engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pandas'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">df_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream_jsonl" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 <li><p><strong>orient</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Literal</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><em>'records'</em><em>, </em><em>'split'</em><em>, </em><em>'index'</em><em>, </em><em>'columns'</em><em>, </em><em>'values'</em><em>, </em><em>'table'</em><em>] </em><em>| </em><em>None</em>)</p></li>
 <li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>dataframe_engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Literal</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><em>'pandas'</em><em>, </em><em>'polars'</em><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -807,21 +934,8 @@ streaming file-like object is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.stream_tree">
-<span class="sig-name descname"><span class="pre">stream_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">skbio_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream_tree" title="Link to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Generator</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.stream_tsv">
-<span class="sig-name descname"><span class="pre">stream_tsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pd_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream_tsv" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.stream_pandas">
+<span class="sig-name descname"><span class="pre">stream_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pd_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream_pandas" title="Link to this definition">#</a></dt>
 <dd><p>Read a TSV from a URL or local file with resilient header handling.</p>
 <p>The helper will retry with increasing <code class="docutils literal notranslate"><span class="pre">skiprows</span></code> when <code class="docutils literal notranslate"><span class="pre">pandas</span></code>
 raises a <code class="docutils literal notranslate"><span class="pre">ParserError</span></code> (useful for files with extra header lines).
@@ -835,6 +949,7 @@ When <code class="docutils literal notranslate"><span class="pre">chunksize</spa
 of that many rows. If None, returns a single DataFrame.</p></li>
 <li><p><strong>max_skip</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>) – The maximum number of lines to skip when trying to parse the TSV.</p></li>
 <li><p><strong>**pd_kwargs</strong> – Additional keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">pd.read_csv</span></code>.</p></li>
+<li><p><strong>low_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -850,6 +965,54 @@ if <code class="docutils literal notranslate"><span class="pre">chunksize</span>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" rel="noreferrer" target="_blank" title="(in Python v3.14)"><strong>RuntimeError</strong> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> – If the TSV cannot be parsed after skipping up to <code class="docutils literal notranslate"><span class="pre">max_skip</span></code> lines.</p></li>
 <li><p><strong>Pandas ParserError</strong> – If the TSV cannot be parsed due to a format error (after retries).</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.stream_polars">
+<span class="sig-name descname"><span class="pre">stream_polars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pl_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream_polars" title="Link to this definition">#</a></dt>
+<dd><p>Read a TSV from a URL or local file into a Polars DataFrame with resilient header handling.</p>
+<p>The helper will retry with increasing <code class="docutils literal notranslate"><span class="pre">skip_rows</span></code> when Polars raises an error
+(useful for files with extra header lines). When <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is provided an iterator is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>) – The URL or local file path to read the TSV from.</p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>) – The delimiter to use (default is tab).</p></li>
+<li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> or </em><em>None</em>) – If an integer is provided, returns an iterator that yields DataFrames
+of that many rows. If None, returns a single DataFrame.</p></li>
+<li><p><strong>max_skip</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>) – The maximum number of lines to skip when trying to parse the TSV.</p></li>
+<li><p><strong>**pl_kwargs</strong> – Additional keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">pl.read_csv</span></code>.</p></li>
+<li><p><strong>low_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Polars DataFrame containing the TSV data, or an iterator yielding DataFrames
+if <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is specified.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pl.DataFrame or Iterator[pl.DataFrame]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" rel="noreferrer" target="_blank" title="(in Python v3.14)"><strong>ValueError</strong> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> – If <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is not a positive integer or None.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" rel="noreferrer" target="_blank" title="(in Python v3.14)"><strong>RuntimeError</strong> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> – If the TSV cannot be parsed after skipping up to <code class="docutils literal notranslate"><span class="pre">max_skip</span></code> lines.</p></li>
+<li><p><strong>Polars Error</strong> – If the TSV cannot be parsed due to a format error (after retries).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine.stream_tree">
+<span class="sig-name descname"><span class="pre">stream_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">skbio_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.datasets.MGazine.stream_tree" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Generator</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -917,17 +1080,14 @@ available).</p>
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazineCurator">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.datasets.</span></span><span class="sig-name descname"><span class="pre">MGazineCurator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">mgazines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazineCurator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazineCurator" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazineCurator.go_terms">
-<span class="sig-name descname"><span class="pre">go_terms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazineCurator.go_terms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazineCurator.go_terms" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.datasets.taxonomic.html">mgnipy.V2.datasets.taxonomic module</a></li>
+</ul>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -970,11 +1130,11 @@ available).</p>
       </div>
     </a>
     <a class="right-next"
-       href="mgnipy.V2.core.html"
+       href="mgnipy.V2.datasets.taxonomic.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mgnipy.V2.core module</p>
+        <p class="prev-next-title">mgnipy.V2.datasets.taxonomic module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -998,9 +1158,13 @@ available).</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.adownload"><code class="docutils literal notranslate"><span class="pre">MGazine.adownload()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.adownload_all"><code class="docutils literal notranslate"><span class="pre">MGazine.adownload_all()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.aliases"><code class="docutils literal notranslate"><span class="pre">MGazine.aliases</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.by_pipeline_version"><code class="docutils literal notranslate"><span class="pre">MGazine.by_pipeline_version()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.by_short_desc"><code class="docutils literal notranslate"><span class="pre">MGazine.by_short_desc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.download"><code class="docutils literal notranslate"><span class="pre">MGazine.download()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.download_all"><code class="docutils literal notranslate"><span class="pre">MGazine.download_all()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.downloads_df"><code class="docutils literal notranslate"><span class="pre">MGazine.downloads_df</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.list_pipeline_version"><code class="docutils literal notranslate"><span class="pre">MGazine.list_pipeline_version()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.list_short_descriptions"><code class="docutils literal notranslate"><span class="pre">MGazine.list_short_descriptions()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream"><code class="docutils literal notranslate"><span class="pre">MGazine.stream()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_biom"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_biom()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_fasta"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_fasta()</span></code></a></li>
@@ -1009,17 +1173,15 @@ available).</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_html"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_html()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_json"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_json()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_jsonl"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_jsonl()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_pandas"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_pandas()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_polars"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_polars()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_tree"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_tree()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_tsv"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_tsv()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.stream_txt"><code class="docutils literal notranslate"><span class="pre">MGazine.stream_txt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.url_dict"><code class="docutils literal notranslate"><span class="pre">MGazine.url_dict</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazine.url_list"><code class="docutils literal notranslate"><span class="pre">MGazine.url_list</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazineCurator"><code class="docutils literal notranslate"><span class="pre">MGazineCurator</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.datasets.MGazineCurator.go_terms"><code class="docutils literal notranslate"><span class="pre">MGazineCurator.go_terms()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
   </nav></div>
 

@@ -13,6 +13,7 @@ Subpackages
 .. toctree::
    :maxdepth: 1
 
+   mgnipy.V2.datasets
    mgnipy.V2.proxies
 
 Submodules
@@ -23,7 +24,6 @@ Submodules
 
    mgnipy.V2.core
    mgnipy.V2.custom_endpoint
-   mgnipy.V2.datasets
    mgnipy.V2.describe
    mgnipy.V2.endpoints
    mgnipy.V2.mixins

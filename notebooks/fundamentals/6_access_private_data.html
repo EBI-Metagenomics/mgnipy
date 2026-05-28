@@ -1,0 +1,840 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Accessing your private data &#8212; mgnipy 0.1.dev1+g0844edfe8 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=a30989c5"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/fundamentals/6_access_private_data';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="MGazine of MGnify data" href="7_mgazine.html" />
+    <link rel="prev" title="Understanding the cache" href="5_cache.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0844edfe8 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0844edfe8 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Accessing MGnify API Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_downloading_data.html">Downloading MGnify Study data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_mgnifier_proxies.html"><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_mgnify_list_biomes.html">A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> of records</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/fundamentals/6_access_private_data.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/fundamentals/6_access_private_data.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/fundamentals/6_access_private_data.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/fundamentals/6_access_private_data.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Accessing your private data</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-configuration-examples">Quick configuration examples:</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-recommended-auto-loading-from-an-env-file"><strong>Option 1.</strong> (Recommended) Auto-loading from an <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-5-if-using-a-different-filename-than-env"><strong>Option 1.5</strong> If using a different filename than .env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-explicity-configure"><strong>Option 2.</strong> Explicity Configure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-pass-credentials-interactively"><strong>Option 3.</strong> Pass credentials interactively</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#then">Then…</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="accessing-your-private-data">
+<h1>Accessing your private data<a class="headerlink" href="#accessing-your-private-data" title="Link to this heading">#</a></h1>
+<p>This page explains how to access private MGnify data.</p>
+<hr class="docutils" />
+<ul>
+<li><p>Recommended: keep an <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with <code class="docutils literal notranslate"><span class="pre">MG_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">MG_PASSWORD</span></code> (see .env.example in the repo). These are auto-loaded into <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> via pydantic settings.</p></li>
+<li><p>Alternatively, pass credentials directly when creating a config: <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">=</span> <span class="pre">MGnipyConfig(mg_user=&quot;...&quot;,</span> <span class="pre">mg_password=&quot;...&quot;)</span></code> and use that with <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or resource proxies.</p>
+  <br>
+  <details style="font-size:16px">
+  <summary style="color:green; font-size:18px; font-weight:600">
+      How the authentication works (sliding token):
+  </summary>
+  </summary>
+  <h1></h1>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> takes care of obtaining an authentication token from the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding" rel="noreferrer" target="_blank">token_obtain_sliding <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> endpoint of the MGnify API using your username/password</p></li>
+<li><p>The auth token is verified using the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify" rel="noreferrer" target="_blank">token_verify <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> endpoint and, if valid, refreshed using <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding" rel="noreferrer" target="_blank">token_refresh_sliding <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> when needed.</p>
+<ul>
+<li><p>The high-level methods within <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> involved are <code class="docutils literal notranslate"><span class="pre">obtain_auth_token</span></code>, <code class="docutils literal notranslate"><span class="pre">verify_auth_token</span></code>, <code class="docutils literal notranslate"><span class="pre">refresh_auth_token</span></code>, and <code class="docutils literal notranslate"><span class="pre">resolve_auth_token</span></code>.</p></li>
+</ul>
+</li>
+<li><p>The resolved token is stored in <code class="docutils literal notranslate"><span class="pre">MGnipyConfig.auth_token</span></code> for the session and used for authenticated API requests.</p></li>
+<li><p>By default the token is cached on disk under a platform-appropriate cache dir (via <code class="docutils literal notranslate"><span class="pre">platformdirs</span></code>) in a file named auth_<hash>.json.</p>
+<ul>
+<li><p>You can disable disk caching by setting <code class="docutils literal notranslate"><span class="pre">cache_dir=None</span></code> on MGnipyConfig.</p></li>
+</ul>
+</li>
+<li><p>On success <code class="docutils literal notranslate"><span class="pre">resolve_auth_token()</span></code> will confirm authentication, it prints <code class="docutils literal notranslate"><span class="pre">&quot;Authenticated</span> <span class="pre">successfully.&quot;</span></code></p></li>
+</ul>
+  <h1></h1>
+  </details>
+  <br>
+</li>
+</ul>
+<hr class="docutils" />
+<section id="quick-configuration-examples">
+<h2>Quick configuration examples:<a class="headerlink" href="#quick-configuration-examples" title="Link to this heading">#</a></h2>
+<section id="option-1-recommended-auto-loading-from-an-env-file">
+<h3><strong>Option 1.</strong> (Recommended) Auto-loading from an <code class="docutils literal notranslate"><span class="pre">.env</span></code> file<a class="headerlink" href="#option-1-recommended-auto-loading-from-an-env-file" title="Link to this heading">#</a></h3>
+<ul>
+<li><p>Use an <code class="docutils literal notranslate"><span class="pre">.env</span></code> file (recommended). See <a class="reference internal" href="../../reference/mgnipy.V2.html#mgnipy.V2.MGnifier.TODO" title="mgnipy.V2.MGnifier.TODO"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">.env.example</span></code></span></a> — variables <code class="docutils literal notranslate"><span class="pre">MG_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">MG_PASSWORD</span></code>.</p>
+<ul>
+<li><p>example <code class="docutils literal notranslate"><span class="pre">.env</span></code> contents:</p>
+<div class="highlight-.env notranslate"><div class="highlight"><pre><span></span>            MG_USER=&lt;your MGnify or ENA username&gt;
+            MG_PASSWORD=&lt;your MGnify or ENA password&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>The .env file and <code class="docutils literal notranslate"><span class="pre">MG_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">MG_PASSWORD</span></code> variables will auto be detected via pydantic settings and stored safely in <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if .env files then can just proceed as normal, for example in a notebook:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">()</span>  <span class="c1"># will automatically look for .env file and load credentials if found</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:numcodecs:Registering codec &#39;zlib&#39;
+DEBUG:numcodecs:Registering codec &#39;gzip&#39;
+DEBUG:numcodecs:Registering codec &#39;bz2&#39;
+DEBUG:numcodecs:Registering codec &#39;lzma&#39;
+DEBUG:numcodecs:Registering codec &#39;blosc&#39;
+DEBUG:numcodecs:Registering codec &#39;zstd&#39;
+DEBUG:numcodecs:Registering codec &#39;lz4&#39;
+DEBUG:numcodecs:Registering codec &#39;astype&#39;
+DEBUG:numcodecs:Registering codec &#39;delta&#39;
+DEBUG:numcodecs:Registering codec &#39;quantize&#39;
+DEBUG:numcodecs:Registering codec &#39;fixedscaleoffset&#39;
+DEBUG:numcodecs:Registering codec &#39;packbits&#39;
+DEBUG:numcodecs:Registering codec &#39;categorize&#39;
+DEBUG:numcodecs:Registering codec &#39;pickle&#39;
+DEBUG:numcodecs:Registering codec &#39;base64&#39;
+DEBUG:numcodecs:Registering codec &#39;shuffle&#39;
+DEBUG:numcodecs:Registering codec &#39;bitround&#39;
+DEBUG:numcodecs:Registering codec &#39;crc32&#39;
+DEBUG:numcodecs:Registering codec &#39;adler32&#39;
+DEBUG:numcodecs:Registering codec &#39;jenkins_lookup3&#39;
+DEBUG:numcodecs:Registering codec &#39;json2&#39;
+DEBUG:numcodecs:Registering codec &#39;vlen-utf8&#39;
+DEBUG:numcodecs:Registering codec &#39;vlen-bytes&#39;
+DEBUG:numcodecs:Registering codec &#39;vlen-array&#39;
+DEBUG:numcodecs:Registering codec &#39;fletcher32&#39;
+DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="option-1-5-if-using-a-different-filename-than-env">
+<h3><strong>Option 1.5</strong> If using a different filename than .env<a class="headerlink" href="#option-1-5-if-using-a-different-filename-than-env" title="Link to this heading">#</a></h3>
+<p>Or if you prefer an env file name with a different filename then .env</p>
+<ol class="arabic simple">
+<li><p>you can manually load your given file by passing its path to <code class="docutils literal notranslate"><span class="pre">dotenv.load_dotenv</span></code></p></li>
+<li><p>and then use <code class="docutils literal notranslate"><span class="pre">os.getenv</span></code> to get out your MGnify user and pass variables</p></li>
+<li><p>initiate <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or resource-specific <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> instances (e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies</span></code>) with those login credentials like above</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipyConfig</span>
+
+<span class="c1"># load env variables from specific filename</span>
+<span class="n">load_dotenv</span><span class="p">(</span><span class="s2">&quot;path/to/your-env-file&quot;</span><span class="p">)</span>
+
+<span class="c1"># pass to config</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">MGnipyConfig</span><span class="p">(</span>
+    <span class="n">mg_user</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MG_USER&quot;</span><span class="p">),</span> <span class="n">mg_password</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MG_PASSWORD&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># pass config to MGnipy</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="c1"># or directly to proxy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biomes</span>
+<span class="n">biomes</span> <span class="o">=</span> <span class="n">Biomes</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource biomes
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for biomes
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for biomes
+INFO:mgnipy.V2.query_set:Attempting to load cached results for biomes
+DEBUG:mgnipy.V2.mixins:Computed cache key for biomes: c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
+INFO:mgnipy.V2.mixins:Loading cached pages from /home/runner/.cache/mgnipy/c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
+INFO:mgnipy.V2.mixins:No cache directory found at /home/runner/.cache/mgnipy/c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource biomes
+DEBUG:mgnipy.V2.mixins:Computed cache key for biomes: c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="option-2-explicity-configure">
+<h3><strong>Option 2.</strong> Explicity Configure<a class="headerlink" href="#option-2-explicity-configure" title="Link to this heading">#</a></h3>
+<p>Manually pass the login credentials to <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or resource-specific <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> instances (e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies</span></code>) at init.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pass login credentials to config</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">MGnipyConfig</span><span class="p">(</span>
+    <span class="n">mg_user</span><span class="o">=</span><span class="s2">&quot;this-is-a-fake-user-name&quot;</span><span class="p">,</span> <span class="n">mg_password</span><span class="o">=</span><span class="s2">&quot;this-is-a-fake-password&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># pass config to MGnipy</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="option-3-pass-credentials-interactively">
+<h3><strong>Option 3.</strong> Pass credentials interactively<a class="headerlink" href="#option-3-pass-credentials-interactively" title="Link to this heading">#</a></h3>
+<p>if no .env or not passed to MGnipy or proxies then when private endpoints called you will be prompted with an input window for user and then password. Such as for endpoints with only private data e.g. private_studies</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># requires sliding authentication token using user and pass</span>
+<span class="n">my_studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">private_studies</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource private_studies
+DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
+DEBUG:mgnipy.V2.query_set:Creating cache handler for private_studies
+DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for private_studies
+INFO:mgnipy.V2.query_set:Attempting to load cached results for private_studies
+DEBUG:mgnipy.V2.mixins:Computed cache key for private_studies: a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
+INFO:mgnipy.V2.mixins:Loading cached pages from /home/runner/.cache/mgnipy/a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
+INFO:mgnipy.V2.mixins:No cache directory found at /home/runner/.cache/mgnipy/a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
+INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource private_studies
+DEBUG:mgnipy.V2.mixins:Computed cache key for private_studies: a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
+DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="then">
+<h2>Then…<a class="headerlink" href="#then" title="Link to this heading">#</a></h2>
+<p>You can continue the same process as you would with non-private resources</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># previewing query</span>
+<span class="c1"># my_studies.explain()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># getting a page</span>
+<span class="c1"># my_studies.get()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/fundamentals"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="5_cache.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Understanding the cache</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="7_mgazine.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-configuration-examples">Quick configuration examples:</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-recommended-auto-loading-from-an-env-file"><strong>Option 1.</strong> (Recommended) Auto-loading from an <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-5-if-using-a-different-filename-than-env"><strong>Option 1.5</strong> If using a different filename than .env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-explicity-configure"><strong>Option 2.</strong> Explicity Configure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-pass-credentials-interactively"><strong>Option 3.</strong> Pass credentials interactively</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#then">Then…</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
