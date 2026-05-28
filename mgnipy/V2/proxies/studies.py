@@ -1,10 +1,6 @@
+from typing import Any, ClassVar, Literal, Optional
+
 import pandas as pd
-from typing import (
-    Any,
-    ClassVar,
-    Literal,
-    Optional,
-)
 
 from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.proxies import MGnifyDetail, MGnifyList

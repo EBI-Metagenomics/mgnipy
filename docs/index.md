@@ -36,6 +36,7 @@ notebooks/fundamentals/*
 reference/mgnipy.mgnipy
 reference/mgnipy.V2.proxies
 reference/mgnipy.V2.datasets
+reference/mgnipy.V2.datasets
 reference/mgnipy.V2.core
 reference/mgnipy.V2.query_executor
 reference/mgnipy.V2.query_set

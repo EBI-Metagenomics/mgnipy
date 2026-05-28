@@ -730,6 +730,7 @@ class MGazine(StreamMixin):
 
         If both ``alias`` and ``url`` are provided, the alias is used and the
         corresponding url from the downloads is returned.
+        corresponding url from the downloads is returned.
 
         Parameters
         ----------
@@ -752,6 +753,8 @@ class MGazine(StreamMixin):
         >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt", "download_group":"blah", "short_description":"blah", "pipeline_vers":4.1}]
         >>> mg = MGazine(downloads)
         >>> mg._prioritize_alias(alias='x', url=None)
+        ('x', 'http://ex/x')
+        >>> mg._prioritize_alias(alias=None, url='http://ex/x')
         ('x', 'http://ex/x')
         >>> mg._prioritize_alias(alias=None, url='http://ex/x')
         ('x', 'http://ex/x')

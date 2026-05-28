@@ -1,13 +1,9 @@
-from typing import (
-    Any,
-    ClassVar,
-    Literal,
-    Optional,
-)
+from typing import Any, ClassVar, Literal, Optional
+
 import pandas as pd
-from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 from mgnipy.V2.datasets import MGazine
+from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
 class Analyses(MGnifyList):

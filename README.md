@@ -38,9 +38,13 @@ MGni.py (pronounced MAG-nee-pie) is a lightweight python client and toolkit for 
 - for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
 - `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉
 
+- for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
+- `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉
+
 
 ## Installation
 
+### From PyPI
 ### From PyPI
 
 ```bash
@@ -106,6 +110,7 @@ studies.enrich_details()
 pd_metadata = studies.to_df()
 
 # As polars DataFrame
+pl_metadata = studies.to_polars()
 pl_metadata = studies.to_polars()
 
 # as json
