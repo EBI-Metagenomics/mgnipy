@@ -1,4 +1,4 @@
-# 🤝 What is `openapi-python-client`
+# What is `openapi-python-client`
 
 The `emgapi_v2_client` sub-package is a Python client library for accessing version 2 of the MGnify API created using package [openapi-python-client](https://github.com/openapi-generators/openapi-python-client).
 

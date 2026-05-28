@@ -1,7 +1,7 @@
 export MGNIPY_AUTHENTICATION_OFF=1
 export SPHINX_APIDOC_OPTIONS="members,undoc-members,inherited-members,show-inheritance"
 
-jupytext tutorials/*.ipynb --sync
+jupytext notebooks/**/*.ipynb --sync
 
 # Generating the rst files for the API reference. This is needed for autodoc during sphinx-build to work.
 # Note: does not use conf.py

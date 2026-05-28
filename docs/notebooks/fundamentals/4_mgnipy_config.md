@@ -36,6 +36,7 @@ A [Pydantic-based settings object](https://pydantic.dev/docs/validation/latest/c
 
 See [next accessing private data page](TODO) on how to configure for private data. 
 
+---
 
 **Tips & notes**
 

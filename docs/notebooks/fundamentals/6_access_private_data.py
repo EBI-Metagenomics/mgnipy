@@ -13,7 +13,7 @@
 # ---
 
 # %% [markdown]
-# # 🔐 Accessing your private data
+# # Accessing your private data
 #
 # This page explains how to access private MGnify data.
 #
@@ -63,27 +63,7 @@ from mgnipy import MGnipy
 MG = MGnipy()  # will automatically look for .env file and load credentials if found
 
 # %% [markdown]
-#
-# ### **Option 2.** Explicity Configure
-# Manually pass the login credentials to `mgnipy.MGnipy` or resource-specific `MGnifier` instances (e.g., `mgnipy.V2.proxies`) at init.
-
-# %%
-from mgnipy import MGnipyConfig
-
-# pass login credentials to config
-config = MGnipyConfig(
-    mg_user="this-is-a-fake-user-name", mg_password="this-is-a-fake-password"
-)
-
-# pass config to MGnipy
-MG = MGnipy(config=config)
-# or directly to proxy
-from mgnipy.V2.proxies import Biomes
-
-biomes = Biomes(config=config)
-
-# %% [markdown]
-# #### **Option 2.5.** (safer) If using a different filename than .env
+# ### **Option 1.5** If using a different filename than .env
 #
 # Or if you prefer an env file name with a different filename then .env
 # 1. you can manually load your given file by passing its path to `dotenv.load_dotenv`
@@ -93,6 +73,7 @@ biomes = Biomes(config=config)
 # %%
 from dotenv import load_dotenv
 import os
+from mgnipy import MGnipyConfig
 
 # load env variables from specific filename
 load_dotenv("path/to/your-env-file")
@@ -106,8 +87,21 @@ config = MGnipyConfig(
 MG = MGnipy(config=config)
 # or directly to proxy
 from mgnipy.V2.proxies import Biomes
-
 biomes = Biomes(config=config)
+
+# %% [markdown]
+#
+# ### **Option 2.** Explicity Configure
+# Manually pass the login credentials to `mgnipy.MGnipy` or resource-specific `MGnifier` instances (e.g., `mgnipy.V2.proxies`) at init.
+
+# %%
+# pass login credentials to config
+config = MGnipyConfig(
+    mg_user="this-is-a-fake-user-name", mg_password="this-is-a-fake-password"
+)
+
+# pass config to MGnipy
+MG = MGnipy(config=config)
 
 # %% [markdown]
 # ### **Option 3.** Pass credentials interactively

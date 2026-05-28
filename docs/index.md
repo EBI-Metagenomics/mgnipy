@@ -11,31 +11,20 @@
 :glob:
 :hidden:
 notebooks/getting-started/*
-<!-- Available resources md -->
-tutorials/getting-started/available-resources
-<!-- quickstart -->
 ```
 
 ```{toctree}
 :caption: "Fundamentals and usage"
+:glob:
 :hidden:
-<!-- TODO: CONFIG SETUP INFO -->
-tutorials/getting-started/understanding-cache
-<!-- What is mgnipy.MGnipy-->
-<!-- MGnifier and MGazine -->
-<!-- What are resource proxies  md-->
-<!-- What is MGni.py  md-->
-tutorials/getting-started/access-private-data
-
+notebooks/fundamentals/*
 ```
 
 
 ```{toctree}
 :caption: "Tutorials"
 :hidden:
-tutorials/getting-started/mgnify-biomes
-tutorials/getting-started/demo-mgnify-tomatoes
-tutorials/demos/get_all_analyses_for_study
+<!-- tutorials/demos/get_all_analyses_for_study -->
 <!-- tutorials/demo/pd-gut-microbiome -->
 <!-- tutorials/demo/MOFAR -->
 <!-- tutorials/demo/SpeSpeNet -->
@@ -58,11 +47,10 @@ reference/mgnipy.emgapi_v2_client.api
 
 ```{toctree}
 :caption: "Contributor's Guide"
+:glob:
 :hidden:
 ../Contributing.md
-dev/quick-emgapi-v2-client
-<!-- example module -->
-dev/readme-openapi-python-client
+notebooks/dev/*
 README.md
 ```
 
