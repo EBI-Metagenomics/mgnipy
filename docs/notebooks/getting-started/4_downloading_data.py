@@ -33,6 +33,10 @@
 # #!pip install mgnipy
 # #!pip install asyncio
 
+# %%
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 # %% [markdown]
 #
 #
@@ -110,8 +114,7 @@ tomato_studies.to_df(expand_nested_dicts=True)
 #
 # - To access the study's mgazine use `.datasets` 
 #
-# - the str representaiton of mgazine tells us the number of download files and their {alias: url}
-#
+# - the __str__ representaiton of mgazine gives us a peak into the pipeline versions within, number of downloads and the short_description categories
 
 # %% tags=["hide-output"]
 # access study mgazine
@@ -124,22 +127,58 @@ print(MZ)
 MZ.downloads_df
 
 # %% [markdown]
-# ### Downloading datasets
+# ### Navigating and filtering a `MGazine`
 #
-# FOR ONE download file/dataset, if wanting to `.download()` or explore/read in via `.stream()` then can pass the `url` or `alias`
+# Built in to mgazine, you can filter the mgazine to a specific pipeline versions and short_descriptions which will return a mgazine again but filtered or a curated mgazine with additional functionalities if available ✨.
+#
+# FOr accessing a specific pipeline version you can call the veresion as an attribute:
 
 # %%
-one_alias = MZ.aliases[0]
+# above we saw that v5 is the only one so this will return the same basically
+v5_data = MZ.v5
+
+# if we print again we will see the same info
+print(v5_data)
+
+# %% [markdown]
+# You can filter by short descriptioins by passing them as you would an index into square brackets i..e, __getitem__
+
+# %% tags=["hide-output"]
+# we want the taxonomic assignments
+ssu = v5_data['Taxonomic assignments SSU']
+
+# checking out what it is 
+print(type(ssu))
+print(ssu)
+
+# downloads_df again 
+ssu.downloads_df
+
+# %% [markdown]
+# for more options over the filtering of mgazines see the [MGazine informtion page](TODO). We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now
+
+# %% [markdown]
+# ### Downloading datasets
+#
+# You can pass the `url` or `alias` if wanting to `.download()` or explore/read in via `.stream()` ONE download file/dataset. 
+#
+# You can look at the file aliases as a list via `.aliases` attribute, also shown in "alias" column in `.downloads_df`
+#
+# The urls are also in a column in `.downloads_df` but there are also helpers `.url_list` and `.url_dict` which provide {alias: url}
+
+# %%
+# lets try out one 
+one_alias = ssu.aliases[0]
 print(one_alias)
-# TODO when MGnify API V2 fully rolled out as urls are currently None  
-# MZ.download(to_dir="downloads", alias=one_alias) 
+
+# downloading to a downloads folder
+ssu.download(to_dir="downloads", alias=one_alias) 
 
 # %% [markdown]
 # also the option to `download_all()`
 
 # %%
-# TODO when MGnify API V2 fully rolled out as urls are currently None  
-# MZ.download_all(to_dir="downloads")
+ssu.download_all(to_dir="downloads")
 
 # %% [markdown]
 # ### Reading in a dataset `.stream()`
@@ -154,9 +193,31 @@ print(one_alias)
 # See [Intro to MGazine page](TODO) for more information
 
 # %%
-# TODO when MGnify API V2 fully rolled out as urls are currently None  
-# df = MZ.stream(alias=one_alias, dataframe_engine="pandas")
-# df.head()
+df = ssu.stream(alias=one_alias, dataframe_engine="pandas")
+df.head()
+
+# %% [markdown]
+# ## ✨ Bonus section: The `TaxaMGazine`
+#
+# There are analysis type-specific mgazines, such as this TaxaMGazine
+#
+# for example, we can also combine the taxonomic assignment results into one dataframe e.g. `.to_pandas()`, `.to_polars`, `.X()`
+
+# %%
+ssu.to_pandas()
+
+# %% [markdown]
+# There is also option to enrich with additional metadata! 
+#
+# 1)  From *already* retrieved `MGnifier` results you can set to `runs_results`, `samples_results`, `studies_results` etc, or
+#
+# 2) use `.enrich_runs()` etc or `.enrich_biosamples` which will make the get requests for the additional metadata
+
+# %% tags=["hide-output"]
+ssu.enrich_runs(limit=None)
+
+# %%
+ssu.to_anndata()
 
 # %% [markdown]
 # ---
