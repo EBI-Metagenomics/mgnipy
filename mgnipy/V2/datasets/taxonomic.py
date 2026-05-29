@@ -21,7 +21,9 @@ from mgnify_pipelines_toolkit.constants.tax_ranks import (
 from tqdm import tqdm as tqdm_sync
 
 from mgnipy._models.config import MGnipyConfig
+from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.mixins import DiskCheckpointer, ResultsHandler
+from mgnipy.V2.proxies.assemblies import AssemblyDetail
 from mgnipy.V2.proxies.runs import RunDetail
 
 if TYPE_CHECKING:
@@ -84,7 +86,7 @@ def prep_obs(
     return df_ranks
 
 
-class _CuratorSetup:
+class _MGazineSetup(MGazine):
 
     def __init__(
         self,
@@ -98,12 +100,12 @@ class _CuratorSetup:
         analyses_results: Optional[list[dict[str, Any]]] = None,
     ):
 
+        super().__init__(downloads=mgazine.downloads, config=config or mgazine.config)
         self.mz = mgazine
-        self.config = config or mgazine.config
 
         if len(self.mz.list_pipeline_version()) > 1:
             logger.warning(
-                "Multiple pipeline versions detected in MGazine. Curator methods may not work as expected."
+                "Multiple pipeline versions detected in MGazine. MGazine methods may not work as expected."
             )
 
         if len(self.mz.list_short_descriptions()) > 1:
@@ -111,7 +113,7 @@ class _CuratorSetup:
                 f"Multiple short descriptions detected in MGazine and `short_desc` was not specified. Only the first short description will be used (i.e., {self.mz.list_short_descriptions()[0]})."
             )
         self.short_desc = self.mz.list_short_descriptions()[0]
-        logger.info(f"TaxaCurator initialized for short description: {self.short_desc}")
+        logger.info(f"TaxaMGazine initialized for short description: {self.short_desc}")
 
         # determine mapping
         if long_short_mapping is not None:
@@ -159,7 +161,7 @@ class _CuratorSetup:
                 "short_desc": self.short_desc,
                 "runs_accessions": self.runs_accessions,
             },
-            resource_str=f"TaxaCurator_{self.short_desc}",
+            resource_str=f"TaxaMGazine_{self.short_desc}",
             config=self.config,
         )
         self.cache_handler.load_cache()
@@ -226,7 +228,7 @@ class _CuratorSetup:
         Returns
         -------
         None
-            The function does not return anything. It updates the `run_results` attribute of the TaxaCurator instance with the enriched run metadata.
+            The function does not return anything. It updates the `run_results` attribute of the TaxaMGazine instance with the enriched run metadata.
 
         """
 
@@ -249,12 +251,22 @@ class _CuratorSetup:
                 f"Enriching run {run} for short description {self.short_desc}. Count: {count}"
             )
             # get metadata
-            mg = RunDetail(id=run, config=self.config).get()
-            if mg is not False:
-                logger.debug(f"Enriched metadata for run {run}: {mg}")
-                self._runs_results.append(mg)
-                self.cache_handler.write_results(1, self._runs_results)
+            if "ERZ" in run:
+                logger.debug(
+                    f"Run {run} appears to be an assembly. Using AssemblyDetail proxy for enrichment."
+                )
+
+                proxy = AssemblyDetail
             else:
+                proxy = RunDetail
+
+            try:
+                mg = proxy(accession=run, config=self.config).get()
+            except Exception as e:
+                logger.error(f"Error occurred while enriching run {run}: {e}")
+                mg = None
+
+            if mg is not False:
                 logger.warning(f"Run {run} could not be retrieved. Skipping.")
 
     async def aenrich_runs(
@@ -337,12 +349,12 @@ class _CuratorSetup:
 
         MG = MGnipy(config=self.config)
         MG.clear_subcaches()
-        logger.info("MGnipy cache cleared via TaxaCurator helper.")
+        logger.info("MGnipy cache cleared via TaxaMGazine helper.")
         self._lazy_merged = None
         self._runs_accessions = None
 
 
-class DWCTaxaCurator(_CuratorSetup):
+class DWCTaxaMGazine(_MGazineSetup):
 
     def __init__(
         self,
@@ -375,7 +387,7 @@ class DWCTaxaCurator(_CuratorSetup):
         self._init_cache_handler_state()
 
 
-class TaxaCurator(_CuratorSetup):
+class TaxaMGazine(_MGazineSetup):
     """not for dwc"""
 
     def __init__(
@@ -520,9 +532,20 @@ class TaxaCurator(_CuratorSetup):
         ad.AnnData
             An AnnData object containing the taxonomic metadata in the `obs` attribute.
         """
-        return ad.AnnData(
-            self.X(),
-            obs=self.taxonomic_metadata(),
-            var=self.metadata(),
-            **anndata_kwargs,
-        )
+        try:
+            return ad.AnnData(
+                self.X(),
+                obs=self.taxonomic_metadata(),
+                var=self.metadata(),
+                **anndata_kwargs,
+            )
+        except ValueError as e:
+            logger.error(
+                f"Returning without metadata() as var - Error occurred while converting to AnnData: {e}"
+            )
+            return ad.AnnData(
+                self.X(),
+                obs=self.taxonomic_metadata(),
+                var=None,
+                **anndata_kwargs,
+            )

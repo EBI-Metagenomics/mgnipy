@@ -258,13 +258,13 @@ class MGazine(StreamMixin):
                 logger.debug(
                     f"getting dwc-ready taxonomic datasets of short description {key} via item access."
                 )
-                return DWCTaxaCurator(mgazine=new_mz, config=self.config)
+                return DWCTaxaMGazine(mgazine=new_mz, config=self.config)
 
             if "taxonom" in download_type and "dwc-ready" not in key.lower():
                 logger.debug(
                     f"getting taxonomic datasets of short description {key} via item access."
                 )
-                return TaxaCurator(mgazine=new_mz, config=self.config)
+                return TaxaMGazine(mgazine=new_mz, config=self.config)
 
             # TODO other download types
             return new_mz
@@ -778,4 +778,4 @@ class MGazine(StreamMixin):
         return alias, url
 
 
-from .taxonomic import DWCTaxaCurator, TaxaCurator
+from .taxonomic import DWCTaxaMGazine, TaxaMGazine
