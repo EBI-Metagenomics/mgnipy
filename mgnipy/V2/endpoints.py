@@ -48,12 +48,11 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_publications,
     list_mgnify_study_samples,
 )
+from mgnipy.V2 import custom_endpoint
 
-# from mgnipy.V2 import custom_endpoint
-
-# CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
-#     SupportedEndpoints._DOWNLOADS: custom_endpoint,
-# }
+CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
+    SupportedEndpoints._DOWNLOADS: custom_endpoint,
+}
 
 RESOURCES_LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints.BIOMES: list_mgnify_biomes,  # get all biomes, filtering option
@@ -81,7 +80,7 @@ RESOURCES_DETAIL_ENDPOINTS: dict[SupportedEndpoints, callable] = {
 }
 
 RESOURCES_ALL_ENDPOINTS: dict[SupportedEndpoints, callable] = (
-    RESOURCES_LIST_ENDPOINTS | RESOURCES_DETAIL_ENDPOINTS  # | CUSTOM_ENDPOINTS
+    RESOURCES_LIST_ENDPOINTS | RESOURCES_DETAIL_ENDPOINTS | CUSTOM_ENDPOINTS
 )
 
 PARENT_CHILD_RESOURCES: dict[SupportedEndpoints, SupportedEndpoints] = {

@@ -444,7 +444,7 @@ class QueryExecutor:
             )
         if response.status_code == 404:
             raise FileNotFoundError(
-                "Resource not found: The requested resource does not exist. "
+                "Resource not found: The requested file does not exist. "
                 "Please check the endpoint and parameters."
             )
         return None
