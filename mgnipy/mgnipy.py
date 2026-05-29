@@ -68,9 +68,7 @@ class MGnipy:
 
             return _detail_factory
 
-        raise AttributeError(
-            f"{type(self).__name__} has no endpoint attribute {name!r}"
-        )
+        raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
 
     def list_resources(self):
         return SupportedEndpoints.as_list()
