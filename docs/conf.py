@@ -2,8 +2,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 import logging
 
-logging.disable(logging.CRITICAL)
-logging.basicConfig(level=logging.CRITICAL, force=True)
+logging.basicConfig(level=logging.WARNING, force=True)
 import os
 from importlib import metadata
 
