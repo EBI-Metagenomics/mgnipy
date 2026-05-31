@@ -101,7 +101,9 @@ class MGnifyList(MGnifier):
             config=config,
             **kwargs,
         )
-        self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
+        self.child_resource: str = PARENT_CHILD_RESOURCES.get(
+            self.resource, None
+        )
 
         self._collected_details: dict[str, "MGnifyDetail"] = {}
         self._collected_details_results: dict[str, dict] = {}
@@ -290,10 +292,12 @@ class MGnifyList(MGnifier):
         >>> from mgnipy.V2.proxies import Studies
         >>> studies = Studies()
         >>> studies._detail_endpoint
-        <module 'mgnipy.emgapi_v2_client.api.studies.get_mgnify_study' from '/Users/phanthanourak/github/mgnipy/mgnipy/emgapi_v2_client/api/studies/get_mgnify_study.py'>
+        <module 'mgnipy.emgapi_v2_client.api.studies.get_mgnify_study' from ...mgnipy/emgapi_v2_client/api/studies/get_mgnify_study.py'>
         """  # check
         if len(self.list_relationships()) == 0:
-            raise AttributeError(f"{self.resource} does not have any linked resources.")
+            raise AttributeError(
+                f"{self.resource} does not have any linked resources."
+            )
 
         # quick check
         assert (
@@ -382,7 +386,9 @@ class MGnifyList(MGnifier):
 
         # init detail proxy with id param
         child = detail_cls.filter(**id_param)
-        logger.debug(f"Initialized detail proxy {child} with params {child.params!r}")
+        logger.debug(
+            f"Initialized detail proxy {child} with params {child.params!r}"
+        )
         # set endpoint module (might not be necessary actually)
         # child.endpoint_module = self._detail_endpoint
 
@@ -504,7 +510,9 @@ class MGnifyList(MGnifier):
         new_qs = self._clone(page_size=n)
         return new_qs
 
-    def enrich_details(self, limit: Optional[int] = 200, hide_progress: bool = False):
+    def enrich_details(
+        self, limit: Optional[int] = 200, hide_progress: bool = False
+    ):
         """
         Gets the details for each mgnify list item.
         Iterates through the accessions/ids (`.results_ids`) and retrieves their details using the corresponding detail proxy (e.g., `RunDetail` for `Runs`).
@@ -529,7 +537,9 @@ class MGnifyList(MGnifier):
             return
 
         details_todo: list[str] = [
-            x for x in self.results_ids if x not in self._collected_details_results
+            x
+            for x in self.results_ids
+            if x not in self._collected_details_results
         ][:limit]
 
         for count, detail_id in enumerate(
@@ -563,10 +573,14 @@ class MGnifyList(MGnifier):
         None
             This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
         """
-        logger.debug(f"Starting async enrichment of details with limit {limit}.")
+        logger.debug(
+            f"Starting async enrichment of details with limit {limit}."
+        )
 
         details_todo: list[str] = [
-            x for x in self.results_ids if x not in self._collected_details_results
+            x
+            for x in self.results_ids
+            if x not in self._collected_details_results
         ][:limit]
 
         for count, detail_id in enumerate(
@@ -611,7 +625,9 @@ class MGnifyDetail(MGnifier):
             )
 
         try:
-            id_param_key = ID_PARAM[SupportedEndpoints.validate(resolved_resource)]
+            id_param_key = ID_PARAM[
+                SupportedEndpoints.validate(resolved_resource)
+            ]
         except Exception:
             id_param_key = None
         logger.debug(
@@ -667,7 +683,9 @@ class MGnifyDetail(MGnifier):
                 SupportedEndpoints.validate(name)
             ]
 
-        raise AttributeError(f"{self.resource} does not have linked resource: {name!r}")
+        raise AttributeError(
+            f"{self.resource} does not have linked resource: {name!r}"
+        )
 
     def __getattr__(self, name: str):
         # if is a supported relationship
@@ -716,7 +734,9 @@ class MGnifyDetail(MGnifier):
             downloads_list = row["downloads"]
 
             # get pipeline_version from row if avail, i.e., analysisdetail
-            if "pipeline_version" in row and isinstance(row["pipeline_version"], str):
+            if "pipeline_version" in row and isinstance(
+                row["pipeline_version"], str
+            ):
                 pipe = row["pipeline_version"].lower().strip("v")
             else:
                 pipe = None
@@ -746,7 +766,9 @@ class MGnifyDetail(MGnifier):
                 each_download.update({"pipeline_version": pipe})
 
         return [
-            item for sublist in self.to_df()["downloads"].values for item in sublist
+            item
+            for sublist in self.to_df()["downloads"].values
+            for item in sublist
         ]
 
     @property
@@ -806,10 +828,12 @@ class MGnifyDetail(MGnifier):
         logger.debug(
             f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
-        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
-            config=self.config
+        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(
+            SupportedEndpoints.validate(resource)
+        )(config=self.config)
+        logger.debug(
+            f"Getting proxy class {proxy_cls!r} for resource {resource!r}"
         )
-        logger.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
 
         logger.debug(
             f"Resolving id param for identifier {self.identifier!r} with id_param_key {self.id_param_key!r}"
@@ -861,8 +885,12 @@ class MGnifyDetail(MGnifier):
         samples = await study.aget_list("samples", fetch=False)
         """
 
-        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))
-        logger.debug(f"Getting proxy class {proxy_cls} for resource {resource!r}")
+        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(
+            SupportedEndpoints.validate(resource)
+        )
+        logger.debug(
+            f"Getting proxy class {proxy_cls} for resource {resource!r}"
+        )
         if not proxy_cls:
             raise ValueError(f"Unsupported resource: {resource}")
 

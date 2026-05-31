@@ -1,6 +1,6 @@
 # MGni.py
 
-MGni.py (pronounced MAG-nee-pie) is a lightweight python client and toolkit for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2/).
+MGni.py ('mæɡ-ni-paɪ' <audio id="pronounciation" src="docs/assets/mgnipy.mp3"></audio><button style="background:none;border:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;" onclick="document.getElementById('pronounciation').play()">🔊</button>) is a lightweight python client and toolkit for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2/).
 
 ![mgnipy schematic](docs/assets/mgnipy_figure.gif)
 
