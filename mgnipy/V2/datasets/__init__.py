@@ -25,11 +25,11 @@ semaphore = get_semaphore()
 
 class MGazine(StreamMixin):
     """
-    Helper for handling MGnify analysis/study downloads.
-
-    This class accepts a list of download-like dictionaries (for example
+    MGazine is a class for managing and downloading datasets from MGnify.
+    - Accepts a list of download-like dictionaries (for example
     the objects returned by the MGnify API for downloads) and provides
     simple streaming and download helpers.
+    - Supports grouping datasets by pipeline version and short description, and provides methods for downloading individual files or all files in the MGazine.
 
     Parameters
     ----------
@@ -258,13 +258,13 @@ class MGazine(StreamMixin):
                 logger.debug(
                     f"getting dwc-ready taxonomic datasets of short description {key} via item access."
                 )
-                return DWCTaxaCurator(mgazine=new_mz, config=self.config)
+                return DWCTaxaMGazine(mgazine=new_mz, config=self.config)
 
             if "taxonom" in download_type and "dwc-ready" not in key.lower():
                 logger.debug(
                     f"getting taxonomic datasets of short description {key} via item access."
                 )
-                return TaxaCurator(mgazine=new_mz, config=self.config)
+                return TaxaMGazine(mgazine=new_mz, config=self.config)
 
             # TODO other download types
             return new_mz
@@ -778,4 +778,4 @@ class MGazine(StreamMixin):
         return alias, url
 
 
-from .taxonomic import DWCTaxaCurator, TaxaCurator
+from .taxonomic import DWCTaxaMGazine, TaxaMGazine

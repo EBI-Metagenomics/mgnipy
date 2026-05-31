@@ -2,3 +2,4 @@ _build
 reference
 jupyter_execute
 *cache
+*downloads

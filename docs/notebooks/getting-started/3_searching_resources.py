@@ -70,7 +70,7 @@ print("analysis detail endpoint:")
 MG.describe_resource("analysis")
 
 # %% [markdown]
-# Each of the listed resource proxies above is a `MGnifier` that maps directly to a MGnify API endpoint. More information on the proxies can be found on the [proxies page](TODO), but at a glance:
+# Each of the listed resource proxies above is a `MGnifier` that maps directly to a MGnify API endpoint. More information on the proxies can be found on the [proxies page](https://mgnipy.mgnify.org/notebooks/fundamentals/2_mgnifier_proxies.html), but at a glance:
 #
 # - the plural resources (e.g. `analyses` `studies`) represent collection/list endpoints from the API 
 #     

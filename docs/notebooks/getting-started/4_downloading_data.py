@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv (3.11.14)
+#     display_name: .venv
 #     language: python
 #     name: python3
 # ---
@@ -31,7 +31,6 @@
 # %%
 # uncomment below if colab
 # #!pip install mgnipy
-# #!pip install asyncio
 
 # %% [markdown]
 #
@@ -40,7 +39,7 @@
 #
 # Let's request tomato rhizosphere datasets and metadata from MGnify API.
 #
-# Recall the typical workflow (from [What is MGni.Py?](TODO)):
+# Recall the typical workflow (from [What is MGni.Py?](https://mgnipy.mgnify.org/notebooks/getting-started/1_what_is_mgnipy.html)):
 #
 # 1. Start up a `mgnipy.MGnipy` client with your desired configuration
 #
@@ -110,8 +109,7 @@ tomato_studies.to_df(expand_nested_dicts=True)
 #
 # - To access the study's mgazine use `.datasets` 
 #
-# - the str representaiton of mgazine tells us the number of download files and their {alias: url}
-#
+# - the __str__ representaiton of mgazine gives us a peak into the pipeline versions within, number of downloads and the short_description categories
 
 # %% tags=["hide-output"]
 # access study mgazine
@@ -124,39 +122,43 @@ print(MZ)
 MZ.downloads_df
 
 # %% [markdown]
-# ### Downloading datasets
-#
-# FOR ONE download file/dataset, if wanting to `.download()` or explore/read in via `.stream()` then can pass the `url` or `alias`
+# You can filter by short descriptioins by passing them as you would an index into square brackets i..e, __getitem__
 
-# %%
-one_alias = MZ.aliases[0]
-print(one_alias)
-# TODO when MGnify API V2 fully rolled out as urls are currently None  
-# MZ.download(to_dir="downloads", alias=one_alias) 
+# %% tags=["hide-output"]
+# we want the taxonomic assignments
+ssu = MZ['Taxonomic assignments SSU']
 
-# %% [markdown]
-# also the option to `download_all()`
+# checking out what it is 
+print(type(ssu))
+print(ssu)
 
-# %%
-# TODO when MGnify API V2 fully rolled out as urls are currently None  
-# MZ.download_all(to_dir="downloads")
+# downloads_df again 
+ssu.downloads_df
 
 # %% [markdown]
-# ### Reading in a dataset `.stream()`
+# - for more options over the filtering of mgazines see the [MGazine informtion page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html). 
 #
-# `.stream() `resolves a download alias or URL and returns the appropriate streaming handler for the file type. It supports returning either a full object (when `chunksize` is `None`) or an iterator of chunks when chunksize is provided. 
+# - additionally the info page delves into how to downloads the files
 #
-# Supported formats include:
-# - TSV/CSV — stream_pandas (pandas) or stream_polars (polars) (handles gzipped TSV/CSV).
-# - FASTA / GFF / BIOM — stream_fasta, stream_gff, stream_biom (scikit-bio generators).
-# - JSONL / NDJSON — stream_jsonl (pandas or polars).
+# We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now. There are analysis type-specific mgazines, such as this TaxaMGazine
 #
-# See [Intro to MGazine page](TODO) for more information
+# for example, we can also combine the taxonomic assignment results into one dataframe e.g. `.to_pandas()`, `.to_polars`, `.X()`
 
 # %%
-# TODO when MGnify API V2 fully rolled out as urls are currently None  
-# df = MZ.stream(alias=one_alias, dataframe_engine="pandas")
-# df.head()
+ssu.to_pandas()
+
+# %% [markdown]
+# There is also option to enrich with additional metadata! 
+#
+# 1)  From *already* retrieved `MGnifier` results you can set to `runs_results`, `samples_results`, `studies_results` etc, or
+#
+# 2) use `.enrich_runs()` etc or `.enrich_biosamples` which will make the get requests for the additional metadata
+
+# %% tags=["hide-output"]
+ssu.enrich_runs(limit=None)
+
+# %%
+ssu.to_anndata()
 
 # %% [markdown]
 # ---
