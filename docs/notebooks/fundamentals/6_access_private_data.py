@@ -19,7 +19,7 @@
 #
 # ---
 #
-# - Recommended: keep an `.env` file with `MG_USER` and `MG_PASSWORD` (see .env.example in the repo). These are auto-loaded into `mgnipy.MGnipyConfig` via pydantic settings.
+# - Recommended: keep an `.env` file with `MG_USER` and `MG_PASSWORD` (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/92a70c5f489d1fa16943585fcd50cef253bb61db/.env.example) in the repo). These are auto-loaded into `mgnipy.MGnipyConfig` via pydantic settings.
 # - Alternatively, pass credentials directly when creating a config: `config = MGnipyConfig(mg_user="...", mg_password="...")` and use that with `mgnipy.MGnipy` or resource proxies.
 #
 #     <br>
@@ -48,7 +48,7 @@
 
 # %% [markdown]
 # ### **Option 1.** (Recommended) Auto-loading from an `.env` file
-# - Use an `.env` file (recommended). See [`.env.example`](TODO) — variables `MG_USER` and `MG_PASSWORD`.
+# - Use an `.env` file (recommended). See [`.env.example`](https://github.com/EBI-Metagenomics/mgnipy/blob/92a70c5f489d1fa16943585fcd50cef253bb61db/.env.example) — variables `MG_USER` and `MG_PASSWORD`.
 #     - example `.env` contents:
 #         ```.env
 #                     MG_USER=<your MGnify or ENA username>

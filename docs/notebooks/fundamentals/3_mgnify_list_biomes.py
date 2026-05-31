@@ -61,7 +61,7 @@
 #
 # This method has an additional helper function to list and describe available resources
 #
-# > &#x1F4A1; **Tip:** See [Configuration page](TODO) for more setup details &#x1F6E0;.
+# > &#x1F4A1; **Tip:** See [Configuration page](https://mgnipy.mgnify.org/notebooks/fundamentals/4_mgnipy_config.html) for more setup details &#x1F6E0;.
 
 # %%
 from mgnipy import MGnipy
@@ -170,7 +170,7 @@ biomes.preview()
 # ### Option 1. `.get()` iteratively
 # For a demo of this we will make the first 5 requests.
 #
-# > **NOTE:** There are protective (for API and user memory) limits to the number of requests that can be made in one bulk fetch call or iteration. However, the requests can be continued using `.continue_interator()` or `.resume()` see [caching notebook](TODO) for more details.
+# > **NOTE:** There are protective (for API and user memory) limits to the number of requests that can be made in one bulk fetch call or iteration. However, the requests can be continued using `.continue_interator()` or `.resume()` see [caching notebook](https://mgnipy.mgnify.org/notebooks/fundamentals/5_cache.html) for more details.
 
 # %%
 # getting first 5

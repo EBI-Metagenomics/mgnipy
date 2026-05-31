@@ -44,7 +44,7 @@ logging.basicConfig(level=logging.DEBUG)
 #
 # Let's request tomato rhizosphere datasets and metadata from MGnify API.
 #
-# Recall the typical workflow (from [What is MGni.Py?](TODO)):
+# Recall the typical workflow (from [What is MGni.Py?](https://mgnipy.mgnify.org/notebooks/getting-started/1_what_is_mgnipy.html)):
 #
 # 1. Start up a `mgnipy.MGnipy` client with your desired configuration
 #
@@ -155,7 +155,7 @@ print(ssu)
 ssu.downloads_df
 
 # %% [markdown]
-# for more options over the filtering of mgazines see the [MGazine informtion page](TODO). We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now
+# for more options over the filtering of mgazines see the [MGazine informtion page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html). We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now
 
 # %% [markdown]
 # ### Downloading datasets
@@ -190,7 +190,7 @@ ssu.download_all(to_dir="downloads")
 # - FASTA / GFF / BIOM — stream_fasta, stream_gff, stream_biom (scikit-bio generators).
 # - JSONL / NDJSON — stream_jsonl (pandas or polars).
 #
-# See [Intro to MGazine page](TODO) for more information
+# See [Intro to MGazine page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html) for more information
 
 # %%
 df = ssu.stream(alias=one_alias, dataframe_engine="pandas")

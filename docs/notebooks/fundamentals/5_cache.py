@@ -83,7 +83,7 @@
 #
 # Only `mgnipy.MGnipy` also will accept config_kwargs.
 #
-# More information can be found on the [config setup page](TODO)
+# More information can be found on the [config setup page](https://mgnipy.mgnify.org/notebooks/fundamentals/4_mgnipy_config.html)
 
 # %% [markdown]
 # ### 💾 Where to save
@@ -125,7 +125,7 @@ samples = Samples(config=config)
 #
 # The cache directory is configured via `mgnipy.MGnipyConfig` of by passing
 #
-# More information can be found on the [config setup page](TODO)
+# More information can be found on the [config setup page](https://mgnipy.mgnify.org/notebooks/fundamentals/4_mgnipy_config.html)
 
 # %% [markdown]
 # you can find the `cache_dir` already from the MGnipy delegator / client:
