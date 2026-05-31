@@ -9,7 +9,7 @@ With `mgnipy` you can easily search for and download MGnify studies, samples, an
 
 The aim of MGgni.py is to make it faster and easier to find and download MGnify datasets with their sample, analysis, study, etc. metadata
 
-![api expectation vs reality vs mgnipy](../../assets/mgnipy-pres-gif.gif)
+![api expectation vs reality vs mgnipy](https://github.com/EBI-Metagenomics/mgnipy/blob/gh-pages/_images/mgnipy-pres-gif.gif?raw=true)
 
 ### ✨ Notable features: 
 

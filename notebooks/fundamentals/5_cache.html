@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Understanding the cache &#8212; mgnipy 0.1.dev1+g92a70c5f4 documentation</title>
+    <title>Understanding the cache &#8212; mgnipy 0.1.dev1+g97c77b28d documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=cfd0e867"></script>
+    <script src="../../_static/documentation_options.js?v=051c0ef2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -592,7 +592,7 @@ document.write(`
 <h2>Configuring the cache<a class="headerlink" href="#configuring-the-cache" title="Link to this heading">#</a></h2>
 <p>The outtermost containing directory can be configured with the <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> or can be pased as a dict argument to <code class="docutils literal notranslate"><span class="pre">config</span></code></p>
 <p>Only <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> also will accept config_kwargs.</p>
-<p>More information can be found on the <a class="reference internal" href="../../reference/mgnipy.V2.html#mgnipy.V2.MGnifier.TODO" title="mgnipy.V2.MGnifier.TODO"><span class="xref myst py py-attr">config setup page</span></a></p>
+<p>More information can be found on the <a class="reference external" href="https://mgnipy.mgnify.org/notebooks/fundamentals/4_mgnipy_config.html" rel="noreferrer" target="_blank">config setup page <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <section id="where-to-save">
 <h3>💾 Where to save<a class="headerlink" href="#where-to-save" title="Link to this heading">#</a></h3>
 <p>The default cache_dir is based on <a class="reference external" href="https://pypi.org/project/platformdirs/" rel="noreferrer" target="_blank">platformdirs <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> but you can choose another path</p>
@@ -682,7 +682,7 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 <section id="setting-and-finding-the-main-cache-directory">
 <h3>🗃️ Setting and finding the main cache directory<a class="headerlink" href="#setting-and-finding-the-main-cache-directory" title="Link to this heading">#</a></h3>
 <p>The cache directory is configured via <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> of by passing</p>
-<p>More information can be found on the <a class="reference internal" href="../../reference/mgnipy.V2.html#mgnipy.V2.MGnifier.TODO" title="mgnipy.V2.MGnifier.TODO"><span class="xref myst py py-attr">config setup page</span></a></p>
+<p>More information can be found on the <a class="reference external" href="https://mgnipy.mgnify.org/notebooks/fundamentals/4_mgnipy_config.html" rel="noreferrer" target="_blank">config setup page <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <p>you can find the <code class="docutils literal notranslate"><span class="pre">cache_dir</span></code> already from the MGnipy delegator / client:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

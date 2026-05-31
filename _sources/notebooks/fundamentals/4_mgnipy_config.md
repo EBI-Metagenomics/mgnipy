@@ -34,7 +34,7 @@ A [Pydantic-based settings object](https://pydantic.dev/docs/validation/latest/c
 - By default the token is cached on disk under a platform-appropriate cache dir (via `platformdirs`) in a file named auth_<hash>.json. -- unless cache is disabled via `cache_dir=None`
 ```
 
-See [next accessing private data page](TODO) on how to configure for private data. 
+See [next accessing private data page](https://mgnipy.mgnify.org/notebooks/fundamentals/6_access_private_data.html) on how to configure for private data. 
 
 ---
 

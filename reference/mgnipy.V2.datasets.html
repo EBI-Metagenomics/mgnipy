@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.datasets package &#8212; mgnipy 0.1.dev1+g92a70c5f4 documentation</title>
+    <title>mgnipy.V2.datasets package &#8212; mgnipy 0.1.dev1+g97c77b28d documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=cfd0e867"></script>
+    <script src="../_static/documentation_options.js?v=051c0ef2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -469,10 +469,11 @@ document.write(`
 <dt class="sig sig-object py" id="mgnipy.V2.datasets.MGazine">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.datasets.</span></span><span class="sig-name descname"><span class="pre">MGazine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">downloads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/datasets.html#MGazine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.datasets.MGazine" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="mgnipy.V2.mixins.html#mgnipy.V2.mixins.StreamMixin" title="mgnipy.V2.mixins.StreamMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamMixin</span></code></a></p>
-<p>Helper for handling MGnify analysis/study downloads.</p>
-<p>This class accepts a list of download-like dictionaries (for example
+<p>MGazine is a class for managing and downloading datasets from MGnify.
+- Accepts a list of download-like dictionaries (for example
 the objects returned by the MGnify API for downloads) and provides
-simple streaming and download helpers.</p>
+simple streaming and download helpers.
+- Supports grouping datasets by pipeline version and short description, and provides methods for downloading individual files or all files in the MGazine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

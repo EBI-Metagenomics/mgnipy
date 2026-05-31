@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.datasets &#8212; mgnipy 0.1.dev1+g92a70c5f4 documentation</title>
+    <title>mgnipy.V2.datasets &#8212; mgnipy 0.1.dev1+g97c77b28d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=cfd0e867"></script>
+    <script src="../../../_static/documentation_options.js?v=051c0ef2"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -369,11 +369,11 @@ document.write(`
 <a class="viewcode-back" href="../../../reference/mgnipy.V2.datasets.html#mgnipy.V2.datasets.MGazine">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MGazine</span><span class="p">(</span><span class="n">StreamMixin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper for handling MGnify analysis/study downloads.</span>
-
-<span class="sd">    This class accepts a list of download-like dictionaries (for example</span>
+<span class="sd">    MGazine is a class for managing and downloading datasets from MGnify.</span>
+<span class="sd">    - Accepts a list of download-like dictionaries (for example</span>
 <span class="sd">    the objects returned by the MGnify API for downloads) and provides</span>
 <span class="sd">    simple streaming and download helpers.</span>
+<span class="sd">    - Supports grouping datasets by pipeline version and short description, and provides methods for downloading individual files or all files in the MGazine.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -614,13 +614,13 @@ document.write(`
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;getting dwc-ready taxonomic datasets of short description </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> via item access.&quot;</span>
                 <span class="p">)</span>
-                <span class="k">return</span> <span class="n">DWCTaxaCurator</span><span class="p">(</span><span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">DWCTaxaMGazine</span><span class="p">(</span><span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="s2">&quot;taxonom&quot;</span> <span class="ow">in</span> <span class="n">download_type</span> <span class="ow">and</span> <span class="s2">&quot;dwc-ready&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;getting taxonomic datasets of short description </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> via item access.&quot;</span>
                 <span class="p">)</span>
-                <span class="k">return</span> <span class="n">TaxaCurator</span><span class="p">(</span><span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">TaxaMGazine</span><span class="p">(</span><span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
             <span class="c1"># TODO other download types</span>
             <span class="k">return</span> <span class="n">new_mz</span>
@@ -1147,7 +1147,7 @@ document.write(`
 
 
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.taxonomic</span><span class="w"> </span><span class="kn">import</span> <span class="n">DWCTaxaCurator</span><span class="p">,</span> <span class="n">TaxaCurator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.taxonomic</span><span class="w"> </span><span class="kn">import</span> <span class="n">DWCTaxaMGazine</span><span class="p">,</span> <span class="n">TaxaMGazine</span>
 </pre></div>
 
                 </article>

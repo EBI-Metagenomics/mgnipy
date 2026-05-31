@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>A MGnifyList of records &#8212; mgnipy 0.1.dev1+g92a70c5f4 documentation</title>
+    <title>A MGnifyList of records &#8212; mgnipy 0.1.dev1+g97c77b28d documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=cfd0e867"></script>
+    <script src="../../_static/documentation_options.js?v=051c0ef2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -554,7 +554,7 @@ document.write(`
 </ul>
 <p>This method has an additional helper function to list and describe available resources</p>
 <blockquote>
-<div><p>💡 <strong>Tip:</strong> See <a class="reference internal" href="../../reference/mgnipy.V2.html#mgnipy.V2.MGnifier.TODO" title="mgnipy.V2.MGnifier.TODO"><span class="xref myst py py-attr">Configuration page</span></a> for more setup details 🛠.</p>
+<div><p>💡 <strong>Tip:</strong> See <a class="reference external" href="https://mgnipy.mgnify.org/notebooks/fundamentals/4_mgnipy_config.html" rel="noreferrer" target="_blank">Configuration page <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> for more setup details 🛠.</p>
 </div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -811,15 +811,15 @@ https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee410cb1a0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee410e9750&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee4105c6b0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff752c70bf0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff7527058d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff7527b4f80&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:36:59 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;68&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:44 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;68&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=1&amp;page_size=1 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -976,7 +976,7 @@ DEBUG:mgnipy.V2.query_set:Returning results for biomes with pages: []
 <h3>Option 1. <code class="docutils literal notranslate"><span class="pre">.get()</span></code> iteratively<a class="headerlink" href="#option-1-get-iteratively" title="Link to this heading">#</a></h3>
 <p>For a demo of this we will make the first 5 requests.</p>
 <blockquote>
-<div><p><strong>NOTE:</strong> There are protective (for API and user memory) limits to the number of requests that can be made in one bulk fetch call or iteration. However, the requests can be continued using <code class="docutils literal notranslate"><span class="pre">.continue_interator()</span></code> or <code class="docutils literal notranslate"><span class="pre">.resume()</span></code> see <a class="reference internal" href="../../reference/mgnipy.V2.html#mgnipy.V2.MGnifier.TODO" title="mgnipy.V2.MGnifier.TODO"><span class="xref myst py py-attr">caching notebook</span></a> for more details.</p>
+<div><p><strong>NOTE:</strong> There are protective (for API and user memory) limits to the number of requests that can be made in one bulk fetch call or iteration. However, the requests can be continued using <code class="docutils literal notranslate"><span class="pre">.continue_interator()</span></code> or <code class="docutils literal notranslate"><span class="pre">.resume()</span></code> see <a class="reference external" href="https://mgnipy.mgnify.org/notebooks/fundamentals/5_cache.html" rel="noreferrer" target="_blank">caching notebook <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> for more details.</p>
 </div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -997,15 +997,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching request num 1 with params: {&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 1}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee416d7d40&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f33cd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee41852180&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75276ff20&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff7527b93d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff7527b4f80&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:36:59 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;353&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:45 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;353&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=1&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1020,15 +1020,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching request num 2 with params: {&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 2}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee410c91c0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee41858d50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee40f48fb0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75276fc20&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff7526ce9d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75267ab70&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:00 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;642&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:46 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;642&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=2&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1043,15 +1043,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching request num 3 with params: {&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 3}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee40f4a360&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee4181aad0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7feeac19f6b0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff7527f8bf0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff75278f1d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75276fbf0&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:01 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;532&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:46 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;532&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=3&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1066,15 +1066,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching request num 4 with params: {&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 4}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee40f4b770&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee4116d0d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7feeac2d71a0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75256cf80&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff75254fb50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75256f680&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:01 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;559&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:47 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;559&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=4&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1089,15 +1089,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching request num 5 with params: {&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 5}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee41194f80&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee411980d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee41194e60&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75257ca70&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff752c749d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75256cf80&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:02 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;656&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:47 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;656&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=5&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1125,15 +1125,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching page 6 with params={&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 6}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7feeac19fec0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f23050&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee41b85370&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7527b4920&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff7525562d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff752c9a420&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:03 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;656&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:48 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;656&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=6&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1149,15 +1149,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching page 7 with params={&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 7}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f48410&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee4116ef50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee4126b770&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7527b4920&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff7525b7ed0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75276ea80&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:03 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;508&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:49 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;508&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=7&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1173,15 +1173,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching page 8 with params={&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 8}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee411538c0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f20a50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee41153fb0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75252ad80&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff75254dbd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7527b4a10&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:04 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;540&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:50 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;540&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=8&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1197,15 +1197,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching page 9 with params={&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 9}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee411066c0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f90bd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f5d160&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75256d850&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff752705ed0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75256d100&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:04 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;516&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:50 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;516&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=9&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1221,15 +1221,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching page 10 with params={&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 10}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f82270&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee41198cd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f498e0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75256de80&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff7527b87d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75257c1a0&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:05 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;473&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:51 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;473&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=10&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1463,15 +1463,15 @@ INFO:mgnipy.V2.query_set:Building query plan for biomes
 DEBUG:mgnipy.V2.query_set:Built 99 query entries for biomes
 INFO:mgnipy.V2.query_executor:Fetching request num 11 with params: {&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6, &#39;page&#39;: 11}
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee40f5d910&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f91650&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7fee40f4a2a0&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff75256d010&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff7527064d0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.sync.SyncStream object at 0x7ff753f6c950&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:05 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;588&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;588&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=11&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1479,7 +1479,7 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 11 because cache is disabled
-Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:03,  2.40it/s]
+Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:07,  1.26it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 12
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 12: False
@@ -1491,7 +1491,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;468&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;468&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=12&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1499,7 +1499,6 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 12 because cache is disabled
-Retrieving pages:  20%|██        | 2/10 [00:00&lt;00:01,  4.16it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 13
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 13: False
@@ -1511,7 +1510,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;467&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;467&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=13&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1519,7 +1518,7 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 13 because cache is disabled
-Retrieving pages:  30%|███       | 3/10 [00:00&lt;00:01,  5.39it/s]
+Retrieving pages:  30%|███       | 3/10 [00:00&lt;00:01,  3.55it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 14
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 14: False
@@ -1531,7 +1530,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;591&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;591&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=14&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1539,7 +1538,7 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 14 because cache is disabled
-Retrieving pages:  40%|████      | 4/10 [00:00&lt;00:00,  6.25it/s]
+Retrieving pages:  40%|████      | 4/10 [00:01&lt;00:01,  4.52it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 15
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 15: False
@@ -1551,7 +1550,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;660&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;660&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=15&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1559,7 +1558,7 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 15 because cache is disabled
-Retrieving pages:  50%|█████     | 5/10 [00:00&lt;00:00,  6.78it/s]
+Retrieving pages:  50%|█████     | 5/10 [00:01&lt;00:00,  5.47it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 16
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 16: False
@@ -1571,7 +1570,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;632&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;632&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=16&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1579,7 +1578,6 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 16 because cache is disabled
-Retrieving pages:  60%|██████    | 6/10 [00:01&lt;00:00,  7.22it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 17
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 17: False
@@ -1591,7 +1589,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;433&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;433&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=17&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1599,7 +1597,7 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 17 because cache is disabled
-Retrieving pages:  70%|███████   | 7/10 [00:01&lt;00:00,  7.60it/s]
+Retrieving pages:  70%|███████   | 7/10 [00:01&lt;00:00,  7.09it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 18
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 18: False
@@ -1611,7 +1609,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;419&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;419&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=18&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1619,7 +1617,6 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 18 because cache is disabled
-Retrieving pages:  80%|████████  | 8/10 [00:01&lt;00:00,  7.85it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 19
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 19: False
@@ -1631,7 +1628,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:06 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;535&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;535&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=19&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1639,7 +1636,7 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 19 because cache is disabled
-Retrieving pages:  90%|█████████ | 9/10 [00:01&lt;00:00,  7.96it/s]
+Retrieving pages:  90%|█████████ | 9/10 [00:01&lt;00:00,  8.13it/s]
 INFO:mgnipy.V2.query_executor:Advancing to request num 20
 DEBUG:mgnipy.V2.query_executor:Using cached count and num_requests vals: 492, 99
 DEBUG:mgnipy.V2.query_set:Result presence check for biomes page 20: False
@@ -1651,7 +1648,7 @@ DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;570&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:52 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;570&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=20&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1659,8 +1656,7 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 20 because cache is disabled
-Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  8.02it/s]
-Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  6.66it/s]
+Retrieving pages: 100%|██████████| 10/10 [00:01&lt;00:00,  5.90it/s]
 
 DEBUG:httpcore.connection:close.started
 DEBUG:httpcore.connection:close.complete
@@ -1735,47 +1731,47 @@ DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
 DEBUG:httpcore.connection:connect_tcp.started host=&#39;www.ebi.ac.uk&#39; port=443 local_address=None timeout=None socket_options=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f829f0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f92f50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40fa9880&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f92f50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee41194a10&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f92f50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f83b90&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f92f50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee411948f0&gt;
-DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7fee40f92f50&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f48c50&gt;
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75256caa0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff752707dd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7525c9f40&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff752707dd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75256d880&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff752707dd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75257c4d0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff752707dd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7525c8ad0&gt;
+DEBUG:httpcore.connection:start_tls.started ssl_context=&lt;ssl.SSLContext object at 0x7ff752707dd0&gt; server_hostname=&#39;www.ebi.ac.uk&#39; timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75256d160&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee411ba3f0&gt;
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff75252b2c0&gt;
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7525cbe30&gt;
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7527b4050&gt;
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7ff7525cb140&gt;
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f492b0&gt;
-DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40f4b500&gt;
-DEBUG:httpcore.http11:send_request_headers.complete
-DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_body.complete
-DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_headers.complete
-DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_body.complete
-DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.connection:start_tls.complete return_value=&lt;httpcore._backends.anyio.AnyIOStream object at 0x7fee40fa9ca0&gt;
-DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_headers.complete
-DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_body.complete
-DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;498&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;498&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=22&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1783,13 +1779,14 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 22
-DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 22 because cache is disabled
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;548&#39;)])
+Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:03,  2.68it/s]
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;548&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=24&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1798,8 +1795,7 @@ DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 24
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 24 because cache is disabled
-Retrieving pages:  10%|█         | 1/10 [00:00&lt;00:04,  2.13it/s]
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;507&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;507&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=23&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1807,32 +1803,46 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 23
-DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 23 because cache is disabled
-DEBUG:httpcore.http11:send_request_headers.complete
-DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_body.complete
-DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_headers.complete
-DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_body.complete
-DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;511&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;500&#39;)])
+INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=21&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
+DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;511&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=25&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
 DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:response_closed.complete
+INFO:mgnipy.V2.query_executor:Response status code: 200
+DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 21
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 21 because cache is disabled
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 25
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 25 because cache is disabled
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_headers.complete
 DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:send_request_body.complete
 DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;495&#39;)])
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;495&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=26&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1840,14 +1850,8 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 26
-DEBUG:httpcore.http11:send_request_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 26 because cache is disabled
-DEBUG:httpcore.http11:send_request_headers.complete
-DEBUG:httpcore.http11:send_request_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:send_request_body.complete
-DEBUG:httpcore.http11:receive_response_headers.started request=&lt;Request [b&#39;GET&#39;]&gt;
-Retrieving pages:  50%|█████     | 5/10 [00:00&lt;00:00, 10.72it/s]
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;435&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;435&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=27&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1856,7 +1860,8 @@ DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 27
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 27 because cache is disabled
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;467&#39;)])
+Retrieving pages:  70%|███████   | 7/10 [00:00&lt;00:00, 17.78it/s]
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;467&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=28&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
@@ -1864,36 +1869,26 @@ DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 28
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;568&#39;)])
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 28 because cache is disabled
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;568&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=29&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
 DEBUG:httpcore.http11:response_closed.started
-DEBUG:httpcore.http11:response_closed.complete
-INFO:mgnipy.V2.query_executor:Response status code: 200
-DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 29
-DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 29 because cache is disabled
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;500&#39;)])
-INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=21&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
-DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
-DEBUG:httpcore.http11:receive_response_body.complete
-DEBUG:httpcore.http11:response_closed.started
-DEBUG:httpcore.http11:response_closed.complete
-INFO:mgnipy.V2.query_executor:Response status code: 200
-DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 21
-DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 21 because cache is disabled
-DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Thu, 28 May 2026 15:37:07 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;527&#39;)])
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b&#39;HTTP/1.1&#39;, 200, b&#39;OK&#39;, [(b&#39;Vary&#39;, b&#39;origin&#39;), (b&#39;Content-Type&#39;, b&#39;application/json; charset=utf-8&#39;), (b&#39;Strict-Transport-Security&#39;, b&#39;max-age=0&#39;), (b&#39;Date&#39;, b&#39;Sun, 31 May 2026 22:22:53 GMT&#39;), (b&#39;Cross-Origin-Opener-Policy&#39;, b&#39;same-origin&#39;), (b&#39;X-Content-Type-Options&#39;, b&#39;nosniff&#39;), (b&#39;Connection&#39;, b&#39;keep-alive&#39;), (b&#39;X-Frame-Options&#39;, b&#39;DENY&#39;), (b&#39;Referrer-Policy&#39;, b&#39;same-origin&#39;), (b&#39;Content-Length&#39;, b&#39;527&#39;)])
 INFO:httpx:HTTP Request: GET https://www.ebi.ac.uk/metagenomics/api/v2/biomes/?max_depth=6&amp;page=30&amp;page_size=5 &quot;HTTP/1.1 200 OK&quot;
 DEBUG:httpcore.http11:receive_response_body.started request=&lt;Request [b&#39;GET&#39;]&gt;
 DEBUG:httpcore.http11:receive_response_body.complete
 DEBUG:httpcore.http11:response_closed.started
 DEBUG:httpcore.http11:response_closed.complete
 INFO:mgnipy.V2.query_executor:Response status code: 200
+DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 29
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 29 because cache is disabled
+INFO:mgnipy.V2.query_executor:Response status code: 200
 DEBUG:mgnipy.V2.mixins:Asynchronously writing cached results for page 30
 DEBUG:mgnipy.V2.mixins:Skipping cache write for biomes page 30 because cache is disabled
-Retrieving pages: 100%|██████████| 10/10 [00:00&lt;00:00, 19.62it/s]
-Retrieving pages: 100%|██████████| 10/10 [00:00&lt;00:00, 14.37it/s]
+Retrieving pages: 100%|██████████| 10/10 [00:00&lt;00:00, 19.79it/s]
 
 DEBUG:httpcore.connection:close.started
 DEBUG:httpcore.connection:close.complete

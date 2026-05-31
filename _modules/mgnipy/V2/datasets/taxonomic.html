@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.datasets.taxonomic &#8212; mgnipy 0.1.dev1+g92a70c5f4 documentation</title>
+    <title>mgnipy.V2.datasets.taxonomic &#8212; mgnipy 0.1.dev1+g97c77b28d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=cfd0e867"></script>
+    <script src="../../../../_static/documentation_options.js?v=051c0ef2"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>
-    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g92a70c5f4 documentation - Home"/>`);</script>
+    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>
+    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g97c77b28d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -363,7 +363,9 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span> <span class="k">as</span> <span class="n">tqdm_sync</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipyConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGazine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiskCheckpointer</span><span class="p">,</span> <span class="n">ResultsHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies.assemblies</span><span class="w"> </span><span class="kn">import</span> <span class="n">AssemblyDetail</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies.runs</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunDetail</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -429,7 +431,7 @@ document.write(`
 
 
 
-<span class="k">class</span><span class="w"> </span><span class="nc">_CuratorSetup</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_MGazineSetup</span><span class="p">(</span><span class="n">MGazine</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -443,12 +445,12 @@ document.write(`
         <span class="n">analyses_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">downloads</span><span class="o">=</span><span class="n">mgazine</span><span class="o">.</span><span class="n">downloads</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span> <span class="ow">or</span> <span class="n">mgazine</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mz</span> <span class="o">=</span> <span class="n">mgazine</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">mgazine</span><span class="o">.</span><span class="n">config</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mz</span><span class="o">.</span><span class="n">list_pipeline_version</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Multiple pipeline versions detected in MGazine. Curator methods may not work as expected.&quot;</span>
+                <span class="s2">&quot;Multiple pipeline versions detected in MGazine. MGazine methods may not work as expected.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mz</span><span class="o">.</span><span class="n">list_short_descriptions</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -456,7 +458,7 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Multiple short descriptions detected in MGazine and `short_desc` was not specified. Only the first short description will be used (i.e., </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mz</span><span class="o">.</span><span class="n">list_short_descriptions</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">).&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">short_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mz</span><span class="o">.</span><span class="n">list_short_descriptions</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TaxaCurator initialized for short description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">short_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TaxaMGazine initialized for short description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">short_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># determine mapping</span>
         <span class="k">if</span> <span class="n">long_short_mapping</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -504,7 +506,7 @@ document.write(`
                 <span class="s2">&quot;short_desc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_desc</span><span class="p">,</span>
                 <span class="s2">&quot;runs_accessions&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">runs_accessions</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="n">resource_str</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;TaxaCurator_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">short_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">resource_str</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;TaxaMGazine_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">short_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cache_handler</span><span class="o">.</span><span class="n">load_cache</span><span class="p">()</span>
@@ -571,7 +573,7 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
-<span class="sd">            The function does not return anything. It updates the `run_results` attribute of the TaxaCurator instance with the enriched run metadata.</span>
+<span class="sd">            The function does not return anything. It updates the `run_results` attribute of the TaxaMGazine instance with the enriched run metadata.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -594,13 +596,22 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Enriching run </span><span class="si">{</span><span class="n">run</span><span class="si">}</span><span class="s2"> for short description </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">short_desc</span><span class="si">}</span><span class="s2">. Count: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
             <span class="c1"># get metadata</span>
-            <span class="n">mg</span> <span class="o">=</span> <span class="n">RunDetail</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">mg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Enriched metadata for run </span><span class="si">{</span><span class="n">run</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">mg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_runs_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mg</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cache_handler</span><span class="o">.</span><span class="n">write_results</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs_results</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;ERZ&quot;</span> <span class="ow">in</span> <span class="n">run</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Run </span><span class="si">{</span><span class="n">run</span><span class="si">}</span><span class="s2"> appears to be an assembly. Using AssemblyDetail proxy for enrichment.&quot;</span>
+                <span class="p">)</span>
+
+                <span class="n">proxy</span> <span class="o">=</span> <span class="n">AssemblyDetail</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Run </span><span class="si">{</span><span class="n">run</span><span class="si">}</span><span class="s2"> could not be retrieved. Skipping.&quot;</span><span class="p">)</span>
+                <span class="n">proxy</span> <span class="o">=</span> <span class="n">RunDetail</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mg</span> <span class="o">=</span> <span class="n">proxy</span><span class="p">(</span><span class="n">accession</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error occurred while enriching run </span><span class="si">{</span><span class="n">run</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">mg</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;accession&quot;</span><span class="p">:</span> <span class="n">run</span><span class="p">}</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">runs_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mg</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aenrich_runs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">hide_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -621,6 +632,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fill_na</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span><span class="p">,</span>
         <span class="n">df_engine</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;polars&quot;</span><span class="p">,</span> <span class="s2">&quot;pandas&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;pandas&quot;</span><span class="p">,</span>
+        <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lazy_merged</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">long_short_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
@@ -682,14 +694,14 @@ document.write(`
 
         <span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
         <span class="n">MG</span><span class="o">.</span><span class="n">clear_subcaches</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MGnipy cache cleared via TaxaCurator helper.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MGnipy cache cleared via TaxaMGazine helper.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_merged</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_runs_accessions</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="DWCTaxaCurator">
-<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.DWCTaxaCurator">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">DWCTaxaCurator</span><span class="p">(</span><span class="n">_CuratorSetup</span><span class="p">):</span>
+<div class="viewcode-block" id="DWCTaxaMGazine">
+<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.DWCTaxaMGazine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DWCTaxaMGazine</span><span class="p">(</span><span class="n">_MGazineSetup</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -723,9 +735,9 @@ document.write(`
 
 
 
-<div class="viewcode-block" id="TaxaCurator">
-<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaCurator">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TaxaCurator</span><span class="p">(</span><span class="n">_CuratorSetup</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxaMGazine">
+<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaMGazine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TaxaMGazine</span><span class="p">(</span><span class="n">_MGazineSetup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;not for dwc&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -808,8 +820,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_merged</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">lazyframes</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;vertical_relaxed&quot;</span><span class="p">)</span>
 
     <span class="c1"># overwrite</span>
-<div class="viewcode-block" id="TaxaCurator.taxonomic_metadata">
-<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaCurator.taxonomic_metadata">[docs]</a>
+<div class="viewcode-block" id="TaxaMGazine.taxonomic_metadata">
+<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaMGazine.taxonomic_metadata">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">taxonomic_metadata</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fill_na</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span><span class="p">,</span>
@@ -849,8 +861,8 @@ document.write(`
             <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="TaxaCurator.X">
-<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaCurator.X">[docs]</a>
+<div class="viewcode-block" id="TaxaMGazine.X">
+<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaMGazine.X">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">X</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">df_engine</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;polars&quot;</span><span class="p">,</span> <span class="s2">&quot;pandas&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;pandas&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
@@ -862,8 +874,8 @@ document.write(`
             <span class="k">return</span> <span class="n">df_pl</span></div>
 
 
-<div class="viewcode-block" id="TaxaCurator.to_anndata">
-<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaCurator.to_anndata">[docs]</a>
+<div class="viewcode-block" id="TaxaMGazine.to_anndata">
+<a class="viewcode-back" href="../../../../reference/mgnipy.V2.datasets.taxonomic.html#mgnipy.V2.datasets.taxonomic.TaxaMGazine.to_anndata">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_anndata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">anndata_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ad</span><span class="o">.</span><span class="n">AnnData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts the taxonomic metadata to an AnnData object. The taxonomic ranks are stored in the `obs` attribute of the AnnData object.</span>
@@ -878,12 +890,23 @@ document.write(`
 <span class="sd">        ad.AnnData</span>
 <span class="sd">            An AnnData object containing the taxonomic metadata in the `obs` attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ad</span><span class="o">.</span><span class="n">AnnData</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">(),</span>
-            <span class="n">obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxonomic_metadata</span><span class="p">(),</span>
-            <span class="n">var</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">(),</span>
-            <span class="o">**</span><span class="n">anndata_kwargs</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ad</span><span class="o">.</span><span class="n">AnnData</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">(),</span>
+                <span class="n">obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxonomic_metadata</span><span class="p">(),</span>
+                <span class="n">var</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">(),</span>
+                <span class="o">**</span><span class="n">anndata_kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Returning without metadata() as var - Error occurred while converting to AnnData: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">ad</span><span class="o">.</span><span class="n">AnnData</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">(),</span>
+                <span class="n">obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxonomic_metadata</span><span class="p">(),</span>
+                <span class="n">var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">anndata_kwargs</span><span class="p">,</span>
+            <span class="p">)</span></div>
 </div>
 
 </pre></div>
