@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv (3.11.14)
+#     display_name: .venv
 #     language: python
 #     name: python3
 # ---
@@ -31,11 +31,6 @@
 # %%
 # uncomment below if colab
 # #!pip install mgnipy
-# #!pip install asyncio
-
-# %%
-import logging
-logging.basicConfig(level=logging.DEBUG)
 
 # %% [markdown]
 #
@@ -127,25 +122,11 @@ print(MZ)
 MZ.downloads_df
 
 # %% [markdown]
-# ### Navigating and filtering a `MGazine`
-#
-# Built in to mgazine, you can filter the mgazine to a specific pipeline versions and short_descriptions which will return a mgazine again but filtered or a curated mgazine with additional functionalities if available ✨.
-#
-# FOr accessing a specific pipeline version you can call the veresion as an attribute:
-
-# %%
-# above we saw that v5 is the only one so this will return the same basically
-v5_data = MZ.v5
-
-# if we print again we will see the same info
-print(v5_data)
-
-# %% [markdown]
 # You can filter by short descriptioins by passing them as you would an index into square brackets i..e, __getitem__
 
 # %% tags=["hide-output"]
 # we want the taxonomic assignments
-ssu = v5_data['Taxonomic assignments SSU']
+ssu = MZ['Taxonomic assignments SSU']
 
 # checking out what it is 
 print(type(ssu))
@@ -155,51 +136,11 @@ print(ssu)
 ssu.downloads_df
 
 # %% [markdown]
-# for more options over the filtering of mgazines see the [MGazine informtion page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html). We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now
-
-# %% [markdown]
-# ### Downloading datasets
+# - for more options over the filtering of mgazines see the [MGazine informtion page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html). 
 #
-# You can pass the `url` or `alias` if wanting to `.download()` or explore/read in via `.stream()` ONE download file/dataset. 
+# - additionally the info page delves into how to downloads the files
 #
-# You can look at the file aliases as a list via `.aliases` attribute, also shown in "alias" column in `.downloads_df`
-#
-# The urls are also in a column in `.downloads_df` but there are also helpers `.url_list` and `.url_dict` which provide {alias: url}
-
-# %%
-# lets try out one 
-one_alias = ssu.aliases[0]
-print(one_alias)
-
-# downloading to a downloads folder
-ssu.download(to_dir="downloads", alias=one_alias) 
-
-# %% [markdown]
-# also the option to `download_all()`
-
-# %%
-ssu.download_all(to_dir="downloads")
-
-# %% [markdown]
-# ### Reading in a dataset `.stream()`
-#
-# `.stream() `resolves a download alias or URL and returns the appropriate streaming handler for the file type. It supports returning either a full object (when `chunksize` is `None`) or an iterator of chunks when chunksize is provided. 
-#
-# Supported formats include:
-# - TSV/CSV — stream_pandas (pandas) or stream_polars (polars) (handles gzipped TSV/CSV).
-# - FASTA / GFF / BIOM — stream_fasta, stream_gff, stream_biom (scikit-bio generators).
-# - JSONL / NDJSON — stream_jsonl (pandas or polars).
-#
-# See [Intro to MGazine page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html) for more information
-
-# %%
-df = ssu.stream(alias=one_alias, dataframe_engine="pandas")
-df.head()
-
-# %% [markdown]
-# ## ✨ Bonus section: The `TaxaMGazine`
-#
-# There are analysis type-specific mgazines, such as this TaxaMGazine
+# We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now. There are analysis type-specific mgazines, such as this TaxaMGazine
 #
 # for example, we can also combine the taxonomic assignment results into one dataframe e.g. `.to_pandas()`, `.to_polars`, `.X()`
 
