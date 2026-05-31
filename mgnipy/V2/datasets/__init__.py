@@ -25,11 +25,11 @@ semaphore = get_semaphore()
 
 class MGazine(StreamMixin):
     """
-    Helper for handling MGnify analysis/study downloads.
-
-    This class accepts a list of download-like dictionaries (for example
+    MGazine is a class for managing and downloading datasets from MGnify.
+    - Accepts a list of download-like dictionaries (for example
     the objects returned by the MGnify API for downloads) and provides
     simple streaming and download helpers.
+    - Supports grouping datasets by pipeline version and short description, and provides methods for downloading individual files or all files in the MGazine.
 
     Parameters
     ----------

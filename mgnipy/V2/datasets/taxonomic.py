@@ -264,10 +264,9 @@ class _MGazineSetup(MGazine):
                 mg = proxy(accession=run, config=self.config).get()
             except Exception as e:
                 logger.error(f"Error occurred while enriching run {run}: {e}")
-                mg = None
+                mg = {"accession": run}
 
-            if mg is not False:
-                logger.warning(f"Run {run} could not be retrieved. Skipping.")
+            self.runs_results.append(mg)
 
     async def aenrich_runs(
         self, limit: Optional[int] = 200, hide_progress: bool = False
@@ -288,6 +287,7 @@ class _MGazineSetup(MGazine):
         self,
         fill_na: Any = "NA",
         df_engine: Literal["polars", "pandas"] = "pandas",
+        strict: bool = False,
     ) -> pl.DataFrame | pd.DataFrame:
 
         df = self.lazy_merged.select(list(self.long_short_mapping.keys())).collect()
