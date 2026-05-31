@@ -157,3 +157,6 @@ ssu.enrich_runs(limit=None)
 
 # %%
 ssu.to_anndata()
+
+# %%
+ssu.clear_cache()
