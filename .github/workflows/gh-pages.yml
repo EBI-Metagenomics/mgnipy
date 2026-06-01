@@ -40,6 +40,9 @@ jobs:
       - name: Copy CNAME into site
         run: cp docs/CNAME docs/_build/CNAME
 
+      - name: Copy contributing into site
+        run: cp Contributing.md docs/_build/Contributing.md
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:

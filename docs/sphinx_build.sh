@@ -3,6 +3,8 @@ export SPHINX_APIDOC_OPTIONS="members,undoc-members,inherited-members,show-inher
 
 jupytext notebooks/**/*.ipynb --sync
 
+cp ../Contributing.md Contributing.md
+
 # Generating the rst files for the API reference. This is needed for autodoc during sphinx-build to work.
 # Note: does not use conf.py
 sphinx-apidoc --force \

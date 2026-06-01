@@ -106,6 +106,8 @@ nb_execution_raise_on_error = (
 )
 # Rendering
 nb_merge_streams = True
+nb_scroll_outputs = True
+nb_output_stderr = "remove"
 
 ## Intersphinx options
 intersphinx_mapping = {
