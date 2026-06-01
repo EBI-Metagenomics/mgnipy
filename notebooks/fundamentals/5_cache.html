@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Understanding the cache &#8212; mgnipy 0.1.dev1+gb318fe42d documentation</title>
+    <title>Understanding the cache &#8212; mgnipy 0.1.dev1+gb2e436d7e documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=d97a546c"></script>
+    <script src="../../_static/documentation_options.js?v=db1d3950"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gb318fe42d documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gb318fe42d documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gb2e436d7e documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gb2e436d7e documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -208,9 +208,8 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
@@ -220,6 +219,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
@@ -532,7 +532,7 @@ document.write(`
 </aside>
 <p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
 <hr class="docutils" />
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
 <span class="c1">#!pip install mgnipy</span>
@@ -596,7 +596,7 @@ document.write(`
 <section id="where-to-save">
 <h3>💾 Where to save<a class="headerlink" href="#where-to-save" title="Link to this heading">#</a></h3>
 <p>The default cache_dir is based on <a class="reference external" href="https://pypi.org/project/platformdirs/" rel="noreferrer" target="_blank">platformdirs <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> but you can choose another path</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if using MGnipyConfig directly</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipyConfig</span>
@@ -608,34 +608,6 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:numcodecs:Registering codec &#39;zlib&#39;
-DEBUG:numcodecs:Registering codec &#39;gzip&#39;
-DEBUG:numcodecs:Registering codec &#39;bz2&#39;
-DEBUG:numcodecs:Registering codec &#39;lzma&#39;
-DEBUG:numcodecs:Registering codec &#39;blosc&#39;
-DEBUG:numcodecs:Registering codec &#39;zstd&#39;
-DEBUG:numcodecs:Registering codec &#39;lz4&#39;
-DEBUG:numcodecs:Registering codec &#39;astype&#39;
-DEBUG:numcodecs:Registering codec &#39;delta&#39;
-DEBUG:numcodecs:Registering codec &#39;quantize&#39;
-DEBUG:numcodecs:Registering codec &#39;fixedscaleoffset&#39;
-DEBUG:numcodecs:Registering codec &#39;packbits&#39;
-DEBUG:numcodecs:Registering codec &#39;categorize&#39;
-DEBUG:numcodecs:Registering codec &#39;pickle&#39;
-DEBUG:numcodecs:Registering codec &#39;base64&#39;
-DEBUG:numcodecs:Registering codec &#39;shuffle&#39;
-DEBUG:numcodecs:Registering codec &#39;bitround&#39;
-DEBUG:numcodecs:Registering codec &#39;crc32&#39;
-DEBUG:numcodecs:Registering codec &#39;adler32&#39;
-DEBUG:numcodecs:Registering codec &#39;jenkins_lookup3&#39;
-DEBUG:numcodecs:Registering codec &#39;json2&#39;
-DEBUG:numcodecs:Registering codec &#39;vlen-utf8&#39;
-DEBUG:numcodecs:Registering codec &#39;vlen-bytes&#39;
-DEBUG:numcodecs:Registering codec &#39;vlen-array&#39;
-DEBUG:numcodecs:Registering codec &#39;fletcher32&#39;
-DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
-</pre></div>
-</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGnipyConfig(api_version=&lt;SupportedApiVersions.V2: &#39;v2&#39;&gt;, base_url=HttpUrl(&#39;https://www.ebi.ac.uk/&#39;), cache_dir=PosixPath(&#39;temp_example&#39;))
 </pre></div>
 </div>
@@ -645,7 +617,7 @@ DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
 <section id="disabling-the-cache">
 <h3>🚫 Disabling the cache<a class="headerlink" href="#disabling-the-cache" title="Link to this heading">#</a></h3>
 <p>You can do this easily by configuring <code class="docutils literal notranslate"><span class="pre">cache_dir</span></code> as <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Samples</span>
@@ -662,16 +634,6 @@ DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource samples
-DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
-DEBUG:mgnipy.V2.query_set:Creating cache handler for samples
-DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for samples
-INFO:mgnipy.V2.query_set:Attempting to load cached results for samples
-DEBUG:mgnipy.V2.mixins:Skipping cache load for samples because cache is disabled
-INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource samples
-DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -684,7 +646,7 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 <p>The cache directory is configured via <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code> of by passing</p>
 <p>More information can be found on the <a class="reference external" href="https://mgnipy.mgnify.org/notebooks/fundamentals/4_mgnipy_config.html" rel="noreferrer" target="_blank">config setup page <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <p>you can find the <code class="docutils literal notranslate"><span class="pre">cache_dir</span></code> already from the MGnipy delegator / client:</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
 
@@ -705,7 +667,7 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 </div>
 </div>
 <p>and also from the resource-specific MGnifiers aka proxies if wanted:</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># init samples proxy</span>
 <span class="n">samples</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">samples</span>
@@ -717,19 +679,6 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>general cache dir: temp_example
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource samples
-DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
-DEBUG:mgnipy.V2.query_set:Creating cache handler for samples
-DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for samples
-INFO:mgnipy.V2.query_set:Attempting to load cached results for samples
-DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
-INFO:mgnipy.V2.mixins:Loading cached pages from temp_example/3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
-INFO:mgnipy.V2.mixins:No cache directory found at temp_example/3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
-INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource samples
-DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
-DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -737,7 +686,7 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 <h3>📁 Finding the sub-cache corresponding to a query<a class="headerlink" href="#finding-the-sub-cache-corresponding-to-a-query" title="Link to this heading">#</a></h3>
 <p>The cache subdirs or cache keys within <code class="docutils literal notranslate"><span class="pre">config.cache_dir</span></code> are derived from the resource name plus the query parameters via <code class="docutils literal notranslate"><span class="pre">hashlib.sha256</span></code></p>
 <p>Here is how to find the full path</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># option 1: .cache_dir</span>
 <span class="nb">print</span><span class="p">(</span>
@@ -751,13 +700,10 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
  temp_example/3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
-</pre></div>
-</div>
 </div>
 </div>
 <p>The cache directory path is also included in the string representation of the proxy instance :)</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># option 2: __str__</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
@@ -774,10 +720,6 @@ Example request URL: https://www.ebi.ac.uk/metagenomics/api/v2/samples?page=1
 Endpoint module: mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples
 Is list endpoint (returns paginated results): True
 Cache directory: temp_example/3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Built request URL for samples: https://www.ebi.ac.uk/metagenomics/api/v2/samples?page=1
-DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
 </pre></div>
 </div>
 </div>
@@ -821,17 +763,13 @@ DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5
 <section id="clearing-a-single-cache-key">
 <h3>🔥 clearing a single cache key<a class="headerlink" href="#clearing-a-single-cache-key" title="Link to this heading">#</a></h3>
 <p>the cache relevant to a given query instance can be cleared via its <code class="docutils literal notranslate"><span class="pre">.clear_cache()</span></code> method</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:mgnipy.V2.query_set:Clearing cache for samples
-DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5b9b42b48c8a25ca4f034132d94eb1f93e01ac48
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -843,7 +781,7 @@ DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5
 <li><p>remove resulting empty cache key subdirs</p></li>
 </ul>
 <p>in whatever path that is passed via <code class="docutils literal notranslate"><span class="pre">cache_dir</span></code>..</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check path again</span>
 <span class="n">MG</span><span class="o">.</span><span class="n">cache_dir</span>
@@ -857,16 +795,13 @@ DEBUG:mgnipy.V2.mixins:Computed cache key for samples: 3fddd8853bdd0204eeaeda6c5
 </div>
 </div>
 <p>looks right, let’s clear</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MG</span><span class="o">.</span><span class="n">clear_subcaches</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:mgnipy.mgnipy:Cache directory temp_example does not exist, nothing to clear.
-</pre></div>
-</div>
 </div>
 </div>
 <hr class="docutils" />

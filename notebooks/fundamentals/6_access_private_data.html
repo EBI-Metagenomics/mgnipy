@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Accessing your private data &#8212; mgnipy 0.1.dev1+gb318fe42d documentation</title>
+    <title>Accessing your private data &#8212; mgnipy 0.1.dev1+gb2e436d7e documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=d97a546c"></script>
+    <script src="../../_static/documentation_options.js?v=db1d3950"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gb318fe42d documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gb318fe42d documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gb2e436d7e documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gb2e436d7e documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -208,9 +208,8 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
@@ -220,6 +219,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
@@ -556,7 +556,7 @@ document.write(`
 </li>
 <li><p>The .env file and <code class="docutils literal notranslate"><span class="pre">MG_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">MG_PASSWORD</span></code> variables will auto be detected via pydantic settings and stored safely in <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipyConfig</span></code></p></li>
 </ul>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if .env files then can just proceed as normal, for example in a notebook:</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
@@ -566,34 +566,6 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:numcodecs:Registering codec &#39;zlib&#39;
-DEBUG:numcodecs:Registering codec &#39;gzip&#39;
-DEBUG:numcodecs:Registering codec &#39;bz2&#39;
-DEBUG:numcodecs:Registering codec &#39;lzma&#39;
-DEBUG:numcodecs:Registering codec &#39;blosc&#39;
-DEBUG:numcodecs:Registering codec &#39;zstd&#39;
-DEBUG:numcodecs:Registering codec &#39;lz4&#39;
-DEBUG:numcodecs:Registering codec &#39;astype&#39;
-DEBUG:numcodecs:Registering codec &#39;delta&#39;
-DEBUG:numcodecs:Registering codec &#39;quantize&#39;
-DEBUG:numcodecs:Registering codec &#39;fixedscaleoffset&#39;
-DEBUG:numcodecs:Registering codec &#39;packbits&#39;
-DEBUG:numcodecs:Registering codec &#39;categorize&#39;
-DEBUG:numcodecs:Registering codec &#39;pickle&#39;
-DEBUG:numcodecs:Registering codec &#39;base64&#39;
-DEBUG:numcodecs:Registering codec &#39;shuffle&#39;
-DEBUG:numcodecs:Registering codec &#39;bitround&#39;
-DEBUG:numcodecs:Registering codec &#39;crc32&#39;
-DEBUG:numcodecs:Registering codec &#39;adler32&#39;
-DEBUG:numcodecs:Registering codec &#39;jenkins_lookup3&#39;
-DEBUG:numcodecs:Registering codec &#39;json2&#39;
-DEBUG:numcodecs:Registering codec &#39;vlen-utf8&#39;
-DEBUG:numcodecs:Registering codec &#39;vlen-bytes&#39;
-DEBUG:numcodecs:Registering codec &#39;vlen-array&#39;
-DEBUG:numcodecs:Registering codec &#39;fletcher32&#39;
-DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -605,7 +577,7 @@ DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
 <li><p>and then use <code class="docutils literal notranslate"><span class="pre">os.getenv</span></code> to get out your MGnify user and pass variables</p></li>
 <li><p>initiate <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or resource-specific <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> instances (e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies</span></code>) with those login credentials like above</p></li>
 </ol>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -628,26 +600,13 @@ DEBUG:numcodecs:Registering codec &#39;crc32c&#39;
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource biomes
-DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
-DEBUG:mgnipy.V2.query_set:Creating cache handler for biomes
-DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for biomes
-INFO:mgnipy.V2.query_set:Attempting to load cached results for biomes
-DEBUG:mgnipy.V2.mixins:Computed cache key for biomes: c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
-INFO:mgnipy.V2.mixins:Loading cached pages from /home/runner/.cache/mgnipy/c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
-INFO:mgnipy.V2.mixins:No cache directory found at /home/runner/.cache/mgnipy/c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
-INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource biomes
-DEBUG:mgnipy.V2.mixins:Computed cache key for biomes: c69fa5f39352993d55498646a88e592a657e1b86ae2dd66dfb16d16732438ec7
-DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
-</pre></div>
-</div>
 </div>
 </div>
 </section>
 <section id="option-2-explicity-configure">
 <h3><strong>Option 2.</strong> Explicity Configure<a class="headerlink" href="#option-2-explicity-configure" title="Link to this heading">#</a></h3>
 <p>Manually pass the login credentials to <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or resource-specific <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> instances (e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies</span></code>) at init.</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pass login credentials to config</span>
 <span class="n">config</span> <span class="o">=</span> <span class="n">MGnipyConfig</span><span class="p">(</span>
@@ -664,7 +623,7 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 <section id="option-3-pass-credentials-interactively">
 <h3><strong>Option 3.</strong> Pass credentials interactively<a class="headerlink" href="#option-3-pass-credentials-interactively" title="Link to this heading">#</a></h3>
 <p>if no .env or not passed to MGnipy or proxies then when private endpoints called you will be prompted with an input window for user and then password. Such as for endpoints with only private data e.g. private_studies</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># requires sliding authentication token using user and pass</span>
 <span class="n">my_studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">private_studies</span>
@@ -672,19 +631,6 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DEBUG:mgnipy.V2.query_set:Initializing QuerySet for resource private_studies
-DEBUG:mgnipy.V2.query_set:Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication.
-DEBUG:mgnipy.V2.query_set:Creating cache handler for private_studies
-DEBUG:mgnipy.V2.mixins:Initializing DiskCheckpointer for private_studies
-INFO:mgnipy.V2.query_set:Attempting to load cached results for private_studies
-DEBUG:mgnipy.V2.mixins:Computed cache key for private_studies: a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
-INFO:mgnipy.V2.mixins:Loading cached pages from /home/runner/.cache/mgnipy/a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
-INFO:mgnipy.V2.mixins:No cache directory found at /home/runner/.cache/mgnipy/a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
-INFO:mgnipy.V2.query_set:Loaded pages [] from cache for resource private_studies
-DEBUG:mgnipy.V2.mixins:Computed cache key for private_studies: a680e04d178d222d978705bbed65357bf70afe0026496cb4a7c40e4c5fb1ccab
-DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -692,7 +638,7 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 <section id="then">
 <h2>Then…<a class="headerlink" href="#then" title="Link to this heading">#</a></h2>
 <p>You can continue the same process as you would with non-private resources</p>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># previewing query</span>
 <span class="c1"># my_studies.explain()</span>
@@ -700,7 +646,7 @@ DEBUG:mgnipy.V2.mixins:Initializing ResultsHandler
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># getting a page</span>
 <span class="c1"># my_studies.get()</span>
