@@ -18,7 +18,7 @@ MGni.py ('mæɡ-ni-paɪ') is a lightweight python client and toolkit for the [MG
     <img src="https://img.shields.io/github/stars/EBI-Metagenomics/mgnipy" alt="GitHub stars">
 </p>
 
-![mgnipy schematic](docs/assets/mgnipy_figure.gif)
+![mgnipy schematic](https://mgnipy.mgnify.org/_images/mgnipy_figure.gif)
 
 ## Contents
 
@@ -172,7 +172,7 @@ skbio_fasta = mgazine.stream(alias="mgnify_file_alias.fasta.gz")
 
 ## Development
 
-see [Contributing.md](Contributing.md)
+see [Contributing.md](https://mgnipy.mgnify.org/Contributing.html)
 
 ## License
 
