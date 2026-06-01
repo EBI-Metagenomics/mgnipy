@@ -33,8 +33,8 @@ The tutorials/demos act as tests - if the notebooks/py don't execute then the do
     sphinx-build -n -W --keep-going -b html ./ ./_build/
     ```
 
-## Readthedocs
-The documentation can be hosted on readthedocs. The [yaml](../.readthedocs.yaml) is in the root dir of the project.
+## GitHub Pages
+The documentation is built and deployed to GitHub Pages via [.github/workflows/gh-pages.yml](../.github/workflows/gh-pages.yml).
 
 
 ## Tips:

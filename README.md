@@ -2,6 +2,22 @@
 
 MGni.py ('mæɡ-ni-paɪ') is a lightweight python client and toolkit for the [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2/).
 
+<p align="center">
+    <a href="https://pypi.org/project/mgnipy/">
+        <img src="https://img.shields.io/pypi/v/mgnipy?label=PyPI" alt="PyPI">
+    </a>
+    <img src="https://img.shields.io/github/actions/workflow/status/EBI-Metagenomics/mgnipy/cicd.yml" alt="cicd.yml">
+    <a href="https://mgnipy.mgnify.org/">
+        <img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" alt="GitHub Pages docs">
+    </a>
+    <img src="https://img.shields.io/badge/python-3.11%20--%203.13-blue" alt="Python 3.11 to 3.13">
+    <br>
+    <img src="https://img.shields.io/github/issues/EBI-Metagenomics/mgnipy" alt="GitHub issues">
+    <img src="https://img.shields.io/github/license/EBI-Metagenomics/mgnipy" alt="GitHub license">
+    <img src="https://img.shields.io/github/last-commit/EBI-Metagenomics/mgnipy" alt="GitHub last commit">
+    <img src="https://img.shields.io/github/stars/EBI-Metagenomics/mgnipy" alt="GitHub stars">
+</p>
+
 ![mgnipy schematic](docs/assets/mgnipy_figure.gif)
 
 ## Contents
