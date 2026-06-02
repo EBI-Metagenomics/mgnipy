@@ -48,7 +48,9 @@
           }
         },
         "description": "MGnify analyses are accessioned with an MYGA-prefixed identifier and correspond to an individual Run or Assembly analysed by a Pipeline.",
-        "tags": ["Analyses"],
+        "tags": [
+          "Analyses"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -109,7 +111,9 @@
           }
         },
         "description": "Each analysis is the result of a Pipeline execution on a reads dataset (either a raw read-run, or an assembly).",
-        "tags": ["Analyses"]
+        "tags": [
+          "Analyses"
+        ]
       }
     },
     "/metagenomics/api/v2/analyses/{accession}/annotations": {
@@ -140,7 +144,9 @@
           }
         },
         "description": "MGnify analyses have annotations (taxonomic and functional assignments), and downloadable files (outputs from the pipeline execution).",
-        "tags": ["Analyses"],
+        "tags": [
+          "Analyses"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -229,7 +235,9 @@
           }
         },
         "description": "List the annotations of a given type for a MGnify analysis referred to by its accession.",
-        "tags": ["Analyses"],
+        "tags": [
+          "Analyses"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -271,7 +279,9 @@
           }
         },
         "description": "Get detailed information about a publication, including associated studies.",
-        "tags": ["Publications"]
+        "tags": [
+          "Publications"
+        ]
       }
     },
     "/metagenomics/api/v2/publications/{pubmed_id}/annotations": {
@@ -302,7 +312,9 @@
           }
         },
         "description": "Full-text annotations are retrieved from Europe PMC, text mined for relevant metagenomic metadata terms",
-        "tags": ["Publications"]
+        "tags": [
+          "Publications"
+        ]
       }
     },
     "/metagenomics/api/v2/publications/": {
@@ -316,7 +328,11 @@
             "schema": {
               "anyOf": [
                 {
-                  "enum": ["published_year", "-published_year", ""],
+                  "enum": [
+                    "published_year",
+                    "-published_year",
+                    ""
+                  ],
                   "type": "string"
                 },
                 {
@@ -426,7 +442,9 @@
           }
         },
         "description": "List all publications in the MGnify database.",
-        "tags": ["Publications"]
+        "tags": [
+          "Publications"
+        ]
       }
     },
     "/metagenomics/api/v2/samples/{accession}": {
@@ -461,12 +479,28 @@
                   "accession": "$response.body#/studies/0/accession"
                 },
                 "description": "The accession is an identifier that can be used to access the Study detail"
+              },
+              "GetRunsForSample": {
+                "operationId": "list_sample_runs",
+                "parameters": {
+                  "accession": "$request.path.accession"
+                },
+                "description": "Runs associated with this sample"
+              },
+              "GetAssembliesForSample": {
+                "operationId": "list_sample_assemblies",
+                "parameters": {
+                  "accession": "$request.path.accession"
+                },
+                "description": "Assemblies associated with this sample"
               }
             }
           }
         },
         "description": "MGnify samples inherit directly from samples (or BioSamples) in ENA.",
-        "tags": ["Samples"],
+        "tags": [
+          "Samples"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -516,7 +550,10 @@
                 }
               ],
               "description": "Search within sample titles and accessions",
-              "q": ["sample_title__icontains", "ena_accessions__icontains"],
+              "q": [
+                "sample_title__icontains",
+                "ena_accessions__icontains"
+              ],
               "title": "Search"
             },
             "required": false,
@@ -587,7 +624,9 @@
           }
         },
         "description": "MGnify samples inherit directly from samples (or BioSamples) in ENA.",
-        "tags": ["Samples"]
+        "tags": [
+          "Samples"
+        ]
       }
     },
     "/metagenomics/api/v2/samples/{accession}/runs/": {
@@ -655,7 +694,92 @@
           }
         },
         "description": "Samples may be associated with one or more ENA runs. ENA runs 'Hold raw read files and sequencing methods'",
-        "tags": ["Samples", "Runs"],
+        "tags": [
+          "Samples",
+          "Runs"
+        ],
+        "security": [
+          {
+            "WebinJWTAuth": []
+          },
+          {
+            "SessionAuthSuperUser": []
+          },
+          {
+            "NoAuth": []
+          }
+        ]
+      }
+    },
+    "/metagenomics/api/v2/samples/{accession}/assemblies/": {
+      "get": {
+        "operationId": "list_sample_assemblies",
+        "summary": "List assemblies associated with this sample",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accession",
+            "schema": {
+              "title": "Accession",
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Size"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NinjaPaginationResponseSchema_AssemblyDetail_"
+                }
+              }
+            },
+            "links": {
+              "GetAssemblyFromSampleItemsList": {
+                "operationId": "get_assembly",
+                "parameters": {
+                  "accession": "$response.body#/items/0/accession"
+                },
+                "description": "The accession is an identifier that can be used to access the Assembly detail"
+              }
+            }
+          }
+        },
+        "description": "Samples may be associated with one or more assemblies. Assemblies are collections of contigs generated from sequencing reads.",
+        "tags": [
+          "Samples",
+          "Assemblies"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -697,7 +821,9 @@
           }
         },
         "description": "MGnify studies inherit directly from studies (or projects) in ENA.",
-        "tags": ["Studies"],
+        "tags": [
+          "Studies"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -839,7 +965,9 @@
           }
         },
         "description": "MGnify studies inherit directly from studies (or projects) in ENA.",
-        "tags": ["Studies"]
+        "tags": [
+          "Studies"
+        ]
       }
     },
     "/metagenomics/api/v2/studies/{accession}/analyses/": {
@@ -906,8 +1034,11 @@
             }
           }
         },
-        "description": "MGnify analyses correspond to an individual Run or Assembly within this study,analysed by a MGnify Pipelione. ",
-        "tags": ["Studies", "Analyses"],
+        "description": "MGnify analyses correspond to an individual Run or Assembly within this study,analysed by a MGnify Pipeline. ",
+        "tags": [
+          "Studies",
+          "Analyses"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -986,7 +1117,10 @@
           }
         },
         "description": "List all publications associated with this study.",
-        "tags": ["Studies", "Publications"],
+        "tags": [
+          "Studies",
+          "Publications"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -1065,7 +1199,10 @@
           }
         },
         "description": "List all samples associated with this study.",
-        "tags": ["Studies", "Samples"],
+        "tags": [
+          "Studies",
+          "Samples"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -1130,7 +1267,9 @@
           }
         },
         "description": "A Super Study is a collection of MGnify Studies all related to a single large initiative. They may also reference Genome Catalogues that were assembled from the Studies or as part of the Super Study initiative.",
-        "tags": ["Studies"]
+        "tags": [
+          "Studies"
+        ]
       }
     },
     "/metagenomics/api/v2/super-studies/": {
@@ -1189,7 +1328,9 @@
           }
         },
         "description": "Super Studies are collections of MGnify Studies associated with major initiatives.",
-        "tags": ["Studies"]
+        "tags": [
+          "Studies"
+        ]
       }
     },
     "/metagenomics/api/v2/genomes/{accession}": {
@@ -1229,7 +1370,9 @@
           }
         },
         "description": "MGnify Genomes are either isolates, or MAGs derived from binned metagenomes.",
-        "tags": ["Genomes"]
+        "tags": [
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/genomes/{accession}/annotations": {
@@ -1260,7 +1403,9 @@
           }
         },
         "description": "Annotations are taxonomic and functional assignments for the genome.",
-        "tags": ["Genomes"]
+        "tags": [
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/genomes/": {
@@ -1268,6 +1413,76 @@
         "operationId": "list_mgnify_genomes",
         "summary": "List all genomes across MGnify Genome catalogues",
         "parameters": [
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "accession",
+                    "-accession",
+                    "length",
+                    "-length",
+                    "completeness",
+                    "-completeness",
+                    "contamination",
+                    "-contamination",
+                    "num_genomes_total",
+                    "-num_genomes_total",
+                    ""
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Order"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "biome_lineage",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The lineage to match, including all descendant biomes",
+              "title": "Biome Lineage"
+            },
+            "required": false,
+            "description": "The lineage to match, including all descendant biomes"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search with genome taxonomies and accessions",
+              "q": [
+                "accession",
+                "taxon_lineage__icontains",
+                "catalogue__catalogue_id__icontains"
+              ],
+              "title": "Search"
+            },
+            "required": false,
+            "description": "Search with genome taxonomies and accessions"
+          },
           {
             "in": "query",
             "name": "page",
@@ -1310,7 +1525,9 @@
           }
         },
         "description": "MGnify Genomes are either isolates, or MAGs derived from binned metagenomes.",
-        "tags": ["Genomes"]
+        "tags": [
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/genomes/catalogues/": {
@@ -1360,7 +1577,9 @@
           }
         },
         "description": "MGnify Genomes Catalogues are biome-specific collections of isolate and MAG genomes.",
-        "tags": ["Genomes"]
+        "tags": [
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/genomes/catalogues/{catalogue_id}": {
@@ -1390,7 +1609,9 @@
             }
           }
         },
-        "tags": ["Genomes"]
+        "tags": [
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/genomes/catalogues/{catalogue_id}/genomes/": {
@@ -1406,6 +1627,76 @@
               "type": "string"
             },
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "accession",
+                    "-accession",
+                    "length",
+                    "-length",
+                    "completeness",
+                    "-completeness",
+                    "contamination",
+                    "-contamination",
+                    "num_genomes_total",
+                    "-num_genomes_total",
+                    ""
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Order"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "biome_lineage",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The lineage to match, including all descendant biomes",
+              "title": "Biome Lineage"
+            },
+            "required": false,
+            "description": "The lineage to match, including all descendant biomes"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search with genome taxonomies and accessions",
+              "q": [
+                "accession",
+                "taxon_lineage__icontains",
+                "catalogue__catalogue_id__icontains"
+              ],
+              "title": "Search"
+            },
+            "required": false,
+            "description": "Search with genome taxonomies and accessions"
           },
           {
             "in": "query",
@@ -1448,7 +1739,9 @@
             }
           }
         },
-        "tags": ["Genomes"]
+        "tags": [
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/assemblies/": {
@@ -1498,7 +1791,9 @@
           }
         },
         "description": "Each assembly represents a collection of contigs generated by assembling sequencing reads from an MGnify or run ",
-        "tags": ["Assemblies"]
+        "tags": [
+          "Assemblies"
+        ]
       }
     },
     "/metagenomics/api/v2/assemblies/{accession}": {
@@ -1559,7 +1854,9 @@
           }
         },
         "description": "Get detailed information about a specific assembly. ",
-        "tags": ["Assemblies"]
+        "tags": [
+          "Assemblies"
+        ]
       }
     },
     "/metagenomics/api/v2/assemblies/{accession}/genome-links": {
@@ -1618,7 +1915,10 @@
           }
         },
         "description": "Return genome links (e.g. MAG associations) for a specific assembly.\nAccessible at `/assemblies/{accession}/genome-links`.",
-        "tags": ["Assemblies", "Genomes"]
+        "tags": [
+          "Assemblies",
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/assemblies/{accession}/additional-contained-genomes": {
@@ -1677,7 +1977,10 @@
           }
         },
         "description": "Return additional contained genomes (and their metrics) discovered for this assembly.\nAccessible at `/assemblies/{accession}/additional-contained-genomes`.",
-        "tags": ["Assemblies", "Genomes"]
+        "tags": [
+          "Assemblies",
+          "Genomes"
+        ]
       }
     },
     "/metagenomics/api/v2/assemblies/{accession}/analyses": {
@@ -1736,7 +2039,10 @@
           }
         },
         "description": "Return MGnify analyses (MGYAs) that were generated from this assembly.\nAccessible at `/assemblies/{accession}/analyses`.",
-        "tags": ["Assemblies", "Analyses"]
+        "tags": [
+          "Assemblies",
+          "Analyses"
+        ]
       }
     },
     "/metagenomics/api/v2/biomes/": {
@@ -1824,7 +2130,9 @@
           }
         },
         "description": "List all biomes in the MGnify database.",
-        "tags": ["Miscellaneous"]
+        "tags": [
+          "Miscellaneous"
+        ]
       }
     },
     "/metagenomics/api/v2/my-data/studies/": {
@@ -1873,7 +2181,9 @@
             }
           }
         },
-        "tags": ["Private Data"],
+        "tags": [
+          "Private Data"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -1971,7 +2281,9 @@
           }
         },
         "description": "List all analysed runs in the MGnify database.",
-        "tags": ["Runs"],
+        "tags": [
+          "Runs"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -2043,7 +2355,9 @@
           }
         },
         "description": "Get the detail of a single analysed run in the MGnify database.",
-        "tags": ["Runs"],
+        "tags": [
+          "Runs"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -2122,7 +2436,10 @@
           }
         },
         "description": "MGnify analyses correspond to an individual Run or Assembly",
-        "tags": ["Runs", "Analyses"],
+        "tags": [
+          "Runs",
+          "Analyses"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -2201,7 +2518,10 @@
           }
         },
         "description": "Assemblies generated from or including this run",
-        "tags": ["Runs", "Assemblies"],
+        "tags": [
+          "Runs",
+          "Assemblies"
+        ],
         "security": [
           {
             "WebinJWTAuth": []
@@ -2212,6 +2532,28 @@
           {
             "NoAuth": []
           }
+        ]
+      }
+    },
+    "/metagenomics/api/v2/genome-search/": {
+      "post": {
+        "operationId": "genome_fragment_search",
+        "summary": "Search genomes by short sequence and annotate with MGnify metadata",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenomeFragmentSearchOut"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Genomes"
         ]
       }
     },
@@ -2233,7 +2575,9 @@
           }
         },
         "description": "Obtain an authentication JWT token using Webin credentials. This token is sliding, i.e. it can be used both to access private data endpoints and to refresh itself after expiry.",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2264,7 +2608,9 @@
           }
         },
         "description": "If a token's expiry has passed, but its (longer) refresh expiry remains valid, this endpoint can be used to fetch a replacement token without logging in again. ",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2294,7 +2640,9 @@
             }
           }
         },
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2336,7 +2684,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["ERR0000001"],
+            "examples": [
+              "ERR0000001"
+            ],
             "title": "Accession"
           },
           "sample_accession": {
@@ -2349,7 +2699,10 @@
               }
             ],
             "description": "ENA accession of the sample associated with this run",
-            "examples": ["ERS000001", "SAMEA000000001"],
+            "examples": [
+              "ERS000001",
+              "SAMEA000000001"
+            ],
             "title": "Sample Accession"
           },
           "study_accession": {
@@ -2362,7 +2715,10 @@
               }
             ],
             "description": "ENA accession of the study associated with this run",
-            "examples": ["SRP135937", "PRJNA438545"],
+            "examples": [
+              "SRP135937",
+              "PRJNA438545"
+            ],
             "title": "Study Accession"
           },
           "instrument_model": {
@@ -2374,7 +2730,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["Illumina HiSeq 2000"],
+            "examples": [
+              "Illumina HiSeq 2000"
+            ],
             "title": "Instrument Model"
           },
           "instrument_platform": {
@@ -2386,7 +2744,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["Illumina"],
+            "examples": [
+              "Illumina"
+            ],
             "title": "Instrument Platform"
           }
         },
@@ -2409,7 +2769,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["ERZ000001"],
+            "examples": [
+              "ERZ000001"
+            ],
             "title": "Accession"
           },
           "updated_at": {
@@ -2418,24 +2780,34 @@
             "type": "string"
           }
         },
-        "required": ["updated_at"],
+        "required": [
+          "updated_at"
+        ],
         "title": "Assembly",
         "type": "object"
       },
       "Biome": {
         "properties": {
           "biome_name": {
-            "examples": ["Engineered", "Mammals"],
+            "examples": [
+              "Engineered",
+              "Mammals"
+            ],
             "title": "Biome Name",
             "type": "string"
           },
           "lineage": {
-            "examples": ["root:Engineered", "root:Host-associated:Mammals"],
+            "examples": [
+              "root:Engineered",
+              "root:Host-associated:Mammals"
+            ],
             "title": "Lineage",
             "type": "string"
           }
         },
-        "required": ["biome_name"],
+        "required": [
+          "biome_name"
+        ],
         "title": "Biome",
         "type": "object"
       },
@@ -2443,7 +2815,11 @@
         "description": "An index file (e.g., a .fai for a FASTA file of .gzi for a bgzip file) of a DownloadFile.",
         "properties": {
           "index_type": {
-            "enum": ["fai", "gzi", "csi"],
+            "enum": [
+              "fai",
+              "gzi",
+              "csi"
+            ],
             "title": "Index Type",
             "type": "string"
           },
@@ -2460,7 +2836,9 @@
             "title": "Path"
           }
         },
-        "required": ["index_type"],
+        "required": [
+          "index_type"
+        ],
         "title": "DownloadFileIndexFile",
         "type": "object"
       },
@@ -2514,12 +2892,16 @@
             "type": "string"
           },
           "study_accession": {
-            "examples": ["MGYS000000001"],
+            "examples": [
+              "MGYS000000001"
+            ],
             "title": "Study Accession",
             "type": "string"
           },
           "accession": {
-            "examples": ["MGYA000000001"],
+            "examples": [
+              "MGYA000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
@@ -2679,18 +3061,24 @@
               }
             ],
             "description": "Group identifier for the download",
-            "examples": ["taxonomies.closed_reference.ssu"],
+            "examples": [
+              "taxonomies.closed_reference.ssu"
+            ],
             "title": "Download Group"
           },
           "short_description": {
             "description": "Brief description of the file",
-            "examples": ["Tax. assignments"],
+            "examples": [
+              "Tax. assignments"
+            ],
             "title": "Short Description",
             "type": "string"
           },
           "long_description": {
             "description": "Detailed description of the file",
-            "examples": ["A table of taxonomic assignments"],
+            "examples": [
+              "A table of taxonomic assignments"
+            ],
             "title": "Long Description",
             "type": "string"
           },
@@ -2699,7 +3087,9 @@
             "type": "string"
           },
           "alias": {
-            "examples": ["SILVA-SSU.tsv"],
+            "examples": [
+              "SILVA-SSU.tsv"
+            ],
             "title": "Alias",
             "type": "string"
           },
@@ -2712,7 +3102,9 @@
                 "type": "null"
               }
             ],
-            "examples": [1024],
+            "examples": [
+              1024
+            ],
             "title": "File Size Bytes"
           },
           "index_file": {
@@ -2815,7 +3207,11 @@
       "MGnifyDownloadFileIndexFile": {
         "properties": {
           "index_type": {
-            "enum": ["fai", "gzi", "csi"],
+            "enum": [
+              "fai",
+              "gzi",
+              "csi"
+            ],
             "title": "Index Type",
             "type": "string"
           },
@@ -2839,19 +3235,32 @@
             "title": "Url"
           }
         },
-        "required": ["index_type"],
+        "required": [
+          "index_type"
+        ],
         "title": "MGnifyDownloadFileIndexFile",
         "type": "object"
       },
       "MGnifySample": {
         "properties": {
           "accession": {
-            "examples": ["ERS000001", "SAMEA000000001"],
+            "examples": [
+              "ERS000001",
+              "SAMEA000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
           "ena_accessions": {
-            "examples": [["ERS000001", "SAMEA000000001"], ["ERS000002"]],
+            "examples": [
+              [
+                "ERS000001",
+                "SAMEA000000001"
+              ],
+              [
+                "ERS000002"
+              ]
+            ],
             "items": {
               "type": "string"
             },
@@ -2867,7 +3276,10 @@
                 "type": "null"
               }
             ],
-            "examples": ["space suit expedition sample", "Patient 3 stool"],
+            "examples": [
+              "space suit expedition sample",
+              "Patient 3 stool"
+            ],
             "title": "Sample Title"
           },
           "biome": {
@@ -2897,7 +3309,16 @@
         "type": "object"
       },
       "PipelineVersions": {
-        "enum": ["V1", "V2", "V3", "V4", "V4.1", "V5", "V6", "V6.1"],
+        "enum": [
+          "V1",
+          "V2",
+          "V3",
+          "V4",
+          "V4.1",
+          "V5",
+          "V6",
+          "V6.1"
+        ],
         "title": "PipelineVersions",
         "type": "string"
       },
@@ -2939,7 +3360,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[MGnifyAnalysisDetail]",
         "type": "object"
       },
@@ -3000,12 +3424,16 @@
             "type": "string"
           },
           "study_accession": {
-            "examples": ["MGYS000000001"],
+            "examples": [
+              "MGYS000000001"
+            ],
             "title": "Study Accession",
             "type": "string"
           },
           "accession": {
-            "examples": ["MGYA000000001"],
+            "examples": [
+              "MGYA000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
@@ -3224,19 +3652,26 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[MGnifyAnalysisTypedAnnotation]",
         "type": "object"
       },
       "MGnifyPublicationDetail": {
         "properties": {
           "pubmed_id": {
-            "examples": [12345678],
+            "examples": [
+              12345678
+            ],
             "title": "Pubmed Id",
             "type": "integer"
           },
           "title": {
-            "examples": ["The Origin of Species"],
+            "examples": [
+              "The Origin of Species"
+            ],
             "title": "Title",
             "type": "string"
           },
@@ -3249,7 +3684,9 @@
                 "type": "null"
               }
             ],
-            "examples": [1859],
+            "examples": [
+              1859
+            ],
             "title": "Published Year"
           },
           "metadata": {
@@ -3271,19 +3708,30 @@
             "type": "array"
           }
         },
-        "required": ["title", "metadata", "studies"],
+        "required": [
+          "title",
+          "metadata",
+          "studies"
+        ],
         "title": "MGnifyPublicationDetail",
         "type": "object"
       },
       "MGnifyStudy": {
         "properties": {
           "accession": {
-            "examples": ["MGYS00000001"],
+            "examples": [
+              "MGYS00000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
           "ena_accessions": {
-            "examples": [["SRP135937", "PRJNA438545"]],
+            "examples": [
+              [
+                "SRP135937",
+                "PRJNA438545"
+              ]
+            ],
             "items": {
               "type": "string"
             },
@@ -3291,7 +3739,9 @@
             "type": "array"
           },
           "title": {
-            "examples": ["ISS Metagenomes"],
+            "examples": [
+              "ISS Metagenomes"
+            ],
             "title": "Title",
             "type": "string"
           },
@@ -3306,7 +3756,9 @@
             ]
           },
           "updated_at": {
-            "examples": ["1998-11-20T09:40:00+03:00"],
+            "examples": [
+              "1998-11-20T09:40:00+03:00"
+            ],
             "format": "date-time",
             "title": "Updated At",
             "type": "string"
@@ -3326,7 +3778,9 @@
         "properties": {
           "annotation_text": {
             "description": "Text of the annotation",
-            "examples": ["16S rRNA gene"],
+            "examples": [
+              "16S rRNA gene"
+            ],
             "title": "Annotation Text",
             "type": "string"
           },
@@ -3339,7 +3793,10 @@
             "type": "array"
           }
         },
-        "required": ["annotation_text", "mentions"],
+        "required": [
+          "annotation_text",
+          "mentions"
+        ],
         "title": "EuropePmcAnnotation",
         "type": "object"
       },
@@ -3423,7 +3880,12 @@
             "type": "array"
           }
         },
-        "required": ["annotation_type", "title", "description", "annotations"],
+        "required": [
+          "annotation_type",
+          "title",
+          "description",
+          "annotations"
+        ],
         "title": "EuropePmcAnnotationGroup",
         "type": "object"
       },
@@ -3431,7 +3893,9 @@
         "properties": {
           "exact": {
             "description": "The exact text of the annotation in the text",
-            "examples": ["16S rRNA gene"],
+            "examples": [
+              "16S rRNA gene"
+            ],
             "title": "Exact",
             "type": "string"
           },
@@ -3456,7 +3920,9 @@
               }
             ],
             "description": "The text immediately following the annotation",
-            "examples": [" and found it."],
+            "examples": [
+              " and found it."
+            ],
             "title": "Postfix"
           },
           "prefix": {
@@ -3469,13 +3935,17 @@
               }
             ],
             "description": "The text immediately preceding the annotation",
-            "examples": ["We sequenced the "],
+            "examples": [
+              "We sequenced the "
+            ],
             "title": "Prefix"
           },
           "provider": {
             "default": "Metagenomic",
             "description": "The provider of the annotation",
-            "examples": ["Metagenomics"],
+            "examples": [
+              "Metagenomics"
+            ],
             "title": "Provider",
             "type": "string"
           },
@@ -3520,11 +3990,17 @@
               }
             ],
             "description": "The section of the text where the annotation occurs",
-            "examples": ["Methods"],
+            "examples": [
+              "Methods"
+            ],
             "title": "Section"
           }
         },
-        "required": ["exact", "type", "tags"],
+        "required": [
+          "exact",
+          "type",
+          "tags"
+        ],
         "title": "EuropePmcAnnotationMention",
         "type": "object"
       },
@@ -3539,7 +4015,10 @@
             "type": "string"
           }
         },
-        "required": ["name", "uri"],
+        "required": [
+          "name",
+          "uri"
+        ],
         "title": "EuropePmcAnnotationTag",
         "type": "object"
       },
@@ -3562,7 +4041,10 @@
             "type": "array"
           }
         },
-        "required": ["sample_processing", "other"],
+        "required": [
+          "sample_processing",
+          "other"
+        ],
         "title": "PublicationAnnotations",
         "type": "object"
       },
@@ -3571,7 +4053,11 @@
           "order": {
             "anyOf": [
               {
-                "enum": ["published_year", "-published_year", ""],
+                "enum": [
+                  "published_year",
+                  "-published_year",
+                  ""
+                ],
                 "type": "string"
               },
               {
@@ -3632,12 +4118,16 @@
       "MGnifyPublication": {
         "properties": {
           "pubmed_id": {
-            "examples": [12345678],
+            "examples": [
+              12345678
+            ],
             "title": "Pubmed Id",
             "type": "integer"
           },
           "title": {
-            "examples": ["The Origin of Species"],
+            "examples": [
+              "The Origin of Species"
+            ],
             "title": "Title",
             "type": "string"
           },
@@ -3650,7 +4140,9 @@
                 "type": "null"
               }
             ],
-            "examples": [1859],
+            "examples": [
+              1859
+            ],
             "title": "Published Year"
           },
           "metadata": {
@@ -3665,7 +4157,10 @@
             "type": "object"
           }
         },
-        "required": ["title", "metadata"],
+        "required": [
+          "title",
+          "metadata"
+        ],
         "title": "MGnifyPublication",
         "type": "object"
       },
@@ -3683,7 +4178,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[MGnifyPublication]",
         "type": "object"
       },
@@ -3797,12 +4295,23 @@
       "MGnifySampleDetail": {
         "properties": {
           "accession": {
-            "examples": ["ERS000001", "SAMEA000000001"],
+            "examples": [
+              "ERS000001",
+              "SAMEA000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
           "ena_accessions": {
-            "examples": [["ERS000001", "SAMEA000000001"], ["ERS000002"]],
+            "examples": [
+              [
+                "ERS000001",
+                "SAMEA000000001"
+              ],
+              [
+                "ERS000002"
+              ]
+            ],
             "items": {
               "type": "string"
             },
@@ -3818,7 +4327,10 @@
                 "type": "null"
               }
             ],
-            "examples": ["space suit expedition sample", "Patient 3 stool"],
+            "examples": [
+              "space suit expedition sample",
+              "Patient 3 stool"
+            ],
             "title": "Sample Title"
           },
           "biome": {
@@ -3924,7 +4436,10 @@
               }
             ],
             "description": "Search within sample titles and accessions",
-            "q": ["sample_title__icontains", "ena_accessions__icontains"],
+            "q": [
+              "sample_title__icontains",
+              "ena_accessions__icontains"
+            ],
             "title": "Search"
           }
         },
@@ -3945,7 +4460,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[MGnifySample]",
         "type": "object"
       },
@@ -3963,8 +4481,165 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[AnalysedRun]",
+        "type": "object"
+      },
+      "AssemblyDetail": {
+        "properties": {
+          "accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              "ERZ000001"
+            ],
+            "title": "Accession"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "run_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Accession"
+          },
+          "sample_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample Accession"
+          },
+          "reads_study_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reads Study Accession"
+          },
+          "assembly_study_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assembly Study Accession"
+          },
+          "assembler_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assembler Name"
+          },
+          "assembler_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assembler Version"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Additional metadata associated with the assembly",
+            "examples": [
+              {
+                "coverage": 30,
+                "coverage_depth": 100,
+                "n_contigs": 1000
+              }
+            ],
+            "title": "Metadata"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Status information for the assembly",
+            "examples": [
+              {
+                "assembly_completed": true,
+                "assembly_uploaded": true
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "required": [
+          "updated_at"
+        ],
+        "title": "AssemblyDetail",
+        "type": "object"
+      },
+      "NinjaPaginationResponseSchema_AssemblyDetail_": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AssemblyDetail"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "items"
+        ],
+        "title": "NinjaPaginationResponseSchema[AssemblyDetail]",
         "type": "object"
       },
       "ENAStudyFields": {
@@ -4005,12 +4680,19 @@
       "MGnifyStudyDetail": {
         "properties": {
           "accession": {
-            "examples": ["MGYS00000001"],
+            "examples": [
+              "MGYS00000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
           "ena_accessions": {
-            "examples": [["SRP135937", "PRJNA438545"]],
+            "examples": [
+              [
+                "SRP135937",
+                "PRJNA438545"
+              ]
+            ],
             "items": {
               "type": "string"
             },
@@ -4018,7 +4700,9 @@
             "type": "array"
           },
           "title": {
-            "examples": ["ISS Metagenomes"],
+            "examples": [
+              "ISS Metagenomes"
+            ],
             "title": "Title",
             "type": "string"
           },
@@ -4033,7 +4717,9 @@
             ]
           },
           "updated_at": {
-            "examples": ["1998-11-20T09:40:00+03:00"],
+            "examples": [
+              "1998-11-20T09:40:00+03:00"
+            ],
             "format": "date-time",
             "title": "Updated At",
             "type": "string"
@@ -4048,7 +4734,10 @@
               }
             ],
             "description": "Preferred ENA accession for the study (derived from ENA/INSDC accessions)",
-            "examples": ["ERP123459", "SRP135937"],
+            "examples": [
+              "ERP123459",
+              "SRP135937"
+            ],
             "title": "First Accession"
           },
           "downloads": {
@@ -4110,18 +4799,24 @@
               }
             ],
             "description": "Group identifier for the download",
-            "examples": ["taxonomies.closed_reference.ssu"],
+            "examples": [
+              "taxonomies.closed_reference.ssu"
+            ],
             "title": "Download Group"
           },
           "short_description": {
             "description": "Brief description of the file",
-            "examples": ["Tax. assignments"],
+            "examples": [
+              "Tax. assignments"
+            ],
             "title": "Short Description",
             "type": "string"
           },
           "long_description": {
             "description": "Detailed description of the file",
-            "examples": ["A table of taxonomic assignments"],
+            "examples": [
+              "A table of taxonomic assignments"
+            ],
             "title": "Long Description",
             "type": "string"
           },
@@ -4130,7 +4825,9 @@
             "type": "string"
           },
           "alias": {
-            "examples": ["SILVA-SSU.tsv"],
+            "examples": [
+              "SILVA-SSU.tsv"
+            ],
             "title": "Alias",
             "type": "string"
           },
@@ -4143,7 +4840,9 @@
                 "type": "null"
               }
             ],
-            "examples": [1024],
+            "examples": [
+              1024
+            ],
             "title": "File Size Bytes"
           },
           "index_file": {
@@ -4299,7 +4998,11 @@
               }
             ],
             "description": "Search within study titles and accessions",
-            "q": ["title__icontains", "accession", "ena_accessions__icontains"],
+            "q": [
+              "title__icontains",
+              "accession",
+              "ena_accessions__icontains"
+            ],
             "title": "Search"
           }
         },
@@ -4320,7 +5023,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[MGnifyStudy]",
         "type": "object"
       },
@@ -4342,12 +5048,16 @@
             "type": "string"
           },
           "study_accession": {
-            "examples": ["MGYS000000001"],
+            "examples": [
+              "MGYS000000001"
+            ],
             "title": "Study Accession",
             "type": "string"
           },
           "accession": {
-            "examples": ["MGYA000000001"],
+            "examples": [
+              "MGYA000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
@@ -4418,19 +5128,33 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[MGnifyAnalysis]",
         "type": "object"
       },
       "MGnifySampleWithMetadata": {
         "properties": {
           "accession": {
-            "examples": ["ERS000001", "SAMEA000000001"],
+            "examples": [
+              "ERS000001",
+              "SAMEA000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
           "ena_accessions": {
-            "examples": [["ERS000001", "SAMEA000000001"], ["ERS000002"]],
+            "examples": [
+              [
+                "ERS000001",
+                "SAMEA000000001"
+              ],
+              [
+                "ERS000002"
+              ]
+            ],
             "items": {
               "type": "string"
             },
@@ -4446,7 +5170,10 @@
                 "type": "null"
               }
             ],
-            "examples": ["space suit expedition sample", "Patient 3 stool"],
+            "examples": [
+              "space suit expedition sample",
+              "Patient 3 stool"
+            ],
             "title": "Sample Title"
           },
           "biome": {
@@ -4510,24 +5237,33 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[MGnifySampleWithMetadata]",
         "type": "object"
       },
       "GenomeCatalogueList": {
         "properties": {
           "catalogue_id": {
-            "examples": ["marine-v1-0"],
+            "examples": [
+              "marine-v1-0"
+            ],
             "title": "Catalogue Id",
             "type": "string"
           },
           "version": {
-            "examples": ["v1.0"],
+            "examples": [
+              "v1.0"
+            ],
             "title": "Version",
             "type": "string"
           },
           "name": {
-            "examples": ["Marine"],
+            "examples": [
+              "Marine"
+            ],
             "title": "Name",
             "type": "string"
           },
@@ -4608,17 +5344,25 @@
             "type": "string"
           },
           "pipeline_version_tag": {
-            "examples": ["v2.5"],
+            "examples": [
+              "v2.5"
+            ],
             "title": "Pipeline Version Tag",
             "type": "string"
           },
           "catalogue_biome_label": {
-            "examples": ["Marine"],
+            "examples": [
+              "Marine"
+            ],
             "title": "Catalogue Biome Label",
             "type": "string"
           },
           "catalogue_type": {
-            "enum": ["prokaryotes", "eukaryotes", "viruses"],
+            "enum": [
+              "prokaryotes",
+              "eukaryotes",
+              "viruses"
+            ],
             "title": "Catalogue Type",
             "type": "string"
           },
@@ -4648,6 +5392,13 @@
                 "type": "null"
               }
             ]
+          },
+          "downloads": {
+            "items": {
+              "$ref": "#/components/schemas/MGnifyGenomeCatalogueDownloadFile"
+            },
+            "title": "Downloads",
+            "type": "array"
           }
         },
         "required": [
@@ -4663,20 +5414,142 @@
           "pipeline_version_tag",
           "catalogue_biome_label",
           "catalogue_type",
-          "other_stats"
+          "other_stats",
+          "downloads"
         ],
         "title": "GenomeCatalogueList",
+        "type": "object"
+      },
+      "MGnifyGenomeCatalogueDownloadFile": {
+        "description": "Download file representation for GenomeCatalogue objects.\n\nResolves a public URL using the catalogue's result_directory, if available.",
+        "properties": {
+          "file_type": {
+            "$ref": "#/components/schemas/DownloadFileType",
+            "description": "File type of the downloadable file, e.g. its file extension"
+          },
+          "download_type": {
+            "$ref": "#/components/schemas/DownloadType",
+            "description": "Category of the download"
+          },
+          "download_group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Group identifier for the download",
+            "examples": [
+              "taxonomies.closed_reference.ssu"
+            ],
+            "title": "Download Group"
+          },
+          "short_description": {
+            "description": "Brief description of the file",
+            "examples": [
+              "Tax. assignments"
+            ],
+            "title": "Short Description",
+            "type": "string"
+          },
+          "long_description": {
+            "description": "Detailed description of the file",
+            "examples": [
+              "A table of taxonomic assignments"
+            ],
+            "title": "Long Description",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "alias": {
+            "examples": [
+              "SILVA-SSU.tsv"
+            ],
+            "title": "Alias",
+            "type": "string"
+          },
+          "file_size_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              1024
+            ],
+            "title": "File Size Bytes"
+          },
+          "index_file": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DownloadFileIndexFile"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DownloadFileIndexFile"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index File"
+          },
+          "parent_identifier": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Parent Identifier"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "file_type",
+          "download_type",
+          "short_description",
+          "long_description",
+          "alias"
+        ],
+        "title": "MGnifyGenomeCatalogueDownloadFile",
         "type": "object"
       },
       "SuperStudyDetail": {
         "properties": {
           "slug": {
-            "examples": ["atlanteco"],
+            "examples": [
+              "atlanteco"
+            ],
             "title": "Slug",
             "type": "string"
           },
           "title": {
-            "examples": ["AtlantECO"],
+            "examples": [
+              "AtlantECO"
+            ],
             "title": "Title",
             "type": "string"
           },
@@ -4689,7 +5562,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["The Atlantic Ocean and its ecosystem services"],
+            "examples": [
+              "The Atlantic Ocean and its ecosystem services"
+            ],
             "title": "Description"
           },
           "logo_url": {
@@ -4701,7 +5576,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["https://example.com/logo.png"],
+            "examples": [
+              "https://example.com/logo.png"
+            ],
             "title": "Logo Url"
           },
           "flagship_studies": {
@@ -4750,19 +5627,26 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[SuperStudy]",
         "type": "object"
       },
       "SuperStudy": {
         "properties": {
           "slug": {
-            "examples": ["atlanteco"],
+            "examples": [
+              "atlanteco"
+            ],
             "title": "Slug",
             "type": "string"
           },
           "title": {
-            "examples": ["AtlantECO"],
+            "examples": [
+              "AtlantECO"
+            ],
             "title": "Title",
             "type": "string"
           },
@@ -4775,7 +5659,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["The Atlantic Ocean and its ecosystem services"],
+            "examples": [
+              "The Atlantic Ocean and its ecosystem services"
+            ],
             "title": "Description"
           },
           "logo_url": {
@@ -4787,28 +5673,39 @@
                 "type": "null"
               }
             ],
-            "examples": ["https://example.com/logo.png"],
+            "examples": [
+              "https://example.com/logo.png"
+            ],
             "title": "Logo Url"
           }
         },
-        "required": ["slug", "title"],
+        "required": [
+          "slug",
+          "title"
+        ],
         "title": "SuperStudy",
         "type": "object"
       },
       "GenomeCatalogueBase": {
         "properties": {
           "catalogue_id": {
-            "examples": ["marine-v1-0"],
+            "examples": [
+              "marine-v1-0"
+            ],
             "title": "Catalogue Id",
             "type": "string"
           },
           "version": {
-            "examples": ["v1.0"],
+            "examples": [
+              "v1.0"
+            ],
             "title": "Version",
             "type": "string"
           },
           "name": {
-            "examples": ["Marine"],
+            "examples": [
+              "Marine"
+            ],
             "title": "Name",
             "type": "string"
           },
@@ -4889,17 +5786,25 @@
             "type": "string"
           },
           "pipeline_version_tag": {
-            "examples": ["v2.5"],
+            "examples": [
+              "v2.5"
+            ],
             "title": "Pipeline Version Tag",
             "type": "string"
           },
           "catalogue_biome_label": {
-            "examples": ["Marine"],
+            "examples": [
+              "Marine"
+            ],
             "title": "Catalogue Biome Label",
             "type": "string"
           },
           "catalogue_type": {
-            "enum": ["prokaryotes", "eukaryotes", "viruses"],
+            "enum": [
+              "prokaryotes",
+              "eukaryotes",
+              "viruses"
+            ],
             "title": "Catalogue Type",
             "type": "string"
           },
@@ -4929,6 +5834,13 @@
                 "type": "null"
               }
             ]
+          },
+          "downloads": {
+            "items": {
+              "$ref": "#/components/schemas/MGnifyGenomeCatalogueDownloadFile"
+            },
+            "title": "Downloads",
+            "type": "array"
           }
         },
         "required": [
@@ -4944,7 +5856,8 @@
           "pipeline_version_tag",
           "catalogue_biome_label",
           "catalogue_type",
-          "other_stats"
+          "other_stats",
+          "downloads"
         ],
         "title": "GenomeCatalogueBase",
         "type": "object"
@@ -4952,7 +5865,9 @@
       "GenomeDetail": {
         "properties": {
           "accession": {
-            "examples": ["MGYG000000001"],
+            "examples": [
+              "MGYG000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
@@ -4978,6 +5893,17 @@
             ],
             "title": "Ena Sample Accession"
           },
+          "ena_study_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ena Study Accession"
+          },
           "ncbi_genome_accession": {
             "anyOf": [
               {
@@ -4988,6 +5914,17 @@
               }
             ],
             "title": "Ncbi Genome Accession"
+          },
+          "ncbi_study_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ncbi Study Accession"
           },
           "img_genome_accession": {
             "anyOf": [
@@ -5019,6 +5956,17 @@
             "title": "Num Contigs",
             "type": "integer"
           },
+          "num_genomes_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Genomes Total"
+          },
           "n_50": {
             "title": "N 50",
             "type": "integer"
@@ -5040,6 +5988,15 @@
           },
           "catalogue_id": {
             "title": "Catalogue Id",
+            "type": "string"
+          },
+          "taxon_lineage": {
+            "title": "Taxon Lineage",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
             "type": "string"
           },
           "geographic_origin": {
@@ -5078,6 +6035,127 @@
               }
             ]
           },
+          "rna_5s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rna 5S"
+          },
+          "rna_5_8s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rna 5 8S"
+          },
+          "rna_16s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rna 16S"
+          },
+          "rna_18s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rna 18S"
+          },
+          "rna_23s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rna 23S"
+          },
+          "rna_28s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rna 28S"
+          },
+          "trnas": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trnas"
+          },
+          "nc_rnas": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nc Rnas"
+          },
+          "eggnog_coverage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eggnog Coverage"
+          },
+          "ipr_coverage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ipr Coverage"
+          },
+          "num_proteins": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Proteins"
+          },
           "downloads": {
             "items": {
               "$ref": "#/components/schemas/MGnifyGenomeDownloadFile"
@@ -5100,7 +6178,9 @@
           "accession",
           "ena_genome_accession",
           "ena_sample_accession",
+          "ena_study_accession",
           "ncbi_genome_accession",
+          "ncbi_study_accession",
           "img_genome_accession",
           "patric_genome_accession",
           "length",
@@ -5111,6 +6191,8 @@
           "completeness",
           "contamination",
           "catalogue_id",
+          "taxon_lineage",
+          "updated_at",
           "geographic_origin",
           "downloads"
         ],
@@ -5118,7 +6200,10 @@
         "type": "object"
       },
       "GenomeType": {
-        "enum": ["MAG", "Isolate"],
+        "enum": [
+          "MAG",
+          "Isolate"
+        ],
         "title": "GenomeType",
         "type": "string"
       },
@@ -5142,18 +6227,24 @@
               }
             ],
             "description": "Group identifier for the download",
-            "examples": ["taxonomies.closed_reference.ssu"],
+            "examples": [
+              "taxonomies.closed_reference.ssu"
+            ],
             "title": "Download Group"
           },
           "short_description": {
             "description": "Brief description of the file",
-            "examples": ["Tax. assignments"],
+            "examples": [
+              "Tax. assignments"
+            ],
             "title": "Short Description",
             "type": "string"
           },
           "long_description": {
             "description": "Detailed description of the file",
-            "examples": ["A table of taxonomic assignments"],
+            "examples": [
+              "A table of taxonomic assignments"
+            ],
             "title": "Long Description",
             "type": "string"
           },
@@ -5162,7 +6253,9 @@
             "type": "string"
           },
           "alias": {
-            "examples": ["SILVA-SSU.tsv"],
+            "examples": [
+              "SILVA-SSU.tsv"
+            ],
             "title": "Alias",
             "type": "string"
           },
@@ -5175,7 +6268,9 @@
                 "type": "null"
               }
             ],
-            "examples": [1024],
+            "examples": [
+              1024
+            ],
             "title": "File Size Bytes"
           },
           "index_file": {
@@ -5240,14 +6335,84 @@
             "type": "object"
           }
         },
-        "required": ["accession", "annotations"],
+        "required": [
+          "accession",
+          "annotations"
+        ],
         "title": "GenomeWithAnnotations",
+        "type": "object"
+      },
+      "GenomeFilters": {
+        "properties": {
+          "biome_lineage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The lineage to match, including all descendant biomes",
+            "title": "Biome Lineage"
+          },
+          "search": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Search with genome taxonomies and accessions",
+            "q": [
+              "accession",
+              "taxon_lineage__icontains",
+              "catalogue__catalogue_id__icontains"
+            ],
+            "title": "Search"
+          }
+        },
+        "title": "GenomeFilters",
+        "type": "object"
+      },
+      "OrderByFilter_Literal__accession____-accession____length____-length____completeness____-completeness____contamination____-contamination____num_genomes_total____-num_genomes_total_______": {
+        "properties": {
+          "order": {
+            "anyOf": [
+              {
+                "enum": [
+                  "accession",
+                  "-accession",
+                  "length",
+                  "-length",
+                  "completeness",
+                  "-completeness",
+                  "contamination",
+                  "-contamination",
+                  "num_genomes_total",
+                  "-num_genomes_total",
+                  ""
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order"
+          }
+        },
+        "title": "OrderByFilter[Literal['accession', '-accession', 'length', '-length', 'completeness', '-completeness', 'contamination', '-contamination', 'num_genomes_total', '-num_genomes_total', '']]",
         "type": "object"
       },
       "GenomeList": {
         "properties": {
           "accession": {
-            "examples": ["MGYG000000001"],
+            "examples": [
+              "MGYG000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
@@ -5273,6 +6438,17 @@
             ],
             "title": "Ena Sample Accession"
           },
+          "ena_study_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ena Study Accession"
+          },
           "ncbi_genome_accession": {
             "anyOf": [
               {
@@ -5283,6 +6459,17 @@
               }
             ],
             "title": "Ncbi Genome Accession"
+          },
+          "ncbi_study_accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ncbi Study Accession"
           },
           "img_genome_accession": {
             "anyOf": [
@@ -5314,6 +6501,10 @@
             "title": "Num Contigs",
             "type": "integer"
           },
+          "num_genomes_total": {
+            "title": "Num Genomes Total",
+            "type": "integer"
+          },
           "n_50": {
             "title": "N 50",
             "type": "integer"
@@ -5335,6 +6526,15 @@
           },
           "catalogue_id": {
             "title": "Catalogue Id",
+            "type": "string"
+          },
+          "taxon_lineage": {
+            "title": "Taxon Lineage",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
             "type": "string"
           },
           "geographic_origin": {
@@ -5378,7 +6578,9 @@
           "accession",
           "ena_genome_accession",
           "ena_sample_accession",
+          "ena_study_accession",
           "ncbi_genome_accession",
+          "ncbi_study_accession",
           "img_genome_accession",
           "patric_genome_accession",
           "length",
@@ -5389,6 +6591,8 @@
           "completeness",
           "contamination",
           "catalogue_id",
+          "taxon_lineage",
+          "updated_at",
           "geographic_origin"
         ],
         "title": "GenomeList",
@@ -5408,7 +6612,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[GenomeList]",
         "type": "object"
       },
@@ -5426,24 +6633,33 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[GenomeCatalogueList]",
         "type": "object"
       },
       "GenomeCatalogueDetail": {
         "properties": {
           "catalogue_id": {
-            "examples": ["marine-v1-0"],
+            "examples": [
+              "marine-v1-0"
+            ],
             "title": "Catalogue Id",
             "type": "string"
           },
           "version": {
-            "examples": ["v1.0"],
+            "examples": [
+              "v1.0"
+            ],
             "title": "Version",
             "type": "string"
           },
           "name": {
-            "examples": ["Marine"],
+            "examples": [
+              "Marine"
+            ],
             "title": "Name",
             "type": "string"
           },
@@ -5524,17 +6740,25 @@
             "type": "string"
           },
           "pipeline_version_tag": {
-            "examples": ["v2.5"],
+            "examples": [
+              "v2.5"
+            ],
             "title": "Pipeline Version Tag",
             "type": "string"
           },
           "catalogue_biome_label": {
-            "examples": ["Marine"],
+            "examples": [
+              "Marine"
+            ],
             "title": "Catalogue Biome Label",
             "type": "string"
           },
           "catalogue_type": {
-            "enum": ["prokaryotes", "eukaryotes", "viruses"],
+            "enum": [
+              "prokaryotes",
+              "eukaryotes",
+              "viruses"
+            ],
             "title": "Catalogue Type",
             "type": "string"
           },
@@ -5564,6 +6788,13 @@
                 "type": "null"
               }
             ]
+          },
+          "downloads": {
+            "items": {
+              "$ref": "#/components/schemas/MGnifyGenomeCatalogueDownloadFile"
+            },
+            "title": "Downloads",
+            "type": "array"
           }
         },
         "required": [
@@ -5579,7 +6810,8 @@
           "pipeline_version_tag",
           "catalogue_biome_label",
           "catalogue_type",
-          "other_stats"
+          "other_stats",
+          "downloads"
         ],
         "title": "GenomeCatalogueDetail",
         "type": "object"
@@ -5598,137 +6830,11 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[Assembly]",
-        "type": "object"
-      },
-      "AssemblyDetail": {
-        "properties": {
-          "accession": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "examples": ["ERZ000001"],
-            "title": "Accession"
-          },
-          "updated_at": {
-            "format": "date-time",
-            "title": "Updated At",
-            "type": "string"
-          },
-          "run_accession": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Run Accession"
-          },
-          "sample_accession": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sample Accession"
-          },
-          "reads_study_accession": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reads Study Accession"
-          },
-          "assembly_study_accession": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Assembly Study Accession"
-          },
-          "assembler_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Assembler Name"
-          },
-          "assembler_version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Assembler Version"
-          },
-          "metadata": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Additional metadata associated with the assembly",
-            "examples": [
-              {
-                "coverage": 30,
-                "coverage_depth": 100,
-                "n_contigs": 1000
-              }
-            ],
-            "title": "Metadata"
-          },
-          "status": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Status information for the assembly",
-            "examples": [
-              {
-                "assembly_completed": true,
-                "assembly_uploaded": true
-              }
-            ],
-            "title": "Status"
-          }
-        },
-        "required": ["updated_at"],
-        "title": "AssemblyDetail",
         "type": "object"
       },
       "GenomeAssemblyLinkSchema": {
@@ -5746,7 +6852,9 @@
               }
             ],
             "description": "Deposition database accession for species representative",
-            "examples": ["GCA_123456789"],
+            "examples": [
+              "GCA_123456789"
+            ],
             "title": "Species Rep"
           },
           "mag_accession": {
@@ -5759,7 +6867,9 @@
               }
             ],
             "description": "Deposition database for MAG",
-            "examples": ["MGYG000000001"],
+            "examples": [
+              "MGYG000000001"
+            ],
             "title": "Mag Accession"
           },
           "updated_at": {
@@ -5775,7 +6885,10 @@
             "title": "Updated At"
           }
         },
-        "required": ["genome", "updated_at"],
+        "required": [
+          "genome",
+          "updated_at"
+        ],
         "title": "GenomeAssemblyLinkSchema",
         "type": "object"
       },
@@ -5783,7 +6896,9 @@
         "description": "Simple schema for a Genome model.",
         "properties": {
           "accession": {
-            "examples": ["MGYG000000001"],
+            "examples": [
+              "MGYG000000001"
+            ],
             "title": "Accession",
             "type": "string"
           },
@@ -5856,7 +6971,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[GenomeAssemblyLinkSchema]",
         "type": "object"
       },
@@ -5875,7 +6993,10 @@
               }
             ],
             "description": "ENA accession of the run that produced this assembly",
-            "examples": ["ERR0000001", "SRR0000001"],
+            "examples": [
+              "ERR0000001",
+              "SRR0000001"
+            ],
             "title": "Run Accession"
           },
           "containment": {
@@ -5888,7 +7009,10 @@
               }
             ],
             "description": "Containment score for the genome within the assembly",
-            "examples": [0.65, 1.0],
+            "examples": [
+              0.65,
+              1.0
+            ],
             "title": "Containment"
           },
           "cani": {
@@ -5901,7 +7025,10 @@
               }
             ],
             "description": "Containment Average Nucleotide Identity (cANI)",
-            "examples": [0.97, 1.0],
+            "examples": [
+              0.97,
+              1.0
+            ],
             "title": "Cani"
           },
           "updated_at": {
@@ -5917,7 +7044,10 @@
             "title": "Updated At"
           }
         },
-        "required": ["genome", "updated_at"],
+        "required": [
+          "genome",
+          "updated_at"
+        ],
         "title": "AdditionalContainedGenomeSchema",
         "type": "object"
       },
@@ -5935,7 +7065,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[AdditionalContainedGenomeSchema]",
         "type": "object"
       },
@@ -5985,7 +7118,10 @@
             "type": "array"
           }
         },
-        "required": ["count", "items"],
+        "required": [
+          "count",
+          "items"
+        ],
         "title": "NinjaPaginationResponseSchema[Biome]",
         "type": "object"
       },
@@ -6046,7 +7182,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["ERR0000001"],
+            "examples": [
+              "ERR0000001"
+            ],
             "title": "Accession"
           },
           "sample_accession": {
@@ -6059,7 +7197,10 @@
               }
             ],
             "description": "ENA accession of the sample associated with this run",
-            "examples": ["ERS000001", "SAMEA000000001"],
+            "examples": [
+              "ERS000001",
+              "SAMEA000000001"
+            ],
             "title": "Sample Accession"
           },
           "study_accession": {
@@ -6072,7 +7213,10 @@
               }
             ],
             "description": "ENA accession of the study associated with this run",
-            "examples": ["SRP135937", "PRJNA438545"],
+            "examples": [
+              "SRP135937",
+              "PRJNA438545"
+            ],
             "title": "Study Accession"
           },
           "instrument_model": {
@@ -6084,7 +7228,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["Illumina HiSeq 2000"],
+            "examples": [
+              "Illumina HiSeq 2000"
+            ],
             "title": "Instrument Model"
           },
           "instrument_platform": {
@@ -6096,7 +7242,9 @@
                 "type": "null"
               }
             ],
-            "examples": ["Illumina"],
+            "examples": [
+              "Illumina"
+            ],
             "title": "Instrument Platform"
           },
           "sample": {
@@ -6130,22 +7278,117 @@
         "title": "AnalysedRunDetail",
         "type": "object"
       },
-      "NinjaPaginationResponseSchema_AssemblyDetail_": {
+      "AnnotatedResult": {
         "properties": {
-          "count": {
-            "title": "Count",
-            "type": "integer"
+          "mgnify": {
+            "$ref": "#/components/schemas/GenomeList"
           },
-          "items": {
+          "cobs": {
+            "$ref": "#/components/schemas/CobsMatch"
+          }
+        },
+        "required": [
+          "mgnify",
+          "cobs"
+        ],
+        "title": "AnnotatedResult",
+        "type": "object"
+      },
+      "CobsMatch": {
+        "properties": {
+          "genome": {
+            "title": "Genome",
+            "type": "string"
+          },
+          "percent_kmers_found": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 0.0,
+            "title": "Percent Kmers Found"
+          },
+          "num_kmers": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Kmers"
+          },
+          "num_kmers_found": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Kmers Found"
+          }
+        },
+        "required": [
+          "genome"
+        ],
+        "title": "CobsMatch",
+        "type": "object"
+      },
+      "GenomeFragmentSearchOut": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GenomeSearchData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "GenomeFragmentSearchOut",
+        "type": "object"
+      },
+      "GenomeSearchData": {
+        "properties": {
+          "query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          },
+          "results": {
             "items": {
-              "$ref": "#/components/schemas/AssemblyDetail"
+              "$ref": "#/components/schemas/AnnotatedResult"
             },
-            "title": "Items",
+            "title": "Results",
             "type": "array"
           }
         },
-        "required": ["count", "items"],
-        "title": "NinjaPaginationResponseSchema[AssemblyDetail]",
+        "required": [
+          "results"
+        ],
+        "title": "GenomeSearchData",
         "type": "object"
       },
       "WebinTokenResponse": {
@@ -6160,7 +7403,9 @@
             "type": "string"
           }
         },
-        "required": ["token"],
+        "required": [
+          "token"
+        ],
         "title": "WebinTokenResponse",
         "type": "object"
       },
@@ -6175,7 +7420,10 @@
             "type": "string"
           }
         },
-        "required": ["username", "password"],
+        "required": [
+          "username",
+          "password"
+        ],
         "title": "WebinTokenRequest",
         "type": "object"
       },
@@ -6186,7 +7434,9 @@
             "type": "string"
           }
         },
-        "required": ["token"],
+        "required": [
+          "token"
+        ],
         "title": "WebinTokenRefreshRequest",
         "type": "object"
       },
@@ -6202,7 +7452,9 @@
             "type": "string"
           }
         },
-        "required": ["token"],
+        "required": [
+          "token"
+        ],
         "title": "TokenVerifyInputSchema",
         "type": "object"
       }

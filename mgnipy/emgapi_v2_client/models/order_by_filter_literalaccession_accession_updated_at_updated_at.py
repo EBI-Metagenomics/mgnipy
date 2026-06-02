@@ -1,22 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
 from ..models.order_by_filter_literalaccession_accession_updated_at_updated_at_order_type_0 import (
     OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAtOrderType0,
 )
-from ..types import (
-    UNSET,
-    Unset,
-)
+from typing import cast
+
 
 T = TypeVar("T", bound="OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAt")
 

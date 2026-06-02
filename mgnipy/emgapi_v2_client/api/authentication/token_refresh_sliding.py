@@ -3,14 +3,12 @@ from typing import Any
 
 import httpx
 
+from ...client import AuthenticatedClient, Client
+from ...types import Response
 from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
+
 from ...models.webin_token_refresh_request import WebinTokenRefreshRequest
 from ...models.webin_token_response import WebinTokenResponse
-from ...types import Response
 
 
 def _get_kwargs(

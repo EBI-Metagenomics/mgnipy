@@ -4,13 +4,11 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
-from ...models.m_gnify_publication_detail import MGnifyPublicationDetail
+from ...client import AuthenticatedClient, Client
 from ...types import Response
+from ... import errors
+
+from ...models.m_gnify_publication_detail import MGnifyPublicationDetail
 
 
 def _get_kwargs(

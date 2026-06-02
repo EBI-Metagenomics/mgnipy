@@ -4,13 +4,11 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
-from ...models.assembly_detail import AssemblyDetail
+from ...client import AuthenticatedClient, Client
 from ...types import Response
+from ... import errors
+
+from ...models.assembly_detail import AssemblyDetail
 
 
 def _get_kwargs(

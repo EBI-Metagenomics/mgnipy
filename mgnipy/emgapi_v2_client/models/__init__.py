@@ -6,12 +6,14 @@ from .analysed_run_detail import AnalysedRunDetail
 from .analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
     AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
 )
+from .annotated_result import AnnotatedResult
 from .assembly import Assembly
 from .assembly_detail import AssemblyDetail
 from .assembly_detail_metadata_type_0 import AssemblyDetailMetadataType0
 from .assembly_detail_status_type_0 import AssemblyDetailStatusType0
 from .biome import Biome
 from .biome_list_filters import BiomeListFilters
+from .cobs_match import CobsMatch
 from .download_file_index_file import DownloadFileIndexFile
 from .download_file_index_file_index_type import DownloadFileIndexFileIndexType
 from .download_file_type import DownloadFileType
@@ -36,12 +38,19 @@ from .genome_catalogue_list import GenomeCatalogueList
 from .genome_catalogue_list_catalogue_type import GenomeCatalogueListCatalogueType
 from .genome_catalogue_list_other_stats_type_0 import GenomeCatalogueListOtherStatsType0
 from .genome_detail import GenomeDetail
+from .genome_filters import GenomeFilters
+from .genome_fragment_search_out import GenomeFragmentSearchOut
 from .genome_list import GenomeList
 from .genome_schema import GenomeSchema
+from .genome_search_data import GenomeSearchData
 from .genome_type import GenomeType
 from .genome_with_annotations import GenomeWithAnnotations
 from .genome_with_annotations_annotations import GenomeWithAnnotationsAnnotations
+from .get_genome_catalogue_genomes_order_type_0 import (
+    GetGenomeCatalogueGenomesOrderType0,
+)
 from .input_ import Input
+from .list_mgnify_genomes_order_type_0 import ListMgnifyGenomesOrderType0
 from .list_mgnify_publications_order_type_0 import ListMgnifyPublicationsOrderType0
 from .list_mgnify_samples_order_type_0 import ListMgnifySamplesOrderType0
 from .list_mgnify_studies_order_type_0 import ListMgnifyStudiesOrderType0
@@ -73,6 +82,7 @@ from .m_gnify_download_file_index_file_index_type import (
 from .m_gnify_functional_analysis_annotation_type import (
     MGnifyFunctionalAnalysisAnnotationType,
 )
+from .m_gnify_genome_catalogue_download_file import MGnifyGenomeCatalogueDownloadFile
 from .m_gnify_genome_download_file import MGnifyGenomeDownloadFile
 from .m_gnify_publication import MGnifyPublication
 from .m_gnify_publication_detail import MGnifyPublicationDetail
@@ -133,6 +143,12 @@ from .ninja_pagination_response_schema_m_gnify_study import (
 from .ninja_pagination_response_schema_super_study import (
     NinjaPaginationResponseSchemaSuperStudy,
 )
+from .order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total import (
+    OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompletenessContaminationContaminationNumGenomesTotalNumGenomesTotal,
+)
+from .order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total_order_type_0 import (
+    OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompletenessContaminationContaminationNumGenomesTotalNumGenomesTotalOrderType0,
+)
 from .order_by_filter_literalaccession_accession_updated_at_updated_at import (
     OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAt,
 )
@@ -170,12 +186,14 @@ __all__ = (
     "AnalysedRun",
     "AnalysedRunDetail",
     "AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType",
+    "AnnotatedResult",
     "Assembly",
     "AssemblyDetail",
     "AssemblyDetailMetadataType0",
     "AssemblyDetailStatusType0",
     "Biome",
     "BiomeListFilters",
+    "CobsMatch",
     "DownloadFileIndexFile",
     "DownloadFileIndexFileIndexType",
     "DownloadFileType",
@@ -198,12 +216,17 @@ __all__ = (
     "GenomeCatalogueListCatalogueType",
     "GenomeCatalogueListOtherStatsType0",
     "GenomeDetail",
+    "GenomeFilters",
+    "GenomeFragmentSearchOut",
     "GenomeList",
     "GenomeSchema",
+    "GenomeSearchData",
     "GenomeType",
     "GenomeWithAnnotations",
     "GenomeWithAnnotationsAnnotations",
+    "GetGenomeCatalogueGenomesOrderType0",
     "Input",
+    "ListMgnifyGenomesOrderType0",
     "ListMgnifyPublicationsOrderType0",
     "ListMgnifySamplesOrderType0",
     "ListMgnifyStudiesOrderType0",
@@ -221,6 +244,7 @@ __all__ = (
     "MGnifyDownloadFileIndexFile",
     "MGnifyDownloadFileIndexFileIndexType",
     "MGnifyFunctionalAnalysisAnnotationType",
+    "MGnifyGenomeCatalogueDownloadFile",
     "MGnifyGenomeDownloadFile",
     "MGnifyPublication",
     "MGnifyPublicationDetail",
@@ -251,6 +275,8 @@ __all__ = (
     "NinjaPaginationResponseSchemaMGnifySampleWithMetadata",
     "NinjaPaginationResponseSchemaMGnifyStudy",
     "NinjaPaginationResponseSchemaSuperStudy",
+    "OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompletenessContaminationContaminationNumGenomesTotalNumGenomesTotal",
+    "OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompletenessContaminationContaminationNumGenomesTotalNumGenomesTotalOrderType0",
     "OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAt",
     "OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAtOrderType0",
     "OrderByFilterLiteralpublishedYearPublishedYear",
