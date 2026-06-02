@@ -71,6 +71,7 @@ class ResultsHandler:
             "biome",
             "run",
             "assembly",
+            "read_run",
         ]
 
         new_df = df.copy()
@@ -1229,6 +1230,9 @@ class BiomesTreeMixin:
 
 
 class BioSamplesMetadataMixin:
+    """
+    Mixin providing properties to access BioSamples metadata for samples in the list.
+    """
 
     def __init__(self):
         self._cache_biosamples_w_ena: pd.DataFrame | None = None

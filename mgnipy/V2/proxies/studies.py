@@ -20,9 +20,8 @@ class Studies(MGnifyList):
 
         super().__init__(params=params, config=config, **kwargs)
 
-    @property
-    def downloads_df(self) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads)
+    def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
+        return pd.DataFrame(self.details_downloads, **pd_kwargs)
 
     @property
     def datasets(self):
@@ -74,9 +73,8 @@ class PrivateStudies(MGnifyList):
 
         super().__init__(params=params, config=config, **kwargs)
 
-    @property
-    def downloads_df(self) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads)
+    def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
+        return pd.DataFrame(self.details_downloads, **pd_kwargs)
 
     @property
     def datasets(self):
