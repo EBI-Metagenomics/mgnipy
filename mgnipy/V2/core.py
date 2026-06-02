@@ -262,7 +262,8 @@ class MGnifier(QuerySet, ResultsHandler):
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> results = query.bulk_fetch(limit=100)  # doctest: +SKIP
         """
-        return self.exec.bulk_fetch(*args, **kwargs)
+        self.exec.bulk_fetch(*args, **kwargs)
+        return self
 
     async def abulk_fetch(self, *args, **kwargs):
         """Asynchronously fetch a large collection of results efficiently.
@@ -285,7 +286,9 @@ class MGnifier(QuerySet, ResultsHandler):
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> results = await query.abulk_fetch(limit=100)  # doctest: +SKIP
         """
-        return await self.exec.abulk_fetch(*args, **kwargs)
+        await self.exec.abulk_fetch(*args, **kwargs)
+
+        return self
 
     def dry_run(self) -> None:
         """

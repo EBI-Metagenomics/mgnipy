@@ -141,9 +141,16 @@ class QuerySet:
         # check that params are valid for new endpoint module
         # _ = self.emgapi_handler.validate_endpoint_kwargs(**self.params)
         # reset cache?
+
+        resource_str = (
+            self.resource.value
+            if hasattr(self, "resource")
+            else self.__class__.__name__
+        )
+
         self.cache_handler = DiskCheckpointer(
             params_getter=lambda: self.params,
-            resource_str=self.resource.value,
+            resource_str=resource_str,
             config=self.config,
             results_store=self._results,
             count=self.count,

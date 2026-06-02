@@ -25,13 +25,16 @@ ITEMS_LIMIT = PAGES_LIMIT * 25
 
 class QueryExecutor:
     def __init__(self, query_set: "QuerySet"):
-        self.qs = query_set
+        self.qs: "QuerySet" = query_set
+        self._endpoint_str: str = self.qs.emgapi_handler.endpoint_module.__name__.split(
+            "."
+        )[-1]
 
         # question: should this be shared across all instances of QueryExecutor or should each have their own?
         # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
         self._semaphore = get_semaphore()
         # tracking
-        self._successful_pages = []
+        self._successful_pages: list[int] = []
         self.reset_iterator()
 
     def query_setups(
@@ -415,7 +418,9 @@ class QueryExecutor:
         # So tasks that finish fast are yielded first, regardless of their original index.
         # tqdm_asyncio wraps this to show a progress bar.
         for task in tqdm_asyncio.as_completed(
-            tasks, disable=hide_progress, desc="Retrieving pages"
+            tasks,
+            disable=hide_progress,
+            desc=f"Retrieving {self.resource or self._endpoint_str} pages",
         ):
             # Unpack the tuple (i, value) returned by the completed task.
             # i = original index of this item
@@ -780,7 +785,11 @@ class QueryExecutor:
 
         # get pages if not in results already
         a_client = client
-        for p in tqdm(pages, desc="Retrieving pages", disable=hide_progress):
+        for p in tqdm(
+            pages,
+            desc=f"Retrieving {self.resource or self._endpoint_str} pages",
+            disable=hide_progress,
+        ):
             logger.info(f"Advancing to request num {p}")
             self.page(p, client=a_client)
 
@@ -818,7 +827,9 @@ class QueryExecutor:
         tasks = [asyncio.create_task(self.apage(p, client)) for p in pages]
 
         for done in tqdm_asyncio.as_completed(
-            tasks, disable=hide_progress, desc="Retrieving pages"
+            tasks,
+            disable=hide_progress,
+            desc=f"Retrieving {self.resource or self._endpoint_str} pages",
         ):
             await done
 
