@@ -13,7 +13,7 @@ import httpx
 import pandas as pd
 from pydantic import DirectoryPath, HttpUrl
 from tqdm import tqdm as tqdm_sync
-from tqdm.asyncio import tqdm as tqdm_async
+from tqdm.asyncio import tqdm_asyncio
 
 from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
@@ -58,9 +58,22 @@ class MGazine(StreamMixin):
         self,
         downloads: list[dict[str, Any]],
         config: Optional[MGnipyConfig] = None,
+        *,
+        studies_details: Optional[list[dict[str, Any]]] = None,
+        analyses_details: Optional[list[dict[str, Any]]] = None,
+        runs_details: Optional[list[dict[str, Any]]] = None,
+        samples_details: Optional[list[dict[str, Any]]] = None,
+        assemblies_details: Optional[list[dict[str, Any]]] = None,
+        biosamples_details: Optional[list[dict[str, Any]]] = None,
     ):
         self.downloads = downloads
         self.config = config or MGnipyConfig()
+        self._studies_details = studies_details
+        self._analyses_details = analyses_details
+        self._runs_details = runs_details
+        self._samples_details = samples_details
+        self._assemblies_details = assemblies_details
+        self._biosamples_details = biosamples_details
 
     def __str__(self):
         return (
@@ -86,6 +99,30 @@ class MGazine(StreamMixin):
                 )
         return new_mz
 
+    @property
+    def studies_details(self) -> Optional[list[dict[str, Any]]]:
+        return self._studies_details
+
+    @property
+    def analyses_details(self) -> Optional[list[dict[str, Any]]]:
+        return self._analyses_details
+
+    @property
+    def runs_details(self) -> Optional[list[dict[str, Any]]]:
+        return self._runs_details
+
+    @property
+    def samples_details(self) -> Optional[list[dict[str, Any]]]:
+        return self._samples_details
+
+    @property
+    def assemblies_details(self) -> Optional[list[dict[str, Any]]]:
+        return self._assemblies_details
+
+    @property
+    def biosamples_details(self) -> Optional[list[dict[str, Any]]]:
+        return self._biosamples_details
+
     def _mgnifier_helper(
         self, url: str = "", cache_dir: Optional[DirectoryPath] = None
     ) -> MGnifier:
@@ -93,7 +130,9 @@ class MGazine(StreamMixin):
         Helper to create an MGnifier instance for a given download URL.
         Default settings is no cache (cache_dir=None)
         """
-        _config = self.config.model_copy(update={"cache_dir": cache_dir}, deep=True)
+        _config = self.config.model_copy(
+            update={"cache_dir": cache_dir}, deep=True
+        )
 
         # init
         mg = MGnifier(
@@ -101,7 +140,9 @@ class MGazine(StreamMixin):
             config=_config,
             url=url,
         )
-        logger.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
+        logger.info(
+            f"MGnifier initialized with resource={mg.resource} and url={url}"
+        )
         return mg
 
     @property
@@ -118,6 +159,22 @@ class MGazine(StreamMixin):
         """
 
         return [f["alias"] for f in self.downloads if "alias" in f]
+
+    @property
+    def urls(self) -> list[Optional[str]]:
+        """
+        Return a list of all download URLs. Same as ``url_list``.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
+        >>> MGazine(downloads).urls
+        ['http://ex/x']
+        """
+
+        return self.url_list
 
     @property
     def url_dict(self) -> dict[str, dict]:
@@ -140,6 +197,21 @@ class MGazine(StreamMixin):
         """
 
         return {f["alias"]: f.get("url", None) for f in self.downloads}
+
+    @property
+    def url_list(self):
+        """Return a list of all download URLs.
+
+        Examples
+        --------
+        >>> downloads = [
+        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
+        ... ]
+        >>> MGazine(downloads).url_list
+        ['http://ex/x']
+        """
+
+        return [f.get("url", None) for f in self.downloads]
 
     def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
         """Return a ``pandas.DataFrame`` of all downloads.
@@ -180,7 +252,8 @@ class MGazine(StreamMixin):
         grouped = self.downloads_df().groupby("pipeline_version")
 
         groups = {
-            version: group.to_dict(orient="records") for version, group in grouped
+            version: group.to_dict(orient="records")
+            for version, group in grouped
         }
         return groups
 
@@ -201,7 +274,9 @@ class MGazine(StreamMixin):
             )
         grouped = self.downloads_df().groupby("short_description")
 
-        groups = {desc: group.to_dict(orient="records") for desc, group in grouped}
+        groups = {
+            desc: group.to_dict(orient="records") for desc, group in grouped
+        }
         return groups
 
     def list_pipeline_version(self):
@@ -220,7 +295,9 @@ class MGazine(StreamMixin):
         ['v4_1', 'v5']
         """
 
-        avail_vers = sorted(self.downloads_df()["pipeline_version"].unique().tolist())
+        avail_vers = sorted(
+            self.downloads_df()["pipeline_version"].unique().tolist()
+        )
 
         return avail_vers
 
@@ -240,7 +317,9 @@ class MGazine(StreamMixin):
         ['shortdesc1', 'shortdesc2']
         """
 
-        avail_descs = sorted(self.downloads_df()["short_description"].unique().tolist())
+        avail_descs = sorted(
+            self.downloads_df()["short_description"].unique().tolist()
+        )
 
         return avail_descs
 
@@ -258,12 +337,21 @@ class MGazine(StreamMixin):
     def __getitem__(self, key):
         if key in self.list_short_descriptions():
 
-            new_mz = MGazine(self.by_short_desc()[key], config=self.config)
+            new_mz = MGazine(
+                self.by_short_desc()[key],
+                config=self.config,
+                studies_details=self.studies_details,
+                analyses_details=self.analyses_details,
+                runs_details=self.runs_details,
+                samples_details=self.samples_details,
+                assemblies_details=self.assemblies_details,
+                biosamples_details=self.biosamples_details,
+            )
 
             download_type = (
-                self.downloads_df()[self.downloads_df()["short_description"] == key][
-                    "download_type"
-                ]
+                self.downloads_df()[
+                    self.downloads_df()["short_description"] == key
+                ]["download_type"]
                 .unique()[0]
                 .lower()
             )
@@ -273,31 +361,34 @@ class MGazine(StreamMixin):
                 logger.debug(
                     f"getting dwc-ready taxonomic datasets of short description {key} via item access."
                 )
-                return DWCTaxaMGazine(mgazine=new_mz, config=self.config)
+                return DWCTaxaMGazine(
+                    mgazine=new_mz,
+                    config=self.config,
+                    studies_details=self.studies_details,
+                    analyses_details=self.analyses_details,
+                    runs_details=self.runs_details,
+                    samples_details=self.samples_details,
+                    assemblies_details=self.assemblies_details,
+                    biosamples_details=self.biosamples_details,
+                )
 
             if "taxonom" in download_type and "dwc-ready" not in key.lower():
                 logger.debug(
                     f"getting taxonomic datasets of short description {key} via item access."
                 )
-                return TaxaMGazine(mgazine=new_mz, config=self.config)
+                return TaxaMGazine(
+                    mgazine=new_mz,
+                    config=self.config,
+                    studies_details=self.studies_details,
+                    analyses_details=self.analyses_details,
+                    runs_details=self.runs_details,
+                    samples_details=self.samples_details,
+                    assemblies_details=self.assemblies_details,
+                    biosamples_details=self.biosamples_details,
+                )
 
             # TODO other download types
             return new_mz
-
-    @property
-    def url_list(self):
-        """Return a list of all download URLs.
-
-        Examples
-        --------
-        >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
-        ... ]
-        >>> MGazine(downloads).url_list
-        ['http://ex/x']
-        """
-
-        return [f.get("url", None) for f in self.downloads]
 
     # downloading methods
     def download(
@@ -590,7 +681,9 @@ class MGazine(StreamMixin):
                         f"Connection error occurred while downloading {alias}: {ce}"
                     )
                 except Exception as e:
-                    logger.error(f"Error occurred while downloading {alias}: {e}")
+                    logger.error(
+                        f"Error occurred while downloading {alias}: {e}"
+                    )
 
     async def adownload_all(
         self,
@@ -644,8 +737,8 @@ class MGazine(StreamMixin):
                 for a in self.url_dict
             ]
             # Overall progress bar
-            for f in tqdm_async(
-                asyncio.as_completed(tasks),
+            for f in tqdm_asyncio.as_completed(
+                tasks,
                 total=len(tasks),
                 desc="Overall Progress",
                 ascii=" >=",
@@ -685,7 +778,9 @@ class MGazine(StreamMixin):
         try:
             return df.query(f"alias == '{alias}'")["url"].values[0]
         except RuntimeError as err:
-            raise KeyError(f"Issue getting download url for alias: {alias}") from err
+            raise KeyError(
+                f"Issue getting download url for alias: {alias}"
+            ) from err
 
     def _get_alias_by_url(
         self, url: HttpUrl, df: Optional[pd.DataFrame] = None
@@ -733,7 +828,9 @@ class MGazine(StreamMixin):
         try:
             return df.query(f"alias == '{alias}'")["file_type"].values[0]
         except RuntimeError as err:
-            raise KeyError(f"Issue getting file type for alias: {alias}") from err
+            raise KeyError(
+                f"Issue getting file type for alias: {alias}"
+            ) from err
 
     def _prioritize_alias(
         self,
