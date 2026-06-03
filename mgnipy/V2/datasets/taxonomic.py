@@ -93,13 +93,14 @@ class _MGazineSetup(MGazine):
         self,
         mgazine: "MGazine",
         config: Optional[MGnipyConfig] = None,
+        *,
         long_short_mapping: Optional[dict[str, str]] = None,
-        assemblies_results: Optional[list[dict[str, Any]]] = None,
-        runs_results: Optional[list[dict[str, Any]]] = None,
-        samples_results: Optional[list[dict[str, Any]]] = None,
-        studies_results: Optional[list[dict[str, Any]]] = None,
-        biosamples_results: Optional[list[dict[str, Any]]] = None,
-        analyses_results: Optional[list[dict[str, Any]]] = None,
+        assemblies_details: Optional[list[dict[str, Any]]] = None,
+        runs_details: Optional[list[dict[str, Any]]] = None,
+        samples_details: Optional[list[dict[str, Any]]] = None,
+        studies_details: Optional[list[dict[str, Any]]] = None,
+        biosamples_details: Optional[list[dict[str, Any]]] = None,
+        analyses_details: Optional[list[dict[str, Any]]] = None,
     ):
 
         super().__init__(downloads=mgazine.downloads, config=config or mgazine.config)
@@ -139,12 +140,12 @@ class _MGazineSetup(MGazine):
         self.cache_handler: DiskCheckpointer = None
         self._lazy_merged: pl.LazyFrame = None
         self._runs_accessions: list = None
-        self._runs_results: list = runs_results or []
-        self._samples_results: list = samples_results or []
-        self._studies_results: list = studies_results or []
-        self._biosamples_results: list = biosamples_results or []
-        self._analyses_results: list = analyses_results or []
-        self._assemblies_results: list = assemblies_results or []
+        self._runs_details: list = runs_details or []
+        self._samples_details: list = samples_details or []
+        self._studies_details: list = studies_details or []
+        self._biosamples_details: list = biosamples_details or []
+        self._analyses_details: list = analyses_details or []
+        self._assemblies_details: list = assemblies_details or []
 
     def __str__(self):
         return (
@@ -172,90 +173,90 @@ class _MGazineSetup(MGazine):
             f"Initialized DiskCheckpointer for TaxaMGazine with cache dir: {self.cache_dir}"
         )
         self.cache_handler.load_cache()
-        self._runs_results = self.cache_handler._results.get(1, [])
-        self._samples_results = self.cache_handler._results.get(2, [])
-        self._studies_results = self.cache_handler._results.get(3, [])
-        self._biosamples_results = self.cache_handler._results.get(4, [])
-        self._analyses_results = self.cache_handler._results.get(5, [])
-        self._assemblies_results = self.cache_handler._results.get(6, [])
+        self._runs_details = self.cache_handler._results.get(1, [])
+        self._samples_details = self.cache_handler._results.get(2, [])
+        self._studies_details = self.cache_handler._results.get(3, [])
+        self._biosamples_details = self.cache_handler._results.get(4, [])
+        self._analyses_details = self.cache_handler._results.get(5, [])
+        self._assemblies_details = self.cache_handler._results.get(6, [])
 
     @property
-    def runs_results(self) -> list[dict[str, Any]]:
-        return self._runs_results
+    def runs_details(self) -> list[dict[str, Any]]:
+        return self._runs_details
 
-    @runs_results.setter
-    def runs_results(self, value: list[dict[str, Any]]):
-        self._runs_results = value
-        self.cache_handler.write_results(1, self._runs_results)
+    @runs_details.setter
+    def runs_details(self, value: list[dict[str, Any]]):
+        self._runs_details = value
+        self.cache_handler.write_results(1, self._runs_details)
 
-    def append_runs_results(self, value: dict[str, Any]):
-        self._runs_results.append(value)
-        self.cache_handler.write_results(1, self._runs_results)
-
-    @property
-    def samples_results(self) -> list[dict[str, Any]]:
-        return self._samples_results
-
-    @samples_results.setter
-    def samples_results(self, value: list[dict[str, Any]]):
-        self._samples_results = value
-        self.cache_handler.write_results(2, self._samples_results)
-
-    def append_samples_results(self, value: dict[str, Any]):
-        self._samples_results.append(value)
-        self.cache_handler.write_results(2, self._samples_results)
+    def append_runs_details(self, value: dict[str, Any]):
+        self._runs_details.append(value)
+        self.cache_handler.write_results(1, self._runs_details)
 
     @property
-    def studies_results(self) -> list[dict[str, Any]]:
-        return self._studies_results
+    def samples_details(self) -> list[dict[str, Any]]:
+        return self._samples_details
 
-    @studies_results.setter
-    def studies_results(self, value: list[dict[str, Any]]):
-        self._studies_results = value
-        self.cache_handler.write_results(3, self._studies_results)
+    @samples_details.setter
+    def samples_details(self, value: list[dict[str, Any]]):
+        self._samples_details = value
+        self.cache_handler.write_results(2, self._samples_details)
 
-    def append_studies_results(self, value: dict[str, Any]):
-        self._studies_results.append(value)
-        self.cache_handler.write_results(3, self._studies_results)
-
-    @property
-    def biosamples_results(self) -> list[dict[str, Any]]:
-        return self._biosamples_results
-
-    @biosamples_results.setter
-    def biosamples_results(self, value: list[dict[str, Any]]):
-        self._biosamples_results = value
-        self.cache_handler.write_results(4, self._biosamples_results)
-
-    def append_biosamples_results(self, value: dict[str, Any]):
-        self._biosamples_results.append(value)
-        self.cache_handler.write_results(4, self._biosamples_results)
+    def append_samples_details(self, value: dict[str, Any]):
+        self._samples_details.append(value)
+        self.cache_handler.write_results(2, self._samples_details)
 
     @property
-    def analyses_results(self) -> list[dict[str, Any]]:
-        return self._analyses_results
+    def studies_details(self) -> list[dict[str, Any]]:
+        return self._studies_details
 
-    @analyses_results.setter
-    def analyses_results(self, value: list[dict[str, Any]]):
-        self._analyses_results = value
-        self.cache_handler.write_results(5, self._analyses_results)
+    @studies_details.setter
+    def studies_details(self, value: list[dict[str, Any]]):
+        self._studies_details = value
+        self.cache_handler.write_results(3, self._studies_details)
 
-    def append_analyses_results(self, value: dict[str, Any]):
-        self._analyses_results.append(value)
-        self.cache_handler.write_results(5, self._analyses_results)
+    def append_studies_details(self, value: dict[str, Any]):
+        self._studies_details.append(value)
+        self.cache_handler.write_results(3, self._studies_details)
 
     @property
-    def assemblies_results(self) -> list[dict[str, Any]]:
-        return self._assemblies_results
+    def biosamples_details(self) -> list[dict[str, Any]]:
+        return self._biosamples_details
 
-    @assemblies_results.setter
-    def assemblies_results(self, value: list[dict[str, Any]]):
-        self._assemblies_results = value
-        self.cache_handler.write_results(6, self._assemblies_results)
+    @biosamples_details.setter
+    def biosamples_details(self, value: list[dict[str, Any]]):
+        self._biosamples_details = value
+        self.cache_handler.write_results(4, self._biosamples_details)
 
-    def append_assemblies_results(self, value: dict[str, Any]):
-        self._assemblies_results.append(value)
-        self.cache_handler.write_results(6, self._assemblies_results)
+    def append_biosamples_details(self, value: dict[str, Any]):
+        self._biosamples_details.append(value)
+        self.cache_handler.write_results(4, self._biosamples_details)
+
+    @property
+    def analyses_details(self) -> list[dict[str, Any]]:
+        return self._analyses_details
+
+    @analyses_details.setter
+    def analyses_details(self, value: list[dict[str, Any]]):
+        self._analyses_details = value
+        self.cache_handler.write_results(5, self._analyses_details)
+
+    def append_analyses_details(self, value: dict[str, Any]):
+        self._analyses_details.append(value)
+        self.cache_handler.write_results(5, self._analyses_details)
+
+    @property
+    def assemblies_details(self) -> list[dict[str, Any]]:
+        return self._assemblies_details
+
+    @assemblies_details.setter
+    def assemblies_details(self, value: list[dict[str, Any]]):
+        self._assemblies_details = value
+        self.cache_handler.write_results(6, self._assemblies_details)
+
+    def append_assemblies_details(self, value: dict[str, Any]):
+        self._assemblies_details.append(value)
+        self.cache_handler.write_results(6, self._assemblies_details)
 
     @property
     def lazy_merged(self) -> pl.LazyFrame:
@@ -289,7 +290,7 @@ class _MGazineSetup(MGazine):
         return self._runs_accessions
 
     def _iter_runs(self) -> list[str]:
-        run_results_accessions = [mg.get("accession") for mg in self.runs_results]
+        run_results_accessions = [mg.get("accession") for mg in self.runs_details]
         leftovers = [x for x in self.runs_accessions if x not in run_results_accessions]
         return leftovers
 
@@ -319,7 +320,7 @@ class _MGazineSetup(MGazine):
             tqdm_sync(
                 runs_todo,
                 total=len(self.runs_accessions),
-                initial=len(self.runs_results),
+                initial=len(self.runs_details),
                 desc="Enriching runs",
                 disable=hide_progress,
             )
@@ -343,7 +344,7 @@ class _MGazineSetup(MGazine):
                 logger.error(f"Error occurred while enriching run {run}: {e}")
                 mg = {"accession": run}
 
-            self.append_runs_results(mg)
+            self.append_runs_details(mg)
 
     async def aenrich_runs(
         self, limit: Optional[int] = 200, hide_progress: bool = False
@@ -372,7 +373,7 @@ class _MGazineSetup(MGazine):
         runs_todo: list[str] = self._iter_runs()[:limit]
 
         logger.warning(
-            f"Enriching {len(runs_todo)} runs for short description {self.short_desc}. Total runs: {len(self.runs_accessions)}. Already enriched: {len(self.runs_results)}. Starting run: {runs_todo[0]}, Ending run: {runs_todo[-1]}."
+            f"Enriching {len(runs_todo)} runs for short description {self.short_desc}. Total runs: {len(self.runs_accessions)}. Already enriched: {len(self.runs_details)}. Starting run: {runs_todo[0]}, Ending run: {runs_todo[-1]}."
         )
 
         # helper that offloads synchronous proxy construction to a thread
@@ -397,22 +398,22 @@ class _MGazineSetup(MGazine):
         for done in tqdm_asyncio.as_completed(
             tasks,
             total=len(self.runs_accessions),
-            initial=len(self.runs_results),
+            initial=len(self.runs_details),
             desc="Enriching runs",
             disable=hide_progress,
         ):
             mg = await done
             # append the result (getter already guarantees an accession key)
-            self.append_runs_results(mg)
+            self.append_runs_details(mg)
 
         # sanity: detect any runs still missing and append placeholders
         enriched_accessions = {
-            r.get("accession") for r in self.runs_results if isinstance(r, dict)
+            r.get("accession") for r in self.runs_details if isinstance(r, dict)
         }
         failed = [r for r in runs_todo if r not in enriched_accessions]
         for run in failed:
             logger.error(f"Run {run} failed to enrich in asynchronous enrichment.")
-            self.append_runs_results({"accession": run})
+            self.append_runs_details({"accession": run})
 
     def enrich_samples(self):
         pass
@@ -420,8 +421,62 @@ class _MGazineSetup(MGazine):
     def enrich_studies(self):
         pass
 
-    def enrich_biosamples(self):
+    def _iter_biosamples(self) -> list[str]:
         pass
+
+    def enrich_biosamples(
+        self, limit: Optional[int] = 200, hide_progress: bool = False
+    ):
+        """
+        Enriches the run metadata for the runs in the taxonomic dataset by iterating through the run accessions and retrieving their details using the RunDetail proxy. The results are cached using the DiskCheckpointer to avoid redundant API calls in future runs.
+
+        Parameters
+        ----------
+        limit : Optional[int], default=200
+            An optional integer to limit the number of runs to enrich. If not provided, it defaults to 200. This is useful for testing or when dealing with large datasets to avoid long runtimes during development. If set to None, there will be no limit on the number of runs enriched.
+
+        Returns
+        -------
+        None
+            The function does not return anything. It updates the `run_results` attribute of the TaxaMGazine instance with the enriched run metadata.
+
+        """
+
+        logger.debug(
+            f"Starting enrichment of biosample meta for short description {self.short_desc} with limit {limit}."
+        )
+
+        runs_todo: list[str] = self._iter_runs()[:limit]
+
+        for count, run in enumerate(
+            tqdm_sync(
+                runs_todo,
+                total=len(self.runs_accessions),
+                initial=len(self.runs_details),
+                desc="Enriching runs",
+                disable=hide_progress,
+            )
+        ):
+            logger.info(
+                f"Enriching run {run} for short description {self.short_desc}. Count: {count}"
+            )
+            # get metadata
+            if "ERZ" in run:
+                logger.debug(
+                    f"Run {run} appears to be an assembly. Using AssemblyDetail proxy for enrichment."
+                )
+
+                proxy = AssemblyDetail
+            else:
+                proxy = RunDetail
+
+            try:
+                mg = proxy(accession=run, config=self.config).get()
+            except Exception as e:
+                logger.error(f"Error occurred while enriching run {run}: {e}")
+                mg = {"accession": run}
+
+            self.append_runs_details(mg)
 
     def taxonomic_metadata(
         self,
@@ -441,15 +496,15 @@ class _MGazineSetup(MGazine):
         df_engine: Literal["polars", "pandas"] = "pandas",
         strict: bool = False,
         expand_nested_dicts: bool = True,
-        incl_runs_results: bool = True,
-        incl_samples_results: bool = True,
-        incl_studies_results: bool = True,
-        incl_biosamples_results: bool = True,
-        incl_analyses_results: bool = True,
-        incl_assemblies_results: bool = True,
+        incl_runs_details: bool = True,
+        incl_samples_details: bool = True,
+        incl_studies_details: bool = True,
+        incl_biosamples_details: bool = True,
+        incl_analyses_details: bool = True,
+        incl_assemblies_details: bool = True,
     ) -> pl.DataFrame | pd.DataFrame:
 
-        if not self.runs_results:
+        if not self.runs_details:
             logger.warning(
                 "No runs have been enriched yet. Returning empty metadata DataFrame. Please run `enrich_runs()` first to populate the metadata."
             )
@@ -464,12 +519,12 @@ class _MGazineSetup(MGazine):
                 )
 
         results_helper = ResultsHandler(
-            data=self.runs_results,
+            data=self.runs_details,
         )
 
-        if strict and len(self.runs_results) < len(self.runs_accessions):
+        if strict and len(self.runs_details) < len(self.runs_accessions):
             logger.warning(
-                f"Strict mode is on but only {len(self.runs_results)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
+                f"Strict mode is on but only {len(self.runs_details)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
             )
             if df_engine == "pandas":
                 return pd.DataFrame(
@@ -506,21 +561,26 @@ class DWCTaxaMGazine(_MGazineSetup):
         self,
         mgazine: "MGazine",
         config: Optional[MGnipyConfig] = None,
+        *,
         long_short_mapping: Optional[dict[str, str]] = None,
-        runs_results: Optional[list[dict[str, Any]]] = None,
-        samples_results: Optional[list[dict[str, Any]]] = None,
-        studies_results: Optional[list[dict[str, Any]]] = None,
-        biosamples_results: Optional[list[dict[str, Any]]] = None,
+        assemblies_details: Optional[list[dict[str, Any]]] = None,
+        runs_details: Optional[list[dict[str, Any]]] = None,
+        samples_details: Optional[list[dict[str, Any]]] = None,
+        studies_details: Optional[list[dict[str, Any]]] = None,
+        biosamples_details: Optional[list[dict[str, Any]]] = None,
+        analyses_details: Optional[list[dict[str, Any]]] = None,
     ):
 
         super().__init__(
             mgazine=mgazine,
             config=config,
             long_short_mapping=long_short_mapping,
-            runs_results=runs_results,
-            samples_results=samples_results,
-            studies_results=studies_results,
-            biosamples_results=biosamples_results,
+            runs_details=runs_details,
+            samples_details=samples_details,
+            studies_details=studies_details,
+            biosamples_details=biosamples_details,
+            analyses_details=analyses_details,
+            assemblies_details=assemblies_details,
         )
         # extra dwc check
         if ("dwc-ready" not in self.short_desc.lower()) or (
@@ -537,7 +597,7 @@ class DWCTaxaMGazine(_MGazineSetup):
         """
         self._init_cache_handler_state()
         logger.info(
-            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.runs_results)} of total {len(self.runs_accessions)}."
+            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.runs_details)} of total {len(self.runs_accessions)}."
         )
 
 
@@ -548,11 +608,14 @@ class TaxaMGazine(_MGazineSetup):
         self,
         mgazine: "MGazine",
         config: Optional[MGnipyConfig] = None,
+        *,
         long_short_mapping: Optional[dict[str, str]] = None,
-        runs_results: Optional[list[dict[str, Any]]] = None,
-        samples_results: Optional[list[dict[str, Any]]] = None,
-        studies_results: Optional[list[dict[str, Any]]] = None,
-        biosamples_results: Optional[list[dict[str, Any]]] = None,
+        assemblies_details: Optional[list[dict[str, Any]]] = None,
+        runs_details: Optional[list[dict[str, Any]]] = None,
+        samples_details: Optional[list[dict[str, Any]]] = None,
+        studies_details: Optional[list[dict[str, Any]]] = None,
+        biosamples_details: Optional[list[dict[str, Any]]] = None,
+        analyses_details: Optional[list[dict[str, Any]]] = None,
     ):
 
         self.TAX_COLS = (
@@ -566,13 +629,19 @@ class TaxaMGazine(_MGazineSetup):
             mgazine=mgazine,
             config=config,
             long_short_mapping=long_short_mapping,
-            runs_results=runs_results,
-            samples_results=samples_results,
-            studies_results=studies_results,
-            biosamples_results=biosamples_results,
+            runs_details=runs_details,
+            samples_details=samples_details,
+            studies_details=studies_details,
+            biosamples_details=biosamples_details,
+            analyses_details=analyses_details,
+            assemblies_details=assemblies_details,
         )
 
-        print(f"{self.__str__()}!!! Use `.load()` to initialize.")
+        print(
+            f"{self.__str__()}"
+            "-----------------------\n"
+            "Next steps: Use `.load()` to initialize.\n"
+        )
 
     def load(self):
         """
@@ -581,7 +650,7 @@ class TaxaMGazine(_MGazineSetup):
         """
         self._init_cache_handler_state()
         print(
-            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.runs_results)} of total {len(self.runs_accessions)}."
+            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.runs_details)} of total {len(self.runs_accessions)}."
         )
 
     @property

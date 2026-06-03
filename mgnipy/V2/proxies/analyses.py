@@ -28,6 +28,7 @@ class Analyses(MGnifyList):
         return MGazine(
             downloads=self.details_downloads,
             config=self.config,
+            analyses_details=self.details_results,
         )
 
 
@@ -52,7 +53,9 @@ class AnalysisDetail(MGnifyDetail):
     @property
     def datasets(self):
         """Access the downloads for this analysis as a MGazine object."""
+
         return MGazine(
             downloads=self.downloads,
             config=self.config,
+            analyses_details=self._results.get(1, None),
         )

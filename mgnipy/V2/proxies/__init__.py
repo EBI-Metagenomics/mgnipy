@@ -18,7 +18,6 @@ from typing import (
 import pandas as pd
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
-
 from mgnipy._models.constants.CONSTANTS import (
     PipelineVersions,
     SupportedEndpoints,
@@ -474,6 +473,18 @@ class MGnifyList(MGnifier):
         return self._details_handler.to_df(*args, **kwargs)
 
     @property
+    def details_ids(self) -> list[str]:
+        """A list of detail identifiers (e.g. accessions) extracted from the details results."""
+        ids = list(self._collected_details.keys())
+
+        if len(ids) == 0:
+            logger.warning(
+                "Did you run `enrich_details`? No details collected yet; details_ids is empty."
+            )
+
+        return ids
+
+    @property
     def details_downloads(self) -> list[dict[str, Any]] | None:
         return [
             item
@@ -577,17 +588,24 @@ class MGnifyList(MGnifier):
             x for x in self.results_ids if x not in self._collected_details_results
         ][:limit]
 
-        for count, detail_id in enumerate(
-            tqdm_asyncio(
-                details_todo,
-                total=len(self.results_ids),
-                initial=len(self._collected_details_results),
-                desc=f"Enriching {self.child_resource} details",
-                disable=hide_progress,
-            )
+        logging.debug(
+            f"Number of details to enrich: {len(details_todo)}. First: {details_todo[0]}"
+        )
+
+        logging.debug(
+            f"Enriching details for {len(details_todo)} items asynchronously."
+        )
+
+        tasks = [self._asingle_detail(identifier) for identifier in details_todo]
+
+        for done in tqdm_asyncio.as_completed(
+            tasks,
+            total=len(self.results_ids),
+            initial=len(self._collected_details_results),
+            desc=f"Enriching {self.child_resource} details",
+            disable=hide_progress,
         ):
-            logger.info(f"Enriching detail {detail_id}. Count: {count}")
-            await self._asingle_detail(detail_id)
+            await done
 
 
 class MGnifyDetail(MGnifier):
