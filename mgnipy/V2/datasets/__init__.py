@@ -70,6 +70,22 @@ class MGazine(StreamMixin):
             f"- Short descriptions: {pformat(self.list_short_descriptions())}\n"
         )
 
+    def __add__(self, other):
+        if not isinstance(other, MGazine):
+            raise ValueError(
+                f"Can only add another MGazine instance, got {type(other)}"
+            )
+        combined_downloads = self.downloads + other.downloads
+        new_mz = MGazine(combined_downloads, config=self.config)
+        if new_mz.__class__ != self.__class__:
+            try:
+                return self.__class__(mgazine=new_mz, config=self.config)
+            except Exception as e:
+                logger.warning(
+                    f"Failed to create instance of {self.__class__} with combined MGazine: {e}. Returning base MGazine instead."
+                )
+        return new_mz
+
     def _mgnifier_helper(
         self, url: str = "", cache_dir: Optional[DirectoryPath] = None
     ) -> MGnifier:
@@ -125,8 +141,7 @@ class MGazine(StreamMixin):
 
         return {f["alias"]: f.get("url", None) for f in self.downloads}
 
-    @property
-    def downloads_df(self) -> pd.DataFrame:
+    def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
         """Return a ``pandas.DataFrame`` of all downloads.
 
         The dataframe will contain columns such as ``alias``, ``url`` and
@@ -137,11 +152,11 @@ class MGazine(StreamMixin):
         >>> downloads = [
         ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
         ... ]
-        >>> df = MGazine(downloads).downloads_df
+        >>> df = MGazine(downloads).downloads_df()
         >>> list(df.columns)
         ['alias', 'url', 'file_type']
         """
-        df = pd.DataFrame(self.downloads)
+        df = pd.DataFrame(self.downloads, **pd_kwargs)
         # add pipeline version column if possible
         #    df = self._add_pipeline_col(df)
 
@@ -157,12 +172,12 @@ class MGazine(StreamMixin):
             A dictionary where keys are pipeline versions and values are lists of download dictionaries.
         """
 
-        df = self.downloads_df
+        df = self.downloads_df()
         if "pipeline_version" not in df.columns:
             raise ValueError(
                 "Cannot group by version because 'pipeline_version' column is missing."
             )
-        grouped = self.downloads_df.groupby("pipeline_version")
+        grouped = self.downloads_df().groupby("pipeline_version")
 
         groups = {
             version: group.to_dict(orient="records") for version, group in grouped
@@ -179,12 +194,12 @@ class MGazine(StreamMixin):
             A dictionary where keys are short descriptions and values are lists of download dictionaries.
         """
 
-        df = self.downloads_df
+        df = self.downloads_df()
         if "short_description" not in df.columns:
             raise ValueError(
                 "Cannot group by short description because 'short_description' column is missing."
             )
-        grouped = self.downloads_df.groupby("short_description")
+        grouped = self.downloads_df().groupby("short_description")
 
         groups = {desc: group.to_dict(orient="records") for desc, group in grouped}
         return groups
@@ -205,7 +220,7 @@ class MGazine(StreamMixin):
         ['v4_1', 'v5']
         """
 
-        avail_vers = sorted(self.downloads_df["pipeline_version"].unique().tolist())
+        avail_vers = sorted(self.downloads_df()["pipeline_version"].unique().tolist())
 
         return avail_vers
 
@@ -225,7 +240,7 @@ class MGazine(StreamMixin):
         ['shortdesc1', 'shortdesc2']
         """
 
-        avail_descs = sorted(self.downloads_df["short_description"].unique().tolist())
+        avail_descs = sorted(self.downloads_df()["short_description"].unique().tolist())
 
         return avail_descs
 
@@ -246,7 +261,7 @@ class MGazine(StreamMixin):
             new_mz = MGazine(self.by_short_desc()[key], config=self.config)
 
             download_type = (
-                self.downloads_df[self.downloads_df["short_description"] == key][
+                self.downloads_df()[self.downloads_df()["short_description"] == key][
                     "download_type"
                 ]
                 .unique()[0]
@@ -666,7 +681,7 @@ class MGazine(StreamMixin):
         Optional[str]
             The download url for the given alias, or None if not found.
         """
-        df = df or self.downloads_df
+        df = df or self.downloads_df()
         try:
             return df.query(f"alias == '{alias}'")["url"].values[0]
         except RuntimeError as err:
@@ -690,7 +705,7 @@ class MGazine(StreamMixin):
         Optional[str]
             The alias for the given url, or None if not found.
         """
-        df = df or self.downloads_df
+        df = df or self.downloads_df()
         try:
             return df.query(f"url == '{url}'")["alias"].values[0]
         except RuntimeError as err:
@@ -714,7 +729,7 @@ class MGazine(StreamMixin):
         Optional[str]
             The file type for the given alias, or None if not found.
         """
-        df = df or self.downloads_df
+        df = df or self.downloads_df()
         try:
             return df.query(f"alias == '{alias}'")["file_type"].values[0]
         except RuntimeError as err:
