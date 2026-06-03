@@ -725,23 +725,23 @@ class MGnifyDetail(MGnifier):
 
             # get pipeline_version from row if avail, i.e., analysisdetail
             if "pipeline_version" in row and isinstance(row["pipeline_version"], str):
-                pipe = row["pipeline_version"].lower().strip("v")
+                a_pipe = row["pipeline_version"].lower().strip("v")
             else:
-                pipe = None
+                a_pipe = None
 
             # for each downlaod dict, add id and pipeline_version
             for each_download in downloads_list:
                 # keep id
                 each_download.update({self.id_param_key: self.identifier})
 
-                # now pipe
-                if pipe is None:
-                    v_group = re.search(
-                        r"\.v(\d+(?:\.\d+)?)",
-                        each_download.get("download_group", ""),
-                        re.IGNORECASE,
-                    ).group(1)
-                    pipe = v_group
+                # now pipe from download_group?
+                v_group = re.search(
+                    r"\.v(\d+(?:\.\d+)?)",
+                    each_download.get("download_group", ""),
+                    re.IGNORECASE,
+                ).group(1)
+
+                pipe = v_group or a_pipe
 
                 if pipe is not None:
                     try:
