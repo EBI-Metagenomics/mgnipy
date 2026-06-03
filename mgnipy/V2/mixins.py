@@ -1235,6 +1235,9 @@ class BioSamplesMetadataMixin:
     """
 
     def __init__(self):
+        self._init_biosamples_cache()
+
+    def _init_biosamples_cache(self) -> None:
         self._cache_biosamples_w_ena: pd.DataFrame | None = None
         self._cache_biosamples_no_ena: pd.DataFrame | None = None
         self._cache_biosamples_details_w_ena: pd.DataFrame | None = None
@@ -1288,7 +1291,7 @@ class BioSamplesMetadataMixin:
             self._cache_biosamples_details_w_ena = pd.concat(
                 [
                     detail.biosamples_metadata(incl_ena=incl_ena, overwrite=overwrite)
-                    for detail in self.details
+                    for _, detail in self.details.items()
                 ],
                 ignore_index=True,
             )
@@ -1298,7 +1301,7 @@ class BioSamplesMetadataMixin:
             self._cache_biosamples_details_no_ena = pd.concat(
                 [
                     detail.biosamples_metadata(incl_ena=incl_ena, overwrite=overwrite)
-                    for detail in self.details
+                    for _, detail in self.details.items()
                 ],
                 ignore_index=True,
             )
@@ -1353,6 +1356,7 @@ class BioSamplesMetadataMixin:
                 f"Fetching BioSamples metadata without ENA fields for {self.identifier}"
             )
             self._cache_biosamples_no_ena = get_biosample_metadata_from_acc(
-                self.identifier, incl_ena=incl_ena, overwrite=overwrite
+                self.identifier,
+                incl_ena=incl_ena,
             )
             return self._cache_biosamples_no_ena

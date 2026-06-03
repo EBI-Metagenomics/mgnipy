@@ -20,7 +20,7 @@ class Runs(MGnifyList, BioSamplesMetadataMixin):
         config: Optional[dict] = None,
         **kwargs,
     ):
-
+        self._init_biosamples_cache()
         super().__init__(params=params, config=config, **kwargs)
 
 
@@ -35,7 +35,7 @@ class RunDetail(MGnifyDetail, BioSamplesMetadataMixin):
         config: Optional[dict] = None,
         **kwargs,
     ):
-
+        self._init_biosamples_cache()
         super().__init__(
             id=id or accession,
             config=config,
