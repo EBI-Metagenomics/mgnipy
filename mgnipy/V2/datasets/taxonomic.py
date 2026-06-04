@@ -3,6 +3,10 @@ from __future__ import annotations
 import functools as ft
 import logging
 
+from mgnipy._shared_helpers.biosamples_helper import (
+    get_biosample_metadata_from_acc,
+)
+
 logger = logging.getLogger(__name__)
 from pprint import pformat
 from typing import TYPE_CHECKING, Any, Literal, Optional
@@ -274,9 +278,19 @@ class _MGazineSetup(MGazine):
         self._lazy_merged = pl.concat(lazyframes, how="vertical_relaxed")
 
     def to_pandas(self, **pd_kwargs) -> pd.DataFrame:
+        if self.cache_handler is None and self._lazy_merged is None:
+            logger.warning(
+                "Cache handler not initialized and lazy merged DataFrame not available. Returning empty DataFrame."
+            )
+            return pd.DataFrame()
         return self.lazy_merged.collect().to_pandas(**pd_kwargs)
 
     def to_polars(self) -> pl.DataFrame:
+        if self.cache_handler is None and self._lazy_merged is None:
+            logger.warning(
+                "Cache handler not initialized and lazy merged DataFrame not available. Returning empty DataFrame."
+            )
+            return pl.DataFrame()
         return self.lazy_merged.collect()
 
     @property
@@ -421,19 +435,45 @@ class _MGazineSetup(MGazine):
     def enrich_studies(self):
         pass
 
+    @property
+    def runs_to_samples(self) -> dict[str, str]:
+        return {
+            mg.get("accession"): mg.get("sample", {}).get("accession")
+            for mg in self.runs_details
+            if isinstance(mg, dict)
+        }
+
+    @property
+    def _retrieved_biosamples_sample_ids(self) -> list[str]:
+        return [
+            x.get("SampleID") for x in self.biosamples_details if isinstance(x, dict)
+        ]
+
+    @property
+    def _retrieved_biosamples_runs_ids(self) -> list[str]:
+        return [x.get("RunID") for x in self.biosamples_details if isinstance(x, dict)]
+
     def _iter_biosamples(self) -> list[str]:
-        pass
+        leftovers = [
+            x
+            for x in self.runs_accessions
+            if x not in self._retrieved_biosamples_runs_ids
+        ]
+        return leftovers
 
     def enrich_biosamples(
-        self, limit: Optional[int] = 200, hide_progress: bool = False
+        self,
+        limit: Optional[int] = 200,
+        hide_progress: bool = False,
+        incl_ena: bool = True,
     ):
         """
-        Enriches the run metadata for the runs in the taxonomic dataset by iterating through the run accessions and retrieving their details using the RunDetail proxy. The results are cached using the DiskCheckpointer to avoid redundant API calls in future runs.
+        Enriches the biosample metadata for the biosamples in the taxonomic dataset by iterating through the biosample accessions and retrieving their details using the BiosampleDetail proxy. The results are cached using the DiskCheckpointer to avoid redundant API calls in future runs.
 
         Parameters
         ----------
         limit : Optional[int], default=200
-            An optional integer to limit the number of runs to enrich. If not provided, it defaults to 200. This is useful for testing or when dealing with large datasets to avoid long runtimes during development. If set to None, there will be no limit on the number of runs enriched.
+            An optional integer to limit the number of biosamples to enrich. If not provided, it defaults to 200. This is useful for testing or when dealing with large datasets to avoid long runtimes during development. If set to None, there will be no limit on the number of biosamples enriched.
 
         Returns
         -------
@@ -446,37 +486,27 @@ class _MGazineSetup(MGazine):
             f"Starting enrichment of biosample meta for short description {self.short_desc} with limit {limit}."
         )
 
-        runs_todo: list[str] = self._iter_runs()[:limit]
+        runs_todo: list[str] = self._iter_biosamples()[:limit]
 
         for count, run in enumerate(
             tqdm_sync(
                 runs_todo,
                 total=len(self.runs_accessions),
-                initial=len(self.runs_details),
-                desc="Enriching runs",
+                initial=len(self.biosamples_details),
+                desc="Enriching biosamples",
                 disable=hide_progress,
             )
         ):
             logger.info(
-                f"Enriching run {run} for short description {self.short_desc}. Count: {count}"
+                f"Enriching biosample {run} for short description {self.short_desc}. Count: {count}"
             )
             # get metadata
-            if "ERZ" in run:
-                logger.debug(
-                    f"Run {run} appears to be an assembly. Using AssemblyDetail proxy for enrichment."
-                )
-
-                proxy = AssemblyDetail
-            else:
-                proxy = RunDetail
-
             try:
-                mg = proxy(accession=run, config=self.config).get()
+                bm = get_biosample_metadata_from_acc(run, incl_ena=incl_ena)
+                self.append_biosamples_details(bm.iloc[0].to_dict())
             except Exception as e:
                 logger.error(f"Error occurred while enriching run {run}: {e}")
-                mg = {"accession": run}
-
-            self.append_runs_details(mg)
+                self.append_biosamples_details({"RunID": run})
 
     def taxonomic_metadata(
         self,
