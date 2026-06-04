@@ -6,7 +6,7 @@ MGni.py ('mæɡ-ni-paɪ') is a lightweight python client and toolkit for the [MG
     <a href="https://pypi.org/project/mgnipy/">
         <img src="https://img.shields.io/pypi/v/mgnipy?label=PyPI" alt="PyPI">
     </a>
-    <img src="https://img.shields.io/github/actions/workflow/status/EBI-Metagenomics/mgnipy/cicd.yml" alt="cicd.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/EBI-Metagenomics/mgnipy/cicd.yml?branch=main" alt="cicd.yml">
     <a href="https://mgnipy.mgnify.org/">
         <img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" alt="GitHub Pages docs">
     </a>
@@ -18,7 +18,7 @@ MGni.py ('mæɡ-ni-paɪ') is a lightweight python client and toolkit for the [MG
     <img src="https://img.shields.io/github/stars/EBI-Metagenomics/mgnipy" alt="GitHub stars">
 </p>
 
-![mgnipy schematic](https://mgnipy.mgnify.org/_images/mgnipy_figure.gif)
+![mgnipy schematic](docs/assets/mgnipy_figure.gif)
 
 ## Contents
 
