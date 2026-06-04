@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.emgapi_v2_client.models.genome_list &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.emgapi_v2_client.models.genome_list &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -202,6 +202,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -343,21 +347,17 @@ document.write(`
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">TypeVar</span><span class="p">,</span>
-    <span class="n">cast</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">attrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span> <span class="k">as</span> <span class="n">_attrs_define</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">attrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">field</span> <span class="k">as</span> <span class="n">_attrs_field</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..types</span><span class="w"> </span><span class="kn">import</span> <span class="n">UNSET</span><span class="p">,</span> <span class="n">Unset</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..models.genome_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomeType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">UNSET</span><span class="p">,</span>
-    <span class="n">Unset</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">isoparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..models.biome</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biome</span>
@@ -375,7 +375,9 @@ document.write(`
 <span class="sd">        accession (str):</span>
 <span class="sd">        ena_genome_accession (None | str):</span>
 <span class="sd">        ena_sample_accession (None | str):</span>
+<span class="sd">        ena_study_accession (None | str):</span>
 <span class="sd">        ncbi_genome_accession (None | str):</span>
+<span class="sd">        ncbi_study_accession (None | str):</span>
 <span class="sd">        img_genome_accession (None | str):</span>
 <span class="sd">        patric_genome_accession (None | str):</span>
 <span class="sd">        length (int):</span>
@@ -386,7 +388,10 @@ document.write(`
 <span class="sd">        completeness (float):</span>
 <span class="sd">        contamination (float):</span>
 <span class="sd">        catalogue_id (str):</span>
+<span class="sd">        taxon_lineage (str):</span>
+<span class="sd">        updated_at (datetime.datetime):</span>
 <span class="sd">        geographic_origin (None | str):</span>
+<span class="sd">        num_genomes_total (int | Unset):</span>
 <span class="sd">        geographic_range (list[str] | None | Unset):</span>
 <span class="sd">        biome (Biome | None | Unset):</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -394,7 +399,9 @@ document.write(`
     <span class="n">accession</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ena_genome_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
     <span class="n">ena_sample_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
+    <span class="n">ena_study_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
     <span class="n">ncbi_genome_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
+    <span class="n">ncbi_study_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
     <span class="n">img_genome_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
     <span class="n">patric_genome_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
     <span class="n">length</span><span class="p">:</span> <span class="nb">int</span>
@@ -405,7 +412,10 @@ document.write(`
     <span class="n">completeness</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">contamination</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">catalogue_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">taxon_lineage</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">updated_at</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
     <span class="n">geographic_origin</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
+    <span class="n">num_genomes_total</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span>
     <span class="n">geographic_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span>
     <span class="n">biome</span><span class="p">:</span> <span class="n">Biome</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span>
     <span class="n">additional_properties</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">_attrs_field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
@@ -423,8 +433,14 @@ document.write(`
         <span class="n">ena_sample_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
         <span class="n">ena_sample_accession</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ena_sample_accession</span>
 
+        <span class="n">ena_study_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
+        <span class="n">ena_study_accession</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ena_study_accession</span>
+
         <span class="n">ncbi_genome_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
         <span class="n">ncbi_genome_accession</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncbi_genome_accession</span>
+
+        <span class="n">ncbi_study_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
+        <span class="n">ncbi_study_accession</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncbi_study_accession</span>
 
         <span class="n">img_genome_accession</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
         <span class="n">img_genome_accession</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_genome_accession</span>
@@ -448,8 +464,14 @@ document.write(`
 
         <span class="n">catalogue_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalogue_id</span>
 
+        <span class="n">taxon_lineage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">taxon_lineage</span>
+
+        <span class="n">updated_at</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">updated_at</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
         <span class="n">geographic_origin</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span>
         <span class="n">geographic_origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geographic_origin</span>
+
+        <span class="n">num_genomes_total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_genomes_total</span>
 
         <span class="n">geographic_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geographic_range</span><span class="p">,</span> <span class="n">Unset</span><span class="p">):</span>
@@ -475,7 +497,9 @@ document.write(`
                 <span class="s2">&quot;accession&quot;</span><span class="p">:</span> <span class="n">accession</span><span class="p">,</span>
                 <span class="s2">&quot;ena_genome_accession&quot;</span><span class="p">:</span> <span class="n">ena_genome_accession</span><span class="p">,</span>
                 <span class="s2">&quot;ena_sample_accession&quot;</span><span class="p">:</span> <span class="n">ena_sample_accession</span><span class="p">,</span>
+                <span class="s2">&quot;ena_study_accession&quot;</span><span class="p">:</span> <span class="n">ena_study_accession</span><span class="p">,</span>
                 <span class="s2">&quot;ncbi_genome_accession&quot;</span><span class="p">:</span> <span class="n">ncbi_genome_accession</span><span class="p">,</span>
+                <span class="s2">&quot;ncbi_study_accession&quot;</span><span class="p">:</span> <span class="n">ncbi_study_accession</span><span class="p">,</span>
                 <span class="s2">&quot;img_genome_accession&quot;</span><span class="p">:</span> <span class="n">img_genome_accession</span><span class="p">,</span>
                 <span class="s2">&quot;patric_genome_accession&quot;</span><span class="p">:</span> <span class="n">patric_genome_accession</span><span class="p">,</span>
                 <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
@@ -486,9 +510,13 @@ document.write(`
                 <span class="s2">&quot;completeness&quot;</span><span class="p">:</span> <span class="n">completeness</span><span class="p">,</span>
                 <span class="s2">&quot;contamination&quot;</span><span class="p">:</span> <span class="n">contamination</span><span class="p">,</span>
                 <span class="s2">&quot;catalogue_id&quot;</span><span class="p">:</span> <span class="n">catalogue_id</span><span class="p">,</span>
+                <span class="s2">&quot;taxon_lineage&quot;</span><span class="p">:</span> <span class="n">taxon_lineage</span><span class="p">,</span>
+                <span class="s2">&quot;updated_at&quot;</span><span class="p">:</span> <span class="n">updated_at</span><span class="p">,</span>
                 <span class="s2">&quot;geographic_origin&quot;</span><span class="p">:</span> <span class="n">geographic_origin</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_genomes_total</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span><span class="p">:</span>
+            <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;num_genomes_total&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_genomes_total</span>
         <span class="k">if</span> <span class="n">geographic_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span><span class="p">:</span>
             <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;geographic_range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geographic_range</span>
         <span class="k">if</span> <span class="n">biome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span><span class="p">:</span>
@@ -524,6 +552,13 @@ document.write(`
             <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ena_sample_accession&quot;</span><span class="p">)</span>
         <span class="p">)</span>
 
+        <span class="k">def</span><span class="w"> </span><span class="nf">_parse_ena_study_accession</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">data</span>
+            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="n">ena_study_accession</span> <span class="o">=</span> <span class="n">_parse_ena_study_accession</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ena_study_accession&quot;</span><span class="p">))</span>
+
         <span class="k">def</span><span class="w"> </span><span class="nf">_parse_ncbi_genome_accession</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">data</span>
@@ -531,6 +566,15 @@ document.write(`
 
         <span class="n">ncbi_genome_accession</span> <span class="o">=</span> <span class="n">_parse_ncbi_genome_accession</span><span class="p">(</span>
             <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ncbi_genome_accession&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_parse_ncbi_study_accession</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">data</span>
+            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="n">ncbi_study_accession</span> <span class="o">=</span> <span class="n">_parse_ncbi_study_accession</span><span class="p">(</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ncbi_study_accession&quot;</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_parse_img_genome_accession</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
@@ -567,12 +611,18 @@ document.write(`
 
         <span class="n">catalogue_id</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;catalogue_id&quot;</span><span class="p">)</span>
 
+        <span class="n">taxon_lineage</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;taxon_lineage&quot;</span><span class="p">)</span>
+
+        <span class="n">updated_at</span> <span class="o">=</span> <span class="n">isoparse</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;updated_at&quot;</span><span class="p">))</span>
+
         <span class="k">def</span><span class="w"> </span><span class="nf">_parse_geographic_origin</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">data</span>
             <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="n">geographic_origin</span> <span class="o">=</span> <span class="n">_parse_geographic_origin</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;geographic_origin&quot;</span><span class="p">))</span>
+
+        <span class="n">num_genomes_total</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_genomes_total&quot;</span><span class="p">,</span> <span class="n">UNSET</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_parse_geographic_range</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -612,7 +662,9 @@ document.write(`
             <span class="n">accession</span><span class="o">=</span><span class="n">accession</span><span class="p">,</span>
             <span class="n">ena_genome_accession</span><span class="o">=</span><span class="n">ena_genome_accession</span><span class="p">,</span>
             <span class="n">ena_sample_accession</span><span class="o">=</span><span class="n">ena_sample_accession</span><span class="p">,</span>
+            <span class="n">ena_study_accession</span><span class="o">=</span><span class="n">ena_study_accession</span><span class="p">,</span>
             <span class="n">ncbi_genome_accession</span><span class="o">=</span><span class="n">ncbi_genome_accession</span><span class="p">,</span>
+            <span class="n">ncbi_study_accession</span><span class="o">=</span><span class="n">ncbi_study_accession</span><span class="p">,</span>
             <span class="n">img_genome_accession</span><span class="o">=</span><span class="n">img_genome_accession</span><span class="p">,</span>
             <span class="n">patric_genome_accession</span><span class="o">=</span><span class="n">patric_genome_accession</span><span class="p">,</span>
             <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
@@ -623,7 +675,10 @@ document.write(`
             <span class="n">completeness</span><span class="o">=</span><span class="n">completeness</span><span class="p">,</span>
             <span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">,</span>
             <span class="n">catalogue_id</span><span class="o">=</span><span class="n">catalogue_id</span><span class="p">,</span>
+            <span class="n">taxon_lineage</span><span class="o">=</span><span class="n">taxon_lineage</span><span class="p">,</span>
+            <span class="n">updated_at</span><span class="o">=</span><span class="n">updated_at</span><span class="p">,</span>
             <span class="n">geographic_origin</span><span class="o">=</span><span class="n">geographic_origin</span><span class="p">,</span>
+            <span class="n">num_genomes_total</span><span class="o">=</span><span class="n">num_genomes_total</span><span class="p">,</span>
             <span class="n">geographic_range</span><span class="o">=</span><span class="n">geographic_range</span><span class="p">,</span>
             <span class="n">biome</span><span class="o">=</span><span class="n">biome</span><span class="p">,</span>
         <span class="p">)</span>

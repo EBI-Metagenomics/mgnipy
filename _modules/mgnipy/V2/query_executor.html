@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.query_executor &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.V2.query_executor &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -202,6 +202,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -369,13 +373,16 @@ document.write(`
 <a class="viewcode-back" href="../../../reference/mgnipy.V2.query_executor.html#mgnipy.V2.query_executor.QueryExecutor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">QueryExecutor</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_set</span><span class="p">:</span> <span class="s2">&quot;QuerySet&quot;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">qs</span> <span class="o">=</span> <span class="n">query_set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">:</span> <span class="s2">&quot;QuerySet&quot;</span> <span class="o">=</span> <span class="n">query_set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="o">.</span><span class="n">emgapi_handler</span><span class="o">.</span><span class="n">endpoint_module</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="s2">&quot;.&quot;</span>
+        <span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="c1"># question: should this be shared across all instances of QueryExecutor or should each have their own?</span>
         <span class="c1"># i meant for this to be a concurrency limiter to protect the server -- did I get this right?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_semaphore</span> <span class="o">=</span> <span class="n">get_semaphore</span><span class="p">()</span>
         <span class="c1"># tracking</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_successful_pages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_successful_pages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_iterator</span><span class="p">()</span>
 
 <div class="viewcode-block" id="QueryExecutor.query_setups">
@@ -788,7 +795,9 @@ document.write(`
         <span class="c1"># So tasks that finish fast are yielded first, regardless of their original index.</span>
         <span class="c1"># tqdm_asyncio wraps this to show a progress bar.</span>
         <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tqdm_asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span>
-            <span class="n">tasks</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Retrieving pages&quot;</span>
+            <span class="n">tasks</span><span class="p">,</span>
+            <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Retrieving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint_str</span><span class="si">}</span><span class="s2"> pages&quot;</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="c1"># Unpack the tuple (i, value) returned by the completed task.</span>
             <span class="c1"># i = original index of this item</span>
@@ -1160,7 +1169,11 @@ document.write(`
 
         <span class="c1"># get pages if not in results already</span>
         <span class="n">a_client</span> <span class="o">=</span> <span class="n">client</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">pages</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Retrieving pages&quot;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+            <span class="n">pages</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Retrieving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint_str</span><span class="si">}</span><span class="s2"> pages&quot;</span><span class="p">,</span>
+            <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+        <span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Advancing to request num </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">a_client</span><span class="p">)</span>
 
@@ -1198,7 +1211,9 @@ document.write(`
         <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apage</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">client</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pages</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">done</span> <span class="ow">in</span> <span class="n">tqdm_asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span>
-            <span class="n">tasks</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Retrieving pages&quot;</span>
+            <span class="n">tasks</span><span class="p">,</span>
+            <span class="n">disable</span><span class="o">=</span><span class="n">hide_progress</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Retrieving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint_str</span><span class="si">}</span><span class="s2"> pages&quot;</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="k">await</span> <span class="n">done</span>
 

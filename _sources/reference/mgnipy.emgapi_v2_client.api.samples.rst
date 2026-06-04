@@ -15,4 +15,5 @@ Submodules
 
    mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample
    mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples
+   mgnipy.emgapi_v2_client.api.samples.list_sample_assemblies
    mgnipy.emgapi_v2_client.api.samples.list_sample_runs

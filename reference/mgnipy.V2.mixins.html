@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.mixins module &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.V2.mixins module &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -203,6 +203,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
@@ -419,8 +423,12 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.biosamples_metadata()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.details_biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples_details()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.details_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples_details()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin</span></code></a><ul class="visible nav section-nav flex-column">
@@ -480,42 +488,75 @@ document.write(`
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.mixins.</span></span><span class="sig-name descname"><span class="pre">BioSamplesMetadataMixin</span></span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<p>Mixin providing properties to access BioSamples metadata for samples in the list.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples_metadata">
-<span class="sig-name descname"><span class="pre">biosamples_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.biosamples_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples_metadata" title="Link to this definition">#</a></dt>
-<dd><p>A pandas DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The DataFrame includes columns such as ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.aenrich_biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>Asynchronously fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>abiosamplesdata</cite> property.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>get_biosample_metadata_from_acc</cite> function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
+<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>aget_biosample_metadata_from_acc</cite> function, which asynchronously queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
 <li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
 </ul>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples_metadata">
-<span class="sig-name descname"><span class="pre">details_biosamples_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.details_biosamples_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples_metadata" title="Link to this definition">#</a></dt>
-<dd><p>A pandas DataFrame containing the concatenated BioSamples metadata for all samples in the list.
-Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.aenrich_biosamples_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details" title="Link to this definition">#</a></dt>
+<dd><p>Asynchronously retrieve the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to False.</p></li>
 <li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>This method does not return a value, but it caches the BioSamples metadata for later retrieval.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Relies on the <cite>abiosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which asynchronously retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples">
+<span class="sig-name descname"><span class="pre">biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples" title="Link to this definition">#</a></dt>
+<dd><p>A DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The DataFrame includes columns such as ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples">
+<span class="sig-name descname"><span class="pre">details_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.details_biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>A DataFrame containing the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A DataFrame containing the BioSamples metadata for all samples in the list.</p>
@@ -526,7 +567,51 @@ Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA acc
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>This property relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples">
+<span class="sig-name descname"><span class="pre">enrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.enrich_biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>Fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>biosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>get_biosample_metadata_from_acc</cite> function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
+<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details">
+<span class="sig-name descname"><span class="pre">enrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.enrich_biosamples_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details" title="Link to this definition">#</a></dt>
+<dd><p>Fetch and cache the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples. The metadata is stored in the cache properties for later retrieval by the <cite>details_biosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
 <li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
 </ul>
 </dd></dl>
@@ -1214,8 +1299,12 @@ When <code class="docutils literal notranslate"><span class="pre">chunksize</spa
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.biosamples_metadata()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.details_biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples_details()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.details_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples_details()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin</span></code></a><ul class="visible nav section-nav flex-column">

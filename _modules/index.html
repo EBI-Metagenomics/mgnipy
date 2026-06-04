@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Overview: module code &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>Overview: module code &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -202,6 +202,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -371,6 +375,7 @@ document.write(`
 <li><a href="mgnipy/emgapi_v2_client/api/authentication/token_obtain_sliding.html">mgnipy.emgapi_v2_client.api.authentication.token_obtain_sliding</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/authentication/token_refresh_sliding.html">mgnipy.emgapi_v2_client.api.authentication.token_refresh_sliding</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/authentication/token_verify.html">mgnipy.emgapi_v2_client.api.authentication.token_verify</a></li>
+<li><a href="mgnipy/emgapi_v2_client/api/genomes/genome_fragment_search.html">mgnipy.emgapi_v2_client.api.genomes.genome_fragment_search</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/genomes/get_genome_annotations.html">mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/genomes/get_genome_catalogue.html">mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/genomes/get_genome_catalogue_genomes.html">mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes</a></li>
@@ -388,6 +393,7 @@ document.write(`
 <li><a href="mgnipy/emgapi_v2_client/api/runs/list_runs_assemblies.html">mgnipy.emgapi_v2_client.api.runs.list_runs_assemblies</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/samples/get_mgnify_sample.html">mgnipy.emgapi_v2_client.api.samples.get_mgnify_sample</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/samples/list_mgnify_samples.html">mgnipy.emgapi_v2_client.api.samples.list_mgnify_samples</a></li>
+<li><a href="mgnipy/emgapi_v2_client/api/samples/list_sample_assemblies.html">mgnipy.emgapi_v2_client.api.samples.list_sample_assemblies</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/samples/list_sample_runs.html">mgnipy.emgapi_v2_client.api.samples.list_sample_runs</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/studies/get_mgnify_study.html">mgnipy.emgapi_v2_client.api.studies.get_mgnify_study</a></li>
 <li><a href="mgnipy/emgapi_v2_client/api/studies/get_super_study.html">mgnipy.emgapi_v2_client.api.studies.get_super_study</a></li>
@@ -402,12 +408,14 @@ document.write(`
 <li><a href="mgnipy/emgapi_v2_client/models/analysed_run.html">mgnipy.emgapi_v2_client.models.analysed_run</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/analysed_run_detail.html">mgnipy.emgapi_v2_client.models.analysed_run_detail</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type.html">mgnipy.emgapi_v2_client.models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/annotated_result.html">mgnipy.emgapi_v2_client.models.annotated_result</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/assembly.html">mgnipy.emgapi_v2_client.models.assembly</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/assembly_detail.html">mgnipy.emgapi_v2_client.models.assembly_detail</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/assembly_detail_metadata_type_0.html">mgnipy.emgapi_v2_client.models.assembly_detail_metadata_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/assembly_detail_status_type_0.html">mgnipy.emgapi_v2_client.models.assembly_detail_status_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/biome.html">mgnipy.emgapi_v2_client.models.biome</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/biome_list_filters.html">mgnipy.emgapi_v2_client.models.biome_list_filters</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/cobs_match.html">mgnipy.emgapi_v2_client.models.cobs_match</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/download_file_index_file.html">mgnipy.emgapi_v2_client.models.download_file_index_file</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/download_file_index_file_index_type.html">mgnipy.emgapi_v2_client.models.download_file_index_file_index_type</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/download_file_type.html">mgnipy.emgapi_v2_client.models.download_file_type</a></li>
@@ -430,12 +438,17 @@ document.write(`
 <li><a href="mgnipy/emgapi_v2_client/models/genome_catalogue_list_catalogue_type.html">mgnipy.emgapi_v2_client.models.genome_catalogue_list_catalogue_type</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/genome_catalogue_list_other_stats_type_0.html">mgnipy.emgapi_v2_client.models.genome_catalogue_list_other_stats_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/genome_detail.html">mgnipy.emgapi_v2_client.models.genome_detail</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/genome_filters.html">mgnipy.emgapi_v2_client.models.genome_filters</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/genome_fragment_search_out.html">mgnipy.emgapi_v2_client.models.genome_fragment_search_out</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/genome_list.html">mgnipy.emgapi_v2_client.models.genome_list</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/genome_schema.html">mgnipy.emgapi_v2_client.models.genome_schema</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/genome_search_data.html">mgnipy.emgapi_v2_client.models.genome_search_data</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/genome_type.html">mgnipy.emgapi_v2_client.models.genome_type</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/genome_with_annotations.html">mgnipy.emgapi_v2_client.models.genome_with_annotations</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/genome_with_annotations_annotations.html">mgnipy.emgapi_v2_client.models.genome_with_annotations_annotations</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/get_genome_catalogue_genomes_order_type_0.html">mgnipy.emgapi_v2_client.models.get_genome_catalogue_genomes_order_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/input_.html">mgnipy.emgapi_v2_client.models.input_</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/list_mgnify_genomes_order_type_0.html">mgnipy.emgapi_v2_client.models.list_mgnify_genomes_order_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/list_mgnify_publications_order_type_0.html">mgnipy.emgapi_v2_client.models.list_mgnify_publications_order_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/list_mgnify_samples_order_type_0.html">mgnipy.emgapi_v2_client.models.list_mgnify_samples_order_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/list_mgnify_studies_order_type_0.html">mgnipy.emgapi_v2_client.models.list_mgnify_studies_order_type_0</a></li>
@@ -453,6 +466,7 @@ document.write(`
 <li><a href="mgnipy/emgapi_v2_client/models/m_gnify_download_file_index_file.html">mgnipy.emgapi_v2_client.models.m_gnify_download_file_index_file</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/m_gnify_download_file_index_file_index_type.html">mgnipy.emgapi_v2_client.models.m_gnify_download_file_index_file_index_type</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/m_gnify_functional_analysis_annotation_type.html">mgnipy.emgapi_v2_client.models.m_gnify_functional_analysis_annotation_type</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/m_gnify_genome_catalogue_download_file.html">mgnipy.emgapi_v2_client.models.m_gnify_genome_catalogue_download_file</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/m_gnify_genome_download_file.html">mgnipy.emgapi_v2_client.models.m_gnify_genome_download_file</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/m_gnify_publication.html">mgnipy.emgapi_v2_client.models.m_gnify_publication</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/m_gnify_publication_detail.html">mgnipy.emgapi_v2_client.models.m_gnify_publication_detail</a></li>
@@ -483,6 +497,8 @@ document.write(`
 <li><a href="mgnipy/emgapi_v2_client/models/ninja_pagination_response_schema_m_gnify_sample_with_metadata.html">mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_m_gnify_sample_with_metadata</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/ninja_pagination_response_schema_m_gnify_study.html">mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_m_gnify_study</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/ninja_pagination_response_schema_super_study.html">mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_super_study</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total.html">mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total</a></li>
+<li><a href="mgnipy/emgapi_v2_client/models/order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total_order_type_0.html">mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total_order_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/order_by_filter_literalaccession_accession_updated_at_updated_at.html">mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_updated_at_updated_at</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/order_by_filter_literalaccession_accession_updated_at_updated_at_order_type_0.html">mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_updated_at_updated_at_order_type_0</a></li>
 <li><a href="mgnipy/emgapi_v2_client/models/order_by_filter_literalpublished_year_published_year.html">mgnipy.emgapi_v2_client.models.order_by_filter_literalpublished_year_published_year</a></li>

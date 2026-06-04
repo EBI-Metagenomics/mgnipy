@@ -17,12 +17,14 @@ Submodules
    mgnipy.emgapi_v2_client.models.analysed_run
    mgnipy.emgapi_v2_client.models.analysed_run_detail
    mgnipy.emgapi_v2_client.models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type
+   mgnipy.emgapi_v2_client.models.annotated_result
    mgnipy.emgapi_v2_client.models.assembly
    mgnipy.emgapi_v2_client.models.assembly_detail
    mgnipy.emgapi_v2_client.models.assembly_detail_metadata_type_0
    mgnipy.emgapi_v2_client.models.assembly_detail_status_type_0
    mgnipy.emgapi_v2_client.models.biome
    mgnipy.emgapi_v2_client.models.biome_list_filters
+   mgnipy.emgapi_v2_client.models.cobs_match
    mgnipy.emgapi_v2_client.models.download_file_index_file
    mgnipy.emgapi_v2_client.models.download_file_index_file_index_type
    mgnipy.emgapi_v2_client.models.download_file_type
@@ -45,12 +47,17 @@ Submodules
    mgnipy.emgapi_v2_client.models.genome_catalogue_list_catalogue_type
    mgnipy.emgapi_v2_client.models.genome_catalogue_list_other_stats_type_0
    mgnipy.emgapi_v2_client.models.genome_detail
+   mgnipy.emgapi_v2_client.models.genome_filters
+   mgnipy.emgapi_v2_client.models.genome_fragment_search_out
    mgnipy.emgapi_v2_client.models.genome_list
    mgnipy.emgapi_v2_client.models.genome_schema
+   mgnipy.emgapi_v2_client.models.genome_search_data
    mgnipy.emgapi_v2_client.models.genome_type
    mgnipy.emgapi_v2_client.models.genome_with_annotations
    mgnipy.emgapi_v2_client.models.genome_with_annotations_annotations
+   mgnipy.emgapi_v2_client.models.get_genome_catalogue_genomes_order_type_0
    mgnipy.emgapi_v2_client.models.input_
+   mgnipy.emgapi_v2_client.models.list_mgnify_genomes_order_type_0
    mgnipy.emgapi_v2_client.models.list_mgnify_publications_order_type_0
    mgnipy.emgapi_v2_client.models.list_mgnify_samples_order_type_0
    mgnipy.emgapi_v2_client.models.list_mgnify_studies_order_type_0
@@ -68,6 +75,7 @@ Submodules
    mgnipy.emgapi_v2_client.models.m_gnify_download_file_index_file
    mgnipy.emgapi_v2_client.models.m_gnify_download_file_index_file_index_type
    mgnipy.emgapi_v2_client.models.m_gnify_functional_analysis_annotation_type
+   mgnipy.emgapi_v2_client.models.m_gnify_genome_catalogue_download_file
    mgnipy.emgapi_v2_client.models.m_gnify_genome_download_file
    mgnipy.emgapi_v2_client.models.m_gnify_publication
    mgnipy.emgapi_v2_client.models.m_gnify_publication_detail
@@ -98,6 +106,8 @@ Submodules
    mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_m_gnify_sample_with_metadata
    mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_m_gnify_study
    mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_super_study
+   mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total
+   mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total_order_type_0
    mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_updated_at_updated_at
    mgnipy.emgapi_v2_client.models.order_by_filter_literalaccession_accession_updated_at_updated_at_order_type_0
    mgnipy.emgapi_v2_client.models.order_by_filter_literalpublished_year_published_year

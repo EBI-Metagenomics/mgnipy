@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>MGazine of MGnify data &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>MGazine of MGnify data &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <link rel="icon" href="../../_static/mgnipy.svg"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="mgnipy.mgnipy module" href="../../reference/mgnipy.mgnipy.html" />
+    <link rel="next" title="Finding Parkinson’s disease taxonomic analyses" href="../demos/demo-parkinson.html" />
     <link rel="prev" title="Accessing your private data" href="6_access_private_data.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -203,6 +203,10 @@
 <li class="toctree-l1"><a class="reference internal" href="5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -550,7 +554,7 @@ document.write(`
 
 <span class="c1"># 2. search up a study/analysis detail or a list of studies/analyses and get their details</span>
 <span class="n">study</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">study</span><span class="p">(</span><span class="s2">&quot;MGYS00010442&quot;</span><span class="p">)</span>
-<span class="n">study</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> 
+<span class="n">study</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -651,7 +655,7 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># access the study&#39;s mgazine</span>
 <span class="n">mz</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">datasets</span>
 
-<span class="c1"># check it out </span>
+<span class="c1"># check it out</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">mz</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -708,14 +712,14 @@ document.write(`
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># we want the taxonomic assignments</span>
-<span class="n">ssu</span> <span class="o">=</span> <span class="n">v6_data</span><span class="p">[</span><span class="s1">&#39;Summary of SILVA-SSU taxonomies&#39;</span><span class="p">]</span>
+<span class="n">ssu</span> <span class="o">=</span> <span class="n">v6_data</span><span class="p">[</span><span class="s2">&quot;Summary of SILVA-SSU taxonomies&quot;</span><span class="p">]</span>
 
-<span class="c1"># checking out what it is </span>
+<span class="c1"># checking out what it is</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ssu</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ssu</span><span class="p">)</span>
 
-<span class="c1"># also downloads_df  </span>
-<span class="n">ssu</span><span class="o">.</span><span class="n">downloads_df</span>
+<span class="c1"># also downloads_df</span>
+<span class="n">ssu</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -781,16 +785,16 @@ MGazine Curation TaxaMGazine containing:
 <section id="downloading-datasets">
 <h2>Downloading datasets<a class="headerlink" href="#downloading-datasets" title="Link to this heading">#</a></h2>
 <p>You can pass the <code class="docutils literal notranslate"><span class="pre">url</span></code> or <code class="docutils literal notranslate"><span class="pre">alias</span></code> if wanting to <code class="docutils literal notranslate"><span class="pre">.download()</span></code> or explore/read in via <code class="docutils literal notranslate"><span class="pre">.stream()</span></code> ONE download file/dataset.</p>
-<p>You can look at the file aliases as a list via <code class="docutils literal notranslate"><span class="pre">.aliases</span></code> attribute, also shown in “alias” column in <code class="docutils literal notranslate"><span class="pre">.downloads_df</span></code></p>
-<p>The urls are also in a column in <code class="docutils literal notranslate"><span class="pre">.downloads_df</span></code> but there are also helpers <code class="docutils literal notranslate"><span class="pre">.url_list</span></code> and <code class="docutils literal notranslate"><span class="pre">.url_dict</span></code> which provide {alias: url}</p>
+<p>You can look at the file aliases as a list via <code class="docutils literal notranslate"><span class="pre">.aliases</span></code> attribute, also shown in “alias” column in <code class="docutils literal notranslate"><span class="pre">.downloads_df()</span></code></p>
+<p>The urls are also in a column in <code class="docutils literal notranslate"><span class="pre">.downloads_df()</span></code> but there are also helpers <code class="docutils literal notranslate"><span class="pre">.url_list</span></code> and <code class="docutils literal notranslate"><span class="pre">.url_dict</span></code> which provide {alias: url}</p>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets try out one </span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets try out one</span>
 <span class="n">one_alias</span> <span class="o">=</span> <span class="n">ssu</span><span class="o">.</span><span class="n">aliases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">one_alias</span><span class="p">)</span>
 
 <span class="c1"># downloading to a downloads folder</span>
-<span class="n">ssu</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">to_dir</span><span class="o">=</span><span class="s2">&quot;downloads&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">one_alias</span><span class="p">)</span> 
+<span class="n">ssu</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">to_dir</span><span class="o">=</span><span class="s2">&quot;downloads&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">one_alias</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1392,11 +1396,11 @@ MGazine Curation TaxaMGazine containing:
       </div>
     </a>
     <a class="right-next"
-       href="../../reference/mgnipy.mgnipy.html"
+       href="../demos/demo-parkinson.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mgnipy.mgnipy module</p>
+        <p class="prev-next-title">Finding Parkinson’s disease taxonomic analyses</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

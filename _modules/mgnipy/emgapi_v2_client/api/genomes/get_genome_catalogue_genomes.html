@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -202,6 +202,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -346,29 +350,53 @@ document.write(`
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">...client</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuthenticatedClient</span><span class="p">,</span> <span class="n">Client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Response</span><span class="p">,</span> <span class="n">UNSET</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...</span><span class="w"> </span><span class="kn">import</span> <span class="n">errors</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">...client</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AuthenticatedClient</span><span class="p">,</span>
-    <span class="n">Client</span><span class="p">,</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">...models.get_genome_catalogue_genomes_order_type_0</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GetGenomeCatalogueGenomesOrderType0</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...models.ninja_pagination_response_schema_genome_list</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">NinjaPaginationResponseSchemaGenomeList</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">...types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">UNSET</span><span class="p">,</span>
-    <span class="n">Response</span><span class="p">,</span>
-    <span class="n">Unset</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Unset</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_kwargs</span><span class="p">(</span>
     <span class="n">catalogue_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">GetGenomeCatalogueGenomesOrderType0</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">biome_lineage</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">search</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
     <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 
     <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">json_order</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">Unset</span><span class="p">):</span>
+        <span class="n">json_order</span> <span class="o">=</span> <span class="n">UNSET</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">GetGenomeCatalogueGenomesOrderType0</span><span class="p">):</span>
+        <span class="n">json_order</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">json_order</span> <span class="o">=</span> <span class="n">order</span>
+    <span class="n">params</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_order</span>
+
+    <span class="n">json_biome_lineage</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">biome_lineage</span><span class="p">,</span> <span class="n">Unset</span><span class="p">):</span>
+        <span class="n">json_biome_lineage</span> <span class="o">=</span> <span class="n">UNSET</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">json_biome_lineage</span> <span class="o">=</span> <span class="n">biome_lineage</span>
+    <span class="n">params</span><span class="p">[</span><span class="s2">&quot;biome_lineage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_biome_lineage</span>
+
+    <span class="n">json_search</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">Unset</span><span class="p">):</span>
+        <span class="n">json_search</span> <span class="o">=</span> <span class="n">UNSET</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">json_search</span> <span class="o">=</span> <span class="n">search</span>
+    <span class="n">params</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_search</span>
 
     <span class="n">params</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">page</span>
 
@@ -425,6 +453,9 @@ document.write(`
     <span class="n">catalogue_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">AuthenticatedClient</span> <span class="o">|</span> <span class="n">Client</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">GetGenomeCatalogueGenomesOrderType0</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">biome_lineage</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">search</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
     <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">[</span><span class="n">NinjaPaginationResponseSchemaGenomeList</span><span class="p">]:</span>
@@ -432,6 +463,9 @@ document.write(`
 
 <span class="sd">    Args:</span>
 <span class="sd">        catalogue_id (str):</span>
+<span class="sd">        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):</span>
+<span class="sd">        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes</span>
+<span class="sd">        search (None | str | Unset): Search with genome taxonomies and accessions</span>
 <span class="sd">        page (int | Unset):  Default: 1.</span>
 <span class="sd">        page_size (int | None | Unset):</span>
 
@@ -445,6 +479,9 @@ document.write(`
 
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">_get_kwargs</span><span class="p">(</span>
         <span class="n">catalogue_id</span><span class="o">=</span><span class="n">catalogue_id</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+        <span class="n">biome_lineage</span><span class="o">=</span><span class="n">biome_lineage</span><span class="p">,</span>
+        <span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">,</span>
         <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span>
         <span class="n">page_size</span><span class="o">=</span><span class="n">page_size</span><span class="p">,</span>
     <span class="p">)</span>
@@ -463,6 +500,9 @@ document.write(`
     <span class="n">catalogue_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">AuthenticatedClient</span> <span class="o">|</span> <span class="n">Client</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">GetGenomeCatalogueGenomesOrderType0</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">biome_lineage</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">search</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
     <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NinjaPaginationResponseSchemaGenomeList</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -470,6 +510,9 @@ document.write(`
 
 <span class="sd">    Args:</span>
 <span class="sd">        catalogue_id (str):</span>
+<span class="sd">        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):</span>
+<span class="sd">        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes</span>
+<span class="sd">        search (None | str | Unset): Search with genome taxonomies and accessions</span>
 <span class="sd">        page (int | Unset):  Default: 1.</span>
 <span class="sd">        page_size (int | None | Unset):</span>
 
@@ -484,6 +527,9 @@ document.write(`
     <span class="k">return</span> <span class="n">sync_detailed</span><span class="p">(</span>
         <span class="n">catalogue_id</span><span class="o">=</span><span class="n">catalogue_id</span><span class="p">,</span>
         <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+        <span class="n">biome_lineage</span><span class="o">=</span><span class="n">biome_lineage</span><span class="p">,</span>
+        <span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">,</span>
         <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span>
         <span class="n">page_size</span><span class="o">=</span><span class="n">page_size</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">parsed</span></div>
@@ -496,6 +542,9 @@ document.write(`
     <span class="n">catalogue_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">AuthenticatedClient</span> <span class="o">|</span> <span class="n">Client</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">GetGenomeCatalogueGenomesOrderType0</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">biome_lineage</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">search</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
     <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">[</span><span class="n">NinjaPaginationResponseSchemaGenomeList</span><span class="p">]:</span>
@@ -503,6 +552,9 @@ document.write(`
 
 <span class="sd">    Args:</span>
 <span class="sd">        catalogue_id (str):</span>
+<span class="sd">        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):</span>
+<span class="sd">        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes</span>
+<span class="sd">        search (None | str | Unset): Search with genome taxonomies and accessions</span>
 <span class="sd">        page (int | Unset):  Default: 1.</span>
 <span class="sd">        page_size (int | None | Unset):</span>
 
@@ -516,6 +568,9 @@ document.write(`
 
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">_get_kwargs</span><span class="p">(</span>
         <span class="n">catalogue_id</span><span class="o">=</span><span class="n">catalogue_id</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+        <span class="n">biome_lineage</span><span class="o">=</span><span class="n">biome_lineage</span><span class="p">,</span>
+        <span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">,</span>
         <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span>
         <span class="n">page_size</span><span class="o">=</span><span class="n">page_size</span><span class="p">,</span>
     <span class="p">)</span>
@@ -532,6 +587,9 @@ document.write(`
     <span class="n">catalogue_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">AuthenticatedClient</span> <span class="o">|</span> <span class="n">Client</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">GetGenomeCatalogueGenomesOrderType0</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">biome_lineage</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="n">search</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
     <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NinjaPaginationResponseSchemaGenomeList</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -539,6 +597,9 @@ document.write(`
 
 <span class="sd">    Args:</span>
 <span class="sd">        catalogue_id (str):</span>
+<span class="sd">        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):</span>
+<span class="sd">        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes</span>
+<span class="sd">        search (None | str | Unset): Search with genome taxonomies and accessions</span>
 <span class="sd">        page (int | Unset):  Default: 1.</span>
 <span class="sd">        page_size (int | None | Unset):</span>
 
@@ -554,6 +615,9 @@ document.write(`
         <span class="k">await</span> <span class="n">asyncio_detailed</span><span class="p">(</span>
             <span class="n">catalogue_id</span><span class="o">=</span><span class="n">catalogue_id</span><span class="p">,</span>
             <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+            <span class="n">biome_lineage</span><span class="o">=</span><span class="n">biome_lineage</span><span class="p">,</span>
+            <span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">,</span>
             <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span>
             <span class="n">page_size</span><span class="o">=</span><span class="n">page_size</span><span class="p">,</span>
         <span class="p">)</span>

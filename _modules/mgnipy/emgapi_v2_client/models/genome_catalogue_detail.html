@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.emgapi_v2_client.models.genome_catalogue_detail &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.emgapi_v2_client.models.genome_catalogue_detail &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -202,6 +202,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -342,31 +346,28 @@ document.write(`
   <h1>Source code for mgnipy.emgapi_v2_client.models.genome_catalogue_detail</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">TypeVar</span><span class="p">,</span>
-    <span class="n">cast</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">attrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span> <span class="k">as</span> <span class="n">_attrs_define</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">attrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">field</span> <span class="k">as</span> <span class="n">_attrs_field</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">isoparse</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..types</span><span class="w"> </span><span class="kn">import</span> <span class="n">UNSET</span><span class="p">,</span> <span class="n">Unset</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..models.genome_catalogue_detail_catalogue_type</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">GenomeCatalogueDetailCatalogueType</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">UNSET</span><span class="p">,</span>
-    <span class="n">Unset</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">isoparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..models.biome</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biome</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..models.genome_catalogue_detail_other_stats_type_0</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">GenomeCatalogueDetailOtherStatsType0</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..models.m_gnify_genome_catalogue_download_file</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+        <span class="n">MGnifyGenomeCatalogueDownloadFile</span><span class="p">,</span>
     <span class="p">)</span>
 
 
@@ -393,6 +394,7 @@ document.write(`
 <span class="sd">        catalogue_biome_label (str):</span>
 <span class="sd">        catalogue_type (GenomeCatalogueDetailCatalogueType):</span>
 <span class="sd">        other_stats (GenomeCatalogueDetailOtherStatsType0 | None):</span>
+<span class="sd">        downloads (list[MGnifyGenomeCatalogueDownloadFile]):</span>
 <span class="sd">        protein_catalogue_name (None | str | Unset):</span>
 <span class="sd">        genome_count (int | None | Unset):</span>
 <span class="sd">        biome (Biome | None | Unset):</span>
@@ -411,6 +413,7 @@ document.write(`
     <span class="n">catalogue_biome_label</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">catalogue_type</span><span class="p">:</span> <span class="n">GenomeCatalogueDetailCatalogueType</span>
     <span class="n">other_stats</span><span class="p">:</span> <span class="n">GenomeCatalogueDetailOtherStatsType0</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">downloads</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MGnifyGenomeCatalogueDownloadFile</span><span class="p">]</span>
     <span class="n">protein_catalogue_name</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span>
     <span class="n">genome_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span>
     <span class="n">biome</span><span class="p">:</span> <span class="n">Biome</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">=</span> <span class="n">UNSET</span>
@@ -419,10 +422,10 @@ document.write(`
 <div class="viewcode-block" id="GenomeCatalogueDetail.to_dict">
 <a class="viewcode-back" href="../../../../reference/mgnipy.emgapi_v2_client.models.genome_catalogue_detail.html#mgnipy.emgapi_v2_client.models.GenomeCatalogueDetail.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..models.biome</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biome</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..models.genome_catalogue_detail_other_stats_type_0</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
             <span class="n">GenomeCatalogueDetailOtherStatsType0</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..models.biome</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biome</span>
 
         <span class="n">catalogue_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalogue_id</span>
 
@@ -457,6 +460,11 @@ document.write(`
             <span class="n">other_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_stats</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">other_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_stats</span>
+
+        <span class="n">downloads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">downloads_item_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">:</span>
+            <span class="n">downloads_item</span> <span class="o">=</span> <span class="n">downloads_item_data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="n">downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">downloads_item</span><span class="p">)</span>
 
         <span class="n">protein_catalogue_name</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_catalogue_name</span><span class="p">,</span> <span class="n">Unset</span><span class="p">):</span>
@@ -495,6 +503,7 @@ document.write(`
                 <span class="s2">&quot;catalogue_biome_label&quot;</span><span class="p">:</span> <span class="n">catalogue_biome_label</span><span class="p">,</span>
                 <span class="s2">&quot;catalogue_type&quot;</span><span class="p">:</span> <span class="n">catalogue_type</span><span class="p">,</span>
                 <span class="s2">&quot;other_stats&quot;</span><span class="p">:</span> <span class="n">other_stats</span><span class="p">,</span>
+                <span class="s2">&quot;downloads&quot;</span><span class="p">:</span> <span class="n">downloads</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">protein_catalogue_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span><span class="p">:</span>
@@ -514,6 +523,9 @@ document.write(`
         <span class="kn">from</span><span class="w"> </span><span class="nn">..models.biome</span><span class="w"> </span><span class="kn">import</span> <span class="n">Biome</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..models.genome_catalogue_detail_other_stats_type_0</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
             <span class="n">GenomeCatalogueDetailOtherStatsType0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..models.m_gnify_genome_catalogue_download_file</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+            <span class="n">MGnifyGenomeCatalogueDownloadFile</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">src_dict</span><span class="p">)</span>
@@ -584,6 +596,15 @@ document.write(`
 
         <span class="n">other_stats</span> <span class="o">=</span> <span class="n">_parse_other_stats</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;other_stats&quot;</span><span class="p">))</span>
 
+        <span class="n">downloads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_downloads</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;downloads&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">downloads_item_data</span> <span class="ow">in</span> <span class="n">_downloads</span><span class="p">:</span>
+            <span class="n">downloads_item</span> <span class="o">=</span> <span class="n">MGnifyGenomeCatalogueDownloadFile</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+                <span class="n">downloads_item_data</span>
+            <span class="p">)</span>
+
+            <span class="n">downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">downloads_item</span><span class="p">)</span>
+
         <span class="k">def</span><span class="w"> </span><span class="nf">_parse_protein_catalogue_name</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Unset</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">data</span>
@@ -635,6 +656,7 @@ document.write(`
             <span class="n">catalogue_biome_label</span><span class="o">=</span><span class="n">catalogue_biome_label</span><span class="p">,</span>
             <span class="n">catalogue_type</span><span class="o">=</span><span class="n">catalogue_type</span><span class="p">,</span>
             <span class="n">other_stats</span><span class="o">=</span><span class="n">other_stats</span><span class="p">,</span>
+            <span class="n">downloads</span><span class="o">=</span><span class="n">downloads</span><span class="p">,</span>
             <span class="n">protein_catalogue_name</span><span class="o">=</span><span class="n">protein_catalogue_name</span><span class="p">,</span>
             <span class="n">genome_count</span><span class="o">=</span><span class="n">genome_count</span><span class="p">,</span>
             <span class="n">biome</span><span class="o">=</span><span class="n">biome</span><span class="p">,</span>

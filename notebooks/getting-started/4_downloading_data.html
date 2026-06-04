@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Downloading MGnify Study data &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>Downloading MGnify Study data &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -203,6 +203,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -564,12 +568,13 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
 
 <span class="c1"># 1. init with default config</span>
-<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">()</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
+    <span class="c1">#cache_dir=&quot;downloads&quot;</span>
+<span class="p">)</span>
 
 <span class="c1"># 2.a) setup studies mgnifier (build queries)</span>
 <span class="n">tomato_studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">studies</span><span class="p">(</span>
-    <span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Host-associated:Plants:Rhizosphere&quot;</span><span class="p">,</span> 
-    <span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span>
+    <span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Host-associated:Plants:Rhizosphere&quot;</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span>
 <span class="p">)</span>
 
 <span class="c1"># 2.b) execute the list query (get the study list)</span>
@@ -788,11 +793,11 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># access study mgazine</span>
 <span class="n">MZ</span> <span class="o">=</span> <span class="n">tomato_studies</span><span class="o">.</span><span class="n">datasets</span>
 
-<span class="c1"># print for more info </span>
+<span class="c1"># print for more info</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">MZ</span><span class="p">)</span>
 
-<span class="c1"># also can view more as df </span>
-<span class="n">MZ</span><span class="o">.</span><span class="n">downloads_df</span>
+<span class="c1"># also can view more as df</span>
+<span class="n">MZ</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1345,14 +1350,14 @@ document.write(`
 <div class="cell tag_hide-output config_scroll_outputs docutils container">
 <div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># we want the taxonomic assignments</span>
-<span class="n">ssu</span> <span class="o">=</span> <span class="n">MZ</span><span class="p">[</span><span class="s1">&#39;Taxonomic assignments SSU&#39;</span><span class="p">]</span>
+<span class="n">ssu</span> <span class="o">=</span> <span class="n">MZ</span><span class="p">[</span><span class="s2">&quot;Taxonomic assignments SSU&quot;</span><span class="p">]</span>
 
-<span class="c1"># checking out what it is </span>
+<span class="c1"># checking out what it is</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ssu</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ssu</span><span class="p">)</span>
 
-<span class="c1"># downloads_df again </span>
-<span class="n">ssu</span><span class="o">.</span><span class="n">downloads_df</span>
+<span class="c1"># downloads_df again</span>
+<span class="n">ssu</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1362,7 +1367,14 @@ document.write(`
 <p class="expanded admonition-title">Hide code cell output</p>
 </summary>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;mgnipy.V2.datasets.taxonomic.TaxaMGazine&#39;&gt;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine Curation TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v5&#39;]
+- Number of downloads: 5
+- Short descriptions: [&#39;Taxonomic assignments SSU&#39;]
+-----------------------
+Next steps: Use `.load()` to initialize.
+
+&lt;class &#39;mgnipy.V2.datasets.taxonomic.TaxaMGazine&#39;&gt;
 MGazine Curation TaxaMGazine containing:
 - MGnify pipeline versions: [&#39;v5&#39;]
 - Number of downloads: 5
@@ -1482,13 +1494,25 @@ MGazine Curation TaxaMGazine containing:
 </ul>
 <p>We will carry on with our filtered TaxaMGazine given <a class="reference internal" href="#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies"><span class="xref myst">our goal</span></a> for now. There are analysis type-specific mgazines, such as this TaxaMGazine</p>
 <p>for example, we can also combine the taxonomic assignment results into one dataframe e.g. <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code>, <code class="docutils literal notranslate"><span class="pre">.to_polars</span></code>, <code class="docutils literal notranslate"><span class="pre">.X()</span></code></p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># first loading</span>
+<span class="n">ssu</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="n">ssu</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TaxaMGazine loaded with 5 datasets. 
+Cached runs results: 0 of total 149.
+</pre></div>
+</div>
 <div class="output text_html"><div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1507,7 +1531,7 @@ MGazine Curation TaxaMGazine containing:
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>#SampleID</th>
+      <th>taxonomy</th>
       <th>ERZ12343720</th>
       <th>ERZ12343730</th>
       <th>ERZ12343740</th>
@@ -1651,154 +1675,11 @@ MGazine Curation TaxaMGazine containing:
       <td>3.0</td>
       <td>3.0</td>
     </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>553</th>
-      <td>sk__Eukaryota;k__;p__Tubulinea</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.0</td>
-      <td>3.0</td>
-    </tr>
-    <tr>
-      <th>554</th>
-      <td>sk__Bacteria;k__;p__Planctomycetes;c__Planctom...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>555</th>
-      <td>sk__Bacteria;k__;p__Bacteroidetes;c__Chitinoph...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>556</th>
-      <td>sk__Bacteria;k__;p__Planctomycetes;c__Candidat...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>557</th>
-      <td>sk__Eukaryota;k__;p__Discosea;c__Flabellinia;o...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.0</td>
-      <td>1.0</td>
-    </tr>
   </tbody>
 </table>
-<p>558 rows × 150 columns</p>
+<p>5 rows × 150 columns</p>
 </div></div></div>
+</details>
 </div>
 <p>There is also option to enrich with additional metadata!</p>
 <ol class="arabic simple">
@@ -1807,7 +1688,9 @@ MGazine Curation TaxaMGazine containing:
 </ol>
 <div class="cell tag_hide-output config_scroll_outputs docutils container">
 <div class="cell_input above-output-prompt docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span><span class="o">.</span><span class="n">enrich_runs</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span><span class="o">.</span><span class="n">enrich_runs</span><span class="p">(</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">200</span><span class="c1">#default</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>

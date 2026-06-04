@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.datasets &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.V2.datasets &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -202,6 +202,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -342,7 +346,6 @@ document.write(`
   <h1>Source code for mgnipy.V2.datasets</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -355,7 +358,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectoryPath</span><span class="p">,</span> <span class="n">HttpUrl</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span> <span class="k">as</span> <span class="n">tqdm_sync</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span> <span class="k">as</span> <span class="n">tqdm_async</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm_asyncio</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipyConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.async_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_semaphore</span>
@@ -402,9 +405,22 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">downloads</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MGnipyConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">studies_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">analyses_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">runs_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">samples_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">assemblies_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">biosamples_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span> <span class="o">=</span> <span class="n">downloads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">MGnipyConfig</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_studies_details</span> <span class="o">=</span> <span class="n">studies_details</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyses_details</span> <span class="o">=</span> <span class="n">analyses_details</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_runs_details</span> <span class="o">=</span> <span class="n">runs_details</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_samples_details</span> <span class="o">=</span> <span class="n">samples_details</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assemblies_details</span> <span class="o">=</span> <span class="n">assemblies_details</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_biosamples_details</span> <span class="o">=</span> <span class="n">biosamples_details</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -413,6 +429,74 @@ document.write(`
             <span class="sa">f</span><span class="s2">&quot;- Number of downloads: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;- Short descriptions: </span><span class="si">{</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_short_descriptions</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">MGazine</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Can only add another MGazine instance, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">combined_downloads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">downloads</span>
+        <span class="n">new_mz</span> <span class="o">=</span> <span class="n">MGazine</span><span class="p">(</span>
+            <span class="n">combined_downloads</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+            <span class="n">studies_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">studies_details</span> <span class="ow">or</span> <span class="p">[])</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">studies_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+            <span class="n">analyses_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses_details</span> <span class="ow">or</span> <span class="p">[])</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">analyses_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+            <span class="n">runs_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runs_details</span> <span class="ow">or</span> <span class="p">[])</span> <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">runs_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+            <span class="n">samples_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_details</span> <span class="ow">or</span> <span class="p">[])</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">samples_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+            <span class="n">assemblies_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assemblies_details</span> <span class="ow">or</span> <span class="p">[])</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">assemblies_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+            <span class="n">biosamples_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biosamples_details</span> <span class="ow">or</span> <span class="p">[])</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">biosamples_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_mz</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+                    <span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+                    <span class="n">studies_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">studies_details</span> <span class="ow">or</span> <span class="p">[])</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">studies_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+                    <span class="n">analyses_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses_details</span> <span class="ow">or</span> <span class="p">[])</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">analyses_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+                    <span class="n">runs_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runs_details</span> <span class="ow">or</span> <span class="p">[])</span> <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">runs_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+                    <span class="n">samples_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_details</span> <span class="ow">or</span> <span class="p">[])</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">samples_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+                    <span class="n">assemblies_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assemblies_details</span> <span class="ow">or</span> <span class="p">[])</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">assemblies_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+                    <span class="n">biosamples_details</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biosamples_details</span> <span class="ow">or</span> <span class="p">[])</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">biosamples_details</span> <span class="ow">or</span> <span class="p">[]),</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Failed to create instance of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> with combined MGazine: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Returning base MGazine instead.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_mz</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">studies_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_studies_details</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyses_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyses_details</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">runs_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs_details</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">samples_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples_details</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assemblies_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assemblies_details</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">biosamples_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_biosamples_details</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_mgnifier_helper</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DirectoryPath</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -448,6 +532,22 @@ document.write(`
         <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;alias&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span> <span class="k">if</span> <span class="s2">&quot;alias&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">urls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of all download URLs. Same as ``url_list``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; downloads = [</span>
+<span class="sd">        ...     {&quot;alias&quot;: &quot;example.txt&quot;, &quot;url&quot;: &quot;http://ex/x&quot;, &quot;file_type&quot;: &quot;txt&quot;},</span>
+<span class="sd">        ... ]</span>
+<span class="sd">        &gt;&gt;&gt; MGazine(downloads).urls</span>
+<span class="sd">        [&#39;http://ex/x&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">url_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return mapping of alias to URL for all downloads.</span>
@@ -470,7 +570,23 @@ document.write(`
         <span class="k">return</span> <span class="p">{</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;alias&quot;</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">downloads_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">url_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of all download URLs.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; downloads = [</span>
+<span class="sd">        ...     {&quot;alias&quot;: &quot;example.txt&quot;, &quot;url&quot;: &quot;http://ex/x&quot;, &quot;file_type&quot;: &quot;txt&quot;},</span>
+<span class="sd">        ... ]</span>
+<span class="sd">        &gt;&gt;&gt; MGazine(downloads).url_list</span>
+<span class="sd">        [&#39;http://ex/x&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MGazine.downloads_df">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.datasets.html#mgnipy.V2.datasets.MGazine.downloads_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">downloads_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a ``pandas.DataFrame`` of all downloads.</span>
 
 <span class="sd">        The dataframe will contain columns such as ``alias``, ``url`` and</span>
@@ -481,15 +597,16 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; downloads = [</span>
 <span class="sd">        ...     {&quot;alias&quot;: &quot;example.txt&quot;, &quot;url&quot;: &quot;http://ex/x&quot;, &quot;file_type&quot;: &quot;txt&quot;},</span>
 <span class="sd">        ... ]</span>
-<span class="sd">        &gt;&gt;&gt; df = MGazine(downloads).downloads_df</span>
+<span class="sd">        &gt;&gt;&gt; df = MGazine(downloads).downloads_df()</span>
 <span class="sd">        &gt;&gt;&gt; list(df.columns)</span>
 <span class="sd">        [&#39;alias&#39;, &#39;url&#39;, &#39;file_type&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">,</span> <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">)</span>
         <span class="c1"># add pipeline version column if possible</span>
         <span class="c1">#    df = self._add_pipeline_col(df)</span>
 
-        <span class="k">return</span> <span class="n">df</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
 
 <div class="viewcode-block" id="MGazine.by_pipeline_version">
 <a class="viewcode-back" href="../../../reference/mgnipy.V2.datasets.html#mgnipy.V2.datasets.MGazine.by_pipeline_version">[docs]</a>
@@ -503,12 +620,12 @@ document.write(`
 <span class="sd">            A dictionary where keys are pipeline versions and values are lists of download dictionaries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
         <span class="k">if</span> <span class="s2">&quot;pipeline_version&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Cannot group by version because &#39;pipeline_version&#39; column is missing.&quot;</span>
             <span class="p">)</span>
-        <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;pipeline_version&quot;</span><span class="p">)</span>
+        <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;pipeline_version&quot;</span><span class="p">)</span>
 
         <span class="n">groups</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">version</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">version</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span>
@@ -528,12 +645,12 @@ document.write(`
 <span class="sd">            A dictionary where keys are short descriptions and values are lists of download dictionaries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
         <span class="k">if</span> <span class="s2">&quot;short_description&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Cannot group by short description because &#39;short_description&#39; column is missing.&quot;</span>
             <span class="p">)</span>
-        <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;short_description&quot;</span><span class="p">)</span>
+        <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;short_description&quot;</span><span class="p">)</span>
 
         <span class="n">groups</span> <span class="o">=</span> <span class="p">{</span><span class="n">desc</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">desc</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">groups</span></div>
@@ -557,7 +674,7 @@ document.write(`
 <span class="sd">        [&#39;v4_1&#39;, &#39;v5&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">avail_vers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">[</span><span class="s2">&quot;pipeline_version&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">avail_vers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()[</span><span class="s2">&quot;pipeline_version&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="n">avail_vers</span></div>
 
@@ -580,7 +697,7 @@ document.write(`
 <span class="sd">        [&#39;shortdesc1&#39;, &#39;shortdesc2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">avail_descs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">[</span><span class="s2">&quot;short_description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">avail_descs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()[</span><span class="s2">&quot;short_description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="n">avail_descs</span></div>
 
@@ -599,10 +716,19 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_short_descriptions</span><span class="p">():</span>
 
-            <span class="n">new_mz</span> <span class="o">=</span> <span class="n">MGazine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">by_short_desc</span><span class="p">()[</span><span class="n">key</span><span class="p">],</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+            <span class="n">new_mz</span> <span class="o">=</span> <span class="n">MGazine</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">by_short_desc</span><span class="p">()[</span><span class="n">key</span><span class="p">],</span>
+                <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+                <span class="n">studies_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">studies_details</span><span class="p">,</span>
+                <span class="n">analyses_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses_details</span><span class="p">,</span>
+                <span class="n">runs_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runs_details</span><span class="p">,</span>
+                <span class="n">samples_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_details</span><span class="p">,</span>
+                <span class="n">assemblies_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assemblies_details</span><span class="p">,</span>
+                <span class="n">biosamples_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">biosamples_details</span><span class="p">,</span>
+            <span class="p">)</span>
 
             <span class="n">download_type</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">[</span><span class="s2">&quot;short_description&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">][</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()[</span><span class="s2">&quot;short_description&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">][</span>
                     <span class="s2">&quot;download_type&quot;</span>
                 <span class="p">]</span>
                 <span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -614,31 +740,34 @@ document.write(`
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;getting dwc-ready taxonomic datasets of short description </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> via item access.&quot;</span>
                 <span class="p">)</span>
-                <span class="k">return</span> <span class="n">DWCTaxaMGazine</span><span class="p">(</span><span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">DWCTaxaMGazine</span><span class="p">(</span>
+                    <span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+                    <span class="n">studies_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">studies_details</span><span class="p">,</span>
+                    <span class="n">analyses_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses_details</span><span class="p">,</span>
+                    <span class="n">runs_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runs_details</span><span class="p">,</span>
+                    <span class="n">samples_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_details</span><span class="p">,</span>
+                    <span class="n">assemblies_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assemblies_details</span><span class="p">,</span>
+                    <span class="n">biosamples_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">biosamples_details</span><span class="p">,</span>
+                <span class="p">)</span>
 
             <span class="k">if</span> <span class="s2">&quot;taxonom&quot;</span> <span class="ow">in</span> <span class="n">download_type</span> <span class="ow">and</span> <span class="s2">&quot;dwc-ready&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;getting taxonomic datasets of short description </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> via item access.&quot;</span>
                 <span class="p">)</span>
-                <span class="k">return</span> <span class="n">TaxaMGazine</span><span class="p">(</span><span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">TaxaMGazine</span><span class="p">(</span>
+                    <span class="n">mgazine</span><span class="o">=</span><span class="n">new_mz</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+                    <span class="n">studies_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">studies_details</span><span class="p">,</span>
+                    <span class="n">analyses_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses_details</span><span class="p">,</span>
+                    <span class="n">runs_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runs_details</span><span class="p">,</span>
+                    <span class="n">samples_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_details</span><span class="p">,</span>
+                    <span class="n">assemblies_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assemblies_details</span><span class="p">,</span>
+                    <span class="n">biosamples_details</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">biosamples_details</span><span class="p">,</span>
+                <span class="p">)</span>
 
             <span class="c1"># TODO other download types</span>
             <span class="k">return</span> <span class="n">new_mz</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">url_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of all download URLs.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; downloads = [</span>
-<span class="sd">        ...     {&quot;alias&quot;: &quot;example.txt&quot;, &quot;url&quot;: &quot;http://ex/x&quot;, &quot;file_type&quot;: &quot;txt&quot;},</span>
-<span class="sd">        ... ]</span>
-<span class="sd">        &gt;&gt;&gt; MGazine(downloads).url_list</span>
-<span class="sd">        [&#39;http://ex/x&#39;]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">]</span>
 
     <span class="c1"># downloading methods</span>
 <div class="viewcode-block" id="MGazine.download">
@@ -996,8 +1125,8 @@ document.write(`
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_dict</span>
             <span class="p">]</span>
             <span class="c1"># Overall progress bar</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tqdm_async</span><span class="p">(</span>
-                <span class="n">asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">tasks</span><span class="p">),</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tqdm_asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span>
+                <span class="n">tasks</span><span class="p">,</span>
                 <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">),</span>
                 <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Overall Progress&quot;</span><span class="p">,</span>
                 <span class="n">ascii</span><span class="o">=</span><span class="s2">&quot; &gt;=&quot;</span><span class="p">,</span>
@@ -1034,7 +1163,7 @@ document.write(`
 <span class="sd">        Optional[str]</span>
 <span class="sd">            The download url for the given alias, or None if not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alias == &#39;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
@@ -1058,7 +1187,7 @@ document.write(`
 <span class="sd">        Optional[str]</span>
 <span class="sd">            The alias for the given url, or None if not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;url == &#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)[</span><span class="s2">&quot;alias&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
@@ -1082,7 +1211,7 @@ document.write(`
 <span class="sd">        Optional[str]</span>
 <span class="sd">            The file type for the given alias, or None if not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alias == &#39;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)[</span><span class="s2">&quot;file_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>

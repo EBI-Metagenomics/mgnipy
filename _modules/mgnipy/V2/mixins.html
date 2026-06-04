@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.mixins &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.V2.mixins &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../../../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,8 +145,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -202,6 +202,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -367,6 +371,9 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._models.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipyConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.biosamples_helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_biosample_metadata_from_acc</span><span class="p">,</span>
+    <span class="n">aget_biosample_metadata_from_acc</span><span class="p">,</span>
+    <span class="n">aget_all_biosample_metadata_from_acc</span><span class="p">,</span>
+    <span class="n">get_all_biosample_metadata_from_acc</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy._shared_helpers.writers</span><span class="w"> </span><span class="kn">import</span> <span class="n">atomic_write_bytes</span><span class="p">,</span> <span class="n">atomic_write_json</span>
 
@@ -415,6 +422,7 @@ document.write(`
             <span class="s2">&quot;biome&quot;</span><span class="p">,</span>
             <span class="s2">&quot;run&quot;</span><span class="p">,</span>
             <span class="s2">&quot;assembly&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;read_run&quot;</span><span class="p">,</span>
         <span class="p">]</span>
 
         <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1657,28 +1665,41 @@ document.write(`
 <div class="viewcode-block" id="BioSamplesMetadataMixin">
 <a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BioSamplesMetadataMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin providing properties to access BioSamples metadata for samples in the list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_biosamples_cache</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_biosamples_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="BioSamplesMetadataMixin.details_biosamples_metadata">
-<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples_metadata">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">details_biosamples_metadata</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="BioSamplesMetadataMixin.biosamples">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">biosamples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A pandas DataFrame containing the concatenated BioSamples metadata for all samples in the list.</span>
-<span class="sd">        Each row corresponds to a sample, and columns include &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the samples.</span>
+<span class="sd">        A DataFrame containing the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The DataFrame includes columns such as &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span></div>
+
+
+<div class="viewcode-block" id="BioSamplesMetadataMixin.details_biosamples">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">details_biosamples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A DataFrame containing the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the samples.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        incl_ena : bool, optional</span>
 <span class="sd">            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</span>
-<span class="sd">        overwrite : bool, optional</span>
-<span class="sd">            Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1687,7 +1708,140 @@ document.write(`
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        - This property relies on the `biosample_metadata` property of each `SampleDetail` instance, which retrieves the BioSamples metadata for each sample accession.</span>
+<span class="sd">        - Relies on the `biosample_metadata` property of each `SampleDetail` instance, which retrieves the BioSamples metadata for each sample accession.</span>
+<span class="sd">        - The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">df</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">df</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>  <span class="c1"># Return empty DataFrame if no cache is available</span></div>
+
+
+<div class="viewcode-block" id="BioSamplesMetadataMixin.enrich_biosamples">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enrich_biosamples</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch and cache the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the `biosamplesdata` property.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        incl_ena : bool, optional</span>
+<span class="sd">            Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</span>
+<span class="sd">        overwrite : bool, optional</span>
+<span class="sd">            Whether to overwrite the cached metadata if it already exists. Defaults to False.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - This property retrieves the BioSamples metadata for the sample accession using the `get_biosample_metadata_from_acc` function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</span>
+<span class="sd">        - The resulting DataFrame will have a single row corresponding to the sample accession, and columns for &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the sample, with missing values filled as &#39;NA&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Using cached BioSamples metadata with ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Using cached BioSamples metadata without ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">incl_ena</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Fetching BioSamples metadata with ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span> <span class="o">=</span> <span class="n">get_biosample_metadata_from_acc</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Fetching BioSamples metadata without ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span> <span class="o">=</span> <span class="n">get_biosample_metadata_from_acc</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BioSamplesMetadataMixin.aenrich_biosamples">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aenrich_biosamples</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously fetch and cache the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the `abiosamplesdata` property.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        incl_ena : bool, optional</span>
+<span class="sd">            Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</span>
+<span class="sd">        overwrite : bool, optional</span>
+<span class="sd">            Whether to overwrite the cached metadata if it already exists. Defaults to False.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - This property retrieves the BioSamples metadata for the sample accession using the `aget_biosample_metadata_from_acc` function, which asynchronously queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</span>
+<span class="sd">        - The resulting DataFrame will have a single row corresponding to the sample accession, and columns for &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the sample, with missing values filled as &#39;NA&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Using cached BioSamples metadata with ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Using cached BioSamples metadata without ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">incl_ena</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Asynchronously fetching BioSamples metadata with ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span> <span class="o">=</span> <span class="k">await</span> <span class="n">aget_biosample_metadata_from_acc</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Asynchronously fetching BioSamples metadata without ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span> <span class="o">=</span> <span class="k">await</span> <span class="n">aget_biosample_metadata_from_acc</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BioSamplesMetadataMixin.enrich_biosamples_details">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enrich_biosamples_details</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch and cache the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the samples. The metadata is stored in the cache properties for later retrieval by the `details_biosamplesdata` property.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        incl_ena : bool, optional</span>
+<span class="sd">            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</span>
+<span class="sd">        overwrite : bool, optional</span>
+<span class="sd">            Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Relies on the `biosample_metadata` property of each `SampleDetail` instance, which retrieves the BioSamples metadata for each sample accession.</span>
 <span class="sd">        - The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1697,7 +1851,7 @@ document.write(`
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span>
         <span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using cached BioSamples metadata with ENA fields for details&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span>
+            <span class="k">return</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="n">incl_ena</span>
@@ -1707,84 +1861,86 @@ document.write(`
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s2">&quot;Using cached BioSamples metadata without ENA fields for details&quot;</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span>
+            <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">incl_ena</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fetching BioSamples metadata with ENA fields for details&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">detail</span><span class="o">.</span><span class="n">biosamples_metadata</span><span class="p">(</span><span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">detail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">details</span>
-                <span class="p">],</span>
-                <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span> <span class="o">=</span> <span class="n">get_all_biosample_metadata_from_acc</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">details_ids</span><span class="p">,</span>
+                <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fetching BioSamples metadata without ENA fields for details&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">detail</span><span class="o">.</span><span class="n">biosamples_metadata</span><span class="p">(</span><span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">detail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">details</span>
-                <span class="p">],</span>
-                <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span> <span class="o">=</span> <span class="n">get_all_biosample_metadata_from_acc</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">details_ids</span><span class="p">,</span>
+                <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BioSamplesMetadataMixin.biosamples_metadata">
-<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples_metadata">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">biosamples_metadata</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="BioSamplesMetadataMixin.aenrich_biosamples_details">
+<a class="viewcode-back" href="../../../reference/mgnipy.V2.mixins.html#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aenrich_biosamples_details</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">incl_ena</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A pandas DataFrame containing the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The DataFrame includes columns such as &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the sample.</span>
+<span class="sd">        Asynchronously retrieve the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the samples.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        incl_ena : bool, optional</span>
-<span class="sd">            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</span>
+<span class="sd">            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to False.</span>
 <span class="sd">        overwrite : bool, optional</span>
 <span class="sd">            Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        pd.DataFrame</span>
-<span class="sd">            A DataFrame containing the BioSamples metadata for the sample associated with this `SampleDetail` instance.</span>
+<span class="sd">        None</span>
+<span class="sd">            This method does not return a value, but it caches the BioSamples metadata for later retrieval.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        - This property retrieves the BioSamples metadata for the sample accession using the `get_biosample_metadata_from_acc` function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</span>
-<span class="sd">        - The resulting DataFrame will have a single row corresponding to the sample accession, and columns for &#39;SampleID&#39;, &#39;SRA accession&#39;, &#39;taxid&#39;, and any characteristics available for the sample, with missing values filled as &#39;NA&#39;.</span>
+<span class="sd">        - Relies on the `abiosample_metadata` property of each `SampleDetail` instance, which asynchronously retrieves the BioSamples metadata for each sample accession.</span>
+<span class="sd">        - The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Using cached BioSamples metadata with ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">incl_ena</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span>
+        <span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using cached BioSamples metadata with ENA fields for details&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">incl_ena</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">incl_ena</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span>
+        <span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Using cached BioSamples metadata without ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Using cached BioSamples metadata without ENA fields for details&quot;</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span>
+            <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">incl_ena</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Fetching BioSamples metadata with ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Asynchronously fetching BioSamples metadata with ENA fields for details&quot;</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span> <span class="o">=</span> <span class="n">get_biosample_metadata_from_acc</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_w_ena</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="k">await</span> <span class="n">aget_all_biosample_metadata_from_acc</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">details_ids</span><span class="p">,</span>
+                    <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_w_ena</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Fetching BioSamples metadata without ENA fields for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Asynchronously fetching BioSamples metadata without ENA fields for details&quot;</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span> <span class="o">=</span> <span class="n">get_biosample_metadata_from_acc</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_no_ena</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_biosamples_details_no_ena</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="k">await</span> <span class="n">aget_all_biosample_metadata_from_acc</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">details_ids</span><span class="p">,</span>
+                    <span class="n">incl_ena</span><span class="o">=</span><span class="n">incl_ena</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
 </div>
 
 </pre></div>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.proxies.samples module &#8212; mgnipy 0.1.dev1+g71725dbe5 documentation</title>
+    <title>mgnipy.V2.proxies.samples module &#8212; mgnipy 0.1.dev1+g8b430046d documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=e7a0627f"></script>
+    <script src="../_static/documentation_options.js?v=48fccdc6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,8 +146,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g71725dbe5 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g8b430046d documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -203,6 +203,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
@@ -432,11 +436,13 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail"><code class="docutils literal notranslate"><span class="pre">SampleDetail</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.RESOURCE"><code class="docutils literal notranslate"><span class="pre">SampleDetail.RESOURCE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.abulk_fetch"><code class="docutils literal notranslate"><span class="pre">SampleDetail.abulk_fetch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aenrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aenrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aget"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aget()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aget_list"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aget_list()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.apage"><code class="docutils literal notranslate"><span class="pre">SampleDetail.apage()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.base_url"><code class="docutils literal notranslate"><span class="pre">SampleDetail.base_url</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">SampleDetail.biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.bulk_fetch"><code class="docutils literal notranslate"><span class="pre">SampleDetail.bulk_fetch()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.cache_dir"><code class="docutils literal notranslate"><span class="pre">SampleDetail.cache_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.clear_cache"><code class="docutils literal notranslate"><span class="pre">SampleDetail.clear_cache()</span></code></a></li>
@@ -446,11 +452,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.data"><code class="docutils literal notranslate"><span class="pre">SampleDetail.data</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">SampleDetail.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.describe_relationships"><code class="docutils literal notranslate"><span class="pre">SampleDetail.describe_relationships()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.details_biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">SampleDetail.details_biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.details_biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.details_biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.downloads"><code class="docutils literal notranslate"><span class="pre">SampleDetail.downloads</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.dry_run"><code class="docutils literal notranslate"><span class="pre">SampleDetail.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">SampleDetail.emgapi_handler</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.endpoint_module"><code class="docutils literal notranslate"><span class="pre">SampleDetail.endpoint_module</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.enrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">SampleDetail.enrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.explain"><code class="docutils literal notranslate"><span class="pre">SampleDetail.explain()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.filter"><code class="docutils literal notranslate"><span class="pre">SampleDetail.filter()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.first"><code class="docutils literal notranslate"><span class="pre">SampleDetail.first()</span></code></a></li>
@@ -484,13 +492,15 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples"><code class="docutils literal notranslate"><span class="pre">Samples</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.RESOURCE"><code class="docutils literal notranslate"><span class="pre">Samples.RESOURCE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.abulk_fetch"><code class="docutils literal notranslate"><span class="pre">Samples.abulk_fetch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.aenrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">Samples.aenrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aenrich_details"><code class="docutils literal notranslate"><span class="pre">Samples.aenrich_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aget"><code class="docutils literal notranslate"><span class="pre">Samples.aget()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aget_detail"><code class="docutils literal notranslate"><span class="pre">Samples.aget_detail()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aiter_details"><code class="docutils literal notranslate"><span class="pre">Samples.aiter_details</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.apage"><code class="docutils literal notranslate"><span class="pre">Samples.apage()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.base_url"><code class="docutils literal notranslate"><span class="pre">Samples.base_url</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">Samples.biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.bulk_fetch"><code class="docutils literal notranslate"><span class="pre">Samples.bulk_fetch()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.cache_dir"><code class="docutils literal notranslate"><span class="pre">Samples.cache_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.child_resource"><code class="docutils literal notranslate"><span class="pre">Samples.child_resource</span></code></a></li>
@@ -503,13 +513,16 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">Samples.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.describe_relationships"><code class="docutils literal notranslate"><span class="pre">Samples.describe_relationships()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details"><code class="docutils literal notranslate"><span class="pre">Samples.details</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">Samples.details_biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.details_biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_df"><code class="docutils literal notranslate"><span class="pre">Samples.details_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_downloads"><code class="docutils literal notranslate"><span class="pre">Samples.details_downloads</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_ids"><code class="docutils literal notranslate"><span class="pre">Samples.details_ids</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_results"><code class="docutils literal notranslate"><span class="pre">Samples.details_results</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.dry_run"><code class="docutils literal notranslate"><span class="pre">Samples.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">Samples.emgapi_handler</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.endpoint_module"><code class="docutils literal notranslate"><span class="pre">Samples.endpoint_module</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.enrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">Samples.enrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.enrich_details"><code class="docutils literal notranslate"><span class="pre">Samples.enrich_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.explain"><code class="docutils literal notranslate"><span class="pre">Samples.explain()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.filter"><code class="docutils literal notranslate"><span class="pre">Samples.filter()</span></code></a></li>
@@ -601,6 +614,53 @@ document.write(`
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>Asynchronously fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>abiosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>aget_biosample_metadata_from_acc</cite> function, which asynchronously queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
+<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples_details">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples_details" title="Link to this definition">#</a></dt>
+<dd><p>Asynchronously retrieve the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>This method does not return a value, but it caches the BioSamples metadata for later retrieval.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Relies on the <cite>abiosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which asynchronously retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.aget">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.aget" title="Link to this definition">#</a></dt>
 <dd><p>Asynchronously fetch all pages of results.</p>
@@ -675,28 +735,17 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.biosamples_metadata">
-<span class="sig-name descname"><span class="pre">biosamples_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.biosamples_metadata" title="Link to this definition">#</a></dt>
-<dd><p>A pandas DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The DataFrame includes columns such as ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.biosamples">
+<span class="sig-name descname"><span class="pre">biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.biosamples" title="Link to this definition">#</a></dt>
+<dd><p>A DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The DataFrame includes columns such as ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>DataFrame</em></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>get_biosample_metadata_from_acc</cite> function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
-<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
-</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -820,16 +869,12 @@ allowing users to resume iteration after an interruption or to jump to a specifi
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.details_biosamples_metadata">
-<span class="sig-name descname"><span class="pre">details_biosamples_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.details_biosamples_metadata" title="Link to this definition">#</a></dt>
-<dd><p>A pandas DataFrame containing the concatenated BioSamples metadata for all samples in the list.
-Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.details_biosamples">
+<span class="sig-name descname"><span class="pre">details_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.details_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>A DataFrame containing the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A DataFrame containing the BioSamples metadata for all samples in the list.</p>
@@ -840,7 +885,7 @@ Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA acc
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>This property relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
 <li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
 </ul>
 </dd></dl>
@@ -883,6 +928,50 @@ This method can be called before get() to ensure that the parameters are valid a
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.endpoint_module">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">endpoint_module</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">Callable</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.endpoint_module" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples">
+<span class="sig-name descname"><span class="pre">enrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>Fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>biosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>get_biosample_metadata_from_acc</cite> function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
+<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples_details">
+<span class="sig-name descname"><span class="pre">enrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples_details" title="Link to this definition">#</a></dt>
+<dd><p>Fetch and cache the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples. The metadata is stored in the cache properties for later retrieval by the <cite>details_biosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
+</ul>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.SampleDetail.explain">
@@ -1442,6 +1531,53 @@ data is available.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.aenrich_biosamples">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.aenrich_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>Asynchronously fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>abiosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>aget_biosample_metadata_from_acc</cite> function, which asynchronously queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
+<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.aenrich_biosamples_details">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.aenrich_biosamples_details" title="Link to this definition">#</a></dt>
+<dd><p>Asynchronously retrieve the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>This method does not return a value, but it caches the BioSamples metadata for later retrieval.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Relies on the <cite>abiosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which asynchronously retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.aenrich_details">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.aenrich_details" title="Link to this definition">#</a></dt>
 <dd><p>Async version of <cite>enrich_details</cite> that retrieves details for each item in the MGnifyList asynchronously.</p>
@@ -1541,28 +1677,17 @@ data is available.</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.biosamples_metadata">
-<span class="sig-name descname"><span class="pre">biosamples_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.biosamples_metadata" title="Link to this definition">#</a></dt>
-<dd><p>A pandas DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The DataFrame includes columns such as ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.biosamples">
+<span class="sig-name descname"><span class="pre">biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.biosamples" title="Link to this definition">#</a></dt>
+<dd><p>A DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The DataFrame includes columns such as ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>DataFrame</em></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>get_biosample_metadata_from_acc</cite> function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
-<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
-</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -1713,16 +1838,12 @@ allowing users to resume iteration after an interruption or to jump to a specifi
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.details_biosamples_metadata">
-<span class="sig-name descname"><span class="pre">details_biosamples_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.details_biosamples_metadata" title="Link to this definition">#</a></dt>
-<dd><p>A pandas DataFrame containing the concatenated BioSamples metadata for all samples in the list.
-Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.details_biosamples">
+<span class="sig-name descname"><span class="pre">details_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.details_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>A DataFrame containing the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A DataFrame containing the BioSamples metadata for all samples in the list.</p>
@@ -1733,7 +1854,7 @@ Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA acc
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>This property relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
 <li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
 </ul>
 </dd></dl>
@@ -1766,6 +1887,12 @@ available.</p>
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.details_downloads">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">details_downloads</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">list</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">dict</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">str</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">Any</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">None</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.details_downloads" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.details_ids">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">details_ids</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">list</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">str</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.details_ids" title="Link to this definition">#</a></dt>
+<dd><p>A list of detail identifiers (e.g. accessions) extracted from the details results.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.details_results">
@@ -1801,6 +1928,50 @@ This method can be called before get() to ensure that the parameters are valid a
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.endpoint_module">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">endpoint_module</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">Callable</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.endpoint_module" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.enrich_biosamples">
+<span class="sig-name descname"><span class="pre">enrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.enrich_biosamples" title="Link to this definition">#</a></dt>
+<dd><p>Fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>biosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>get_biosample_metadata_from_acc</cite> function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
+<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.enrich_biosamples_details">
+<span class="sig-name descname"><span class="pre">enrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.samples.Samples.enrich_biosamples_details" title="Link to this definition">#</a></dt>
+<dd><p>Fetch and cache the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples. The metadata is stored in the cache properties for later retrieval by the <cite>details_biosamplesdata</cite> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
+<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
+</ul>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.samples.Samples.enrich_details">
@@ -2438,11 +2609,13 @@ data is available.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail"><code class="docutils literal notranslate"><span class="pre">SampleDetail</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.RESOURCE"><code class="docutils literal notranslate"><span class="pre">SampleDetail.RESOURCE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.abulk_fetch"><code class="docutils literal notranslate"><span class="pre">SampleDetail.abulk_fetch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aenrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aenrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aget"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aget()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.aget_list"><code class="docutils literal notranslate"><span class="pre">SampleDetail.aget_list()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.apage"><code class="docutils literal notranslate"><span class="pre">SampleDetail.apage()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.base_url"><code class="docutils literal notranslate"><span class="pre">SampleDetail.base_url</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">SampleDetail.biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.bulk_fetch"><code class="docutils literal notranslate"><span class="pre">SampleDetail.bulk_fetch()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.cache_dir"><code class="docutils literal notranslate"><span class="pre">SampleDetail.cache_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.clear_cache"><code class="docutils literal notranslate"><span class="pre">SampleDetail.clear_cache()</span></code></a></li>
@@ -2452,11 +2625,13 @@ data is available.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.data"><code class="docutils literal notranslate"><span class="pre">SampleDetail.data</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">SampleDetail.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.describe_relationships"><code class="docutils literal notranslate"><span class="pre">SampleDetail.describe_relationships()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.details_biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">SampleDetail.details_biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.details_biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.details_biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.downloads"><code class="docutils literal notranslate"><span class="pre">SampleDetail.downloads</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.dry_run"><code class="docutils literal notranslate"><span class="pre">SampleDetail.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">SampleDetail.emgapi_handler</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.endpoint_module"><code class="docutils literal notranslate"><span class="pre">SampleDetail.endpoint_module</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">SampleDetail.enrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">SampleDetail.enrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.explain"><code class="docutils literal notranslate"><span class="pre">SampleDetail.explain()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.filter"><code class="docutils literal notranslate"><span class="pre">SampleDetail.filter()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.SampleDetail.first"><code class="docutils literal notranslate"><span class="pre">SampleDetail.first()</span></code></a></li>
@@ -2490,13 +2665,15 @@ data is available.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples"><code class="docutils literal notranslate"><span class="pre">Samples</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.RESOURCE"><code class="docutils literal notranslate"><span class="pre">Samples.RESOURCE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.abulk_fetch"><code class="docutils literal notranslate"><span class="pre">Samples.abulk_fetch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.aenrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">Samples.aenrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aenrich_details"><code class="docutils literal notranslate"><span class="pre">Samples.aenrich_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aget"><code class="docutils literal notranslate"><span class="pre">Samples.aget()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aget_detail"><code class="docutils literal notranslate"><span class="pre">Samples.aget_detail()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.aiter_details"><code class="docutils literal notranslate"><span class="pre">Samples.aiter_details</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.apage"><code class="docutils literal notranslate"><span class="pre">Samples.apage()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.base_url"><code class="docutils literal notranslate"><span class="pre">Samples.base_url</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">Samples.biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.bulk_fetch"><code class="docutils literal notranslate"><span class="pre">Samples.bulk_fetch()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.cache_dir"><code class="docutils literal notranslate"><span class="pre">Samples.cache_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.child_resource"><code class="docutils literal notranslate"><span class="pre">Samples.child_resource</span></code></a></li>
@@ -2509,13 +2686,16 @@ data is available.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.describe_endpoint"><code class="docutils literal notranslate"><span class="pre">Samples.describe_endpoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.describe_relationships"><code class="docutils literal notranslate"><span class="pre">Samples.describe_relationships()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details"><code class="docutils literal notranslate"><span class="pre">Samples.details</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_biosamples_metadata"><code class="docutils literal notranslate"><span class="pre">Samples.details_biosamples_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.details_biosamples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_df"><code class="docutils literal notranslate"><span class="pre">Samples.details_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_downloads"><code class="docutils literal notranslate"><span class="pre">Samples.details_downloads</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_ids"><code class="docutils literal notranslate"><span class="pre">Samples.details_ids</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.details_results"><code class="docutils literal notranslate"><span class="pre">Samples.details_results</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.dry_run"><code class="docutils literal notranslate"><span class="pre">Samples.dry_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.emgapi_handler"><code class="docutils literal notranslate"><span class="pre">Samples.emgapi_handler</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.endpoint_module"><code class="docutils literal notranslate"><span class="pre">Samples.endpoint_module</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">Samples.enrich_biosamples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">Samples.enrich_biosamples_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.enrich_details"><code class="docutils literal notranslate"><span class="pre">Samples.enrich_details()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.explain"><code class="docutils literal notranslate"><span class="pre">Samples.explain()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.proxies.samples.Samples.filter"><code class="docutils literal notranslate"><span class="pre">Samples.filter()</span></code></a></li>

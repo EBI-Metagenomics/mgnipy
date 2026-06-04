@@ -13,6 +13,7 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   mgnipy.emgapi_v2_client.api.genomes.genome_fragment_search
    mgnipy.emgapi_v2_client.api.genomes.get_genome_annotations
    mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue
    mgnipy.emgapi_v2_client.api.genomes.get_genome_catalogue_genomes
