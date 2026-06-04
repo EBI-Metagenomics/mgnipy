@@ -4,19 +4,14 @@ from urllib.parse import quote
 
 import httpx
 
+from ...client import AuthenticatedClient, Client
+from ...types import Response, UNSET
 from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
+
 from ...models.ninja_pagination_response_schema_m_gnify_analysis import (
     NinjaPaginationResponseSchemaMGnifyAnalysis,
 )
-from ...types import (
-    UNSET,
-    Response,
-    Unset,
-)
+from ...types import Unset
 
 
 def _get_kwargs(
@@ -87,7 +82,7 @@ def sync_detailed(
     """List MGnify Analyses associated with this Study
 
      MGnify analyses correspond to an individual Run or Assembly within this study,analysed by a MGnify
-    Pipelione.
+    Pipeline.
 
     Args:
         accession (str):
@@ -125,7 +120,7 @@ def sync(
     """List MGnify Analyses associated with this Study
 
      MGnify analyses correspond to an individual Run or Assembly within this study,analysed by a MGnify
-    Pipelione.
+    Pipeline.
 
     Args:
         accession (str):
@@ -158,7 +153,7 @@ async def asyncio_detailed(
     """List MGnify Analyses associated with this Study
 
      MGnify analyses correspond to an individual Run or Assembly within this study,analysed by a MGnify
-    Pipelione.
+    Pipeline.
 
     Args:
         accession (str):
@@ -194,7 +189,7 @@ async def asyncio(
     """List MGnify Analyses associated with this Study
 
      MGnify analyses correspond to an individual Run or Assembly within this study,analysed by a MGnify
-    Pipelione.
+    Pipeline.
 
     Args:
         accession (str):

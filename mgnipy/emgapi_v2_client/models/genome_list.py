@@ -1,21 +1,17 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, TYPE_CHECKING
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
 from ..models.genome_type import GenomeType
-from ..types import (
-    UNSET,
-    Unset,
-)
+from dateutil.parser import isoparse
+from typing import cast
+import datetime
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -31,7 +27,9 @@ class GenomeList:
         accession (str):
         ena_genome_accession (None | str):
         ena_sample_accession (None | str):
+        ena_study_accession (None | str):
         ncbi_genome_accession (None | str):
+        ncbi_study_accession (None | str):
         img_genome_accession (None | str):
         patric_genome_accession (None | str):
         length (int):
@@ -42,7 +40,10 @@ class GenomeList:
         completeness (float):
         contamination (float):
         catalogue_id (str):
+        taxon_lineage (str):
+        updated_at (datetime.datetime):
         geographic_origin (None | str):
+        num_genomes_total (int | Unset):
         geographic_range (list[str] | None | Unset):
         biome (Biome | None | Unset):
     """
@@ -50,7 +51,9 @@ class GenomeList:
     accession: str
     ena_genome_accession: None | str
     ena_sample_accession: None | str
+    ena_study_accession: None | str
     ncbi_genome_accession: None | str
+    ncbi_study_accession: None | str
     img_genome_accession: None | str
     patric_genome_accession: None | str
     length: int
@@ -61,7 +64,10 @@ class GenomeList:
     completeness: float
     contamination: float
     catalogue_id: str
+    taxon_lineage: str
+    updated_at: datetime.datetime
     geographic_origin: None | str
+    num_genomes_total: int | Unset = UNSET
     geographic_range: list[str] | None | Unset = UNSET
     biome: Biome | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -77,8 +83,14 @@ class GenomeList:
         ena_sample_accession: None | str
         ena_sample_accession = self.ena_sample_accession
 
+        ena_study_accession: None | str
+        ena_study_accession = self.ena_study_accession
+
         ncbi_genome_accession: None | str
         ncbi_genome_accession = self.ncbi_genome_accession
+
+        ncbi_study_accession: None | str
+        ncbi_study_accession = self.ncbi_study_accession
 
         img_genome_accession: None | str
         img_genome_accession = self.img_genome_accession
@@ -102,8 +114,14 @@ class GenomeList:
 
         catalogue_id = self.catalogue_id
 
+        taxon_lineage = self.taxon_lineage
+
+        updated_at = self.updated_at.isoformat()
+
         geographic_origin: None | str
         geographic_origin = self.geographic_origin
+
+        num_genomes_total = self.num_genomes_total
 
         geographic_range: list[str] | None | Unset
         if isinstance(self.geographic_range, Unset):
@@ -129,7 +147,9 @@ class GenomeList:
                 "accession": accession,
                 "ena_genome_accession": ena_genome_accession,
                 "ena_sample_accession": ena_sample_accession,
+                "ena_study_accession": ena_study_accession,
                 "ncbi_genome_accession": ncbi_genome_accession,
+                "ncbi_study_accession": ncbi_study_accession,
                 "img_genome_accession": img_genome_accession,
                 "patric_genome_accession": patric_genome_accession,
                 "length": length,
@@ -140,9 +160,13 @@ class GenomeList:
                 "completeness": completeness,
                 "contamination": contamination,
                 "catalogue_id": catalogue_id,
+                "taxon_lineage": taxon_lineage,
+                "updated_at": updated_at,
                 "geographic_origin": geographic_origin,
             }
         )
+        if num_genomes_total is not UNSET:
+            field_dict["num_genomes_total"] = num_genomes_total
         if geographic_range is not UNSET:
             field_dict["geographic_range"] = geographic_range
         if biome is not UNSET:
@@ -175,6 +199,13 @@ class GenomeList:
             d.pop("ena_sample_accession")
         )
 
+        def _parse_ena_study_accession(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        ena_study_accession = _parse_ena_study_accession(d.pop("ena_study_accession"))
+
         def _parse_ncbi_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
@@ -182,6 +213,15 @@ class GenomeList:
 
         ncbi_genome_accession = _parse_ncbi_genome_accession(
             d.pop("ncbi_genome_accession")
+        )
+
+        def _parse_ncbi_study_accession(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        ncbi_study_accession = _parse_ncbi_study_accession(
+            d.pop("ncbi_study_accession")
         )
 
         def _parse_img_genome_accession(data: object) -> None | str:
@@ -218,12 +258,18 @@ class GenomeList:
 
         catalogue_id = d.pop("catalogue_id")
 
+        taxon_lineage = d.pop("taxon_lineage")
+
+        updated_at = isoparse(d.pop("updated_at"))
+
         def _parse_geographic_origin(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
         geographic_origin = _parse_geographic_origin(d.pop("geographic_origin"))
+
+        num_genomes_total = d.pop("num_genomes_total", UNSET)
 
         def _parse_geographic_range(data: object) -> list[str] | None | Unset:
             if data is None:
@@ -263,7 +309,9 @@ class GenomeList:
             accession=accession,
             ena_genome_accession=ena_genome_accession,
             ena_sample_accession=ena_sample_accession,
+            ena_study_accession=ena_study_accession,
             ncbi_genome_accession=ncbi_genome_accession,
+            ncbi_study_accession=ncbi_study_accession,
             img_genome_accession=img_genome_accession,
             patric_genome_accession=patric_genome_accession,
             length=length,
@@ -274,7 +322,10 @@ class GenomeList:
             completeness=completeness,
             contamination=contamination,
             catalogue_id=catalogue_id,
+            taxon_lineage=taxon_lineage,
+            updated_at=updated_at,
             geographic_origin=geographic_origin,
+            num_genomes_total=num_genomes_total,
             geographic_range=geographic_range,
             biome=biome,
         )

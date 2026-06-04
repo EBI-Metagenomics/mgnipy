@@ -4,29 +4,53 @@ from urllib.parse import quote
 
 import httpx
 
+from ...client import AuthenticatedClient, Client
+from ...types import Response, UNSET
 from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
+
+from ...models.get_genome_catalogue_genomes_order_type_0 import (
+    GetGenomeCatalogueGenomesOrderType0,
 )
 from ...models.ninja_pagination_response_schema_genome_list import (
     NinjaPaginationResponseSchemaGenomeList,
 )
-from ...types import (
-    UNSET,
-    Response,
-    Unset,
-)
+from ...types import Unset
 
 
 def _get_kwargs(
     catalogue_id: str,
     *,
+    order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
+    biome_lineage: None | str | Unset = UNSET,
+    search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
+
+    json_order: None | str | Unset
+    if isinstance(order, Unset):
+        json_order = UNSET
+    elif isinstance(order, GetGenomeCatalogueGenomesOrderType0):
+        json_order = order.value
+    else:
+        json_order = order
+    params["order"] = json_order
+
+    json_biome_lineage: None | str | Unset
+    if isinstance(biome_lineage, Unset):
+        json_biome_lineage = UNSET
+    else:
+        json_biome_lineage = biome_lineage
+    params["biome_lineage"] = json_biome_lineage
+
+    json_search: None | str | Unset
+    if isinstance(search, Unset):
+        json_search = UNSET
+    else:
+        json_search = search
+    params["search"] = json_search
 
     params["page"] = page
 
@@ -81,6 +105,9 @@ def sync_detailed(
     catalogue_id: str,
     *,
     client: AuthenticatedClient | Client,
+    order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
+    biome_lineage: None | str | Unset = UNSET,
+    search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> Response[NinjaPaginationResponseSchemaGenomeList]:
@@ -88,6 +115,9 @@ def sync_detailed(
 
     Args:
         catalogue_id (str):
+        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):
+        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes
+        search (None | str | Unset): Search with genome taxonomies and accessions
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -101,6 +131,9 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         catalogue_id=catalogue_id,
+        order=order,
+        biome_lineage=biome_lineage,
+        search=search,
         page=page,
         page_size=page_size,
     )
@@ -116,6 +149,9 @@ def sync(
     catalogue_id: str,
     *,
     client: AuthenticatedClient | Client,
+    order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
+    biome_lineage: None | str | Unset = UNSET,
+    search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> NinjaPaginationResponseSchemaGenomeList | None:
@@ -123,6 +159,9 @@ def sync(
 
     Args:
         catalogue_id (str):
+        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):
+        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes
+        search (None | str | Unset): Search with genome taxonomies and accessions
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -137,6 +176,9 @@ def sync(
     return sync_detailed(
         catalogue_id=catalogue_id,
         client=client,
+        order=order,
+        biome_lineage=biome_lineage,
+        search=search,
         page=page,
         page_size=page_size,
     ).parsed
@@ -146,6 +188,9 @@ async def asyncio_detailed(
     catalogue_id: str,
     *,
     client: AuthenticatedClient | Client,
+    order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
+    biome_lineage: None | str | Unset = UNSET,
+    search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> Response[NinjaPaginationResponseSchemaGenomeList]:
@@ -153,6 +198,9 @@ async def asyncio_detailed(
 
     Args:
         catalogue_id (str):
+        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):
+        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes
+        search (None | str | Unset): Search with genome taxonomies and accessions
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -166,6 +214,9 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         catalogue_id=catalogue_id,
+        order=order,
+        biome_lineage=biome_lineage,
+        search=search,
         page=page,
         page_size=page_size,
     )
@@ -179,6 +230,9 @@ async def asyncio(
     catalogue_id: str,
     *,
     client: AuthenticatedClient | Client,
+    order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
+    biome_lineage: None | str | Unset = UNSET,
+    search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> NinjaPaginationResponseSchemaGenomeList | None:
@@ -186,6 +240,9 @@ async def asyncio(
 
     Args:
         catalogue_id (str):
+        order (GetGenomeCatalogueGenomesOrderType0 | None | Unset):
+        biome_lineage (None | str | Unset): The lineage to match, including all descendant biomes
+        search (None | str | Unset): Search with genome taxonomies and accessions
         page (int | Unset):  Default: 1.
         page_size (int | None | Unset):
 
@@ -201,6 +258,9 @@ async def asyncio(
         await asyncio_detailed(
             catalogue_id=catalogue_id,
             client=client,
+            order=order,
+            biome_lineage=biome_lineage,
+            search=search,
             page=page,
             page_size=page_size,
         )

@@ -35,11 +35,13 @@ from mgnipy.emgapi_v2_client.api.runs import (
     get_analysed_run,
     list_analysed_runs,
     list_runs_analyses,
+    list_runs_assemblies,
 )
 from mgnipy.emgapi_v2_client.api.samples import (
     get_mgnify_sample,
     list_mgnify_samples,
     list_sample_runs,
+    list_sample_assemblies,
 )
 from mgnipy.emgapi_v2_client.api.studies import (
     get_mgnify_study,
@@ -118,9 +120,15 @@ BETWEEN_RESOURCE_RELATIONSHIPS: dict[
         SupportedEndpoints.PUBLICATIONS: list_mgnify_study_publications,
     },
     # for a sample detail, can list all runs associated with that sample
-    SupportedEndpoints.SAMPLE: {SupportedEndpoints.RUNS: list_sample_runs},
+    SupportedEndpoints.SAMPLE: {
+        SupportedEndpoints.RUNS: list_sample_runs,
+        SupportedEndpoints.ASSEMBLIES: list_sample_assemblies,
+    },
     # for a run detail, can list all analyses associated with that run
-    SupportedEndpoints.RUN: {SupportedEndpoints.ANALYSES: list_runs_analyses},
+    SupportedEndpoints.RUN: {
+        SupportedEndpoints.ANALYSES: list_runs_analyses,
+        SupportedEndpoints.ASSEMBLIES: list_runs_assemblies,
+    },
     # for an assembly detail,
     SupportedEndpoints.ASSEMBLY: {
         # there is an endpoint to list all analyses associated with that assembly

@@ -4,13 +4,11 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
-from ...models.genome_catalogue_detail import GenomeCatalogueDetail
+from ...client import AuthenticatedClient, Client
 from ...types import Response
+from ... import errors
+
+from ...models.genome_catalogue_detail import GenomeCatalogueDetail
 
 
 def _get_kwargs(

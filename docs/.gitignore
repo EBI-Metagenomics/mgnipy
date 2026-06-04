@@ -3,3 +3,4 @@ reference
 jupyter_execute
 *cache
 *downloads
+*.csv

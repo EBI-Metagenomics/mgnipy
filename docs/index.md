@@ -22,10 +22,11 @@ notebooks/fundamentals/*
 
 
 ```{toctree}
-:caption: "Tutorials"
+:caption: "Demos"
+:glob:
 :hidden:
+notebooks/demos/*
 <!-- tutorials/demos/get_all_analyses_for_study -->
-<!-- tutorials/demo/pd-gut-microbiome -->
 <!-- tutorials/demo/MOFAR -->
 <!-- tutorials/demo/SpeSpeNet -->
 ```

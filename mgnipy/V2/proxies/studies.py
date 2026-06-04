@@ -20,9 +20,8 @@ class Studies(MGnifyList):
 
         super().__init__(params=params, config=config, **kwargs)
 
-    @property
-    def downloads_df(self) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads)
+    def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
+        return pd.DataFrame(self.details_downloads, **pd_kwargs)
 
     @property
     def datasets(self):
@@ -30,6 +29,7 @@ class Studies(MGnifyList):
         return MGazine(
             downloads=self.details_downloads,
             config=self.config,
+            studies_details=self.details_results,
         )
 
 
@@ -57,6 +57,7 @@ class StudyDetail(MGnifyDetail):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
+            studies_details=self._results.get(1, None),
         )
 
 
@@ -74,9 +75,8 @@ class PrivateStudies(MGnifyList):
 
         super().__init__(params=params, config=config, **kwargs)
 
-    @property
-    def downloads_df(self) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads)
+    def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
+        return pd.DataFrame(self.details_downloads, **pd_kwargs)
 
     @property
     def datasets(self):
@@ -84,4 +84,5 @@ class PrivateStudies(MGnifyList):
         return MGazine(
             downloads=self.details_downloads,
             config=self.config,
+            studies_details=self.details_results,
         )

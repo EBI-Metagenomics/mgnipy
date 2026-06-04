@@ -1,30 +1,27 @@
 from __future__ import annotations
 
-import datetime
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, TYPE_CHECKING
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
+
+from ..types import UNSET, Unset
 
 from ..models.genome_catalogue_list_catalogue_type import (
     GenomeCatalogueListCatalogueType,
 )
-from ..types import (
-    UNSET,
-    Unset,
-)
+from dateutil.parser import isoparse
+from typing import cast
+import datetime
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
     from ..models.genome_catalogue_list_other_stats_type_0 import (
         GenomeCatalogueListOtherStatsType0,
+    )
+    from ..models.m_gnify_genome_catalogue_download_file import (
+        MGnifyGenomeCatalogueDownloadFile,
     )
 
 
@@ -49,6 +46,7 @@ class GenomeCatalogueList:
         catalogue_biome_label (str):
         catalogue_type (GenomeCatalogueListCatalogueType):
         other_stats (GenomeCatalogueListOtherStatsType0 | None):
+        downloads (list[MGnifyGenomeCatalogueDownloadFile]):
         protein_catalogue_name (None | str | Unset):
         genome_count (int | None | Unset):
         biome (Biome | None | Unset):
@@ -67,16 +65,17 @@ class GenomeCatalogueList:
     catalogue_biome_label: str
     catalogue_type: GenomeCatalogueListCatalogueType
     other_stats: GenomeCatalogueListOtherStatsType0 | None
+    downloads: list[MGnifyGenomeCatalogueDownloadFile]
     protein_catalogue_name: None | str | Unset = UNSET
     genome_count: int | None | Unset = UNSET
     biome: Biome | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.biome import Biome
         from ..models.genome_catalogue_list_other_stats_type_0 import (
             GenomeCatalogueListOtherStatsType0,
         )
+        from ..models.biome import Biome
 
         catalogue_id = self.catalogue_id
 
@@ -111,6 +110,11 @@ class GenomeCatalogueList:
             other_stats = self.other_stats.to_dict()
         else:
             other_stats = self.other_stats
+
+        downloads = []
+        for downloads_item_data in self.downloads:
+            downloads_item = downloads_item_data.to_dict()
+            downloads.append(downloads_item)
 
         protein_catalogue_name: None | str | Unset
         if isinstance(self.protein_catalogue_name, Unset):
@@ -149,6 +153,7 @@ class GenomeCatalogueList:
                 "catalogue_biome_label": catalogue_biome_label,
                 "catalogue_type": catalogue_type,
                 "other_stats": other_stats,
+                "downloads": downloads,
             }
         )
         if protein_catalogue_name is not UNSET:
@@ -165,6 +170,9 @@ class GenomeCatalogueList:
         from ..models.biome import Biome
         from ..models.genome_catalogue_list_other_stats_type_0 import (
             GenomeCatalogueListOtherStatsType0,
+        )
+        from ..models.m_gnify_genome_catalogue_download_file import (
+            MGnifyGenomeCatalogueDownloadFile,
         )
 
         d = dict(src_dict)
@@ -233,6 +241,15 @@ class GenomeCatalogueList:
 
         other_stats = _parse_other_stats(d.pop("other_stats"))
 
+        downloads = []
+        _downloads = d.pop("downloads")
+        for downloads_item_data in _downloads:
+            downloads_item = MGnifyGenomeCatalogueDownloadFile.from_dict(
+                downloads_item_data
+            )
+
+            downloads.append(downloads_item)
+
         def _parse_protein_catalogue_name(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -284,6 +301,7 @@ class GenomeCatalogueList:
             catalogue_biome_label=catalogue_biome_label,
             catalogue_type=catalogue_type,
             other_stats=other_stats,
+            downloads=downloads,
             protein_catalogue_name=protein_catalogue_name,
             genome_count=genome_count,
             biome=biome,

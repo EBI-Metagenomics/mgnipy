@@ -18,7 +18,6 @@ from typing import (
 import pandas as pd
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
-
 from mgnipy._models.constants.CONSTANTS import (
     PipelineVersions,
     SupportedEndpoints,
@@ -365,7 +364,9 @@ class MGnifyList(MGnifier):
         """
 
         # get the child detail class e.g. SampleDetail for "samples" list resource
-        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)()
+        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)(
+            config=self.config
+        )
         if not detail_cls:
             raise ValueError(
                 f"Unsupported child resource for detail: {self.child_resource}"
@@ -409,7 +410,9 @@ class MGnifyList(MGnifier):
         -------
         sample = await samples._asingle_detail({"accession": "MGYS00001234"})
         """
-        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)()
+        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)(
+            config=self.config
+        )
         logger.debug(
             f"Got detail class {detail_cls} for child resource {self.child_resource!r}"
         )
@@ -470,6 +473,18 @@ class MGnifyList(MGnifier):
         return self._details_handler.to_df(*args, **kwargs)
 
     @property
+    def details_ids(self) -> list[str]:
+        """A list of detail identifiers (e.g. accessions) extracted from the details results."""
+        ids = list(self._collected_details.keys())
+
+        if len(ids) == 0:
+            logger.warning(
+                "Did you run `enrich_details`? No details collected yet; details_ids is empty."
+            )
+
+        return ids
+
+    @property
     def details_downloads(self) -> list[dict[str, Any]] | None:
         return [
             item
@@ -522,7 +537,9 @@ class MGnifyList(MGnifier):
             This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
         """
 
-        logger.debug(f"Starting enrichment of details with limit {limit}.")
+        logger.debug(
+            f"Starting enrichment of {self.child_resource} details with limit {limit}."
+        )
 
         if self.results_ids is None:
             logger.warning("No results_ids found to enrich details.")
@@ -537,7 +554,7 @@ class MGnifyList(MGnifier):
                 details_todo,
                 total=len(self.results_ids),
                 initial=len(self._collected_details_results),
-                desc="Enriching details",
+                desc=f"Enriching {self.child_resource} details",
                 disable=hide_progress,
             )
         ):
@@ -563,23 +580,32 @@ class MGnifyList(MGnifier):
         None
             This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
         """
-        logger.debug(f"Starting async enrichment of details with limit {limit}.")
+        logger.debug(
+            f"Starting async enrichment of {self.child_resource} details with limit {limit}."
+        )
 
         details_todo: list[str] = [
             x for x in self.results_ids if x not in self._collected_details_results
         ][:limit]
 
-        for count, detail_id in enumerate(
-            tqdm_asyncio(
-                details_todo,
-                total=len(self.results_ids),
-                initial=len(self._collected_details_results),
-                desc="Enriching details",
-                disable=hide_progress,
-            )
+        logging.debug(
+            f"Number of details to enrich: {len(details_todo)}. First: {details_todo[0]}"
+        )
+
+        logging.debug(
+            f"Enriching details for {len(details_todo)} items asynchronously."
+        )
+
+        tasks = [self._asingle_detail(identifier) for identifier in details_todo]
+
+        for done in tqdm_asyncio.as_completed(
+            tasks,
+            total=len(self.results_ids),
+            initial=len(self._collected_details_results),
+            desc=f"Enriching {self.child_resource} details",
+            disable=hide_progress,
         ):
-            logger.info(f"Enriching detail {detail_id}. Count: {count}")
-            await self._asingle_detail(detail_id)
+            await done
 
 
 class MGnifyDetail(MGnifier):
@@ -717,23 +743,23 @@ class MGnifyDetail(MGnifier):
 
             # get pipeline_version from row if avail, i.e., analysisdetail
             if "pipeline_version" in row and isinstance(row["pipeline_version"], str):
-                pipe = row["pipeline_version"].lower().strip("v")
+                a_pipe = row["pipeline_version"].lower().strip("v")
             else:
-                pipe = None
+                a_pipe = None
 
             # for each downlaod dict, add id and pipeline_version
             for each_download in downloads_list:
                 # keep id
                 each_download.update({self.id_param_key: self.identifier})
 
-                # now pipe
-                if pipe is None:
-                    v_group = re.search(
-                        r"\.v(\d+(?:\.\d+)?)",
-                        each_download.get("download_group", ""),
-                        re.IGNORECASE,
-                    ).group(1)
-                    pipe = v_group
+                # now pipe from download_group?
+                v_group = re.search(
+                    r"\.v(\d+(?:\.\d+)?)",
+                    each_download.get("download_group", ""),
+                    re.IGNORECASE,
+                ).group(1)
+
+                pipe = v_group or a_pipe
 
                 if pipe is not None:
                     try:
@@ -861,21 +887,27 @@ class MGnifyDetail(MGnifier):
         samples = await study.aget_list("samples", fetch=False)
         """
 
-        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))
-        logger.debug(f"Getting proxy class {proxy_cls} for resource {resource!r}")
-        if not proxy_cls:
-            raise ValueError(f"Unsupported resource: {resource}")
-
-        custom_id_param_key = proxy_cls.id_param_key
-        id_param = self._resolve_id_param(
-            self.identifier, param_name=custom_id_param_key
+        logger.debug(
+            f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
+        proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
+            config=self.config
+        )
+        logger.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
+
+        logger.debug(
+            f"Resolving id param for identifier {self.identifier!r} with id_param_key {self.id_param_key!r}"
+        )
+        id_param = self._resolve_id_param(self.identifier)
         logger.debug(f"Resolved access param for list proxy: {id_param}")
-        list_endpoint = proxy_cls(config=self.config, **id_param)
-        list_endpoint.endpoint_module = self._next_rel_module(resource)
+
+        # init list endpoint
+        list_endpoint = proxy_cls.filter(**id_param)
         logger.debug(
             f"Set endpoint module for list proxy: {list_endpoint.endpoint_module} with params {list_endpoint.params!r}"
         )
+        list_endpoint.endpoint_module = self._next_rel_module(resource)
+
         if explain:
             list_endpoint.explain()
         if fetch:

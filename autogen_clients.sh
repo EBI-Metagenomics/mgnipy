@@ -66,7 +66,7 @@ openapi-python-client generate \
 ### uncomment below to move the generated modules into mgnipy based on config
 ### WARNING: this will overwrite any existing files in the destination directories, so use with caution and make sure to have backups or version control
 mkdir -p "$DEST_V2_DIR"
-mv "$FOLDER_PATH/$PROJECT_NAME_TWO/$PACKAGE_DIR_TWO" "$DEST_V2_DIR/$PACKAGE_DIR_TWO"
+mv "$FOLDER_PATH/$PROJECT_NAME_TWO/$PACKAGE_DIR_TWO" "$DEST_V2_DIR"
 
 ##------------------FOR API V1------------------##
 # config

@@ -1,21 +1,17 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeVar,
-    cast,
-)
+from typing import Any, TypeVar, TYPE_CHECKING
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
 from ..models.genome_type import GenomeType
-from ..types import (
-    UNSET,
-    Unset,
-)
+from dateutil.parser import isoparse
+from typing import cast
+import datetime
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -33,7 +29,9 @@ class GenomeDetail:
         accession (str):
         ena_genome_accession (None | str):
         ena_sample_accession (None | str):
+        ena_study_accession (None | str):
         ncbi_genome_accession (None | str):
+        ncbi_study_accession (None | str):
         img_genome_accession (None | str):
         patric_genome_accession (None | str):
         length (int):
@@ -44,17 +42,33 @@ class GenomeDetail:
         completeness (float):
         contamination (float):
         catalogue_id (str):
+        taxon_lineage (str):
+        updated_at (datetime.datetime):
         geographic_origin (None | str):
         downloads (list[MGnifyGenomeDownloadFile]):
+        num_genomes_total (int | None | Unset):
         geographic_range (list[str] | None | Unset):
         biome (Biome | None | Unset):
+        rna_5s (float | None | Unset):
+        rna_5_8s (float | None | Unset):
+        rna_16s (float | None | Unset):
+        rna_18s (float | None | Unset):
+        rna_23s (float | None | Unset):
+        rna_28s (float | None | Unset):
+        trnas (float | None | Unset):
+        nc_rnas (float | None | Unset):
+        eggnog_coverage (float | None | Unset):
+        ipr_coverage (float | None | Unset):
+        num_proteins (int | None | Unset):
         catalogue (GenomeCatalogueBase | None | Unset):
     """
 
     accession: str
     ena_genome_accession: None | str
     ena_sample_accession: None | str
+    ena_study_accession: None | str
     ncbi_genome_accession: None | str
+    ncbi_study_accession: None | str
     img_genome_accession: None | str
     patric_genome_accession: None | str
     length: int
@@ -65,10 +79,24 @@ class GenomeDetail:
     completeness: float
     contamination: float
     catalogue_id: str
+    taxon_lineage: str
+    updated_at: datetime.datetime
     geographic_origin: None | str
     downloads: list[MGnifyGenomeDownloadFile]
+    num_genomes_total: int | None | Unset = UNSET
     geographic_range: list[str] | None | Unset = UNSET
     biome: Biome | None | Unset = UNSET
+    rna_5s: float | None | Unset = UNSET
+    rna_5_8s: float | None | Unset = UNSET
+    rna_16s: float | None | Unset = UNSET
+    rna_18s: float | None | Unset = UNSET
+    rna_23s: float | None | Unset = UNSET
+    rna_28s: float | None | Unset = UNSET
+    trnas: float | None | Unset = UNSET
+    nc_rnas: float | None | Unset = UNSET
+    eggnog_coverage: float | None | Unset = UNSET
+    ipr_coverage: float | None | Unset = UNSET
+    num_proteins: int | None | Unset = UNSET
     catalogue: GenomeCatalogueBase | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -84,8 +112,14 @@ class GenomeDetail:
         ena_sample_accession: None | str
         ena_sample_accession = self.ena_sample_accession
 
+        ena_study_accession: None | str
+        ena_study_accession = self.ena_study_accession
+
         ncbi_genome_accession: None | str
         ncbi_genome_accession = self.ncbi_genome_accession
+
+        ncbi_study_accession: None | str
+        ncbi_study_accession = self.ncbi_study_accession
 
         img_genome_accession: None | str
         img_genome_accession = self.img_genome_accession
@@ -109,6 +143,10 @@ class GenomeDetail:
 
         catalogue_id = self.catalogue_id
 
+        taxon_lineage = self.taxon_lineage
+
+        updated_at = self.updated_at.isoformat()
+
         geographic_origin: None | str
         geographic_origin = self.geographic_origin
 
@@ -116,6 +154,12 @@ class GenomeDetail:
         for downloads_item_data in self.downloads:
             downloads_item = downloads_item_data.to_dict()
             downloads.append(downloads_item)
+
+        num_genomes_total: int | None | Unset
+        if isinstance(self.num_genomes_total, Unset):
+            num_genomes_total = UNSET
+        else:
+            num_genomes_total = self.num_genomes_total
 
         geographic_range: list[str] | None | Unset
         if isinstance(self.geographic_range, Unset):
@@ -134,6 +178,72 @@ class GenomeDetail:
         else:
             biome = self.biome
 
+        rna_5s: float | None | Unset
+        if isinstance(self.rna_5s, Unset):
+            rna_5s = UNSET
+        else:
+            rna_5s = self.rna_5s
+
+        rna_5_8s: float | None | Unset
+        if isinstance(self.rna_5_8s, Unset):
+            rna_5_8s = UNSET
+        else:
+            rna_5_8s = self.rna_5_8s
+
+        rna_16s: float | None | Unset
+        if isinstance(self.rna_16s, Unset):
+            rna_16s = UNSET
+        else:
+            rna_16s = self.rna_16s
+
+        rna_18s: float | None | Unset
+        if isinstance(self.rna_18s, Unset):
+            rna_18s = UNSET
+        else:
+            rna_18s = self.rna_18s
+
+        rna_23s: float | None | Unset
+        if isinstance(self.rna_23s, Unset):
+            rna_23s = UNSET
+        else:
+            rna_23s = self.rna_23s
+
+        rna_28s: float | None | Unset
+        if isinstance(self.rna_28s, Unset):
+            rna_28s = UNSET
+        else:
+            rna_28s = self.rna_28s
+
+        trnas: float | None | Unset
+        if isinstance(self.trnas, Unset):
+            trnas = UNSET
+        else:
+            trnas = self.trnas
+
+        nc_rnas: float | None | Unset
+        if isinstance(self.nc_rnas, Unset):
+            nc_rnas = UNSET
+        else:
+            nc_rnas = self.nc_rnas
+
+        eggnog_coverage: float | None | Unset
+        if isinstance(self.eggnog_coverage, Unset):
+            eggnog_coverage = UNSET
+        else:
+            eggnog_coverage = self.eggnog_coverage
+
+        ipr_coverage: float | None | Unset
+        if isinstance(self.ipr_coverage, Unset):
+            ipr_coverage = UNSET
+        else:
+            ipr_coverage = self.ipr_coverage
+
+        num_proteins: int | None | Unset
+        if isinstance(self.num_proteins, Unset):
+            num_proteins = UNSET
+        else:
+            num_proteins = self.num_proteins
+
         catalogue: dict[str, Any] | None | Unset
         if isinstance(self.catalogue, Unset):
             catalogue = UNSET
@@ -149,7 +259,9 @@ class GenomeDetail:
                 "accession": accession,
                 "ena_genome_accession": ena_genome_accession,
                 "ena_sample_accession": ena_sample_accession,
+                "ena_study_accession": ena_study_accession,
                 "ncbi_genome_accession": ncbi_genome_accession,
+                "ncbi_study_accession": ncbi_study_accession,
                 "img_genome_accession": img_genome_accession,
                 "patric_genome_accession": patric_genome_accession,
                 "length": length,
@@ -160,14 +272,40 @@ class GenomeDetail:
                 "completeness": completeness,
                 "contamination": contamination,
                 "catalogue_id": catalogue_id,
+                "taxon_lineage": taxon_lineage,
+                "updated_at": updated_at,
                 "geographic_origin": geographic_origin,
                 "downloads": downloads,
             }
         )
+        if num_genomes_total is not UNSET:
+            field_dict["num_genomes_total"] = num_genomes_total
         if geographic_range is not UNSET:
             field_dict["geographic_range"] = geographic_range
         if biome is not UNSET:
             field_dict["biome"] = biome
+        if rna_5s is not UNSET:
+            field_dict["rna_5s"] = rna_5s
+        if rna_5_8s is not UNSET:
+            field_dict["rna_5_8s"] = rna_5_8s
+        if rna_16s is not UNSET:
+            field_dict["rna_16s"] = rna_16s
+        if rna_18s is not UNSET:
+            field_dict["rna_18s"] = rna_18s
+        if rna_23s is not UNSET:
+            field_dict["rna_23s"] = rna_23s
+        if rna_28s is not UNSET:
+            field_dict["rna_28s"] = rna_28s
+        if trnas is not UNSET:
+            field_dict["trnas"] = trnas
+        if nc_rnas is not UNSET:
+            field_dict["nc_rnas"] = nc_rnas
+        if eggnog_coverage is not UNSET:
+            field_dict["eggnog_coverage"] = eggnog_coverage
+        if ipr_coverage is not UNSET:
+            field_dict["ipr_coverage"] = ipr_coverage
+        if num_proteins is not UNSET:
+            field_dict["num_proteins"] = num_proteins
         if catalogue is not UNSET:
             field_dict["catalogue"] = catalogue
 
@@ -200,6 +338,13 @@ class GenomeDetail:
             d.pop("ena_sample_accession")
         )
 
+        def _parse_ena_study_accession(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        ena_study_accession = _parse_ena_study_accession(d.pop("ena_study_accession"))
+
         def _parse_ncbi_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
@@ -207,6 +352,15 @@ class GenomeDetail:
 
         ncbi_genome_accession = _parse_ncbi_genome_accession(
             d.pop("ncbi_genome_accession")
+        )
+
+        def _parse_ncbi_study_accession(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        ncbi_study_accession = _parse_ncbi_study_accession(
+            d.pop("ncbi_study_accession")
         )
 
         def _parse_img_genome_accession(data: object) -> None | str:
@@ -243,6 +397,10 @@ class GenomeDetail:
 
         catalogue_id = d.pop("catalogue_id")
 
+        taxon_lineage = d.pop("taxon_lineage")
+
+        updated_at = isoparse(d.pop("updated_at"))
+
         def _parse_geographic_origin(data: object) -> None | str:
             if data is None:
                 return data
@@ -256,6 +414,15 @@ class GenomeDetail:
             downloads_item = MGnifyGenomeDownloadFile.from_dict(downloads_item_data)
 
             downloads.append(downloads_item)
+
+        def _parse_num_genomes_total(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        num_genomes_total = _parse_num_genomes_total(d.pop("num_genomes_total", UNSET))
 
         def _parse_geographic_range(data: object) -> list[str] | None | Unset:
             if data is None:
@@ -291,6 +458,105 @@ class GenomeDetail:
 
         biome = _parse_biome(d.pop("biome", UNSET))
 
+        def _parse_rna_5s(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        rna_5s = _parse_rna_5s(d.pop("rna_5s", UNSET))
+
+        def _parse_rna_5_8s(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        rna_5_8s = _parse_rna_5_8s(d.pop("rna_5_8s", UNSET))
+
+        def _parse_rna_16s(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        rna_16s = _parse_rna_16s(d.pop("rna_16s", UNSET))
+
+        def _parse_rna_18s(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        rna_18s = _parse_rna_18s(d.pop("rna_18s", UNSET))
+
+        def _parse_rna_23s(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        rna_23s = _parse_rna_23s(d.pop("rna_23s", UNSET))
+
+        def _parse_rna_28s(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        rna_28s = _parse_rna_28s(d.pop("rna_28s", UNSET))
+
+        def _parse_trnas(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        trnas = _parse_trnas(d.pop("trnas", UNSET))
+
+        def _parse_nc_rnas(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        nc_rnas = _parse_nc_rnas(d.pop("nc_rnas", UNSET))
+
+        def _parse_eggnog_coverage(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        eggnog_coverage = _parse_eggnog_coverage(d.pop("eggnog_coverage", UNSET))
+
+        def _parse_ipr_coverage(data: object) -> float | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(float | None | Unset, data)
+
+        ipr_coverage = _parse_ipr_coverage(d.pop("ipr_coverage", UNSET))
+
+        def _parse_num_proteins(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        num_proteins = _parse_num_proteins(d.pop("num_proteins", UNSET))
+
         def _parse_catalogue(data: object) -> GenomeCatalogueBase | None | Unset:
             if data is None:
                 return data
@@ -312,7 +578,9 @@ class GenomeDetail:
             accession=accession,
             ena_genome_accession=ena_genome_accession,
             ena_sample_accession=ena_sample_accession,
+            ena_study_accession=ena_study_accession,
             ncbi_genome_accession=ncbi_genome_accession,
+            ncbi_study_accession=ncbi_study_accession,
             img_genome_accession=img_genome_accession,
             patric_genome_accession=patric_genome_accession,
             length=length,
@@ -323,10 +591,24 @@ class GenomeDetail:
             completeness=completeness,
             contamination=contamination,
             catalogue_id=catalogue_id,
+            taxon_lineage=taxon_lineage,
+            updated_at=updated_at,
             geographic_origin=geographic_origin,
             downloads=downloads,
+            num_genomes_total=num_genomes_total,
             geographic_range=geographic_range,
             biome=biome,
+            rna_5s=rna_5s,
+            rna_5_8s=rna_5_8s,
+            rna_16s=rna_16s,
+            rna_18s=rna_18s,
+            rna_23s=rna_23s,
+            rna_28s=rna_28s,
+            trnas=trnas,
+            nc_rnas=nc_rnas,
+            eggnog_coverage=eggnog_coverage,
+            ipr_coverage=ipr_coverage,
+            num_proteins=num_proteins,
             catalogue=catalogue,
         )
 

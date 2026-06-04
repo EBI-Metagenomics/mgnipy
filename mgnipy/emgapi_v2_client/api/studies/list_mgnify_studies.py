@@ -3,21 +3,16 @@ from typing import Any
 
 import httpx
 
+from ...client import AuthenticatedClient, Client
+from ...types import Response, UNSET
 from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
+
 from ...models.list_mgnify_studies_order_type_0 import ListMgnifyStudiesOrderType0
 from ...models.ninja_pagination_response_schema_m_gnify_study import (
     NinjaPaginationResponseSchemaMGnifyStudy,
 )
 from ...models.pipeline_versions import PipelineVersions
-from ...types import (
-    UNSET,
-    Response,
-    Unset,
-)
+from ...types import Unset
 
 
 def _get_kwargs(

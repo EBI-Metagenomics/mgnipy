@@ -29,6 +29,10 @@ import requests
 from mgnify_pipelines_toolkit.analysis.shared.dwc_summary_generator import (
     get_ena_metadata_from_run_acc,
 )
+import asyncio
+import httpx
+from tqdm import tqdm as tqdm_sync
+from tqdm.asyncio import tqdm_asyncio
 
 URL = "https://www.ebi.ac.uk/biosamples/samples"
 HEADERS = {"Accept": "application/json"}
@@ -95,14 +99,18 @@ def get_biosample_metadata_from_acc(
             f"Provided accession {sample_acc} appears to be a project accession rather than a sample accession. Please provide a sample or runs accession to retrieve BioSamples metadata."
         )
 
+    _given_id = sample_acc
+    run_acc = None
+    char_texts = {"GivenID": _given_id}
+
     if incl_ena:
         ena_metadata = get_ena_metadata_from_run_acc(sample_acc)
         if ena_metadata is not False:
             # note saving over given sample_acc
             sample_acc = ena_metadata.loc[0, "SampleID"]
-
+            run_acc = ena_metadata.loc[0, "RunID"]
             logger.info(
-                f"ENA metadata found for sample {sample_acc}, including in BioSamples query parameters."
+                f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
             )
 
             for col in ena_metadata.columns:
@@ -114,6 +122,7 @@ def get_biosample_metadata_from_acc(
             )
             char_texts = {
                 "SampleID": sample_acc,
+                "RunID": run_acc,
             }
 
     results: requests.Response = requests.get(
@@ -160,10 +169,15 @@ def get_biosample_metadata_from_acc(
         text = values[0].get("text", "")
         return text if text else "NA"
 
+    sample_acc = first_text("External Id")
+    if char_texts.get("GivenID") != sample_acc and run_acc is None:
+        run_acc = char_texts.get("GivenID")
+
     # init row with sampleID, name, taxid, SRA accession,
     char_texts.update(
         {
             "SampleID": sample_acc,
+            "RunID": run_acc,
             "SRA accession": biosample_record.get("sraAccession", "NA"),
             "name": biosample_record.get("name", "NA"),
             "taxid": biosample_record.get("taxId", "NA"),
@@ -180,6 +194,7 @@ def get_biosample_metadata_from_acc(
 
 def get_all_biosample_metadata_from_acc(
     samples: List[str],
+    incl_ena: bool = True,
 ) -> Dict[str, pd.DataFrame]:
     """
     Fetches BioSamples metadata for a list of sample accessions.
@@ -198,9 +213,115 @@ def get_all_biosample_metadata_from_acc(
     """
     sample_metadata_dict = defaultdict(pd.DataFrame)
 
-    for sample in samples:
-        res_df = get_biosample_metadata_from_acc(sample)
+    for sample in tqdm_sync(samples, desc="Retrieving BioSamples metadata for samples"):
+        res_df = get_biosample_metadata_from_acc(sample, incl_ena=incl_ena)
         if res_df is not False:
             sample_metadata_dict[sample] = res_df
+
+    return sample_metadata_dict
+
+
+async def aget_biosample_metadata_from_acc(
+    sample_acc: str,
+    incl_ena: bool = True,
+    client: httpx.AsyncClient | None = None,
+) -> Union[pd.DataFrame, bool]:
+    if (
+        sample_acc.startswith("ERP")
+        or sample_acc.startswith("DRP")
+        or sample_acc.startswith("SRP")
+        or sample_acc.startswith("PRJ")
+    ):
+        raise ValueError(
+            f"Provided accession {sample_acc} appears to be a project accession rather than a sample accession."
+        )
+
+    _given_id = sample_acc
+    run_acc = None
+    char_texts: dict[str, Any] = {"GivenID": _given_id}
+
+    if incl_ena:
+        ena_metadata = await asyncio.to_thread(
+            get_ena_metadata_from_run_acc, sample_acc
+        )
+        if ena_metadata is not False:
+            sample_acc = ena_metadata.loc[0, "SampleID"]
+            run_acc = ena_metadata.loc[0, "RunID"]
+            for col in ena_metadata.columns:
+                char_texts[col] = ena_metadata.loc[0, col]
+        else:
+            char_texts = {"SampleID": sample_acc, "RunID": run_acc}
+
+    close_client = client is None
+
+    if client is None:
+        client = httpx.AsyncClient(headers=HEADERS, timeout=30)
+
+    try:
+        response = await client.get(URL, params={"filter": f"acc:{sample_acc}"})
+        if response.status_code != 200:
+            return False
+
+        payload = response.json()
+        if "_embedded" not in payload:
+            return False
+
+        returned_samples = payload["_embedded"].get("samples", [])
+        if not returned_samples:
+            return False
+
+        biosample_record = returned_samples[0]
+        characteristics = biosample_record.get("characteristics", {})
+
+        def first_text(name: str) -> str:
+            values = characteristics.get(name, [])
+            if not values:
+                return "NA"
+            text = values[0].get("text", "")
+            return text if text else "NA"
+
+        sample_acc = first_text("External Id")
+        if char_texts.get("GivenID") != sample_acc and run_acc is None:
+            run_acc = char_texts.get("GivenID")
+
+        char_texts.update(
+            {
+                "SampleID": sample_acc,
+                "RunID": run_acc,
+                "SRA accession": biosample_record.get("sraAccession", "NA"),
+                "name": biosample_record.get("name", "NA"),
+                "taxid": biosample_record.get("taxId", "NA"),
+            }
+        )
+
+        char_texts.update({key: first_text(key) for key in characteristics.keys()})
+
+        return pd.DataFrame(char_texts, index=[0])
+    finally:
+        if close_client:
+            await client.aclose()
+
+
+async def aget_all_biosample_metadata_from_acc(
+    samples: list[str],
+    incl_ena: bool = True,
+) -> dict[str, pd.DataFrame]:
+
+    sample_metadata_dict = defaultdict(pd.DataFrame)
+
+    async def _fetch(sample: str):
+        res_df = await aget_biosample_metadata_from_acc(sample, incl_ena=incl_ena)
+        if res_df is not False:
+            sample_metadata_dict[sample] = res_df
+        return res_df
+
+    tasks = [_fetch(sample) for sample in samples]
+
+    for done in tqdm_asyncio.as_completed(
+        tasks,
+        total=len(samples),
+        desc="Retrieving BioSamples metadata for samples",
+    ):
+        _ = await done
 
     return sample_metadata_dict

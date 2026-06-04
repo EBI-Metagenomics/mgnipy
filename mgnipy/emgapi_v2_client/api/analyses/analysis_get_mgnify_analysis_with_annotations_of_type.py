@@ -4,22 +4,17 @@ from urllib.parse import quote
 
 import httpx
 
+from ...client import AuthenticatedClient, Client
+from ...types import Response, UNSET
 from ... import errors
-from ...client import (
-    AuthenticatedClient,
-    Client,
-)
+
 from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
     AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
 )
 from ...models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
     NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation,
 )
-from ...types import (
-    UNSET,
-    Response,
-    Unset,
-)
+from ...types import Unset
 
 
 def _get_kwargs(
