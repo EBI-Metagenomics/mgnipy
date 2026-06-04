@@ -12,7 +12,6 @@ from dateutil.parser import isoparse
 from typing import cast
 import datetime
 
-
 T = TypeVar("T", bound="Assembly")
 
 

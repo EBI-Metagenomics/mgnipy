@@ -13,7 +13,6 @@ from ..models.order_by_filter_literalsample_title_sample_title_updated_at_update
 )
 from typing import cast
 
-
 T = TypeVar("T", bound="OrderByFilterLiteralsampleTitleSampleTitleUpdatedAtUpdatedAt")
 
 

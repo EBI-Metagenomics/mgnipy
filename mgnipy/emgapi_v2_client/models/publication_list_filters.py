@@ -10,7 +10,6 @@ from ..types import UNSET, Unset
 
 from typing import cast
 
-
 T = TypeVar("T", bound="PublicationListFilters")
 
 

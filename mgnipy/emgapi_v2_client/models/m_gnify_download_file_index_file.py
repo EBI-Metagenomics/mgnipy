@@ -13,7 +13,6 @@ from ..models.m_gnify_download_file_index_file_index_type import (
 )
 from typing import cast
 
-
 T = TypeVar("T", bound="MGnifyDownloadFileIndexFile")
 
 

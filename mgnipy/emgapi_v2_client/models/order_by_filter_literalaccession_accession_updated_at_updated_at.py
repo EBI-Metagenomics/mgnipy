@@ -13,7 +13,6 @@ from ..models.order_by_filter_literalaccession_accession_updated_at_updated_at_o
 )
 from typing import cast
 
-
 T = TypeVar("T", bound="OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAt")
 
 

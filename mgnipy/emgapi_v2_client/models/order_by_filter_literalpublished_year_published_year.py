@@ -13,7 +13,6 @@ from ..models.order_by_filter_literalpublished_year_published_year_order_type_0 
 )
 from typing import cast
 
-
 T = TypeVar("T", bound="OrderByFilterLiteralpublishedYearPublishedYear")
 
 

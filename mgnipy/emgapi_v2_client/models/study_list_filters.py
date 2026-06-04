@@ -11,7 +11,6 @@ from ..types import UNSET, Unset
 from ..models.pipeline_versions import PipelineVersions
 from typing import cast
 
-
 T = TypeVar("T", bound="StudyListFilters")
 
 

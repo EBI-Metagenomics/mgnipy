@@ -13,7 +13,6 @@ from ..models.order_by_filter_literalaccession_accession_length_length_completen
 )
 from typing import cast
 
-
 T = TypeVar(
     "T",
     bound="OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompletenessContaminationContaminationNumGenomesTotalNumGenomesTotal",

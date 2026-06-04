@@ -11,7 +11,6 @@ from ..types import UNSET, Unset
 from ..models.download_file_index_file_index_type import DownloadFileIndexFileIndexType
 from typing import cast
 
-
 T = TypeVar("T", bound="DownloadFileIndexFile")
 
 
