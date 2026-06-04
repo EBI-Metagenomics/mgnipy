@@ -99,14 +99,18 @@ def get_biosample_metadata_from_acc(
             f"Provided accession {sample_acc} appears to be a project accession rather than a sample accession. Please provide a sample or runs accession to retrieve BioSamples metadata."
         )
 
+    _given_id = sample_acc
+    run_acc = None
+    char_texts = {"GivenID": _given_id}
+
     if incl_ena:
         ena_metadata = get_ena_metadata_from_run_acc(sample_acc)
         if ena_metadata is not False:
             # note saving over given sample_acc
             sample_acc = ena_metadata.loc[0, "SampleID"]
-
+            run_acc = ena_metadata.loc[0, "RunID"]
             logger.info(
-                f"ENA metadata found for sample {sample_acc}, including in BioSamples query parameters."
+                f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
             )
 
             for col in ena_metadata.columns:
@@ -118,6 +122,7 @@ def get_biosample_metadata_from_acc(
             )
             char_texts = {
                 "SampleID": sample_acc,
+                "RunID": run_acc,
             }
 
     results: requests.Response = requests.get(
@@ -164,10 +169,15 @@ def get_biosample_metadata_from_acc(
         text = values[0].get("text", "")
         return text if text else "NA"
 
+    sample_acc = first_text("External Id")
+    if char_texts.get("GivenID") != sample_acc and run_acc is None:
+        run_acc = char_texts.get("GivenID")
+
     # init row with sampleID, name, taxid, SRA accession,
     char_texts.update(
         {
             "SampleID": sample_acc,
+            "RunID": run_acc,
             "SRA accession": biosample_record.get("sraAccession", "NA"),
             "name": biosample_record.get("name", "NA"),
             "taxid": biosample_record.get("taxId", "NA"),
@@ -226,7 +236,9 @@ async def aget_biosample_metadata_from_acc(
             f"Provided accession {sample_acc} appears to be a project accession rather than a sample accession."
         )
 
-    char_texts: dict[str, Any] = {}
+    _given_id = sample_acc
+    run_acc = None
+    char_texts: dict[str, Any] = {"GivenID": _given_id}
 
     if incl_ena:
         ena_metadata = await asyncio.to_thread(
@@ -234,10 +246,11 @@ async def aget_biosample_metadata_from_acc(
         )
         if ena_metadata is not False:
             sample_acc = ena_metadata.loc[0, "SampleID"]
+            run_acc = ena_metadata.loc[0, "RunID"]
             for col in ena_metadata.columns:
                 char_texts[col] = ena_metadata.loc[0, col]
         else:
-            char_texts = {"SampleID": sample_acc}
+            char_texts = {"SampleID": sample_acc, "RunID": run_acc}
 
     close_client = client is None
 
@@ -267,14 +280,20 @@ async def aget_biosample_metadata_from_acc(
             text = values[0].get("text", "")
             return text if text else "NA"
 
+        sample_acc = first_text("External Id")
+        if char_texts.get("GivenID") != sample_acc and run_acc is None:
+            run_acc = char_texts.get("GivenID")
+
         char_texts.update(
             {
                 "SampleID": sample_acc,
+                "RunID": run_acc,
                 "SRA accession": biosample_record.get("sraAccession", "NA"),
                 "name": biosample_record.get("name", "NA"),
                 "taxid": biosample_record.get("taxId", "NA"),
             }
         )
+
         char_texts.update({key: first_text(key) for key in characteristics.keys()})
 
         return pd.DataFrame(char_texts, index=[0])
