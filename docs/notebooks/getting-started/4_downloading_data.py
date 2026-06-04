@@ -83,7 +83,9 @@
 from mgnipy import MGnipy
 
 # 1. init with default config
-MG = MGnipy()
+MG = MGnipy(
+    #cache_dir="downloads"
+)
 
 # 2.a) setup studies mgnifier (build queries)
 tomato_studies = MG.studies(
@@ -143,8 +145,11 @@ ssu.downloads_df()
 #
 # for example, we can also combine the taxonomic assignment results into one dataframe e.g. `.to_pandas()`, `.to_polars`, `.X()`
 
-# %%
-ssu.to_pandas()
+# %% tags=["hide-output"]
+# first loading
+ssu.load()
+
+ssu.to_pandas().head()
 
 # %% [markdown]
 # There is also option to enrich with additional metadata!
@@ -154,7 +159,9 @@ ssu.to_pandas()
 # 2) use `.enrich_runs()` etc or `.enrich_biosamples` which will make the get requests for the additional metadata
 
 # %% tags=["hide-output"]
-ssu.enrich_runs(limit=None)
+ssu.enrich_runs(
+    limit=200#default
+)
 
 # %%
 ssu.to_anndata()
