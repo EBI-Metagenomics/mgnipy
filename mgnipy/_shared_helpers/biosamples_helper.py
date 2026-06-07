@@ -131,13 +131,28 @@ def get_biosample_metadata_from_acc(
         params={"filter": f"acc:{sample_acc}"},
     )
 
-    # if not successful log and return false
-    if results.status_code != 200:
-        logger.error(f"BioSamples record not found for sample {sample_acc}")
+    logger.info(f"Response status code: {results.status_code}")
+
+    if results.status_code == 403:
+        logger.error(
+            f"{results.status_code}. BioSamples access forbidden for {sample_acc}: You do not have permission to access this resource. "
+        )
+        return False
+    elif results.status_code == 404:
+        logger.error(
+            f"{results.status_code}. BioSamples record not found for {sample_acc}: The requested file does not exist. "
+        )
+        return False
+    elif results.status_code != 200:
+        logger.error(
+            f"{results.status_code}. Cannot access BioSamples record for {sample_acc}"
+        )
         return False
 
     if "_embedded" not in results.json():
-        logger.error(f"BioSamples record not found for sample {sample_acc}")
+        logger.error(
+            f"'_embedded' key not found in BioSamples response for sample {sample_acc}"
+        )
         return False
 
     try:
