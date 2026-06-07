@@ -154,3 +154,24 @@ PRIVATE_ENDPOINTS: set[SupportedEndpoints] = {
 ALL_LIST_ENDPOINTS: list[callable] = list(RESOURCES_LIST_ENDPOINTS.values()) + [
     v for d in BETWEEN_RESOURCE_RELATIONSHIPS.values() for v in d.values()
 ]
+
+ID_PARAM = {
+    SupportedEndpoints.BIOMES: "biome_lineage",
+    SupportedEndpoints.BIOME: "biome_lineage",
+    SupportedEndpoints.STUDIES: "accession",
+    SupportedEndpoints.SAMPLES: "accession",
+    SupportedEndpoints.RUNS: "accession",
+    SupportedEndpoints.ANALYSES: "accession",
+    SupportedEndpoints.GENOMES: "accession",
+    SupportedEndpoints.ASSEMBLIES: "accession",
+    SupportedEndpoints.PUBLICATIONS: "pubmed_id",
+    SupportedEndpoints.CATALOGUES: "catalogue_id",
+    SupportedEndpoints.STUDY: "accession",
+    SupportedEndpoints.SAMPLE: "accession",
+    SupportedEndpoints.RUN: "accession",
+    SupportedEndpoints.ANALYSIS: "accession",
+    SupportedEndpoints.GENOME: "accession",
+    SupportedEndpoints.ASSEMBLY: "accession",
+    SupportedEndpoints.PUBLICATION: "pubmed_id",
+    SupportedEndpoints.CATALOGUE: "catalogue_id",
+}

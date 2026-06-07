@@ -1,6 +1,6 @@
 # mainly Enum constants for pydantic models
 from enum import Enum
-
+from typing import Literal, TypeAlias
 from pydantic import TypeAdapter, ValidationError
 
 
@@ -173,3 +173,31 @@ class PipelineVersions(SpecialEnum):
     v5 = 5
     v6 = 6
     v6_1 = 6.1
+
+
+ListResourceStr: TypeAlias = Literal[
+    "biomes",
+    "studies",
+    "samples",
+    "runs",
+    "analyses",
+    "genomes",
+    "assemblies",
+    "publications",
+    "catalogues",
+    "private_studies",
+]
+
+DetailResourceStr: TypeAlias = Literal[
+    "biome",
+    "study",
+    "sample",
+    "run",
+    "analysis",
+    "genome",
+    "assembly",
+    "publication",
+    "catalogue",
+]
+
+ResourceStr: TypeAlias = ListResourceStr | DetailResourceStr
