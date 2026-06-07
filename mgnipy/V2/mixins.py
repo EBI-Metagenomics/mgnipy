@@ -33,6 +33,13 @@ from mgnipy._shared_helpers.writers import atomic_write_bytes, atomic_write_json
 
 
 class ResultsHandler:
+    """
+    Mixin providing methods to handle and convert paginated results.
+    This mixin provides methods to convert paginated results into various formats such as pandas DataFrames, lists of dictionaries, JSON strings, and Polars DataFrames.
+
+    The mixin assumes the host class provides the following dependencies:
+     - `data`: A property that returns an iterable of metadata records, typically a chain of dictionaries. This can be overridden by providing data directly to the conversion methods.
+    """
 
     def __init__(self, data: Optional[chain[dict[str, Any]]] = None):
         logger.debug("Initializing ResultsHandler")
@@ -89,7 +96,7 @@ class ResultsHandler:
         return new_df
 
     # viewing the retrieved
-    def to_df(
+    def to_pandas(
         self,
         data: Optional[dict[int, list[dict]]] = None,
         expand_nested_dicts: Optional[list[str] | bool] = False,
@@ -120,7 +127,7 @@ class ResultsHandler:
         Examples
         --------
         >>> handler = ResultsHandler(data=[{"a": 1, "b": 2}])
-        >>> df = handler.to_df()
+        >>> df = handler.to_pandas()
         >>> list(df.columns)
         ['a', 'b']
         >>> df.iloc[0]['a']
@@ -215,7 +222,7 @@ class ResultsHandler:
             orient,
             lines,
         )
-        return self.to_df(data, expand_nested_dicts=False).to_json(
+        return self.to_pandas(data, expand_nested_dicts=False).to_json(
             orient=orient, lines=lines, **json_kwargs
         )
 
@@ -255,8 +262,8 @@ class ResultsHandler:
             logger.debug("No data available for Polars DataFrame conversion")
             return None
 
-        # first convert to pandas and then to polars to leverage the nested dict expansion and column renaming already implemented in to_df
-        df_pd = self.to_df(
+        # first convert to pandas and then to polars to leverage the nested dict expansion and column renaming already implemented in to_pandas
+        df_pd = self.to_pandas(
             data=_data,
             expand_nested_dicts=expand_nested_dicts,
             rename_columns=rename_columns,
@@ -268,6 +275,16 @@ class ResultsHandler:
 class DiskCheckpointer:
     """
     Checkpoint manager for request-makers.
+
+    This mixin provides methods to write paginated results to disk as they are retrieved, and to load them back into memory on subsequent runs. It generates a unique cache key based on the query parameters and resource type, and organizes cached pages in a directory structure under a specified cache root.
+
+    The mixin assumes the host class provides the following dependencies:
+    - `params_getter`: A callable that returns the current query parameters as a dictionary.
+    - `resource_str`: A string representing the type of resource being queried (e.g., "samples", "runs").
+    - `config`: An instance of `MGnipyConfig` containing configuration settings, including the cache directory.
+    - `results_store`: An optional dictionary to store loaded results in memory.
+    - `count`: An optional callable that returns the total number of records for the current query.
+    - `num_requests`: An optional callable that returns the total number of paginated requests needed for the current query.`
     """
 
     def __init__(
@@ -1161,7 +1178,7 @@ class BiomesTreeMixin:
 
     @property
     def lineages(self) -> list[str]:
-        return getattr(self, "results_ids", []) or []
+        return getattr(self, "ids", []) or []
 
     @property
     def tree(self) -> Tree:

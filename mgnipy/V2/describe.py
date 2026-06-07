@@ -1,6 +1,8 @@
 import inspect
 import logging
 
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+
 logger = logging.getLogger(__name__)
 import os
 from copy import deepcopy
@@ -12,10 +14,20 @@ from urllib.parse import urlencode
 import httpx
 
 from mgnipy._shared_helpers.parsers import get_docstring, parse_docstring
-from mgnipy.V2.endpoints import ALL_LIST_ENDPOINTS, PRIVATE_ENDPOINTS
+from mgnipy.V2.endpoints import ALL_LIST_ENDPOINTS, PRIVATE_ENDPOINTS, ID_PARAM
 
 
 class DescribeEmgapiModule:
+    """
+    A class to describe and interact with an endpoint module from the metagenomics API v2.
+    This class provides methods to list supported parameters, validate keyword arguments, construct URLs, and retrieve endpoint documentation.
+    It also includes functionality to determine if the endpoint is private or a list endpoint, and to calculate pagination details based on the number of items and page size.
+
+    Parameters
+    ----------
+    endpoint_module : ModuleType, optional
+        The endpoint module to describe. If not provided, the class will need to be initialized with an endpoint module before using its methods.
+    """
 
     def __init__(self, endpoint_module: Optional[ModuleType] = None):
         self.endpoint_module = endpoint_module
@@ -59,6 +71,7 @@ class DescribeEmgapiModule:
     def emgapi_resource(self) -> Optional[str]:
         """
         Retrieves the name of the endpoint resource based on the endpoint module.
+        E.g., if the endpoint module corresponds to the "studies" resource, this property would return "studies".
 
         Returns
         -------
@@ -188,3 +201,22 @@ class DescribeEmgapiModule:
     def page_param_iter(self, num_pages: int) -> list[dict[str, int]]:
         """Generates a list of parameter dictionaries for each page based on the total number of pages."""
         return [{"page": page} for page in range(1, num_pages + 1)]
+
+    @property
+    def id_param_key(self) -> str:
+        """Get the parameter name used to identify this resource.
+
+        Returns
+        -------
+        str
+            The identifier parameter (e.g., "accession", "biome_lineage").
+        """
+        try:
+            return ID_PARAM[SupportedEndpoints(self.emgapi_resource)]
+        except KeyError:
+            raise AttributeError(
+                f"Resource {self.emgapi_resource} does not have a defined access identifier key."
+            ) from None
+
+
+__all__ = ["DescribeEmgapiModule"]

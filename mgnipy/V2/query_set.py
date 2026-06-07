@@ -1,14 +1,11 @@
 import logging
 
 logger = logging.getLogger(__name__)
-import os
 from copy import deepcopy
-from itertools import chain
-from pathlib import Path
-from typing import Any, Callable, Literal, Optional
+from typing import Any, Callable, Optional
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, ResourceStr
 from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.V2.describe import DescribeEmgapiModule
 from mgnipy.V2.endpoints import RESOURCES_ALL_ENDPOINTS
@@ -17,27 +14,56 @@ from mgnipy.V2.mixins import DiskCheckpointer
 
 class QuerySet:
     """
-    Builds and stores the current state of a query, including the resource type, parameters, and results.
+    Query Builder and State Manager for MGnify API interactions.
+
+    Builds a set of `.queries()` that represent the API calls to be made
+    based on the current resource (API endpoint) and parameters.
+
+    Stores the current state of the query set (including the resource type, parameters) and any `results`.
+
+    Parameters
+    ----------
+    resource : str
+        The type of resource to query (e.g., "studies", "samples", "runs", etc.).
+    config : MGnipyConfig, optional
+        Configuration object for MGnipy, including settings like base URL and authentication.
+    params : dict, optional
+        A dictionary of parameters to include in the API request. These will be used to filter results.
+    **param_kwargs
+        Additional keyword arguments that will be merged into the `params` dictionary. These provide a convenient way to specify parameters directly when initializing the QuerySet.
+
+    Attributes
+    ----------
+    resource : SupportedEndpoints
+        The type of resource being queried, represented as an instance of SupportedEndpoints.
+    base_url : str
+        The base URL for the API, derived from the configuration.
+    config : MGnipyConfig
+        The configuration for MGnipy, including settings like base URL and authentication.
+    count : Optional[int]
+        The total number of results for the query.
+    num_requests : Optional[int]
+        The number of API requests made for the query.
+    results : dict[int, list[dict]]
+        The results of the API requests, stored by page number.
+    params : dict[str, Any]
+        The parameters for the API request.
+    emgapi_handler : DescribeEmgapiModule
+        The handler for interacting with the EMGAPI module.
+
+    Methods
+    -------
+    filter(**filters) -> QuerySet
+        Return a new QuerySet instance with updated parameters for filtering results.
+    list_urls() -> list[str]
+        Generate and return a list of URLs for all the API requests that would be made to retrieve the data based on the current parameters.
+    queries(**httpx_kwargs) -> list[dict[str, Any]]
+        Generate a list of query parameter dictionaries for each API request that would be made based on the current parameters.
     """
 
     def __init__(
         self,
-        resource: Literal[
-            "biomes",
-            "biome",
-            "studies",
-            "study",
-            "samples",
-            "sample",
-            "runs",
-            "run",
-            "genomes",
-            "genome",
-            "analyses",
-            "analysis",
-            "assemblies",
-            "assembly",
-        ],
+        resource: ResourceStr,
         *,
         config: Optional[MGnipyConfig] = None,
         params: Optional[dict[str, Any]] = None,
@@ -45,6 +71,8 @@ class QuerySet:
     ):
 
         logger.debug("Initializing QuerySet for resource %s", resource)
+
+        self.config: MGnipyConfig = to_mgnipy_config(config)
 
         # attribute initialization
         self._resource: SupportedEndpoints = SupportedEndpoints.validate(resource)
@@ -61,66 +89,7 @@ class QuerySet:
         self.emgapi_handler: DescribeEmgapiModule = DescribeEmgapiModule(
             endpoint_module=RESOURCES_ALL_ENDPOINTS[self._resource]
         )
-        # configuration and auth init
-        self.config: MGnipyConfig = to_mgnipy_config(config)
-        # interactive auth?
-        if os.getenv("MGNIPY_AUTHENTICATION_OFF") == "1":
-            logger.debug(
-                "Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
-            )
-        elif self.emgapi_handler.is_private:
-            logger.debug(
-                f"Endpoint module {self.emgapi_handler.endpoint_module.__name__} corresponds to a private endpoint. Authentication will be required."
-            )
-            self.config.resolve_auth_token(interactive=True)
-        else:  # silently attemp to resolve but no pop up
-            self.config.resolve_auth_token(interactive=False)
-        # cache handler
-        logger.debug("Creating cache handler for %s", self._resource.value)
-        self.cache_handler = DiskCheckpointer(
-            params_getter=lambda: self.params,
-            resource_str=self.resource.value,
-            config=self.config,
-            results_store=self._results,
-        )
-        self._try_load_cache()
-
-    def _try_load_cache(self):
-        # try to load from cache
-        logger.info("Attempting to load cached results for %s", self.resource.value)
-        try:
-            # results
-            self._pages_from_cache = self.cache_handler.load_cache_results()
-            logger.info(
-                f"Loaded pages {self._pages_from_cache} from cache for resource {self.resource.value}"
-            )
-            # if cache results loaded, update
-            if self._pages_from_cache:
-                self._results = self.cache_handler._results
-            # manifest
-            self._cached_manifest = self.cache_handler.load_cache_manifest()
-            # update
-            self.count = self._cached_manifest.get("count", None)
-            self.num_requests = self._cached_manifest.get("total_pages", None)
-        except Exception as e:
-            logger.warning(f"Failed to load from cache: {e}")
-            self._pages_from_cache = []
-            self._cached_manifest = {}
-
-    def clear_cache(self):
-        """
-        Clear the cached results for the current resource and parameters.
-        This will delete any cached files associated with the current query parameters.
-        """
-        logger.info("Clearing cache for %s", self.resource.value)
-        self.cache_handler.clear_cache()
-        # reset loaded cache state
-        self._pages_from_cache = []
-        self._cached_manifest = {}
-
-    @property
-    def cache_dir(self) -> Optional[Path]:
-        return self.cache_handler._cache_dir
+        self._id_label = self.emgapi_handler.id_param_key
 
     @property
     def endpoint_module(self) -> Callable:
@@ -142,21 +111,11 @@ class QuerySet:
         # _ = self.emgapi_handler.validate_endpoint_kwargs(**self.params)
         # reset cache?
 
-        resource_str = (
-            self.resource.value
-            if hasattr(self, "resource")
-            else self.__class__.__name__
-        )
-
-        self.cache_handler = DiskCheckpointer(
-            params_getter=lambda: self.params,
-            resource_str=resource_str,
-            config=self.config,
-            results_store=self._results,
-            count=self.count,
-            num_requests=self.num_requests,
-        )
-        self._try_load_cache()
+        # resource_str = (
+        #     self.resource.value
+        #     if hasattr(self, "resource")
+        #     else self.__class__.__name__
+        # )
 
     @property
     def request_url(self) -> str:
@@ -201,67 +160,6 @@ class QuerySet:
         self._try_load_cache()
 
     @property
-    def results(self) -> dict[int, list[dict]]:
-        """
-        Get the retrieved metadata results, if available.
-        Results are stored in a dictionary with request number (e.g. page number) as keys.
-        """
-        if self._results is None:
-            logger.warning("No results available for %s", self.resource.value)
-            print(
-                "No results available. Please execute a query first e.g. .get(), .page()"
-            )
-        else:
-            logger.debug(
-                "Returning results for %s with pages: %s",
-                self.resource.value,
-                list(self._results.keys()),
-            )
-        return self._results
-
-    def _unpageinate_results(self, data: Optional[dict] = None) -> chain:
-        """
-        Flattening the results into a single iterator of records.
-        If paginated results are stored in a dictionary with page numbers as keys,
-        this method will extract the records from all pages and combine them into a single iterable sequence.
-
-        Returns
-        -------
-        chain
-            An iterator that yields individual metadata records from all pages.
-        """
-        logger.debug("Flattening paginated results for %s", self.resource.value)
-        _data = data or self.results
-
-        def _page_to_records(page):
-            if page is None:
-                return []
-            if isinstance(page, list):
-                return page
-            if isinstance(page, dict):
-                return [page]
-            return [page]
-
-        return chain.from_iterable(_page_to_records(v) for v in _data.values())
-
-    @property
-    def records(self) -> Optional[chain]:
-        """
-        Get an iterator of individual metadata records from the retrieved results, if available.
-        This property provides a convenient way to access the metadata records without needing to handle pagination.
-
-        Returns
-        -------
-        chain or None
-            An iterator that yields individual metadata records if results are available, otherwise None.
-        """
-        if self.results is None:
-            logger.debug("No record iterator available for %s", self.resource.value)
-            return None
-        logger.debug("Returning record iterator for %s", self.resource.value)
-        return self._unpageinate_results()
-
-    @property
     def resource(self) -> SupportedEndpoints:
         return self._resource
 
@@ -270,32 +168,6 @@ class QuerySet:
         logger.info("Setting resource to %s", value)
         self._resource = SupportedEndpoints.validate(value)
         self.endpoint_module = RESOURCES_ALL_ENDPOINTS[self._resource]
-
-    def _is_in_results(self, request_num: int) -> bool:
-        """
-        Check if results for a specific request number already exist in the results.
-
-        Parameters
-        ----------
-        request_num : int
-            The request number (e.g., page number) to check for existing results.
-
-        Returns
-        -------
-        bool
-            True if results for the specified request number exist, False otherwise.
-        """
-
-        # validate num is positive int
-        validated_int = validate_gt_int(request_num, 0)
-        in_results = validated_int in (self._results or [])
-        logger.debug(
-            "Result presence check for %s page %s: %s",
-            self.resource.value,
-            validated_int,
-            in_results,
-        )
-        return in_results
 
     # PARAM HANDLING
     def _spawn(
@@ -508,3 +380,41 @@ class QuerySet:
             queries[pg] = query_setup
         logger.debug("Built %s query entries for %s", len(queries), self.resource.value)
         return queries
+
+    @property
+    def results(self) -> dict[int, list[dict]]:
+        """
+        Get the retrieved metadata results, if available.
+        Results are stored in a dictionary with request number (e.g. page number) as keys.
+        """
+        if self._results is None:
+            logger.warning(f"No results available for {self.resource.value}")
+            print(
+                "No results available. Please execute a query first e.g. .get(), .page()"
+            )
+        else:
+            logger.debug(
+                f"Returning results for {self.resource.value} with pages: {list(self._results.keys())}"
+            )
+        return self._results
+
+    def _is_in_results(self, request_num: int) -> bool:
+        """
+        Check if results for a specific request number already exist in the results.
+
+        Parameters
+        ----------
+        request_num : int
+            The request number (e.g., page number) to check for existing results.
+
+        Returns
+        -------
+        bool
+            True if results for the specified request number exist, False otherwise.
+        """
+
+        # validate num is positive int
+        validated_int = validate_gt_int(request_num, 0)
+        in_results = validated_int in (self._results or [])
+        logger.debug(f"Result presence check: {in_results}")
+        return in_results
