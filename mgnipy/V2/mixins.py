@@ -50,9 +50,11 @@ class ResultsHandler:
         """
         results based on the current resource.
         """
-        if self._data is None:
-            return getattr(self, "records", []) or []
-        return self._data
+
+        if getattr(self, "_data", None) is not None:
+            return self._data
+
+        return getattr(self, "records", []) or []
 
     # helpers
     def _df_expand_nested(

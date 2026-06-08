@@ -23,13 +23,14 @@ from mgnipy._models.constants.CONSTANTS import (
     ListResourceStr,
     DetailResourceStr,
 )
-from mgnipy.V2.core import ID_PARAM, MGnifier
+from mgnipy.V2.core import MGnifier
 from mgnipy.V2.endpoints import (
     BETWEEN_RESOURCE_RELATIONSHIPS,
     PARENT_CHILD_RESOURCES,
     WITHIN_RESOURCE_RELATIONSHIPS,
+    ID_PARAM,
 )
-from mgnipy.V2.mixins import ResultsHandler
+from mgnipy.V2.metadata import MGnifyMetadata
 
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
@@ -52,17 +53,14 @@ class MGnifyList(MGnifier):
         **kwargs,
     ):
         # Accept accidental "resource" in kwargs, but do not expose it in signature
-        passed_resource = kwargs.pop("resource", None)
+        passed_resource: Optional[ListResourceStr] = kwargs.pop("resource", None)
         logger.debug(
             f"Passed resource: {passed_resource!r}, class RESOURCE: {self.RESOURCE!r}"
         )
         resolved_resource = self.RESOURCE or passed_resource
-        logger.debug(f"Resolved resource for MGnifyList: {resolved_resource!r}")
         if resolved_resource is None:
             raise TypeError(
-                "`resource` is required for base MGnifyList; "
-                "use a concrete subclass like Analyses/Runs/... "
-                f"or pass a resource param: {ListResourceStr!r}"
+                "Use a concrete subclass like proxies.analyses.Analyses, or if using base MGnifyList one of the following `resource` param is required: {ListResourceStr!r}"
             )
 
         logger.debug(
@@ -79,8 +77,7 @@ class MGnifyList(MGnifier):
         self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
 
         self._collected_details: dict[str, "MGnifyDetail"] = {}
-        self._collected_details_results: dict[str, dict] = {}
-        # self._collected_details_downloads: dict[str, list[dict[str, Any]]] = {}
+        self._collected_details_metadata: dict[str, dict] = {}
 
     def __call__(self, **kwargs) -> "MGnifyList":
         """Return a cloned list proxy with updated parameters.
@@ -195,7 +192,7 @@ class MGnifyList(MGnifier):
         return await child.apage(1)
 
     @property
-    def _detail_endpoint(self) -> Callable:
+    def _emgapi_detail_endpoint(self) -> Callable:
         """
         Return the endpoint module for the child/detail endpoint.
 
@@ -209,7 +206,7 @@ class MGnifyList(MGnifier):
         --------
         >>> from mgnipy.V2.proxies import Studies
         >>> studies = Studies()
-        >>> studies._detail_endpoint
+        >>> studies._emgapi_detail_endpoint
         <module 'mgnipy.emgapi_v2_client.api.studies.get_mgnify_study' from ...mgnipy/emgapi_v2_client/api/studies/get_mgnify_study.py'>
         """  # check
         if len(self.list_relationships()) == 0:
@@ -228,6 +225,23 @@ class MGnifyList(MGnifier):
             self.child_resource
         ]
         return detail_endpoint
+
+    @property
+    def _detail_cls(self):
+        """
+        Get the detail class for the child resource.
+        e.g. SampleDetail for "samples" list resource
+
+        Returns
+        -------
+        MGnifyDetail subclass
+        """
+        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)
+        if not detail_cls:
+            raise ValueError(
+                f"Unsupported child resource for detail: {self.child_resource}"
+            )
+        return detail_cls(config=self.config)
 
     @property
     def iter_details(self) -> Iterator[dict]:
@@ -285,17 +299,7 @@ class MGnifyList(MGnifier):
         """
 
         # get the child detail class e.g. SampleDetail for "samples" list resource
-        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)(
-            config=self.config
-        )
-        if not detail_cls:
-            raise ValueError(
-                f"Unsupported child resource for detail: {self.child_resource}"
-            )
-        logger.debug(
-            f"Got detail class {detail_cls} for child resource {self.child_resource!r}"
-        )
-
+        detail_cls = self._detail_cls
         # prep id param for given resource e.g. {"accession": "MGYS00001234"} or {"biome_lineage": "root"}
         custom_id_param_key = detail_cls._id_label
         id_param = self.metadata._resolve_id_param(key, param_name=custom_id_param_key)
@@ -305,13 +309,9 @@ class MGnifyList(MGnifier):
         # init detail proxy with id param
         child = detail_cls.filter(**id_param)
         logger.debug(f"Initialized detail proxy {child} with params {child.params!r}")
-        # set endpoint module (might not be necessary actually)
-        # child.endpoint_module = self._detail_endpoint
-
         # cache detail data mem
-        self._collected_details_results[resolved_id] = child.page(1)
-        # self._collected_details[resolved_id] = child
-        # self._collected_details_downloads[resolved_id] = child.downloads
+        self._collected_details_metadata[resolved_id] = child.page(1)
+        self._collected_details[resolved_id] = child
         return child
 
     async def _asingle_detail(
@@ -331,91 +331,53 @@ class MGnifyList(MGnifier):
         -------
         sample = await samples._asingle_detail({"accession": "MGYS00001234"})
         """
-        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)(
-            config=self.config
-        )
-        logger.debug(
-            f"Got detail class {detail_cls} for child resource {self.child_resource!r}"
-        )
-        if not detail_cls:
-            raise ValueError(
-                f"Unsupported child resource for detail: {self.child_resource}"
-            )
+        detail_cls = self._detail_cls
         custom_id_param_key = detail_cls._id_label
         id_param = self.metadata._resolve_id_param(key, param_name=custom_id_param_key)
         resolved_id = id_param[custom_id_param_key]
         logger.debug(f"Resolved id param for detail: {id_param}")
         child = detail_cls.filter(**id_param)
-        child.endpoint_module = self._detail_endpoint
 
         # cache detail data mem
-        self._collected_details_results[resolved_id] = await child.apage(1)
+        self._collected_details_metadata[resolved_id] = await child.apage(1)
+        self._collected_details[resolved_id] = child
+
         return child
 
     @property
-    def details(self) -> list[MGnifyDetail]:
+    def mgnify_details(self) -> list[MGnifyDetail]:
+        if len(self._collected_details) == 0:
+            logger.warning(
+                f"No {self.child_resource} details collected of total {len(self)}. Run `enrich_details()` first to populate details."
+            )
         return self._collected_details
 
     @property
-    def _details_handler(self) -> ResultsHandler:
-        """Internal property to get a ResultsHandler for the collected details results."""
-        return ResultsHandler(list(self._collected_details_results.values()))
+    def detailed_metadata(self) -> MGnifyMetadata:
+        if len(self._collected_details_metadata) == 0:
+            logger.warning(
+                f"No {self.child_resource} details collected of total {len(self)}. Run `enrich_details()` first to populate details."
+            )
+        return MGnifyMetadata(
+            results=self._collected_details_metadata,
+            id_label=self._detail_cls._id_label,
+        )
 
     @property
-    def details_results(self) -> list[dict[str, Any]]:
-        """A list of detail results dicts for the detail, extracted from the details results."""
-        return self._details_handler.to_list()
-
-    def details_df(self, *args, **kwargs) -> pd.DataFrame:
+    def downloads(self) -> list[dict[str, Any]] | None:
         """
-        Convert the current or provided metadata to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list of dict, optional
-            List of records to convert. If ``None``, uses :pyattr:`data`.
-        expand_nested_dicts : list of str or bool, optional
-            List of keys to expand into separate columns, or ``True`` to
-            expand defaults.
-        rename_columns : dict of str to str, optional
-            A dictionary mapping old column names to new column names.
-        **kwargs
-            Additional keyword arguments passed to ``pd.DataFrame``.
+        Get a list of all download links from the detailed metadata.
 
         Returns
         -------
-        pd.DataFrame or None
-            DataFrame containing the metadata or ``None`` when no data is
-            available.
+        list[dict[str, Any]] or None
+            A list of dictionaries containing download information, or None if no details are available.
         """
-        return self._details_handler.to_pandas(*args, **kwargs)
-
-    @property
-    def details_ids(self) -> list[str]:
-        """A list of detail identifiers (e.g. accessions) extracted from the details results."""
-        ids = list(self._collected_details.keys())
-
-        if len(ids) == 0:
-            logger.warning(
-                "Did you run `enrich_details`? No details collected yet; details_ids is empty."
-            )
-
-        return ids
-
-    @property
-    def details_downloads(self) -> list[dict[str, Any]] | None:
         return [
             item
-            for sublist in self._collected_details.values()
+            for sublist in self.mgnify_details.values()
             for item in sublist.downloads
         ]
-
-    def __getitem__(self, key: int | str) -> "MGnifyDetail":
-        """
-        Allow index or accession-based access to child details.
-        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
-        """
-        return self._single_detail(key)
 
     def page_size(self, n: int) -> "MGnifyList":
         """
@@ -464,14 +426,14 @@ class MGnifyList(MGnifier):
             return
 
         details_todo: list[str] = [
-            x for x in self.metadata.ids if x not in self._collected_details_results
+            x for x in self.metadata.ids if x not in self._collected_details_metadata
         ][:limit]
 
         for count, detail_id in enumerate(
             tqdm_sync(
                 details_todo,
                 total=len(self.metadata.ids),
-                initial=len(self._collected_details_results),
+                initial=len(self._collected_details_metadata),
                 desc=f"Enriching {self.child_resource} details",
                 disable=hide_progress,
             )
@@ -503,7 +465,7 @@ class MGnifyList(MGnifier):
         )
 
         details_todo: list[str] = [
-            x for x in self.metadata.ids if x not in self._collected_details_results
+            x for x in self.metadata.ids if x not in self._collected_details_metadata
         ][:limit]
 
         logging.debug(
@@ -519,11 +481,18 @@ class MGnifyList(MGnifier):
         for done in tqdm_asyncio.as_completed(
             tasks,
             total=len(self.metadata.ids),
-            initial=len(self._collected_details_results),
+            initial=len(self._collected_details_metadata),
             desc=f"Enriching {self.child_resource} details",
             disable=hide_progress,
         ):
             await done
+
+    def __getitem__(self, key: int | str) -> "MGnifyDetail":
+        """
+        Allow index or accession-based access to child details.
+        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
+        """
+        return self._single_detail(key)
 
 
 class MGnifyDetail(MGnifier):
@@ -569,8 +538,6 @@ class MGnifyDetail(MGnifier):
             **kwargs,
             **{id_param_key: id},
         )
-        # then add it to param
-        # self._params.update({self._id_label: id})
 
     def _clone(self, **param_overrides) -> "MGnifyDetail":
         """
@@ -605,6 +572,17 @@ class MGnifyDetail(MGnifier):
     def _next_rel_module(self, name: str) -> SupportedEndpoints:
         """
         Get the next resource name based on the relationship name
+        e.g. for a study detail, "samples" -> "sample" detail endpoint module.
+
+        Parameters
+        ----------
+        name : str
+            The name of the relationship, e.g. "samples" for a study detail.
+
+        Returns
+        -------
+        SupportedEndpoints
+            The corresponding endpoint module for the related resource.
         """
         if name in self.list_relationships():
             return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][
@@ -612,86 +590,6 @@ class MGnifyDetail(MGnifier):
             ]
 
         raise AttributeError(f"{self.resource} does not have linked resource: {name!r}")
-
-    def __getattr__(self, name: str):
-        # if is a supported relationship
-        if name in self.list_relationships():
-            return self.get_list(
-                resource=name,
-                fetch=True,
-                explain=False,
-            )
-
-        # if not a supported attr then raise error
-        raise AttributeError(
-            f"{self.__class__.__name__} object has no attribute {name!r}."
-        )
-
-    @property
-    def downloads(self) -> list[dict[str, Any]]:
-        """
-        A list of download information dicts for the detail, extracted from the details results.
-
-        Each dict is updated with the identifier of the detail.
-        The identifier key is determined by the id_param_key of the detail class,
-        e.g. "accession" for studies, samples, runs, analyses, genomes, assemblies;
-        "biome_lineage" for biomes; "pubmed_id" for publications; "catalogue_id" for catalogues.
-        """
-
-        if not self.results:
-            logger.debug(
-                "No results found for detail; cannot extract downloads. Returning empty list."
-            )
-            return []
-
-        if "downloads" not in self.to_pandas().columns:
-            logger.debug(
-                "Details DataFrame does not have 'downloads' column. Returning empty list."
-            )
-            return []
-
-        logger.debug(
-            f"Updating download info with identifier {self.identifier!r} to id_param_key {self._id_label!r}"
-        )
-
-        # updates the dicts with the id from the index, maybe pipeline_version if available
-        for _, row in self.to_pandas().iterrows():
-            # get downloads list from row
-            downloads_list = row["downloads"]
-
-            # get pipeline_version from row if avail, i.e., analysisdetail
-            if "pipeline_version" in row and isinstance(row["pipeline_version"], str):
-                a_pipe = row["pipeline_version"].lower().strip("v")
-            else:
-                a_pipe = None
-
-            # for each downlaod dict, add id and pipeline_version
-            for each_download in downloads_list:
-                # keep id
-                each_download.update({self._id_label: self.identifier})
-
-                # now pipe from download_group?
-                v_group = re.search(
-                    r"\.v(\d+(?:\.\d+)?)",
-                    each_download.get("download_group", ""),
-                    re.IGNORECASE,
-                ).group(1)
-
-                pipe = v_group or a_pipe
-
-                if pipe is not None:
-                    try:
-                        pipe = PipelineVersions(float(pipe)).name
-                    except Exception as e:
-                        logger.debug(
-                            f"Could not parse pipeline version from {pipe!r} for download {each_download!r}: {e}"
-                        )
-
-                each_download.update({"pipeline_version": pipe})
-
-        return [
-            item for sublist in self.to_pandas()["downloads"].values for item in sublist
-        ]
 
     @property
     def identifier(self) -> Optional[str]:
@@ -831,6 +729,101 @@ class MGnifyDetail(MGnifier):
         if fetch:
             await list_endpoint.abulk_fetch()
         return list_endpoint
+
+    @property
+    def downloads(self) -> list[dict[str, Any]]:
+        """
+        Get the list of downloads for this detail.
+        """
+        # no results, no downloads
+        if len(self.metadata) == 0:
+            return []
+
+        # checking column names
+        cols = self.metadata.to_pandas().columns
+
+        if "downloads" not in cols:
+            logger.debug("No 'downloads' field. Returning empty list.")
+            return []
+
+        downloads_cols: list[str] = self.downloads_df().columns
+
+        if "pipeline_version" not in downloads_cols:
+            logger.debug(
+                "No 'pipeline_version' field in downloads. "
+                "Attempting to add pipeline version info."
+            )
+            self._add_pipeline_version_field()
+
+        if self._id_label not in downloads_cols:
+            logger.debug(
+                f"No '{self._id_label}' field in downloads. "
+                f"Attempting to add identifier info with id_param_key {self._id_label!r} and identifier {self.identifier!r}."
+            )
+            self._add_id_param_field(self.identifier)
+
+        return [
+            item for sublist in self.to_pandas()["downloads"].values for item in sublist
+        ]
+
+    def downloads_df(self, **pd_kwargs) -> Optional[pd.DataFrame]:
+        """
+        Looking for a "downloads" field in the metadata results and return as a DataFrame if found.
+        """
+        return pd.DataFrame(self.downloads, **pd_kwargs)
+
+    def _add_pipeline_version_field(self):
+        for item_dict in self.records:
+
+            # get pipeline_version from row if avail, i.e., analysisdetail
+            if "pipeline_version" in item_dict and isinstance(
+                item_dict["pipeline_version"], str
+            ):
+                a_pipe = item_dict["pipeline_version"].lower().strip("v")
+            else:
+                a_pipe = None
+
+            for each_download in item_dict.get("downloads", []):
+
+                # if pipeline in download_group, use that instead
+                v_group = re.search(
+                    r"\.v(\d+(?:\.\d+)?)",
+                    each_download.get("download_group", ""),
+                    re.IGNORECASE,
+                ).group(1)
+                # priority to ver in download_group
+                pipe = v_group or a_pipe
+
+                if pipe is not None:
+                    try:
+                        pipe = PipelineVersions(float(pipe)).name
+                    except Exception as e:
+                        logger.error(
+                            f"Could not parse pipeline version from {pipe!r} for download {each_download!r}: {e}"
+                        )
+
+                each_download.update({"pipeline_version": pipe})
+
+    def _add_id_param_field(self, given_id: str):
+
+        for item_dict in self.records:
+            for each_download in item_dict.get("downloads", []):
+                # keep id
+                each_download.update({self._id_label: given_id})
+
+    def __getattr__(self, name: str):
+        # if is a supported relationship
+        if name in self.list_relationships():
+            return self.get_list(
+                resource=name,
+                fetch=True,
+                explain=False,
+            )
+
+        # if not a supported attr then raise error
+        raise AttributeError(
+            f"{self.__class__.__name__} object has no attribute {name!r}."
+        )
 
 
 # import concrete proxy classes from sibling modules. These imports occur
