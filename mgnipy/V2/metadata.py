@@ -18,6 +18,29 @@ class MGnifyMetadata(ResultsHandler):
         self._results = results
         self._id_label = id_label
 
+    def __len__(self):
+        return len(list(self.records))
+
+    def __str__(self) -> str:
+        """Return a human-readable summary of the metadata state.
+
+        Returns
+        -------
+        str
+            Summary including resource, URL, parameters, and endpoint info.
+
+        Examples
+        --------
+        >>> from mgnipy.V2.core import MGnifyMetadata  # doctest: +SKIP
+        >>> metadata = MGnifyMetadata("studies")  # doctest: +SKIP
+        >>> print(metadata)  # doctest: +SKIP
+        """
+
+        return (
+            f"MGnifyMetadata instance: Number of records: {len(self)!r}\n"
+            f"Contains Pages/Request#/Details: {self.pages}\n"
+        )
+
     @property
     def results(self) -> dict[int, list[dict]]:
         """
@@ -56,6 +79,8 @@ class MGnifyMetadata(ResultsHandler):
         """
         Get an iterator of individual metadata records from the retrieved results, if available.
         This property provides a convenient way to access the metadata records without needing to handle pagination.
+
+        Used by ResultsHandler mixin.
 
         Returns
         -------
