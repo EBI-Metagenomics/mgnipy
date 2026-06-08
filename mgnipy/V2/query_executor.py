@@ -148,10 +148,6 @@ class QueryExecutor:
                 f"Computed count and num_requests: {self.qs.count}, {self.qs.num_requests}"
             )
 
-        # to the disk too
-        self.qs.cache_handler._total_records = self.qs.count
-        self.qs.cache_handler._total_requests = self.qs.num_requests
-
         # also init results dict if not already for tracking pages results
         if self.qs._results is None:
             self.qs._results = {}
@@ -224,9 +220,6 @@ class QueryExecutor:
         # check if alrady in results first
         if self.qs._is_in_results(page_num):
             logger.info(f"Page {page_num} already retrieved.")
-            # mark success
-            if page_num not in self._successful_pages:
-                self._successful_pages.append(page_num)
             return self.qs._results.get(page_num, None)
 
         # otherwise get page
@@ -297,8 +290,6 @@ class QueryExecutor:
         self._set_counts()
         if self.qs._is_in_results(page_num):
             logger.info(f"Page {page_num} already retrieved.")
-            if page_num not in self._successful_pages:
-                self._successful_pages.append(page_num)
             return self.qs._results.get(page_num, None)
 
         a_client = client or self._init_client()
