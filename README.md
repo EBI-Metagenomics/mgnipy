@@ -6,12 +6,14 @@ MGni.py ('mæɡ-ni-paɪ') is a lightweight python client and toolkit for the [MG
     <a href="https://pypi.org/project/mgnipy/">
         <img src="https://img.shields.io/pypi/v/mgnipy?label=PyPI" alt="PyPI">
     </a>
-    <img src="https://img.shields.io/github/actions/workflow/status/EBI-Metagenomics/mgnipy/cicd.yml?branch=main" alt="cicd.yml">
-    <a href="https://mgnipy.mgnify.org/">
-        <img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" alt="GitHub Pages docs">
+    <a href="https://pypi.org/project/mgnipy/">
+    <img src="https://github.com/EBI-Metagenomics/mgnipy/actions/workflows/cicd.yml/badge.svg" alt="cicd.yml">
     </a>
-    <img src="https://img.shields.io/badge/python-3.11%20--%203.13-blue" alt="Python 3.11 to 3.13">
+    <a href="https://mgnipy.mgnify.org/">
+        <img src="https://github.com/EBI-Metagenomics/mgnipy/actions/workflows/gh-pages.yml/badge.svg" alt="GitHub Pages docs">
+    </a>
     <br>
+    <img src="https://img.shields.io/badge/python-3.11%20--%203.13-blue" alt="Python 3.11 to 3.13">
     <img src="https://img.shields.io/github/issues/EBI-Metagenomics/mgnipy" alt="GitHub issues">
     <img src="https://img.shields.io/github/license/EBI-Metagenomics/mgnipy" alt="GitHub license">
     <img src="https://img.shields.io/github/last-commit/EBI-Metagenomics/mgnipy" alt="GitHub last commit">
@@ -54,13 +56,10 @@ MGni.py ('mæɡ-ni-paɪ') is a lightweight python client and toolkit for the [MG
 - for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
 - `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉
 
-- for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
-- `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉
 
 
 ## Installation
 
-### From PyPI
 ### From PyPI
 
 ```bash
@@ -122,18 +121,23 @@ studies.enrich_details()
 
 #### Viewing the metadata
 ```python
-# as pandas
-pd_metadata = studies.to_df()
+# basic metadata 
+study_metadata = studies.metadata
+# detailed metadata, e.g. with enriched details
+detailed_study_metadata = studies.detailed_metadata
 
-# As polars DataFrame
-pl_metadata = studies.to_polars()
-pl_metadata = studies.to_polars()
+# read a summary
+print(study_metadata)
+# or
+print(detailed_study_metadata)
+
+# As dataframes
+pl_metadata = detailed_study_metadata.to_polars()
+pd_metadata = detailed_study_metadata.to_pandas()
 
 # as json
-json_metadata = studies.to_json()
+json_metadata = detailed_study_metadata.to_json()
 
-# with all details
-detailed_metadata = studies.details_df()
 ```
 
 ### 🗃️ 3. Explore a `mgnipy.MGzine` of datasets
