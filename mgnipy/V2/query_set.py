@@ -76,8 +76,8 @@ class QuerySet:
 
         # attribute initialization
         self._resource: SupportedEndpoints = SupportedEndpoints.validate(resource)
-        self.count: Optional[int] = None
-        self.num_requests: Optional[int] = None
+        self._count: Optional[int] = None
+        self._num_requests: Optional[int] = None
         self._results: dict[int, list[dict]] = None
         self._params: dict[str, Any] = params or {}
         # add param_kwargs to params if provided, prioritizing param_kwargs
@@ -92,6 +92,36 @@ class QuerySet:
         self._id_label = self.emgapi_handler.id_param_key
 
     @property
+    def count(self) -> Optional[int]:
+        return self._count
+
+    @count.setter
+    def count(self, value: Optional[int]):
+        if value is not None:
+            validated_count = validate_gt_int(value, 0)
+            self._count = validated_count
+            logger.debug(f"Set count to {self._count} for {self.resource.value}")
+        else:
+            self._count = None
+            logger.debug(f"Set count to None for {self.resource.value}")
+
+    @property
+    def num_requests(self) -> Optional[int]:
+        return self._num_requests
+
+    @num_requests.setter
+    def num_requests(self, value: Optional[int]):
+        if value is not None:
+            validated_num = validate_gt_int(value, 0)
+            self._num_requests = validated_num
+            logger.debug(
+                f"Set num_requests to {self._num_requests} for {self.resource.value}"
+            )
+        else:
+            self._num_requests = None
+            logger.debug(f"Set num_requests to None for {self.resource.value}")
+
+    @property
     def endpoint_module(self) -> Callable:
         return self.emgapi_handler.endpoint_module
 
@@ -104,8 +134,8 @@ class QuerySet:
         """
         logger.info("Reassigning endpoint module for %s", self.resource.value)
         self.emgapi_handler = DescribeEmgapiModule(endpoint_module=value)
-        self.count: Optional[int] = None
-        self.num_requests: Optional[int] = None
+        self._count: Optional[int] = None
+        self._num_requests: Optional[int] = None
         self._results: dict[int, list[dict]] = None
         # check that params are valid for new endpoint module
         # _ = self.emgapi_handler.validate_endpoint_kwargs(**self.params)

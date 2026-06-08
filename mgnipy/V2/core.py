@@ -110,9 +110,23 @@ class MGnifier(QuerySet):
         # load cache
         self.load_cache()
 
+    @QuerySet.count.setter
+    def count(self, value: int):
+        self._count = value
+        logger.debug(f"Set count to {value}")
+        # to the disk too
+        self.cache_handler._total_records = self._count
+
+    @QuerySet.num_requests.setter
+    def num_requests(self, value: int):
+        self._num_requests = value
+        logger.debug(f"Set num_requests to {value}")
+        # to the disk too
+        self.cache_handler._total_requests = self._num_requests
+
     @property
     def progress(self):
-        completed = len(set(self._successful_pages))
+        completed = len(self.metadata.pages)
         total = len(self.queries().keys())
         percent = completed / total if total > 0 else 0
         # dummy bar for fun
@@ -122,11 +136,6 @@ class MGnifier(QuerySet):
 
         progress_str = f"Retrieved pages: {percent:.0%}|{bar}| {completed}/{total}"
         print(progress_str)
-
-    @property
-    def last_successful_page(self) -> Optional[int]:
-        if self._successful_pages:
-            print(max(self._successful_pages))
 
     @property
     def metadata(self) -> MGnifyMetadata:
@@ -333,9 +342,6 @@ class MGnifier(QuerySet):
             self.cache_handler.write_results(page_num, page_items)
         except Exception:
             logger.exception(f"Failed to checkpoint page {page_num}")
-        # mark success
-        if page_num not in self._successful_pages:
-            self._successful_pages.append(page_num)
         return page_items
 
     async def apage(
@@ -381,9 +387,6 @@ class MGnifier(QuerySet):
             await self.cache_handler.awrite_results(page_num, page_items)
         except Exception:
             logger.exception(f"Failed to checkpoint page {page_num}")
-        # mark success
-        if page_num not in self._successful_pages:
-            self._successful_pages.append(page_num)
         return page_items
 
     def bulk_fetch(
