@@ -157,6 +157,7 @@ class SupportedEndpoints(SpecialEnum):
     RUN = "run"
     BIOMES = "biomes"  # miscellaneous
     BIOME = "biome"
+    MISC = "miscellaneous"
     CATALOGUES = "catalogues"
     CATALOGUE = "catalogue"
     # ANNOTATIONS = "annotations"  # not really

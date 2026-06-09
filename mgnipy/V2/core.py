@@ -568,7 +568,7 @@ class MGnifier(QuerySet):
         """
 
         first = self.first()
-        return self.to_pandas(first)
+        return self.metadata.to_pandas(first)
 
     def list_supported_params(self) -> list[str]:
         """Get the valid query filter parameters for this resource.

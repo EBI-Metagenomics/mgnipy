@@ -1179,7 +1179,8 @@ class BiomesTreeMixin:
 
     @property
     def lineages(self) -> list[str]:
-        return getattr(self, "ids", []) or []
+        mgnify_metadata = self.metadata
+        return mgnify_metadata.ids
 
     @property
     def tree(self) -> Tree:

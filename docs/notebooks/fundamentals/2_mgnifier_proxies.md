@@ -23,7 +23,7 @@ There is support for:
 - Bulk retrieval e.g. `.bulk_fetch()`
 
 ### ✅ Parse responses into structured data
-Also used by MGnifier is `mixins.ResultsHandler` which helps to transform the API list and detail responses into usable metadata in familiar data structures, such as dataframes `to_df()`, lists and dictionaries. 
+Also used by MGnifier is `mixins.ResultsHandler` which helps to transform the API list and detail responses into usable metadata in familiar data structures, such as dataframes `to_pandas()`, lists and dictionaries. 
 
 ## What is the `proxies` module
 

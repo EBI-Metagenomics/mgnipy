@@ -119,7 +119,7 @@ class MGnifyMetadata(ResultsHandler):
             return [record[self._id_label] for record in self._unpageinate_results()]
         except KeyError as exc:
             raise KeyError(
-                f"Identifier key '{self._id_label}' not found in results for resource '{self.resource}'. Cannot extract accessions/ids. Check .results"
+                f"Identifier key '{self._id_label}' not found in results. Cannot extract accessions/ids. Check .results"
             ) from exc
 
     def _resolve_id_param(

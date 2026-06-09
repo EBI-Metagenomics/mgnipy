@@ -157,6 +157,8 @@ ALL_LIST_ENDPOINTS: list[callable] = list(RESOURCES_LIST_ENDPOINTS.values()) + [
 
 ID_PARAM = {
     SupportedEndpoints.BIOMES: "biome_lineage",
+    SupportedEndpoints.BIOME: "biome_lineage",
+    SupportedEndpoints.MISC: "lineage",
     SupportedEndpoints.STUDIES: "accession",
     SupportedEndpoints.SAMPLES: "accession",
     SupportedEndpoints.RUNS: "accession",

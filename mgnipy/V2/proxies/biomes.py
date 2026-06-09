@@ -23,6 +23,10 @@ class Biomes(BiomesTreeMixin, MGnifyList):
 
         super().__init__(params=params, config=config, **kwargs)
 
+    # @property
+    # def metadata(self) -> MGnifyMetadata:
+    #     return MGnifyMetadata(results=self._results, id_label="lineage")
+
 
 class BiomeDetail(BiomesTreeMixin, MGnifyDetail):
     RESOURCE: ClassVar[Literal["biome"]] = "biome"

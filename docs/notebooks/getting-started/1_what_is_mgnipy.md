@@ -56,6 +56,9 @@ filtered_studies = studies_glass.filter(
 
 # get the studies' metadata (executes queries)
 filtered_studies.enrich_details()
+
+# access the metadata and view as pandas df
+filtered_studies.metadata.to_pandas()
 ```
 ### 3. Receive a `MGazine` of MGnify datasets
 ```python

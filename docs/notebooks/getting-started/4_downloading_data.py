@@ -84,7 +84,7 @@ from mgnipy import MGnipy
 
 # 1. init with default config
 MG = MGnipy(
-    #cache_dir="downloads"
+    # cache_dir="downloads"
 )
 
 # 2.a) setup studies mgnifier (build queries)
@@ -99,7 +99,7 @@ tomato_studies.bulk_fetch()
 tomato_studies.enrich_details()
 
 # take a look at the studies details results as a pandas df
-tomato_studies.to_df(expand_nested_dicts=True)
+tomato_studies.to_pandas(expand_nested_dicts=True)
 
 # %% [markdown]
 # ## 3. Accessing the `MGazine` of datasets
@@ -159,9 +159,7 @@ ssu.to_pandas().head()
 # 2) use `.enrich_runs()` etc or `.enrich_biosamples` which will make the get requests for the additional metadata
 
 # %% tags=["hide-output"]
-ssu.enrich_runs(
-    limit=200#default
-)
+ssu.enrich_runs(limit=200)  # default
 
 # %%
 ssu.to_anndata()
