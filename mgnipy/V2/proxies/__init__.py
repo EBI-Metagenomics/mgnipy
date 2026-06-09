@@ -414,7 +414,7 @@ class MGnifyList(MGnifier):
         Returns
         -------
         None
-            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
+            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.detailed_metadata.results` with the details of each item.
         """
 
         logger.debug(
@@ -458,7 +458,7 @@ class MGnifyList(MGnifier):
         Returns
         -------
         None
-            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
+            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.detailed_metadata.results` with the details of each item.
         """
         logger.debug(
             f"Starting async enrichment of {self.child_resource} details with limit {limit}."
@@ -735,18 +735,34 @@ class MGnifyDetail(MGnifier):
         """
         Get the list of downloads for this detail.
         """
+
         # no results, no downloads
         if len(self.metadata) == 0:
             return []
 
         # checking column names
-        cols = self.metadata.to_pandas().columns
+        df = self.metadata.to_pandas()
+        logger.debug(f"Metadata columns: {df.columns.tolist()}")
 
-        if "downloads" not in cols:
+        if "downloads" not in df.columns:
             logger.debug("No 'downloads' field. Returning empty list.")
             return []
 
-        downloads_cols: list[str] = self.downloads_df().columns
+        # combine all downloads lists into one list
+        _downloads = [item for sublist in df["downloads"] for item in sublist]
+
+        if not _downloads:
+            logger.debug("No downloads found in metadata. Returning empty list.")
+            return []
+
+        downloads_cols: list[str] = pd.DataFrame(_downloads).columns
+        logger.debug(f"downloads columns: {downloads_cols}")
+        if self._id_label not in downloads_cols:
+            logger.debug(
+                f"No '{self._id_label}' field in downloads. "
+                f"Attempting to add identifier info with id_param_key {self._id_label!r} and identifier {self.identifier!r}."
+            )
+            self._add_id_param_field(self.identifier)
 
         if "pipeline_version" not in downloads_cols:
             logger.debug(
@@ -755,16 +771,7 @@ class MGnifyDetail(MGnifier):
             )
             self._add_pipeline_version_field()
 
-        if self._id_label not in downloads_cols:
-            logger.debug(
-                f"No '{self._id_label}' field in downloads. "
-                f"Attempting to add identifier info with id_param_key {self._id_label!r} and identifier {self.identifier!r}."
-            )
-            self._add_id_param_field(self.identifier)
-
-        return [
-            item for sublist in self.to_pandas()["downloads"].values for item in sublist
-        ]
+        return _downloads
 
     def downloads_df(self, **pd_kwargs) -> Optional[pd.DataFrame]:
         """
@@ -773,7 +780,7 @@ class MGnifyDetail(MGnifier):
         return pd.DataFrame(self.downloads, **pd_kwargs)
 
     def _add_pipeline_version_field(self):
-        for item_dict in self.records:
+        for item_dict in self.metadata.records:
 
             # get pipeline_version from row if avail, i.e., analysisdetail
             if "pipeline_version" in item_dict and isinstance(
@@ -806,7 +813,8 @@ class MGnifyDetail(MGnifier):
 
     def _add_id_param_field(self, given_id: str):
 
-        for item_dict in self.records:
+        for item_dict in self.metadata.records:
+            logger.warning(f"{item_dict.keys()}")
             for each_download in item_dict.get("downloads", []):
                 # keep id
                 each_download.update({self._id_label: given_id})

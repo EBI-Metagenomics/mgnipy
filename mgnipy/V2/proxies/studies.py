@@ -21,15 +21,15 @@ class Studies(MGnifyList):
         super().__init__(params=params, config=config, **kwargs)
 
     def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads, **pd_kwargs)
+        return pd.DataFrame(self.downloads, **pd_kwargs)
 
     @property
     def datasets(self):
         """A property that returns an MGazine instance containing the downloads information for the study."""
         return MGazine(
-            downloads=self.details_downloads,
+            downloads=self.downloads,
             config=self.config,
-            studies_details=self.details_results,
+            studies_details=self.detailed_metadata.results,
         )
 
 
@@ -76,13 +76,13 @@ class PrivateStudies(MGnifyList):
         super().__init__(params=params, config=config, **kwargs)
 
     def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads, **pd_kwargs)
+        return pd.DataFrame(self.downloads, **pd_kwargs)
 
     @property
     def datasets(self):
         """A property that returns an MGazine instance containing the downloads information for the study."""
         return MGazine(
-            downloads=self.details_downloads,
+            downloads=self.downloads,
             config=self.config,
-            studies_details=self.details_results,
+            studies_details=self.detailed_metadata.results,
         )

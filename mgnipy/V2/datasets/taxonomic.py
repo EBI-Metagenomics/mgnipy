@@ -4,7 +4,7 @@ import functools as ft
 import logging
 
 from mgnipy._shared_helpers.biosamples_helper import (
-    get_biosample_metadata_from_acc,
+    get_biosample_metadata,
 )
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, Literal, Optional
 import anndata as ad
 import pandas as pd
 import polars as pl
-from mgnify_pipelines_toolkit.constants.tax_ranks import (
+from mgnipy._models.constants.tax_ranks import (
     MOTUS_TAX_RANKS,
     PR2_TAX_RANKS,
     SHORT_MOTUS_TAX_RANKS,
@@ -502,7 +502,7 @@ class _MGazineSetup(MGazine):
             )
             # get metadata
             try:
-                bm = get_biosample_metadata_from_acc(run, incl_ena=incl_ena)
+                bm = get_biosample_metadata(run, incl_ena=incl_ena)
                 self.append_biosamples_details(bm.iloc[0].to_dict())
             except Exception as e:
                 logger.error(f"Error occurred while enriching run {run}: {e}")
@@ -567,7 +567,7 @@ class _MGazineSetup(MGazine):
                 )
 
         if df_engine == "pandas":
-            return results_helper.to_df(
+            return results_helper.to_pandas(
                 expand_nested_dicts=expand_nested_dicts
             ).set_index("accession")
         elif df_engine == "polars":
