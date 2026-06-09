@@ -212,11 +212,15 @@ class DescribeEmgapiModule:
             The identifier parameter (e.g., "accession", "biome_lineage").
         """
         try:
+            logger.debug(
+                f"Attempting to retrieve identifier parameter key for resource '{self.emgapi_resource}'"
+            )
             return ID_PARAM[SupportedEndpoints(self.emgapi_resource)]
-        except KeyError:
-            raise AttributeError(
-                f"Resource {self.emgapi_resource} does not have a defined access identifier key."
-            ) from None
+        except (KeyError, ValueError) as exc:
+            logger.warning(
+                f"Resource {self.emgapi_resource} does not have a defined access identifier key: {exc}"
+            )
+            return "id"  # TODO
 
 
 __all__ = ["DescribeEmgapiModule"]

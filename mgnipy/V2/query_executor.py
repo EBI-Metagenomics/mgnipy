@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 
 from mgnipy._shared_helpers.async_helpers import get_semaphore
+from mgnipy._shared_helpers.validators import validate_status_code
 
 from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 
@@ -79,21 +80,23 @@ class QueryExecutor:
 
     def _parse_response(self, response: mpy_Response) -> Optional[Any]:
         logger.info(f"Response status code: {response.status_code}")
-        if response.status_code == 200:
-            if isinstance(response.parsed, (bytes, bytearray)):
-                return bytes(response.parsed)
+
+        if not validate_status_code(
+            response,
+            logger=logger,
+            db="MGnify",
+            acc=getattr(self.qs, "identifier", ""),
+            raise_error=False,
+        ):
+            logging.warning(
+                f"Response validation failed for {self._endpoint_str} endpoint. Status code: {response.status_code}"
+            )
+            return None
+
+        if isinstance(response.parsed, (bytes, bytearray)):
+            return bytes(response.parsed)
+        else:
             return response.parsed.to_dict()
-        if response.status_code == 403:
-            raise PermissionError(
-                "Access forbidden: You do not have permission to access this resource. "
-                "Please check your authentication token and permissions."
-            )
-        if response.status_code == 404:
-            raise FileNotFoundError(
-                "Resource not found: The requested file does not exist. "
-                "Please check the endpoint and parameters."
-            )
-        return None
 
     def _page_items(self, response: "mpy_Response") -> Optional[Any]:
         """Extract the 'items' from the API response.

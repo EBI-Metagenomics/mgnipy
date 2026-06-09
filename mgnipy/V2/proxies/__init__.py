@@ -333,6 +333,7 @@ class MGnifyList(MGnifier):
         """
         detail_cls = self._detail_cls
         custom_id_param_key = detail_cls._id_label
+        logger.debug(f"Using custom ID param key: {custom_id_param_key}")
         id_param = self.metadata._resolve_id_param(key, param_name=custom_id_param_key)
         resolved_id = id_param[custom_id_param_key]
         logger.debug(f"Resolved id param for detail: {id_param}")
@@ -814,7 +815,7 @@ class MGnifyDetail(MGnifier):
     def _add_id_param_field(self, given_id: str):
 
         for item_dict in self.metadata.records:
-            logger.warning(f"{item_dict.keys()}")
+            logger.debug(f"{item_dict.keys()}")
             for each_download in item_dict.get("downloads", []):
                 # keep id
                 each_download.update({self._id_label: given_id})

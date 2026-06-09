@@ -42,7 +42,7 @@ HEADERS = {"Accept": "application/json"}
 def get_biosample_metadata(
     sample_acc: str,
     client: httpx.Client | None = None,
-    incl_ena: bool = True,
+    incl_ena: bool = False,
 ) -> pd.DataFrame | bool:
     """
     Fetches BioSamples metadata for a given sample or run accession.
@@ -117,7 +117,7 @@ def get_biosample_metadata(
             # note saving over given sample_acc
             sample_acc = ena_metadata.loc[0, "SampleID"]
             run_acc = ena_metadata.loc[0, "RunID"]
-            logger.info(
+            logger.debug(
                 f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
             )
             # adding all ENA metadata fields to char_texts to be included in BioSamples results
@@ -125,7 +125,7 @@ def get_biosample_metadata(
                 char_texts[col] = ena_metadata.loc[0, col]
 
         else:
-            logger.info(
+            logger.warning(
                 f"No ENA metadata found for sample {sample_acc}, proceeding with BioSamples query without ENA parameters."
             )
             char_texts = {
@@ -141,13 +141,15 @@ def get_biosample_metadata(
         results: httpx.Response = httpx.get(URL, headers=HEADERS, params=param)
 
     # checks
-    logger.info(f"Response status code: {results.status_code}")
-    if not validate_status_code(results, sample_acc, logger, "BioSamples"):
+    logger.debug(f"Response status code: {results.status_code}")
+    if not validate_status_code(
+        response=results, acc=sample_acc, logger=logger, db="BioSamples"
+    ):
         return False
 
     if "_embedded" not in results.json():
         logger.error(
-            f"'_embedded' key not found in BioSamples response for sample {sample_acc}"
+            f"'_embedded' key not found in BioSamples response for sample {sample_acc}: {results.json()}"
         )
         return False
 
@@ -206,7 +208,7 @@ def get_biosample_metadata(
 
 def get_all_biosample_metadata(
     samples: list[str],
-    incl_ena: bool = True,
+    incl_ena: bool = False,
 ) -> pd.DataFrame:
     """
     Fetches BioSamples metadata for a list of sample accessions.
@@ -243,7 +245,7 @@ def get_all_biosample_metadata(
 async def aget_biosample_metadata(
     sample_acc: str,
     client: httpx.AsyncClient,
-    incl_ena: bool = True,
+    incl_ena: bool = False,
 ) -> pd.DataFrame | bool:
     """
     Fetches BioSamples metadata for a given sample or run accession.
@@ -318,7 +320,7 @@ async def aget_biosample_metadata(
             # note saving over given sample_acc
             sample_acc = ena_metadata.loc[0, "SampleID"]
             run_acc = ena_metadata.loc[0, "RunID"]
-            logger.info(
+            logger.debug(
                 f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
             )
             # adding all ENA metadata fields to char_texts to be included in BioSamples results
@@ -326,7 +328,7 @@ async def aget_biosample_metadata(
                 char_texts[col] = ena_metadata.loc[0, col]
 
         else:
-            logger.info(
+            logger.warning(
                 f"No ENA metadata found for sample {sample_acc}, proceeding with BioSamples query without ENA parameters."
             )
             char_texts = {
@@ -339,13 +341,15 @@ async def aget_biosample_metadata(
     )
 
     # checks
-    logger.info(f"Response status code: {results.status_code}")
-    if not validate_status_code(results, sample_acc, logger, "BioSamples"):
+    logger.debug(f"Response status code: {results.status_code}")
+    if not validate_status_code(
+        response=results, acc=sample_acc, logger=logger, db="BioSamples"
+    ):
         return False
 
     if "_embedded" not in results.json():
         logger.error(
-            f"'_embedded' key not found in BioSamples response for sample {sample_acc}"
+            f"'_embedded' key not found in BioSamples response for sample {sample_acc}: {results.json()}"
         )
         return False
 
@@ -404,7 +408,7 @@ async def aget_biosample_metadata(
 
 async def aget_all_biosample_metadata(
     samples: list[str],
-    incl_ena: bool = True,
+    incl_ena: bool = False,
 ) -> pd.DataFrame:
     """
     Fetches BioSamples metadata for a list of sample accessions.

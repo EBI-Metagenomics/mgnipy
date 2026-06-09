@@ -523,10 +523,9 @@ class StreamMixin:
     on :class:`MGazine` so they can be reused by other classes.
     """
 
-    def __init__(self, mgnifier_helper=None):
-        self._mgnifier_helper = mgnifier_helper or getattr(
-            self, "_mgnifier_helper", None
-        )
+    @property
+    def mgnifier_helper(self):
+        return getattr(self, "_mgnifier_helper", None)
 
     def _handle_incomplete_read(self, url: str):
         # self._download_helper = DownloadMixin(self._mgnifier_helper)

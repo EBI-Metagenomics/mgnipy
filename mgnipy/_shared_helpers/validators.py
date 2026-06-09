@@ -56,27 +56,44 @@ def validate_gt_int(input: int, smaller_int: int = 0) -> int:
 
 def validate_status_code(
     response: httpx.Response,
-    acc: str,
+    db: str = "MGnify",
+    acc: Optional[str] = "",
     logger: Optional[logging.Logger] = None,
-    db: str = "ENA",
+    raise_error: bool = False,
 ) -> bool:
 
+    is_valid: bool = True
+
     if logger:
-        feedback = logger.error
+        feedback = logger.warning
     else:
         feedback = print
 
     if response.status_code == 403:
         feedback(
-            f"{response.status_code}. {db} access forbidden for {acc}: You do not have permission to access this resource. "
+            f"{response.status_code}. {db} access forbidden: You do not have permission to access this {acc} resource."
         )
-        return False
+        is_valid = False
     elif response.status_code == 404:
         feedback(
-            f"{response.status_code}. {db} record not found for {acc}: The requested file does not exist. "
+            f"{response.status_code}. {db} record not found: The requested {acc} file may not exist or response not available at this time."
         )
-        return False
+        is_valid = False
+    elif response.status_code == 400:
+        feedback(
+            f"{response.status_code}. {db} bad request: The request was invalid or cannot be processed. Check the request parameters and try again."
+        )
+        is_valid = False
     elif response.status_code != 200:
-        feedback(f"{response.status_code}. Cannot access {db} record for {acc}")
-        return False
-    return True
+        feedback(f"{response.status_code}. {db} cannot access record {acc}")
+        is_valid = False
+
+    if raise_error and not is_valid:
+        raise Exception(
+            f"Response validation failed for {db} record {acc}. Status code: {response.status_code}"
+        )
+    else:
+        logging.debug(
+            f"Response validation for {db} record {acc} returned status code {response.status_code}. Valid: {is_valid}"
+        )
+        return is_valid

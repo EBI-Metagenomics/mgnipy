@@ -84,6 +84,10 @@ class QuerySet:
         if param_kwargs:
             self._params.update(param_kwargs)
 
+        logger.debug(
+            f"resource set to {self._resource} for QuerySet initialization and module {RESOURCES_ALL_ENDPOINTS[self._resource]} will be used"
+        )
+
         # handlers
         # for emgapi_v2_client
         self.emgapi_handler: DescribeEmgapiModule = DescribeEmgapiModule(

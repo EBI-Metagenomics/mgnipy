@@ -124,12 +124,16 @@ def _fetch_run(
     run_query_args = RUN_QUERY_ARGS.copy()
     run_query_args["includeAccessions"] = run_acc
 
+    logger.warning(
+        f"Fetching ENA run metadata for run {run_acc} with params: {run_query_args}"
+    )
+
     if client:
         results = client.get(URL, headers=HEADERS, params=run_query_args)
     else:
         results = httpx.get(URL, headers=HEADERS, params=run_query_args)
 
-    if not validate_status_code(results, run_acc, logger, "ENA"):
+    if not validate_status_code(response=results, acc=run_acc, logger=logger, db="ENA"):
         return False
 
     # check if response is empty
@@ -167,7 +171,9 @@ def _fetch_sample(
     else:
         results = httpx.get(URL, headers=HEADERS, params=sample_query_args)
 
-    if not validate_status_code(results, sample_acc, logger, "ENA"):
+    if not validate_status_code(
+        response=results, acc=sample_acc, logger=logger, db="ENA"
+    ):
         return False
 
     # check if response is empty
@@ -203,7 +209,7 @@ async def _afetch_run(run_acc: str, client: httpx.AsyncClient) -> dict | bool:
     results = await client.get(URL, headers=HEADERS, params=run_query_args)
 
     # checks
-    if not validate_status_code(results, run_acc, logger, "ENA"):
+    if not validate_status_code(response=results, acc=run_acc, logger=logger, db="ENA"):
         return False
     # check if response is empty
     run_payload = results.json()
@@ -238,12 +244,14 @@ async def _afetch_sample(sample_acc: str, client: httpx.AsyncClient) -> dict | b
     results = await client.get(URL, headers=HEADERS, params=sample_query_args)
 
     # checks
-    if not validate_status_code(results, sample_acc, logger, "ENA"):
+    if not validate_status_code(
+        response=results, acc=sample_acc, logger=logger, db="ENA"
+    ):
         return False
     # check if response is empty
     sample_payload = results.json()
     if not sample_payload:
-        logger.error(f"Empty ENA response for sample {sample_acc}")
+        logger.error(f"Empty ENA response for sample {sample_acc}: {results.json()}")
         return False
 
     return sample_payload[0]
