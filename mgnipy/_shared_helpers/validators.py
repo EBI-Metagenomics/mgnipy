@@ -1,8 +1,14 @@
+import logging
+
 from pydantic import (
     TypeAdapter,
     ValidationError,
     conint,
 )
+
+from typing import Optional
+
+import httpx
 
 int_gt_adapter = TypeAdapter(conint(gt=0))
 
@@ -46,3 +52,31 @@ def validate_gt_int(input: int, smaller_int: int = 0) -> int:
         return TypeAdapter(conint(gt=smaller_int)).validate_python(input)
     except ValidationError as e:
         raise ValueError(f"Int must be greater than {smaller_int}: {input}") from e
+
+
+def validate_status_code(
+    response: httpx.Response,
+    acc: str,
+    logger: Optional[logging.Logger] = None,
+    db: str = "ENA",
+) -> bool:
+
+    if logger:
+        feedback = logger.error
+    else:
+        feedback = print
+
+    if response.status_code == 403:
+        feedback(
+            f"{response.status_code}. {db} access forbidden for {acc}: You do not have permission to access this resource. "
+        )
+        return False
+    elif response.status_code == 404:
+        feedback(
+            f"{response.status_code}. {db} record not found for {acc}: The requested file does not exist. "
+        )
+        return False
+    elif response.status_code != 200:
+        feedback(f"{response.status_code}. Cannot access {db} record for {acc}")
+        return False
+    return True
