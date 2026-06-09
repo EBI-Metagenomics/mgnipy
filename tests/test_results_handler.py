@@ -17,7 +17,7 @@ def test_results_handler_to_list_and_to_json():
     ], "JSON conversion should serialize the same records."
 
 
-def test_results_handler_to_df_renames_and_expands_nested_columns():
+def test_results_handler_to_pandas_renames_and_expands_nested_columns():
     # Nested dictionaries should be flattened when requested, while lineage is renamed.
     handler = ResultsHandler(
         data=[
@@ -29,7 +29,7 @@ def test_results_handler_to_df_renames_and_expands_nested_columns():
         ]
     )
 
-    df = handler.to_df(expand_nested_dicts=["sample"])
+    df = handler.to_pandas(expand_nested_dicts=["sample"])
 
     assert list(df.columns) == [
         "biome_lineage",

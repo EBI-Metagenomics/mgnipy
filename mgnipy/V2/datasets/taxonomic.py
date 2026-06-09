@@ -107,9 +107,7 @@ class _MGazineSetup(MGazine):
         mgnify_analyses: Optional[list[dict[str, Any]]] = None,
     ):
 
-        super().__init__(
-            downloads=mgazine.downloads, config=config or mgazine.config
-        )
+        super().__init__(downloads=mgazine.downloads, config=config or mgazine.config)
         self.mz = mgazine
 
         if len(self.mz.list_pipeline_version()) > 1:
@@ -122,9 +120,7 @@ class _MGazineSetup(MGazine):
                 f"Multiple descriptions detected & `short_desc` not specified -- MGazine methods may not work as expected.\n'{self.mz.list_short_descriptions()[0]}' used for `long_short_mapping` determination and caching."
             )
         self.short_desc = self.mz.list_short_descriptions()[0]
-        logger.info(
-            f"TaxaMGazine initialized for short description: {self.short_desc}"
-        )
+        logger.info(f"TaxaMGazine initialized for short description: {self.short_desc}")
 
         # determine mapping
         if long_short_mapping is not None:
@@ -308,12 +304,8 @@ class _MGazineSetup(MGazine):
         return sorted(self._runs_accessions)
 
     def _iter_runs(self) -> list[str]:
-        run_results_accessions = [
-            mg.get("accession") for mg in self.mgnify_runs
-        ]
-        leftovers = [
-            x for x in self.runs_accessions if x not in run_results_accessions
-        ]
+        run_results_accessions = [mg.get("accession") for mg in self.mgnify_runs]
+        leftovers = [x for x in self.runs_accessions if x not in run_results_accessions]
         return leftovers
 
     def enrich_runs(
@@ -502,9 +494,7 @@ class _MGazineSetup(MGazine):
     @property
     def _retrieved_biosamples_given_ids(self) -> list[str]:
         return [
-            x.get("GivenID")
-            for x in self.biosamples_metadata
-            if isinstance(x, dict)
+            x.get("GivenID") for x in self.biosamples_metadata if isinstance(x, dict)
         ]
 
     def _iter_biosamples(self) -> list[str]:
@@ -598,9 +588,7 @@ class _MGazineSetup(MGazine):
         strict: bool = False,
     ) -> pl.DataFrame | pd.DataFrame:
 
-        df = self.lazy_merged.select(
-            list(self.long_short_mapping.keys())
-        ).collect()
+        df = self.lazy_merged.select(list(self.long_short_mapping.keys())).collect()
         if df_engine == "pandas":
             return df.to_pandas()
         elif df_engine == "polars":
@@ -785,9 +773,9 @@ class TaxaMGazine(_MGazineSetup):
 
         # lazyframes for given short_desc
         lazyframes = [
-            self.mz.stream(
-                url=u, chunksize=1000, dataframe_engine="polars"
-            ).rename({"#SampleID": "taxonomy"}, strict=False)
+            self.mz.stream(url=u, chunksize=1000, dataframe_engine="polars").rename(
+                {"#SampleID": "taxonomy"}, strict=False
+            )
             for u in self.mz.url_list
         ]
 

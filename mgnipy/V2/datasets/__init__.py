@@ -91,13 +91,11 @@ class MGazine(StreamMixin):
         new_mz = MGazine(
             combined_downloads,
             config=self.config,
-            mgnify_studies=(self.mgnify_studies or [])
-            + (other.mgnify_studies or []),
+            mgnify_studies=(self.mgnify_studies or []) + (other.mgnify_studies or []),
             mgnify_analyses=(self.mgnify_analyses or [])
             + (other.mgnify_analyses or []),
             mgnify_runs=(self.mgnify_runs or []) + (other.mgnify_runs or []),
-            mgnify_samples=(self.mgnify_samples or [])
-            + (other.mgnify_samples or []),
+            mgnify_samples=(self.mgnify_samples or []) + (other.mgnify_samples or []),
             mgnify_assemblies=(self.mgnify_assemblies or [])
             + (other.mgnify_assemblies or []),
             biosamples_metadata=(self.biosamples_metadata or [])
@@ -112,8 +110,7 @@ class MGazine(StreamMixin):
                     + (other.mgnify_studies or []),
                     mgnify_analyses=(self.mgnify_analyses or [])
                     + (other.mgnify_analyses or []),
-                    mgnify_runs=(self.mgnify_runs or [])
-                    + (other.mgnify_runs or []),
+                    mgnify_runs=(self.mgnify_runs or []) + (other.mgnify_runs or []),
                     mgnify_samples=(self.mgnify_samples or [])
                     + (other.mgnify_samples or []),
                     mgnify_assemblies=(self.mgnify_assemblies or [])
@@ -158,9 +155,7 @@ class MGazine(StreamMixin):
         Helper to create an MGnifier instance for a given download URL.
         Default settings is no cache (cache_dir=None)
         """
-        _config = self.config.model_copy(
-            update={"cache_dir": cache_dir}, deep=True
-        )
+        _config = self.config.model_copy(update={"cache_dir": cache_dir}, deep=True)
 
         # init
         mg = MGnifier(
@@ -168,9 +163,7 @@ class MGazine(StreamMixin):
             config=_config,
             url=url,
         )
-        logger.info(
-            f"MGnifier initialized with resource={mg.resource} and url={url}"
-        )
+        logger.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
         return mg
 
     @property
@@ -280,8 +273,7 @@ class MGazine(StreamMixin):
         grouped = self.downloads_df().groupby("pipeline_version")
 
         groups = {
-            version: group.to_dict(orient="records")
-            for version, group in grouped
+            version: group.to_dict(orient="records") for version, group in grouped
         }
         return groups
 
@@ -302,9 +294,7 @@ class MGazine(StreamMixin):
             )
         grouped = self.downloads_df().groupby("short_description")
 
-        groups = {
-            desc: group.to_dict(orient="records") for desc, group in grouped
-        }
+        groups = {desc: group.to_dict(orient="records") for desc, group in grouped}
         return groups
 
     def list_pipeline_version(self):
@@ -326,9 +316,7 @@ class MGazine(StreamMixin):
         if self.downloads_df().empty:
             return []
 
-        avail_vers = sorted(
-            self.downloads_df()["pipeline_version"].unique().tolist()
-        )
+        avail_vers = sorted(self.downloads_df()["pipeline_version"].unique().tolist())
 
         return avail_vers
 
@@ -351,9 +339,7 @@ class MGazine(StreamMixin):
         if self.downloads_df().empty:
             return []
 
-        avail_descs = sorted(
-            self.downloads_df()["short_description"].unique().tolist()
-        )
+        avail_descs = sorted(self.downloads_df()["short_description"].unique().tolist())
 
         return avail_descs
 
@@ -383,9 +369,9 @@ class MGazine(StreamMixin):
             )
 
             download_type = (
-                self.downloads_df()[
-                    self.downloads_df()["short_description"] == key
-                ]["download_type"]
+                self.downloads_df()[self.downloads_df()["short_description"] == key][
+                    "download_type"
+                ]
                 .unique()[0]
                 .lower()
             )
@@ -715,9 +701,7 @@ class MGazine(StreamMixin):
                         f"Connection error occurred while downloading {alias}: {ce}"
                     )
                 except Exception as e:
-                    logger.error(
-                        f"Error occurred while downloading {alias}: {e}"
-                    )
+                    logger.error(f"Error occurred while downloading {alias}: {e}")
 
     async def adownload_all(
         self,
@@ -812,9 +796,7 @@ class MGazine(StreamMixin):
         try:
             return df.query(f"alias == '{alias}'")["url"].values[0]
         except RuntimeError as err:
-            raise KeyError(
-                f"Issue getting download url for alias: {alias}"
-            ) from err
+            raise KeyError(f"Issue getting download url for alias: {alias}") from err
 
     def _get_alias_by_url(
         self, url: HttpUrl, df: Optional[pd.DataFrame] = None
@@ -862,9 +844,7 @@ class MGazine(StreamMixin):
         try:
             return df.query(f"alias == '{alias}'")["file_type"].values[0]
         except RuntimeError as err:
-            raise KeyError(
-                f"Issue getting file type for alias: {alias}"
-            ) from err
+            raise KeyError(f"Issue getting file type for alias: {alias}") from err
 
     def _prioritize_alias(
         self,

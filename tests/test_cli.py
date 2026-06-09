@@ -38,8 +38,8 @@ def test_build_parser_includes_supported_resource_choices():
         "studies" in get_parser._actions[1].choices
     ), "The get command should accept common public resources."
     assert (
-        "_downloads" in get_parser._actions[1].choices
-    ), "The CLI currently exposes the internal downloads endpoint choice."
+        "_custom_endpoint" in get_parser._actions[1].choices
+    ), "The CLI currently exposes the internal custom endpoint choice."
 
 
 def test_main_list_resources_uses_client(monkeypatch, capsys):

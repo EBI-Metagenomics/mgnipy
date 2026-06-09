@@ -190,8 +190,8 @@ def test_mgazine_mgnifier_helper_passes_download_url_and_disables_cache(
     )
 
     assert (
-        helper.resource == "_downloads"
-    ), "The helper should target the internal downloads endpoint."
+        helper.resource == "_custom_endpoint"
+    ), "The helper should target the internal custom endpoint."
     assert (
         helper.url == "https://example.org/reads.tsv"
     ), "The helper should forward the requested download URL."
@@ -202,7 +202,9 @@ def test_mgazine_mgnifier_helper_passes_download_url_and_disables_cache(
 
 def test_taxa_curator_builds_metadata_from_taxonomy_column(monkeypatch):
     # Avoid the cache bootstrap path so we can focus on the metadata transformation logic.
-    monkeypatch.setattr(TaxaMGazine, "_init_cache_handler_state", lambda self: None)
+    monkeypatch.setattr(
+        TaxaMGazine, "_init_cache_handler_state", lambda self: None
+    )
 
     mgazine = MGazine(
         [
@@ -253,7 +255,9 @@ def test_taxa_curator_builds_metadata_from_taxonomy_column(monkeypatch):
 
 def test_taxa_curator_inherits_mgazine_download_helpers(monkeypatch):
     # Keep the constructor lightweight and verify the curator still behaves like a MGazine.
-    monkeypatch.setattr(TaxaMGazine, "_init_cache_handler_state", lambda self: None)
+    monkeypatch.setattr(
+        TaxaMGazine, "_init_cache_handler_state", lambda self: None
+    )
 
     mgazine = MGazine(
         [
