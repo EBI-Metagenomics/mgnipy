@@ -161,7 +161,9 @@ class SupportedEndpoints(SpecialEnum):
     CATALOGUE = "catalogue"
     # ANNOTATIONS = "annotations"  # not really
     PRIVATE_STUDIES = "private_studies"
-    _DOWNLOADS = "_downloads"  # for internal use only, not an actual endpoint
+    _CUSTOM_ENDPOINT = (
+        "_custom_endpoint"  # for internal use only, not an actual endpoint
+    )
 
 
 class PipelineVersions(SpecialEnum):

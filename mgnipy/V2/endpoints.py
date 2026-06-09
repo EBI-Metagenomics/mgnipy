@@ -50,10 +50,10 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_publications,
     list_mgnify_study_samples,
 )
-from mgnipy.V2 import custom_endpoint
+from mgnipy._shared_helpers._custom_endpoint import custom_endpoint
 
 CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
-    SupportedEndpoints._DOWNLOADS: custom_endpoint,
+    SupportedEndpoints._CUSTOM_ENDPOINT: custom_endpoint,
 }
 
 RESOURCES_LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
@@ -157,7 +157,6 @@ ALL_LIST_ENDPOINTS: list[callable] = list(RESOURCES_LIST_ENDPOINTS.values()) + [
 
 ID_PARAM = {
     SupportedEndpoints.BIOMES: "biome_lineage",
-    SupportedEndpoints.BIOME: "biome_lineage",
     SupportedEndpoints.STUDIES: "accession",
     SupportedEndpoints.SAMPLES: "accession",
     SupportedEndpoints.RUNS: "accession",
@@ -174,4 +173,5 @@ ID_PARAM = {
     SupportedEndpoints.ASSEMBLY: "accession",
     SupportedEndpoints.PUBLICATION: "pubmed_id",
     SupportedEndpoints.CATALOGUE: "catalogue_id",
+    SupportedEndpoints._CUSTOM_ENDPOINT: "custom_id",
 }
