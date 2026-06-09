@@ -99,15 +99,17 @@ class _MGazineSetup(MGazine):
         config: Optional[MGnipyConfig] = None,
         *,
         long_short_mapping: Optional[dict[str, str]] = None,
-        assemblies_details: Optional[list[dict[str, Any]]] = None,
-        runs_details: Optional[list[dict[str, Any]]] = None,
-        samples_details: Optional[list[dict[str, Any]]] = None,
-        studies_details: Optional[list[dict[str, Any]]] = None,
-        biosamples_details: Optional[list[dict[str, Any]]] = None,
-        analyses_details: Optional[list[dict[str, Any]]] = None,
+        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        mgnify_runs: Optional[list[dict[str, Any]]] = None,
+        mgnify_samples: Optional[list[dict[str, Any]]] = None,
+        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        biosamples_metadata: Optional[list[dict[str, Any]]] = None,
+        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
     ):
 
-        super().__init__(downloads=mgazine.downloads, config=config or mgazine.config)
+        super().__init__(
+            downloads=mgazine.downloads, config=config or mgazine.config
+        )
         self.mz = mgazine
 
         if len(self.mz.list_pipeline_version()) > 1:
@@ -120,7 +122,9 @@ class _MGazineSetup(MGazine):
                 f"Multiple descriptions detected & `short_desc` not specified -- MGazine methods may not work as expected.\n'{self.mz.list_short_descriptions()[0]}' used for `long_short_mapping` determination and caching."
             )
         self.short_desc = self.mz.list_short_descriptions()[0]
-        logger.info(f"TaxaMGazine initialized for short description: {self.short_desc}")
+        logger.info(
+            f"TaxaMGazine initialized for short description: {self.short_desc}"
+        )
 
         # determine mapping
         if long_short_mapping is not None:
@@ -144,12 +148,12 @@ class _MGazineSetup(MGazine):
         self.cache_handler: DiskCheckpointer = None
         self._lazy_merged: pl.LazyFrame = None
         self._runs_accessions: list = None
-        self._runs_details: list = runs_details or []
-        self._samples_details: list = samples_details or []
-        self._studies_details: list = studies_details or []
-        self._biosamples_details: list = biosamples_details or []
-        self._analyses_details: list = analyses_details or []
-        self._assemblies_details: list = assemblies_details or []
+        self._mgnify_runs: list = mgnify_runs or []
+        self._mgnify_samples: list = mgnify_samples or []
+        self._mgnify_studies: list = mgnify_studies or []
+        self._biosamples_metadata: list = biosamples_metadata or []
+        self._mgnify_analyses: list = mgnify_analyses or []
+        self._mgnify_assemblies: list = mgnify_assemblies or []
 
     def __str__(self):
         return (
@@ -166,8 +170,8 @@ class _MGazineSetup(MGazine):
         self.cache_handler = DiskCheckpointer(
             params_getter=lambda: {
                 "mgazine": str(self.mz),
-                "short_desc": self.short_desc,
-                "runs_accessions": self.runs_accessions,
+                "short_desc": sorted(self.short_desc),
+                "runs_accessions": sorted(self.runs_accessions),
             },
             resource_str=f"TaxaMGazine_{self.short_desc}",
             config=self.config,
@@ -177,90 +181,90 @@ class _MGazineSetup(MGazine):
             f"Initialized DiskCheckpointer for TaxaMGazine with cache dir: {self.cache_dir}"
         )
         self.cache_handler.load_cache()
-        self._runs_details = self.cache_handler._results.get(1, [])
-        self._samples_details = self.cache_handler._results.get(2, [])
-        self._studies_details = self.cache_handler._results.get(3, [])
-        self._biosamples_details = self.cache_handler._results.get(4, [])
-        self._analyses_details = self.cache_handler._results.get(5, [])
-        self._assemblies_details = self.cache_handler._results.get(6, [])
+        self._mgnify_runs = self.cache_handler._results.get(1, [])
+        self._mgnify_samples = self.cache_handler._results.get(2, [])
+        self._mgnify_studies = self.cache_handler._results.get(3, [])
+        self._biosamples_metadata = self.cache_handler._results.get(4, [])
+        self._mgnify_analyses = self.cache_handler._results.get(5, [])
+        self._mgnify_assemblies = self.cache_handler._results.get(6, [])
 
     @property
-    def runs_details(self) -> list[dict[str, Any]]:
-        return self._runs_details
+    def mgnify_runs(self) -> list[dict[str, Any]]:
+        return self._mgnify_runs
 
-    @runs_details.setter
-    def runs_details(self, value: list[dict[str, Any]]):
-        self._runs_details = value
-        self.cache_handler.write_results(1, self._runs_details)
+    @mgnify_runs.setter
+    def mgnify_runs(self, value: list[dict[str, Any]]):
+        self._mgnify_runs = value
+        self.cache_handler.write_results(1, self._mgnify_runs)
 
-    def append_runs_details(self, value: dict[str, Any]):
-        self._runs_details.append(value)
-        self.cache_handler.write_results(1, self._runs_details)
-
-    @property
-    def samples_details(self) -> list[dict[str, Any]]:
-        return self._samples_details
-
-    @samples_details.setter
-    def samples_details(self, value: list[dict[str, Any]]):
-        self._samples_details = value
-        self.cache_handler.write_results(2, self._samples_details)
-
-    def append_samples_details(self, value: dict[str, Any]):
-        self._samples_details.append(value)
-        self.cache_handler.write_results(2, self._samples_details)
+    def append_mgnify_runs(self, value: dict[str, Any]):
+        self._mgnify_runs.append(value)
+        self.cache_handler.write_results(1, self._mgnify_runs)
 
     @property
-    def studies_details(self) -> list[dict[str, Any]]:
-        return self._studies_details
+    def mgnify_samples(self) -> list[dict[str, Any]]:
+        return self._mgnify_samples
 
-    @studies_details.setter
-    def studies_details(self, value: list[dict[str, Any]]):
-        self._studies_details = value
-        self.cache_handler.write_results(3, self._studies_details)
+    @mgnify_samples.setter
+    def mgnify_samples(self, value: list[dict[str, Any]]):
+        self._mgnify_samples = value
+        self.cache_handler.write_results(2, self._mgnify_samples)
 
-    def append_studies_details(self, value: dict[str, Any]):
-        self._studies_details.append(value)
-        self.cache_handler.write_results(3, self._studies_details)
-
-    @property
-    def biosamples_details(self) -> list[dict[str, Any]]:
-        return self._biosamples_details
-
-    @biosamples_details.setter
-    def biosamples_details(self, value: list[dict[str, Any]]):
-        self._biosamples_details = value
-        self.cache_handler.write_results(4, self._biosamples_details)
-
-    def append_biosamples_details(self, value: dict[str, Any]):
-        self._biosamples_details.append(value)
-        self.cache_handler.write_results(4, self._biosamples_details)
+    def append_mgnify_samples(self, value: dict[str, Any]):
+        self._mgnify_samples.append(value)
+        self.cache_handler.write_results(2, self._mgnify_samples)
 
     @property
-    def analyses_details(self) -> list[dict[str, Any]]:
-        return self._analyses_details
+    def mgnify_studies(self) -> list[dict[str, Any]]:
+        return self._mgnify_studies
 
-    @analyses_details.setter
-    def analyses_details(self, value: list[dict[str, Any]]):
-        self._analyses_details = value
-        self.cache_handler.write_results(5, self._analyses_details)
+    @mgnify_studies.setter
+    def mgnify_studies(self, value: list[dict[str, Any]]):
+        self._mgnify_studies = value
+        self.cache_handler.write_results(3, self._mgnify_studies)
 
-    def append_analyses_details(self, value: dict[str, Any]):
-        self._analyses_details.append(value)
-        self.cache_handler.write_results(5, self._analyses_details)
+    def append_mgnify_studies(self, value: dict[str, Any]):
+        self._mgnify_studies.append(value)
+        self.cache_handler.write_results(3, self._mgnify_studies)
 
     @property
-    def assemblies_details(self) -> list[dict[str, Any]]:
-        return self._assemblies_details
+    def biosamples_metadata(self) -> list[dict[str, Any]]:
+        return self._biosamples_metadata
 
-    @assemblies_details.setter
-    def assemblies_details(self, value: list[dict[str, Any]]):
-        self._assemblies_details = value
-        self.cache_handler.write_results(6, self._assemblies_details)
+    @biosamples_metadata.setter
+    def biosamples_metadata(self, value: list[dict[str, Any]]):
+        self._biosamples_metadata = value
+        self.cache_handler.write_results(4, self._biosamples_metadata)
 
-    def append_assemblies_details(self, value: dict[str, Any]):
-        self._assemblies_details.append(value)
-        self.cache_handler.write_results(6, self._assemblies_details)
+    def append_biosamples_metadata(self, value: dict[str, Any]):
+        self._biosamples_metadata.append(value)
+        self.cache_handler.write_results(4, self._biosamples_metadata)
+
+    @property
+    def mgnify_analyses(self) -> list[dict[str, Any]]:
+        return self._mgnify_analyses
+
+    @mgnify_analyses.setter
+    def mgnify_analyses(self, value: list[dict[str, Any]]):
+        self._mgnify_analyses = value
+        self.cache_handler.write_results(5, self._mgnify_analyses)
+
+    def append_mgnify_analyses(self, value: dict[str, Any]):
+        self._mgnify_analyses.append(value)
+        self.cache_handler.write_results(5, self._mgnify_analyses)
+
+    @property
+    def mgnify_assemblies(self) -> list[dict[str, Any]]:
+        return self._mgnify_assemblies
+
+    @mgnify_assemblies.setter
+    def mgnify_assemblies(self, value: list[dict[str, Any]]):
+        self._mgnify_assemblies = value
+        self.cache_handler.write_results(6, self._mgnify_assemblies)
+
+    def append_mgnify_assemblies(self, value: dict[str, Any]):
+        self._mgnify_assemblies.append(value)
+        self.cache_handler.write_results(6, self._mgnify_assemblies)
 
     @property
     def lazy_merged(self) -> pl.LazyFrame:
@@ -301,14 +305,23 @@ class _MGazineSetup(MGazine):
         self._runs_accessions = (
             self.lazy_merged.select("RunID").collect().to_series().to_list()
         )
-        return self._runs_accessions
+        return sorted(self._runs_accessions)
 
     def _iter_runs(self) -> list[str]:
-        run_results_accessions = [mg.get("accession") for mg in self.runs_details]
-        leftovers = [x for x in self.runs_accessions if x not in run_results_accessions]
+        run_results_accessions = [
+            mg.get("accession") for mg in self.mgnify_runs
+        ]
+        leftovers = [
+            x for x in self.runs_accessions if x not in run_results_accessions
+        ]
         return leftovers
 
-    def enrich_runs(self, limit: Optional[int] = 200, hide_progress: bool = False):
+    def enrich_runs(
+        self,
+        limit: Optional[int] = 200,
+        hide_progress: bool = False,
+        strict: bool = True,
+    ):
         """
         Enriches the run metadata for the runs in the taxonomic dataset by iterating through the run accessions and retrieving their details using the RunDetail proxy. The results are cached using the DiskCheckpointer to avoid redundant API calls in future runs.
 
@@ -330,16 +343,20 @@ class _MGazineSetup(MGazine):
 
         runs_todo: list[str] = self._iter_runs()[:limit]
 
+        logger.warning(
+            f"Enriching {len(runs_todo)} runs for short description {self.short_desc}. Total runs: {len(self.runs_accessions)}. Already enriched: {len(self.mgnify_runs)}. Starting run: {runs_todo[0]}, Ending run: {runs_todo[-1]}."
+        )
+
         for count, run in enumerate(
             tqdm_sync(
                 runs_todo,
                 total=len(self.runs_accessions),
-                initial=len(self.runs_details),
+                initial=len(self.mgnify_runs),
                 desc="Enriching runs",
                 disable=hide_progress,
             )
         ):
-            logger.info(
+            logger.debug(
                 f"Enriching run {run} for short description {self.short_desc}. Count: {count}"
             )
             # get metadata
@@ -356,12 +373,29 @@ class _MGazineSetup(MGazine):
                 mg = proxy(accession=run, config=self.config).get()
             except Exception as e:
                 logger.error(f"Error occurred while enriching run {run}: {e}")
-                mg = {"accession": run}
+                mg = None
 
-            self.append_runs_details(mg)
+            if not strict and mg is None:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for run {run}. Appending placeholder with accession only."
+                )
+                mg = {"accession": run}
+            elif strict and mg is None:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for run {run}. Skipping appending to results."
+                )
+
+            if mg is not None:
+                self.append_mgnify_runs(mg)
+
+                if proxy == AssemblyDetail:
+                    self.append_mgnify_assemblies(mg)
 
     async def aenrich_runs(
-        self, limit: Optional[int] = 200, hide_progress: bool = False
+        self,
+        limit: Optional[int] = 200,
+        hide_progress: bool = False,
+        strict: bool = True,
     ):
         """
         Asynchronously enriches the run metadata for the runs in the taxonomic dataset by iterating through the run accessions and retrieving their details using the RunDetail proxy. The results are cached using the DiskCheckpointer to avoid redundant API calls in future runs.
@@ -387,7 +421,7 @@ class _MGazineSetup(MGazine):
         runs_todo: list[str] = self._iter_runs()[:limit]
 
         logger.warning(
-            f"Enriching {len(runs_todo)} runs for short description {self.short_desc}. Total runs: {len(self.runs_accessions)}. Already enriched: {len(self.runs_details)}. Starting run: {runs_todo[0]}, Ending run: {runs_todo[-1]}."
+            f"Enriching {len(runs_todo)} runs for short description {self.short_desc}. Total runs: {len(self.runs_accessions)}. Already enriched: {len(self.mgnify_runs)}. Starting run: {runs_todo[0]}, Ending run: {runs_todo[-1]}."
         )
 
         # helper that offloads synchronous proxy construction to a thread
@@ -402,7 +436,17 @@ class _MGazineSetup(MGazine):
                 mg = await proxy.aget()
             except Exception as e:
                 logger.error(f"Error occurred while enriching run {run}: {e}")
-                mg = {"accession": run, "error": str(e)}
+                mg = None
+
+            if not strict and mg is None:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for run {run}. Appending placeholder with accession only."
+                )
+                mg = {"accession": run}
+            elif strict and mg is None:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for run {run}. Skipping appending to results."
+                )
             return mg
 
         # schedule tasks (cheap now because construction is deferred into _fetch)
@@ -412,22 +456,17 @@ class _MGazineSetup(MGazine):
         for done in tqdm_asyncio.as_completed(
             tasks,
             total=len(self.runs_accessions),
-            initial=len(self.runs_details),
+            initial=len(self.mgnify_runs),
             desc="Enriching runs",
             disable=hide_progress,
         ):
             mg = await done
-            # append the result (getter already guarantees an accession key)
-            self.append_runs_details(mg)
+            if mg is not None:
+                self.append_mgnify_runs(mg)
 
-        # sanity: detect any runs still missing and append placeholders
-        enriched_accessions = {
-            r.get("accession") for r in self.runs_details if isinstance(r, dict)
-        }
-        failed = [r for r in runs_todo if r not in enriched_accessions]
-        for run in failed:
-            logger.error(f"Run {run} failed to enrich in asynchronous enrichment.")
-            self.append_runs_details({"accession": run})
+                if "ERZ" in mg.get("accession", ""):
+                    logger.debug(f"Enriching assembly {mg.get('accession')}")
+                    self.append_mgnify_assemblies(mg)
 
     def enrich_samples(self):
         pass
@@ -436,36 +475,54 @@ class _MGazineSetup(MGazine):
         pass
 
     @property
-    def runs_to_samples(self) -> dict[str, str]:
+    def assemblies_to_samples(self) -> dict[str, str]:
         return {
-            mg.get("accession"): mg.get("sample", {}).get("accession")
-            for mg in self.runs_details
+            mg.get("accession"): mg.get("sample_accession")
+            for mg in self.mgnify_runs
             if isinstance(mg, dict)
         }
 
     @property
-    def _retrieved_biosamples_sample_ids(self) -> list[str]:
-        return [
-            x.get("SampleID") for x in self.biosamples_details if isinstance(x, dict)
-        ]
+    def assemblies_to_runs(self) -> dict[str, str]:
+        return {
+            mg.get("accession"): mg.get("run_accession")
+            for mg in self.mgnify_assemblies
+            if isinstance(mg, dict)
+        }
 
     @property
-    def _retrieved_biosamples_runs_ids(self) -> list[str]:
-        return [x.get("RunID") for x in self.biosamples_details if isinstance(x, dict)]
+    def runs_to_samples(self) -> dict[str, str]:
+        return {
+            mg.get("accession"): mg.get("sample", {}).get("accession")
+            or mg.get("sample_accession")
+            for mg in self.mgnify_runs
+            if isinstance(mg, dict)
+        }
+
+    @property
+    def _retrieved_biosamples_given_ids(self) -> list[str]:
+        return [
+            x.get("GivenID")
+            for x in self.biosamples_metadata
+            if isinstance(x, dict)
+        ]
 
     def _iter_biosamples(self) -> list[str]:
-        leftovers = [
-            x
-            for x in self.runs_accessions
-            if x not in self._retrieved_biosamples_runs_ids
-        ]
-        return leftovers
+
+        copied_mapping = self.runs_to_samples.copy()
+
+        for k, v in self.runs_to_samples.items():
+            if v in self._retrieved_biosamples_given_ids:
+                del copied_mapping[k]
+
+        return list(copied_mapping.values())
 
     def enrich_biosamples(
         self,
         limit: Optional[int] = 200,
         hide_progress: bool = False,
-        incl_ena: bool = True,
+        incl_ena: bool = False,
+        strict: bool = True,
     ):
         """
         Enriches the biosample metadata for the biosamples in the taxonomic dataset by iterating through the biosample accessions and retrieving their details using the BiosampleDetail proxy. The results are cached using the DiskCheckpointer to avoid redundant API calls in future runs.
@@ -487,26 +544,52 @@ class _MGazineSetup(MGazine):
         )
 
         runs_todo: list[str] = self._iter_biosamples()[:limit]
+        logger.warning(
+            f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self.runs_to_samples)}. Already enriched: {len(self.biosamples_metadata)}. Starting run: {runs_todo[0]}, Ending run: {runs_todo[-1]}."
+        )
 
         for count, run in enumerate(
             tqdm_sync(
                 runs_todo,
                 total=len(self.runs_accessions),
-                initial=len(self.biosamples_details),
+                initial=len(self.biosamples_metadata),
                 desc="Enriching biosamples",
                 disable=hide_progress,
             )
         ):
-            logger.info(
-                f"Enriching biosample {run} for short description {self.short_desc}. Count: {count}"
-            )
+            logger.info(f"Enriching biosample {run}. Count: {count}")
             # get metadata
             try:
                 bm = get_biosample_metadata(run, incl_ena=incl_ena)
-                self.append_biosamples_details(bm.iloc[0].to_dict())
             except Exception as e:
                 logger.error(f"Error occurred while enriching run {run}: {e}")
-                self.append_biosamples_details({"RunID": run})
+                bm = False
+
+            if isinstance(bm, bool) and not strict:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for biosample {run}. Appending placeholder with GivenID only."
+                )
+                bm = {"GivenID": run}
+            elif isinstance(bm, bool) and strict:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for biosample {run}. Skipping appending to results."
+                )
+            elif isinstance(bm, pd.DataFrame) and not bm.empty:
+                self.append_biosamples_metadata(bm.iloc[0].to_dict())
+            else:
+                logger.error(
+                    f"Enrichment for biosample {run} did not return a valid DataFrame. Skipping appending to results."
+                )
+
+    def aenrich_biosamples(
+        self,
+        limit: Optional[int] = 200,
+        hide_progress: bool = False,
+        incl_ena: bool = False,
+        strict: bool = True,
+    ):
+        # TODO
+        pass
 
     def taxonomic_metadata(
         self,
@@ -515,7 +598,9 @@ class _MGazineSetup(MGazine):
         strict: bool = False,
     ) -> pl.DataFrame | pd.DataFrame:
 
-        df = self.lazy_merged.select(list(self.long_short_mapping.keys())).collect()
+        df = self.lazy_merged.select(
+            list(self.long_short_mapping.keys())
+        ).collect()
         if df_engine == "pandas":
             return df.to_pandas()
         elif df_engine == "polars":
@@ -526,15 +611,15 @@ class _MGazineSetup(MGazine):
         df_engine: Literal["polars", "pandas"] = "pandas",
         strict: bool = False,
         expand_nested_dicts: bool = True,
-        incl_runs_details: bool = True,
-        incl_samples_details: bool = True,
-        incl_studies_details: bool = True,
-        incl_biosamples_details: bool = True,
-        incl_analyses_details: bool = True,
-        incl_assemblies_details: bool = True,
+        incl_mgnify_runs: bool = True,
+        incl_mgnify_samples: bool = True,
+        incl_mgnify_studies: bool = True,
+        incl_biosamples_metadata: bool = True,
+        incl_mgnify_analyses: bool = True,
+        incl_mgnify_assemblies: bool = True,
     ) -> pl.DataFrame | pd.DataFrame:
 
-        if not self.runs_details:
+        if not self.mgnify_runs:
             logger.warning(
                 "No runs have been enriched yet. Returning empty metadata DataFrame. Please run `enrich_runs()` first to populate the metadata."
             )
@@ -549,12 +634,12 @@ class _MGazineSetup(MGazine):
                 )
 
         results_helper = ResultsHandler(
-            data=self.runs_details,
+            data=self.mgnify_runs,
         )
 
-        if strict and len(self.runs_details) < len(self.runs_accessions):
+        if strict and len(self.mgnify_runs) < len(self.runs_accessions):
             logger.warning(
-                f"Strict mode is on but only {len(self.runs_details)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
+                f"Strict mode is on but only {len(self.mgnify_runs)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
             )
             if df_engine == "pandas":
                 return pd.DataFrame(
@@ -593,24 +678,24 @@ class DWCTaxaMGazine(_MGazineSetup):
         config: Optional[MGnipyConfig] = None,
         *,
         long_short_mapping: Optional[dict[str, str]] = None,
-        assemblies_details: Optional[list[dict[str, Any]]] = None,
-        runs_details: Optional[list[dict[str, Any]]] = None,
-        samples_details: Optional[list[dict[str, Any]]] = None,
-        studies_details: Optional[list[dict[str, Any]]] = None,
-        biosamples_details: Optional[list[dict[str, Any]]] = None,
-        analyses_details: Optional[list[dict[str, Any]]] = None,
+        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        mgnify_runs: Optional[list[dict[str, Any]]] = None,
+        mgnify_samples: Optional[list[dict[str, Any]]] = None,
+        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        biosamples_metadata: Optional[list[dict[str, Any]]] = None,
+        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
     ):
 
         super().__init__(
             mgazine=mgazine,
             config=config,
             long_short_mapping=long_short_mapping,
-            runs_details=runs_details,
-            samples_details=samples_details,
-            studies_details=studies_details,
-            biosamples_details=biosamples_details,
-            analyses_details=analyses_details,
-            assemblies_details=assemblies_details,
+            mgnify_runs=mgnify_runs,
+            mgnify_samples=mgnify_samples,
+            mgnify_studies=mgnify_studies,
+            biosamples_metadata=biosamples_metadata,
+            mgnify_analyses=mgnify_analyses,
+            mgnify_assemblies=mgnify_assemblies,
         )
         # extra dwc check
         if ("dwc-ready" not in self.short_desc.lower()) or (
@@ -627,7 +712,7 @@ class DWCTaxaMGazine(_MGazineSetup):
         """
         self._init_cache_handler_state()
         logger.info(
-            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.runs_details)} of total {len(self.runs_accessions)}."
+            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.mgnify_runs)} of total {len(self.runs_accessions)}."
         )
 
 
@@ -640,12 +725,12 @@ class TaxaMGazine(_MGazineSetup):
         config: Optional[MGnipyConfig] = None,
         *,
         long_short_mapping: Optional[dict[str, str]] = None,
-        assemblies_details: Optional[list[dict[str, Any]]] = None,
-        runs_details: Optional[list[dict[str, Any]]] = None,
-        samples_details: Optional[list[dict[str, Any]]] = None,
-        studies_details: Optional[list[dict[str, Any]]] = None,
-        biosamples_details: Optional[list[dict[str, Any]]] = None,
-        analyses_details: Optional[list[dict[str, Any]]] = None,
+        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        mgnify_runs: Optional[list[dict[str, Any]]] = None,
+        mgnify_samples: Optional[list[dict[str, Any]]] = None,
+        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        biosamples_metadata: Optional[list[dict[str, Any]]] = None,
+        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
     ):
 
         self.TAX_COLS = (
@@ -659,12 +744,12 @@ class TaxaMGazine(_MGazineSetup):
             mgazine=mgazine,
             config=config,
             long_short_mapping=long_short_mapping,
-            runs_details=runs_details,
-            samples_details=samples_details,
-            studies_details=studies_details,
-            biosamples_details=biosamples_details,
-            analyses_details=analyses_details,
-            assemblies_details=assemblies_details,
+            mgnify_runs=mgnify_runs,
+            mgnify_samples=mgnify_samples,
+            mgnify_studies=mgnify_studies,
+            biosamples_metadata=biosamples_metadata,
+            mgnify_analyses=mgnify_analyses,
+            mgnify_assemblies=mgnify_assemblies,
         )
 
         print(
@@ -680,7 +765,7 @@ class TaxaMGazine(_MGazineSetup):
         """
         self._init_cache_handler_state()
         print(
-            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.runs_details)} of total {len(self.runs_accessions)}."
+            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.mgnify_runs)} of total {len(self.runs_accessions)}."
         )
 
     @property
@@ -700,9 +785,9 @@ class TaxaMGazine(_MGazineSetup):
 
         # lazyframes for given short_desc
         lazyframes = [
-            self.mz.stream(url=u, chunksize=1000, dataframe_engine="polars").rename(
-                {"#SampleID": "taxonomy"}, strict=False
-            )
+            self.mz.stream(
+                url=u, chunksize=1000, dataframe_engine="polars"
+            ).rename({"#SampleID": "taxonomy"}, strict=False)
             for u in self.mz.url_list
         ]
 
@@ -799,9 +884,9 @@ class TaxaMGazine(_MGazineSetup):
         """
         try:
             return ad.AnnData(
-                self.X(),
+                self.X()[sorted(self.X().columns)],
                 obs=self.taxonomic_metadata(),
-                var=self.metadata(),
+                var=self.metadata().sort_index(),
                 **anndata_kwargs,
             )
         except ValueError as e:

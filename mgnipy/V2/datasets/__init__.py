@@ -58,21 +58,21 @@ class MGazine(StreamMixin):
         downloads: list[dict[str, Any]],
         config: Optional[MGnipyConfig] = None,
         *,
-        studies_details: Optional[list[dict[str, Any]]] = None,
-        analyses_details: Optional[list[dict[str, Any]]] = None,
-        runs_details: Optional[list[dict[str, Any]]] = None,
-        samples_details: Optional[list[dict[str, Any]]] = None,
-        assemblies_details: Optional[list[dict[str, Any]]] = None,
-        biosamples_details: Optional[list[dict[str, Any]]] = None,
+        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
+        mgnify_runs: Optional[list[dict[str, Any]]] = None,
+        mgnify_samples: Optional[list[dict[str, Any]]] = None,
+        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        biosamples_metadata: Optional[list[dict[str, Any]]] = None,
     ):
         self.downloads = downloads
         self.config = config or MGnipyConfig()
-        self._studies_details = studies_details
-        self._analyses_details = analyses_details
-        self._runs_details = runs_details
-        self._samples_details = samples_details
-        self._assemblies_details = assemblies_details
-        self._biosamples_details = biosamples_details
+        self._mgnify_studies = mgnify_studies
+        self._mgnify_analyses = mgnify_analyses
+        self._mgnify_runs = mgnify_runs
+        self._mgnify_samples = mgnify_samples
+        self._mgnify_assemblies = mgnify_assemblies
+        self._biosamples_metadata = biosamples_metadata
 
     def __str__(self):
         return (
@@ -91,34 +91,35 @@ class MGazine(StreamMixin):
         new_mz = MGazine(
             combined_downloads,
             config=self.config,
-            studies_details=(self.studies_details or [])
-            + (other.studies_details or []),
-            analyses_details=(self.analyses_details or [])
-            + (other.analyses_details or []),
-            runs_details=(self.runs_details or []) + (other.runs_details or []),
-            samples_details=(self.samples_details or [])
-            + (other.samples_details or []),
-            assemblies_details=(self.assemblies_details or [])
-            + (other.assemblies_details or []),
-            biosamples_details=(self.biosamples_details or [])
-            + (other.biosamples_details or []),
+            mgnify_studies=(self.mgnify_studies or [])
+            + (other.mgnify_studies or []),
+            mgnify_analyses=(self.mgnify_analyses or [])
+            + (other.mgnify_analyses or []),
+            mgnify_runs=(self.mgnify_runs or []) + (other.mgnify_runs or []),
+            mgnify_samples=(self.mgnify_samples or [])
+            + (other.mgnify_samples or []),
+            mgnify_assemblies=(self.mgnify_assemblies or [])
+            + (other.mgnify_assemblies or []),
+            biosamples_metadata=(self.biosamples_metadata or [])
+            + (other.biosamples_metadata or []),
         )
         if new_mz.__class__ != self.__class__:
             try:
                 return self.__class__(
                     mgazine=new_mz,
                     config=self.config,
-                    studies_details=(self.studies_details or [])
-                    + (other.studies_details or []),
-                    analyses_details=(self.analyses_details or [])
-                    + (other.analyses_details or []),
-                    runs_details=(self.runs_details or []) + (other.runs_details or []),
-                    samples_details=(self.samples_details or [])
-                    + (other.samples_details or []),
-                    assemblies_details=(self.assemblies_details or [])
-                    + (other.assemblies_details or []),
-                    biosamples_details=(self.biosamples_details or [])
-                    + (other.biosamples_details or []),
+                    mgnify_studies=(self.mgnify_studies or [])
+                    + (other.mgnify_studies or []),
+                    mgnify_analyses=(self.mgnify_analyses or [])
+                    + (other.mgnify_analyses or []),
+                    mgnify_runs=(self.mgnify_runs or [])
+                    + (other.mgnify_runs or []),
+                    mgnify_samples=(self.mgnify_samples or [])
+                    + (other.mgnify_samples or []),
+                    mgnify_assemblies=(self.mgnify_assemblies or [])
+                    + (other.mgnify_assemblies or []),
+                    biosamples_metadata=(self.biosamples_metadata or [])
+                    + (other.biosamples_metadata or []),
                 )
             except Exception as e:
                 logger.warning(
@@ -127,28 +128,28 @@ class MGazine(StreamMixin):
         return new_mz
 
     @property
-    def studies_details(self) -> Optional[list[dict[str, Any]]]:
-        return self._studies_details
+    def mgnify_studies(self) -> Optional[list[dict[str, Any]]]:
+        return self._mgnify_studies
 
     @property
-    def analyses_details(self) -> Optional[list[dict[str, Any]]]:
-        return self._analyses_details
+    def mgnify_analyses(self) -> Optional[list[dict[str, Any]]]:
+        return self._mgnify_analyses
 
     @property
-    def runs_details(self) -> Optional[list[dict[str, Any]]]:
-        return self._runs_details
+    def mgnify_runs(self) -> Optional[list[dict[str, Any]]]:
+        return self._mgnify_runs
 
     @property
-    def samples_details(self) -> Optional[list[dict[str, Any]]]:
-        return self._samples_details
+    def mgnify_samples(self) -> Optional[list[dict[str, Any]]]:
+        return self._mgnify_samples
 
     @property
-    def assemblies_details(self) -> Optional[list[dict[str, Any]]]:
-        return self._assemblies_details
+    def mgnify_assemblies(self) -> Optional[list[dict[str, Any]]]:
+        return self._mgnify_assemblies
 
     @property
-    def biosamples_details(self) -> Optional[list[dict[str, Any]]]:
-        return self._biosamples_details
+    def biosamples_metadata(self) -> Optional[list[dict[str, Any]]]:
+        return self._biosamples_metadata
 
     def _mgnifier_helper(
         self, url: str = "", cache_dir: Optional[DirectoryPath] = None
@@ -157,15 +158,19 @@ class MGazine(StreamMixin):
         Helper to create an MGnifier instance for a given download URL.
         Default settings is no cache (cache_dir=None)
         """
-        _config = self.config.model_copy(update={"cache_dir": cache_dir}, deep=True)
+        _config = self.config.model_copy(
+            update={"cache_dir": cache_dir}, deep=True
+        )
 
         # init
         mg = MGnifier(
-            resource="_downloads",
+            resource="_custom_endpoint",
             config=_config,
             url=url,
         )
-        logger.info(f"MGnifier initialized with resource={mg.resource} and url={url}")
+        logger.info(
+            f"MGnifier initialized with resource={mg.resource} and url={url}"
+        )
         return mg
 
     @property
@@ -275,7 +280,8 @@ class MGazine(StreamMixin):
         grouped = self.downloads_df().groupby("pipeline_version")
 
         groups = {
-            version: group.to_dict(orient="records") for version, group in grouped
+            version: group.to_dict(orient="records")
+            for version, group in grouped
         }
         return groups
 
@@ -296,7 +302,9 @@ class MGazine(StreamMixin):
             )
         grouped = self.downloads_df().groupby("short_description")
 
-        groups = {desc: group.to_dict(orient="records") for desc, group in grouped}
+        groups = {
+            desc: group.to_dict(orient="records") for desc, group in grouped
+        }
         return groups
 
     def list_pipeline_version(self):
@@ -315,7 +323,12 @@ class MGazine(StreamMixin):
         ['v4_1', 'v5']
         """
 
-        avail_vers = sorted(self.downloads_df()["pipeline_version"].unique().tolist())
+        if self.downloads_df().empty:
+            return []
+
+        avail_vers = sorted(
+            self.downloads_df()["pipeline_version"].unique().tolist()
+        )
 
         return avail_vers
 
@@ -335,7 +348,12 @@ class MGazine(StreamMixin):
         ['shortdesc1', 'shortdesc2']
         """
 
-        avail_descs = sorted(self.downloads_df()["short_description"].unique().tolist())
+        if self.downloads_df().empty:
+            return []
+
+        avail_descs = sorted(
+            self.downloads_df()["short_description"].unique().tolist()
+        )
 
         return avail_descs
 
@@ -356,18 +374,18 @@ class MGazine(StreamMixin):
             new_mz = MGazine(
                 self.by_short_desc()[key],
                 config=self.config,
-                studies_details=self.studies_details,
-                analyses_details=self.analyses_details,
-                runs_details=self.runs_details,
-                samples_details=self.samples_details,
-                assemblies_details=self.assemblies_details,
-                biosamples_details=self.biosamples_details,
+                mgnify_studies=self.mgnify_studies,
+                mgnify_analyses=self.mgnify_analyses,
+                mgnify_runs=self.mgnify_runs,
+                mgnify_samples=self.mgnify_samples,
+                mgnify_assemblies=self.mgnify_assemblies,
+                biosamples_metadata=self.biosamples_metadata,
             )
 
             download_type = (
-                self.downloads_df()[self.downloads_df()["short_description"] == key][
-                    "download_type"
-                ]
+                self.downloads_df()[
+                    self.downloads_df()["short_description"] == key
+                ]["download_type"]
                 .unique()[0]
                 .lower()
             )
@@ -380,12 +398,12 @@ class MGazine(StreamMixin):
                 return DWCTaxaMGazine(
                     mgazine=new_mz,
                     config=self.config,
-                    studies_details=self.studies_details,
-                    analyses_details=self.analyses_details,
-                    runs_details=self.runs_details,
-                    samples_details=self.samples_details,
-                    assemblies_details=self.assemblies_details,
-                    biosamples_details=self.biosamples_details,
+                    mgnify_studies=self.mgnify_studies,
+                    mgnify_analyses=self.mgnify_analyses,
+                    mgnify_runs=self.mgnify_runs,
+                    mgnify_samples=self.mgnify_samples,
+                    mgnify_assemblies=self.mgnify_assemblies,
+                    biosamples_metadata=self.biosamples_metadata,
                 )
 
             if "taxonom" in download_type and "dwc-ready" not in key.lower():
@@ -395,12 +413,12 @@ class MGazine(StreamMixin):
                 return TaxaMGazine(
                     mgazine=new_mz,
                     config=self.config,
-                    studies_details=self.studies_details,
-                    analyses_details=self.analyses_details,
-                    runs_details=self.runs_details,
-                    samples_details=self.samples_details,
-                    assemblies_details=self.assemblies_details,
-                    biosamples_details=self.biosamples_details,
+                    mgnify_studies=self.mgnify_studies,
+                    mgnify_analyses=self.mgnify_analyses,
+                    mgnify_runs=self.mgnify_runs,
+                    mgnify_samples=self.mgnify_samples,
+                    mgnify_assemblies=self.mgnify_assemblies,
+                    biosamples_metadata=self.biosamples_metadata,
                 )
 
             # TODO other download types
@@ -697,7 +715,9 @@ class MGazine(StreamMixin):
                         f"Connection error occurred while downloading {alias}: {ce}"
                     )
                 except Exception as e:
-                    logger.error(f"Error occurred while downloading {alias}: {e}")
+                    logger.error(
+                        f"Error occurred while downloading {alias}: {e}"
+                    )
 
     async def adownload_all(
         self,
@@ -792,7 +812,9 @@ class MGazine(StreamMixin):
         try:
             return df.query(f"alias == '{alias}'")["url"].values[0]
         except RuntimeError as err:
-            raise KeyError(f"Issue getting download url for alias: {alias}") from err
+            raise KeyError(
+                f"Issue getting download url for alias: {alias}"
+            ) from err
 
     def _get_alias_by_url(
         self, url: HttpUrl, df: Optional[pd.DataFrame] = None
@@ -840,7 +862,9 @@ class MGazine(StreamMixin):
         try:
             return df.query(f"alias == '{alias}'")["file_type"].values[0]
         except RuntimeError as err:
-            raise KeyError(f"Issue getting file type for alias: {alias}") from err
+            raise KeyError(
+                f"Issue getting file type for alias: {alias}"
+            ) from err
 
     def _prioritize_alias(
         self,

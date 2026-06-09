@@ -28,7 +28,7 @@ class Analyses(MGnifyList):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
-            analyses_details=self.detailed_metadata.results,
+            mgnify_analyses=self.detailed_metadata.results,
         )
 
 
@@ -57,5 +57,5 @@ class AnalysisDetail(MGnifyDetail):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
-            analyses_details=self._results.get(1, None),
+            mgnify_analyses=self._results.get(1, None),
         )
