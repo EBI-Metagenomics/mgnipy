@@ -21,14 +21,15 @@
 import logging
 
 logger = logging.getLogger(__name__)
-from collections import defaultdict
-from typing import Any, Dict, List, Union
+from typing import Any
 
 import pandas as pd
-import requests
-from mgnify_pipelines_toolkit.analysis.shared.dwc_summary_generator import (
+from mgnipy._shared_helpers.ena import (
     get_ena_metadata_from_run_acc,
+    aget_ena_metadata_from_run_acc,
 )
+from mgnipy._shared_helpers.validators import validate_status_code
+from mgnipy._shared_helpers.async_helpers import get_semaphore
 import asyncio
 import httpx
 from tqdm import tqdm as tqdm_sync
@@ -38,10 +39,11 @@ URL = "https://www.ebi.ac.uk/biosamples/samples"
 HEADERS = {"Accept": "application/json"}
 
 
-def get_biosample_metadata_from_acc(
+def get_biosample_metadata(
     sample_acc: str,
+    client: httpx.Client | None = None,
     incl_ena: bool = True,
-) -> Union[pd.DataFrame, bool]:
+) -> pd.DataFrame | bool:
     """
     Fetches BioSamples metadata for a given sample or run accession.
 
@@ -55,10 +57,12 @@ def get_biosample_metadata_from_acc(
         e.g. "SAMEA5180673"
     incl_ena : bool
         If True, the function will first attempt to retrieve metadata from ENA for the given run accession and include it in the BioSamples query parameters. This can help to retrieve more comprehensive metadata if the sample is linked to an ENA run. If False, the function will query BioSamples using only the provided sample accession.
+    client: httpx.Client, optional
+        An optional httpx.Client instance to use for making the API request. If not provided, just use httpx get
 
     Returns
     -------
-    Union[pd.DataFrame, bool]
+    pd.DataFrame | bool
         A DataFrame containing the BioSamples metadata for the given sample or run accession, or False if the accession is not found or if there is an error during retrieval.
 
     Raises
@@ -67,10 +71,14 @@ def get_biosample_metadata_from_acc(
         If the provided accession appears to be a project accession rather than a sample or run accession.
         i.e., if the accession starts with "ERP", "DRP", "SRP", or "PRJ"
 
+    Notes
+    -----
+    - connection clean up is not handled in this function! If a client is passed, it is the caller's responsibility to manage its lifecycle (e.g., closing it after use).
+
     Examples
     --------
     >>> # Example usage of the function to retrieve BioSamples metadata for a given sample accession
-    >>> biosample_metadata = get_biosample_metadata_from_acc("SAMEA5180673", incl_ena=False)
+    >>> biosample_metadata = get_biosample_metadata("SAMEA5180673", incl_ena=False)
     >>> biosample_metadata.loc[0, "SampleID"]
     'SAMEA5180673'
     >>> str(biosample_metadata.loc[0, "taxid"])
@@ -80,7 +88,7 @@ def get_biosample_metadata_from_acc(
     ...
     KeyError: 'StudyID'
     >>> # another example with ENA metadata
-    >>> biosample_metadata_with_ena = get_biosample_metadata_from_acc("SAMEA111547191", incl_ena=True)
+    >>> biosample_metadata_with_ena = get_biosample_metadata("SAMEA111547191", incl_ena=True)
     >>> biosample_metadata_with_ena.loc[0, "StudyID"]
     'ERP142200'
     """
@@ -112,7 +120,7 @@ def get_biosample_metadata_from_acc(
             logger.info(
                 f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
             )
-
+            # adding all ENA metadata fields to char_texts to be included in BioSamples results
             for col in ena_metadata.columns:
                 char_texts[col] = ena_metadata.loc[0, col]
 
@@ -125,28 +133,16 @@ def get_biosample_metadata_from_acc(
                 "RunID": run_acc,
             }
 
-    results: requests.Response = requests.get(
-        URL,
-        headers=HEADERS,
-        params={"filter": f"acc:{sample_acc}"},
-    )
+    param = {"filter": f"acc:{sample_acc}"}
 
+    if client:
+        results: httpx.Response = client.get(URL, headers=HEADERS, params=param)
+    else:
+        results: httpx.Response = httpx.get(URL, headers=HEADERS, params=param)
+
+    # checks
     logger.info(f"Response status code: {results.status_code}")
-
-    if results.status_code == 403:
-        logger.error(
-            f"{results.status_code}. BioSamples access forbidden for {sample_acc}: You do not have permission to access this resource. "
-        )
-        return False
-    elif results.status_code == 404:
-        logger.error(
-            f"{results.status_code}. BioSamples record not found for {sample_acc}: The requested file does not exist. "
-        )
-        return False
-    elif results.status_code != 200:
-        logger.error(
-            f"{results.status_code}. Cannot access BioSamples record for {sample_acc}"
-        )
+    if not validate_status_code(results, sample_acc, logger, "BioSamples"):
         return False
 
     if "_embedded" not in results.json():
@@ -186,9 +182,10 @@ def get_biosample_metadata_from_acc(
 
     sample_acc = first_text("External Id")
     if char_texts.get("GivenID") != sample_acc and run_acc is None:
+        # assuming given id is run if doesn't match sample id
         run_acc = char_texts.get("GivenID")
 
-    # init row with sampleID, name, taxid, SRA accession,
+    # add sampleID, name, taxid, SRA accession,
     char_texts.update(
         {
             "SampleID": sample_acc,
@@ -207,10 +204,10 @@ def get_biosample_metadata_from_acc(
     return df
 
 
-def get_all_biosample_metadata_from_acc(
-    samples: List[str],
+def get_all_biosample_metadata(
+    samples: list[str],
     incl_ena: bool = True,
-) -> Dict[str, pd.DataFrame]:
+) -> pd.DataFrame:
     """
     Fetches BioSamples metadata for a list of sample accessions.
 
@@ -218,29 +215,89 @@ def get_all_biosample_metadata_from_acc(
     metadata is parsed and stored in a dictionary, where the key is the sample
     accession and the value is a DataFrame containing the metadata.
 
-    Parameters:
-        samples (List[str]): A list of strings representing sample accessions for which
-            the metadata needs to be retrieved.
+    Parameters
+    ----------
+    samples : list[str]
+        A list of strings representing sample accessions for which the metadata needs to be retrieved.
+    incl_ena : bool
+        If True, the function will first attempt to retrieve metadata from ENA for the given run
 
-    Returns:
-        Dict[str, pd.DataFrame]: A dictionary where keys are sample accessions and
-        values are DataFrames containing the corresponding BioSamples metadata.
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the BioSamples metadata for all requested samples.
     """
-    sample_metadata_dict = defaultdict(pd.DataFrame)
+    sample_metadata = []
 
-    for sample in tqdm_sync(samples, desc="Retrieving BioSamples metadata for samples"):
-        res_df = get_biosample_metadata_from_acc(sample, incl_ena=incl_ena)
-        if res_df is not False:
-            sample_metadata_dict[sample] = res_df
+    with httpx.Client(headers=HEADERS) as client:
+        for sample in tqdm_sync(
+            samples, desc="Retrieving BioSamples metadata for samples"
+        ):
+            res_df = get_biosample_metadata(sample, incl_ena=incl_ena, client=client)
+            if res_df is not False:
+                sample_metadata.append(res_df)
 
-    return sample_metadata_dict
+    return pd.concat(sample_metadata, ignore_index=True)
 
 
-async def aget_biosample_metadata_from_acc(
+async def aget_biosample_metadata(
     sample_acc: str,
+    client: httpx.AsyncClient,
     incl_ena: bool = True,
-    client: httpx.AsyncClient | None = None,
-) -> Union[pd.DataFrame, bool]:
+) -> pd.DataFrame | bool:
+    """
+    Fetches BioSamples metadata for a given sample or run accession.
+
+    This function retrieves curated metadata from the BioSamples database for the provided
+    sample or run accession. It returns a DataFrame with the fields "SampleID", "name", "taxid", "SRA accession", and any other characteristics (not standardized) available for the sample. See BioSamples documentation for more details: https://read-docs-biosamples.readthedocs.io/en/latest/update/curation.html. If the sample or run accession is not found or if there is an error during retrieval, the function returns False.
+
+    Parameters
+    ----------
+    sample_acc : str
+        A string representing the sample or run accession for which the metadata needs to be retrieved.
+        e.g. "SAMEA5180673"
+    incl_ena : bool
+        If True, the function will first attempt to retrieve metadata from ENA for the given run accession and include it in the BioSamples query parameters. This can help to retrieve more comprehensive metadata if the sample is linked to an ENA run. If False, the function will query BioSamples using only the provided sample accession.
+    client: httpx.AsyncClient
+        An httpx.AsyncClient instance to use for making the API request.
+
+    Returns
+    -------
+    pd.DataFrame | bool
+        A DataFrame containing the BioSamples metadata for the given sample or run accession, or False if the accession is not found or if there is an error during retrieval.
+
+    Raises
+    ------
+    ValueError
+        If the provided accession appears to be a project accession rather than a sample or run accession.
+        i.e., if the accession starts with "ERP", "DRP", "SRP", or "PRJ"
+
+    Notes
+    -----
+    - connection clean up is not handled in this function! If a client is passed, it is the caller's responsibility to manage its lifecycle (e.g., closing it after use).
+
+    Examples
+    --------
+    >>> # Example usage of the function to retrieve BioSamples metadata for a given sample accession
+    >>> biosample_metadata = get_biosample_metadata("SAMEA5180673", incl_ena=False)
+    >>> biosample_metadata.loc[0, "SampleID"]
+    'SAMEA5180673'
+    >>> str(biosample_metadata.loc[0, "taxid"])
+    '408170'
+    >>> biosample_metadata.loc[0, "StudyID"]
+    Traceback (most recent call last):
+    ...
+    KeyError: 'StudyID'
+    >>> # another example with ENA metadata
+    >>> biosample_metadata_with_ena = get_biosample_metadata("SAMEA111547191", incl_ena=True)
+    >>> biosample_metadata_with_ena.loc[0, "StudyID"]
+    'ERP142200'
+    """
+    # Query the BioSamples API for the given sample accession
+    # https://read-docs-biosamples.readthedocs.io/en/latest/search/search-programmatically.html
+
+    char_texts: dict[str, str] = {}
+
     if (
         sample_acc.startswith("ERP")
         or sample_acc.startswith("DRP")
@@ -248,95 +305,147 @@ async def aget_biosample_metadata_from_acc(
         or sample_acc.startswith("PRJ")
     ):
         raise ValueError(
-            f"Provided accession {sample_acc} appears to be a project accession rather than a sample accession."
+            f"Provided accession {sample_acc} appears to be a project accession rather than a sample accession. Please provide a sample or runs accession to retrieve BioSamples metadata."
         )
 
     _given_id = sample_acc
     run_acc = None
-    char_texts: dict[str, Any] = {"GivenID": _given_id}
+    char_texts = {"GivenID": _given_id}
 
     if incl_ena:
-        ena_metadata = await asyncio.to_thread(
-            get_ena_metadata_from_run_acc, sample_acc
-        )
+        ena_metadata = await aget_ena_metadata_from_run_acc(sample_acc)
         if ena_metadata is not False:
+            # note saving over given sample_acc
             sample_acc = ena_metadata.loc[0, "SampleID"]
             run_acc = ena_metadata.loc[0, "RunID"]
+            logger.info(
+                f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
+            )
+            # adding all ENA metadata fields to char_texts to be included in BioSamples results
             for col in ena_metadata.columns:
                 char_texts[col] = ena_metadata.loc[0, col]
+
         else:
-            char_texts = {"SampleID": sample_acc, "RunID": run_acc}
-
-    close_client = client is None
-
-    if client is None:
-        client = httpx.AsyncClient(headers=HEADERS, timeout=30)
-
-    try:
-        response = await client.get(URL, params={"filter": f"acc:{sample_acc}"})
-        if response.status_code != 200:
-            return False
-
-        payload = response.json()
-        if "_embedded" not in payload:
-            return False
-
-        returned_samples = payload["_embedded"].get("samples", [])
-        if not returned_samples:
-            return False
-
-        biosample_record = returned_samples[0]
-        characteristics = biosample_record.get("characteristics", {})
-
-        def first_text(name: str) -> str:
-            values = characteristics.get(name, [])
-            if not values:
-                return "NA"
-            text = values[0].get("text", "")
-            return text if text else "NA"
-
-        sample_acc = first_text("External Id")
-        if char_texts.get("GivenID") != sample_acc and run_acc is None:
-            run_acc = char_texts.get("GivenID")
-
-        char_texts.update(
-            {
+            logger.info(
+                f"No ENA metadata found for sample {sample_acc}, proceeding with BioSamples query without ENA parameters."
+            )
+            char_texts = {
                 "SampleID": sample_acc,
                 "RunID": run_acc,
-                "SRA accession": biosample_record.get("sraAccession", "NA"),
-                "name": biosample_record.get("name", "NA"),
-                "taxid": biosample_record.get("taxId", "NA"),
             }
+
+    results: httpx.Response = await client.get(
+        URL, headers=HEADERS, params={"filter": f"acc:{sample_acc}"}
+    )
+
+    # checks
+    logger.info(f"Response status code: {results.status_code}")
+    if not validate_status_code(results, sample_acc, logger, "BioSamples"):
+        return False
+
+    if "_embedded" not in results.json():
+        logger.error(
+            f"'_embedded' key not found in BioSamples response for sample {sample_acc}"
         )
+        return False
 
-        char_texts.update({key: first_text(key) for key in characteristics.keys()})
+    try:
+        # getting first sample record returned
+        returned_samples: list[dict[str, Any]] = results.json()["_embedded"]["samples"]
+    except (KeyError, TypeError):
+        logger.error(f"Error parsing BioSamples response for sample {sample_acc}")
+        return False
 
-        return pd.DataFrame(char_texts, index=[0])
-    finally:
-        if close_client:
-            await client.aclose()
+    if not returned_samples:
+        logger.error(f"No BioSamples record found for sample {sample_acc}")
+        return False
+    elif len(returned_samples) > 1:
+        logger.warning(
+            f"Multiple BioSamples records found for sample {sample_acc}, using the first one returned. Total records found: {len(returned_samples)}"
+        )
+    biosample_record: dict[str, Any] = returned_samples[0]
+
+    # metadta in characteristics field
+    characteristics: dict[str, list[dict[str, Any]]] = biosample_record.get(
+        "characteristics", {}
+    )
+
+    # function to get the first text value for a given characteristic, or "NA" if not available
+    def first_text(name: str) -> str:
+        values = characteristics.get(name, [])
+        if not values:
+            return "NA"
+        text = values[0].get("text", "")
+        return text if text else "NA"
+
+    sample_acc = first_text("External Id")
+    if char_texts.get("GivenID") != sample_acc and run_acc is None:
+        # assuming given id is run if doesn't match sample id
+        run_acc = char_texts.get("GivenID")
+
+    # add sampleID, name, taxid, SRA accession,
+    char_texts.update(
+        {
+            "SampleID": sample_acc,
+            "RunID": run_acc,
+            "SRA accession": biosample_record.get("sraAccession", "NA"),
+            "name": biosample_record.get("name", "NA"),
+            "taxid": biosample_record.get("taxId", "NA"),
+        }
+    )
+
+    # now adding characteristics texts
+    char_texts.update({key: first_text(key) for key in characteristics.keys()})
+
+    # to pandas
+    df = pd.DataFrame(char_texts, index=[0])
+    return df
 
 
-async def aget_all_biosample_metadata_from_acc(
+async def aget_all_biosample_metadata(
     samples: list[str],
     incl_ena: bool = True,
-) -> dict[str, pd.DataFrame]:
+) -> pd.DataFrame:
+    """
+    Fetches BioSamples metadata for a list of sample accessions.
 
-    sample_metadata_dict = defaultdict(pd.DataFrame)
+    This function retrieves metadata from Biosamples. For each valid sample accession, the
+    metadata is parsed and stored in a dictionary, where the key is the sample
+    accession and the value is a DataFrame containing the metadata.
 
-    async def _fetch(sample: str):
-        res_df = await aget_biosample_metadata_from_acc(sample, incl_ena=incl_ena)
-        if res_df is not False:
-            sample_metadata_dict[sample] = res_df
-        return res_df
+    Parameters
+    ----------
+    samples (list[str])
+        A list of strings representing sample accessions for which the metadata needs to be retrieved.
 
-    tasks = [_fetch(sample) for sample in samples]
+    Returns
+    -------
+    dict[str, pd.DataFrame]
+        A dictionary where keys are sample accessions and values are DataFrames containing the corresponding BioSamples metadata.
 
-    for done in tqdm_asyncio.as_completed(
-        tasks,
-        total=len(samples),
-        desc="Retrieving BioSamples metadata for samples",
-    ):
-        _ = await done
+    Notes
+    -----
+    - connection clean up is not handled in this function! If a client is passed, it is the caller's responsibility to manage its lifecycle (e.g., closing it after use).
+    """
+    sample_metadata = []
 
-    return sample_metadata_dict
+    semaphore = get_semaphore(10)
+
+    # protect api
+    async with semaphore:
+        async with httpx.AsyncClient(headers=HEADERS) as client:
+            tasks = {
+                asyncio.create_task(
+                    aget_biosample_metadata(acc, client=client, incl_ena=incl_ena)
+                ): acc
+                for acc in samples
+            }
+
+            for done in tqdm_asyncio.as_completed(
+                tasks, desc="(async) Retrieving BioSamples metadata for samples"
+            ):
+                res_df = await done
+                if res_df is not False:
+                    sample_metadata.append(res_df)
+
+    return pd.concat(sample_metadata, ignore_index=True)

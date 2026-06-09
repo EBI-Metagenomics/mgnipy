@@ -29,6 +29,7 @@ import pandas as pd
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
 from mgnipy._shared_helpers.validators import validate_status_code
+from mgnipy._shared_helpers.async_helpers import get_semaphore
 
 URL = "https://www.ebi.ac.uk/ena/portal/api/search"
 HEADERS = {"Accept": "application/json"}
@@ -115,6 +116,10 @@ def _fetch_run(
     Notes
     -----
     - connection clean up is not handled in this function! If a client is passed, it is the caller's responsibility to manage its lifecycle (e.g., closing it after use).
+
+    Examples
+    --------
+    #TODO: add doctests
     """
     run_query_args = RUN_QUERY_ARGS.copy()
     run_query_args["includeAccessions"] = run_acc
@@ -335,19 +340,24 @@ async def aget_all_ena_metadata_from_run_acc(
     """
     results: list[pd.DataFrame] = []
 
-    async with httpx.AsyncClient(headers=HEADERS) as client:
-        tasks = [
-            asyncio.create_task(aget_ena_metadata_from_run_acc(run_acc, client=client))
-            for run_acc in run_accs
-        ]
+    semaphore = get_semaphore(10)
 
-        for done in tqdm_asyncio.as_completed(
-            tasks,
-            total=len(tasks),
-            desc="(async) Retrieving ENA metadata",
-        ):
-            res_df = await done
-            if res_df is not False:
-                results.append(res_df)
+    async with semaphore:
+        async with httpx.AsyncClient(headers=HEADERS) as client:
+            tasks = [
+                asyncio.create_task(
+                    aget_ena_metadata_from_run_acc(run_acc, client=client)
+                )
+                for run_acc in run_accs
+            ]
+
+            for done in tqdm_asyncio.as_completed(
+                tasks,
+                total=len(tasks),
+                desc="(async) Retrieving ENA metadata",
+            ):
+                res_df = await done
+                if res_df is not False:
+                    results.append(res_df)
 
     return pd.concat(results, ignore_index=True)
