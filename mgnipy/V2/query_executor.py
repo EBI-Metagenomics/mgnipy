@@ -12,6 +12,8 @@ from mgnipy._shared_helpers.validators import validate_status_code
 
 from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+
 if TYPE_CHECKING:
     from mgnipy.emgapi_v2_client.types import Response as mpy_Response
     from mgnipy.V2.query_set import QuerySet
@@ -26,7 +28,11 @@ class QueryExecutor:
     The QueryExecutor is designed to work closely with a QuerySet, using its query definitions and caching mechanisms to efficiently retrieve and store results. It includes helper methods for initializing API clients, parsing responses, and managing iteration state.
     """
 
-    def __init__(self, query_set: "QuerySet"):
+    def __init__(
+        self,
+        query_set: "QuerySet",
+        httpx_client: Optional[Client | AuthenticatedClient] = None,
+    ):
         self.qs: "QuerySet" = query_set
         self._endpoint_str: str = self.qs.emgapi_handler.endpoint_module.__name__.split(
             "."
@@ -36,47 +42,14 @@ class QueryExecutor:
         # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
         self._semaphore = get_semaphore()
 
+        self.httpx_client = httpx_client or init_httpx_client(self.qs.config)
+
     def query_setups(
         self, request_num: Optional[int] = None, **httpx_kwargs
     ) -> dict[dict[str, Any]]:
         if request_num is None:
             return self.qs.queries(**httpx_kwargs)
         return self.qs.queries(**httpx_kwargs).get(request_num, None)
-
-    def _init_client(
-        self,
-        auth_token: Optional[str] = None,
-        **httpx_kwargs,
-    ) -> Client:
-        """
-        Initialize and return a MGnify API client instance.
-
-        Returns
-        -------
-        Client
-            Configured MGnify API client.
-
-        Example
-        -------
-        >>> # Initialize an http client (doctest skipped)
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor._init_client()  # doctest: +SKIP
-        """
-
-        _auth = auth_token or self.qs.config.auth_token
-
-        if _auth:
-            logger.info("Initializing client with provided auth token.")
-            return AuthenticatedClient(
-                base_url=str(self.qs.base_url),
-                token=_auth,
-                **httpx_kwargs,
-            )
-
-        return Client(
-            base_url=str(self.qs.base_url),
-            **httpx_kwargs,
-        )
 
     def _parse_response(self, response: mpy_Response) -> Optional[Any]:
         logger.info(f"Response status code: {response.status_code}")
@@ -178,7 +151,7 @@ class QueryExecutor:
             Parsed response from the API, or None if the request failed.
         """
         # prep client
-        a_client = client or self._init_client()
+        a_client = client or init_httpx_client(self.qs.config)
         # prep params
         request_params = {**(params or self.qs.params), **kwargs}
         # request
@@ -222,12 +195,12 @@ class QueryExecutor:
 
         # check if alrady in results first
         if self.qs._is_in_results(page_num):
-            logger.info(f"Page {page_num} already retrieved.")
+            logger.debug(f"Page {page_num} already retrieved.")
             return self.qs._results.get(page_num, None)
 
         # otherwise get page
         # init client if not provided
-        a_client = client or self._init_client()
+        a_client = client or self.httpx_client
         # getting params from qs
         params = self.query_setups(page_num).get("params", None)
         logger.info(f"Fetching request num {page_num} with params: {params}")

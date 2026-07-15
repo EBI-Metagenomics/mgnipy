@@ -3,10 +3,10 @@ import logging
 from pathlib import Path
 
 from mgnipy.V2.metadata import MGnifyMetadata
-from mgnipy.emgapi_v2_client.client import Client
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 
 logger = logging.getLogger(__name__)
-import os
 from typing import Any, Optional
 
 import pandas as pd
@@ -50,6 +50,8 @@ class MGnifier(QuerySet):
         *,
         config: Optional[MGnipyConfig | dict] = None,
         params: Optional[dict[str, Any]] = None,
+        httpx_client: Optional[Client | AuthenticatedClient] = None,
+        interactive_auth: bool = False,
         **param_kwargs,
     ) -> None:
         """Initialize a query for a given MGnify resource.
@@ -79,25 +81,18 @@ class MGnifier(QuerySet):
             **param_kwargs,
         )
 
-        # init executor
-        self.exec = QueryExecutor(self)
+        self.httpx_client = httpx_client or init_httpx_client(self.config)
+
+        # init executor with client
+        self.exec = QueryExecutor(self, self.httpx_client)
 
         # and iter
         self.reset_iterator()
 
         # configuration and auth init
         self.config: MGnipyConfig = to_mgnipy_config(config)
-        if os.getenv("MGNIPY_AUTHENTICATION_OFF") == "1":
-            logger.debug(
-                "Authentication disabled e.g. for docs build. Set env MGNIPY_AUTHENTICATION_OFF=0 to enable authentication."
-            )
-        # elif self.emgapi_handler.is_private:
-        #     logger.debug(
-        #         f"Endpoint module {self.emgapi_handler.endpoint_module.__name__} corresponds to a private endpoint. Authentication will be required."
-        #     )
-        #     self.config.resolve_auth_token(interactive=True)
-        else:  # silently attemp to resolve but no pop up
-            self.config.resolve_auth_token(interactive=False)
+        # PICK UP HERE
+        self.config.resolve_auth_token(interactive=interactive_auth)
 
         # cache handler
         logger.debug(f"Creating cache handler for {self._resource.value}")
@@ -108,7 +103,7 @@ class MGnifier(QuerySet):
             results_store=self._results,
         )
         # load cache
-        self.load_cache()
+        # self.load_cache()
 
     @QuerySet.count.setter
     def count(self, value: int):
@@ -154,7 +149,6 @@ class MGnifier(QuerySet):
 
     def load_cache(self):
         # try to load from cache
-        logger.info(f"Attempting to load cached results for {self.resource.value}")
         try:
             # results
             self._pages_from_cache = self.cache_handler.load_cache_results()
@@ -194,7 +188,9 @@ class MGnifier(QuerySet):
 
     def _init_iter_state(self):
         # stable order + iterator state
-        self._iter_page_nums = sorted(self._leftover_pages())
+        self._iter_page_nums = list(
+            self.queries().keys()
+        )  # sorted(self._leftover_pages())
         self._iter_index = 0
 
     def __iter__(self):
@@ -217,12 +213,15 @@ class MGnifier(QuerySet):
         # if no pages loaded, load with limits to next batch
         if not self._iter_page_nums:
             self._init_iter_state()
+            logger.debug(
+                f"No pages loaded yet, initialized iterator with pages: {self._iter_page_nums}"
+            )
         # check if we have exhausted the loaded pages
         if self._iter_index >= len(self._iter_page_nums):
             raise StopIteration
         # get next page num and advance index
         page_num = self._iter_page_nums[self._iter_index]
-        logger.info(f"Advancing to request num {page_num}")
+        logger.debug(f"Advancing to request num {page_num}")
         self._iter_index += 1
         try:
             result = self.page(page_num)
@@ -258,7 +257,7 @@ class MGnifier(QuerySet):
         if self._iter_index >= len(self._iter_page_nums):
             raise StopAsyncIteration
         p = self._iter_page_nums[self._iter_index]
-        logger.info(f"Advancing to request num {p} (async)")
+        logger.debug(f"Advancing to request num {p} (async)")
         self._iter_index += 1
         try:
             result = await self.apage(p)
@@ -331,11 +330,12 @@ class MGnifier(QuerySet):
         >>> page_data = studies.page(1)  # doctest: +SKIP
         """
 
-        logger.info(f"Fetching page {page_num} for resource {self.resource.value}")
+        logger.debug(f"Fetching page {page_num} for resource {self.resource.value}")
         page_items = self.exec.request_page(
             page_num=page_num,
             client=client,
         )
+        logger.debug(f"page_items type {type(page_items)}")
 
         # checkpoint each page
         try:
@@ -427,7 +427,7 @@ class MGnifier(QuerySet):
             desc=f"Retrieving {self.resource} pages",
             disable=hide_progress,
         ):
-            logger.info(f"Advancing to request num {p}")
+            logger.debug(f"Advancing to request num {p}")
             self.page(p, client=a_client)
         return self
 

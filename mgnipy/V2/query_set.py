@@ -70,7 +70,7 @@ class QuerySet:
         **param_kwargs,
     ):
 
-        logger.debug("Initializing QuerySet for resource %s", resource)
+        logger.debug(f"Initializing QuerySet for resource {resource}")
 
         self.config: MGnipyConfig = to_mgnipy_config(config)
 
@@ -381,7 +381,7 @@ class QuerySet:
         list of dict
             A list of dictionaries, each containing the query parameters for a corresponding API request.
         """
-        logger.info("Building query plan for %s", self.resource.value)
+        logger.debug(f"Building query plan for {self.resource.value}")
 
         if not self.emgapi_handler.is_list_endpoint:
             query_setup = {

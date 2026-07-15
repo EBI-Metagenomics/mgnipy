@@ -95,12 +95,13 @@ class MGnipyConfig(BaseMGnipyConfig):
 
     If cache_dir is not set, the auth_token will be cached to working_dir
 
-    The order of events:
-    1. Check for cached token.
-    2. If cached token exists, verify it.
-    3. If valid, refresh it.
-    4. If no valid token, obtain a new one using username/password.
-    5. Cache the new token for future use.
+    Roughly the order of events:
+    1. Check for cached sliding token (comprises access (shorter-lived) and refresh (longer) tokens).
+    2. If cached token exists, verify the access token's validity.
+    3. If valid, move on.
+    4. If not valid token, try to refresh: get new access token if refresh token is still valid.
+    5. If that fails, obtain a new one using username/password.
+    6. Cache the new token for future use.
     """
 
     def _unauth_client(self) -> httpx.Client:
@@ -187,7 +188,7 @@ class MGnipyConfig(BaseMGnipyConfig):
     def _get_login(
         self,
         *,
-        interactive: bool = True,
+        interactive: bool = False,
     ) -> tuple[str, str]:
         """
         Returns MGnify username and password,
@@ -229,8 +230,7 @@ class MGnipyConfig(BaseMGnipyConfig):
 
         if not self.mg_user or not self.mg_password:
             print(
-                "Username/password not provided. "
-                "Proceeding without authentication."
+                "Username/password not provided. " "Proceeding without authentication."
             )
         return self.mg_user, self.mg_password
 
@@ -271,9 +271,7 @@ class MGnipyConfig(BaseMGnipyConfig):
 
         with self._unauth_client() as client:
             # requesting token from API
-            logger.debug(
-                f"Requesting auth token via {token_obtain_sliding.__name__}."
-            )
+            logger.debug(f"Requesting auth token via {token_obtain_sliding.__name__}.")
             # getting parsed response
             result: WebinTokenRequest | None = token_obtain_sliding.sync(
                 client=client, body=body
@@ -341,9 +339,7 @@ class MGnipyConfig(BaseMGnipyConfig):
 
         # request
         with self._unauth_client() as client:
-            logger.debug(
-                f"Refreshing auth token via {token_refresh_sliding.__name__}"
-            )
+            logger.debug(f"Refreshing auth token via {token_refresh_sliding.__name__}")
             # new token or not
             new_token: WebinTokenResponse | None = token_refresh_sliding.sync(
                 client=client, body=body
@@ -357,7 +353,7 @@ class MGnipyConfig(BaseMGnipyConfig):
     def resolve_auth_token(
         self,
         *,
-        interactive: bool = True,
+        interactive: bool = False,
     ) -> None:
         """
         Resolve a valid authentication token by checking the current token,
@@ -375,36 +371,65 @@ class MGnipyConfig(BaseMGnipyConfig):
         config.resolve_auth_token()
         """
 
-        # 1. get auth token from config or cache
+        # 1. get user, pass, auth token
+        # a) auth_token from config or cache
         _token: str | None = self.auth_token or self._load_cached_token()
 
-        # 2. verify token (also if None returns False)
-        if self.verify_auth_token(_token):
-            logger.debug("Current auth token is valid, refreshing")
-            self.auth_token = self.refresh_auth_token(_token)
-            if self.auth_token:
-                print("Authenticated successfully.")
-                self._save_cached_token(self.auth_token)
-            return
-        else:
-            logger.debug(
-                "Invalid auth token, clearing any cached token and try to obtain new"
-            )
-            self.auth_token = None
-            self._clear_cached_token()
-
-        # 3. try to obtain new token
+        # getting usr and pass
         username, password = self._get_login(interactive=interactive)
-        if not username or not password:
+
+        # if all are None then stop process
+        if not any([_token, username, password]):
             logger.warning(
-                "No username/password provided, unable to obtain auth_token."
+                "No username, password provided. Proceeding without authentication."
             )
             return
-        self.auth_token = self.obtain_auth_token(
-            username=username, password=password
-        )
-        if self.auth_token:
+
+        # b) if no token, try to obtain one using username/password
+        if _token is None:
+            # try to get token
+            _token = self.obtain_auth_token(username=username, password=password)
+
+        # 2. verify token (also if None means not valid so returns False)
+        # if valid save and return
+        if self.verify_auth_token(_token):
+            logger.debug("Current access token is valid")
+            self.auth_token = _token
+            self._save_cached_token(self.auth_token)
             print("Authenticated successfully.")
+            return
+
+        # 3. else try to refresh token aka get new access token if longer refresh token still valid
+        else:
+            _token = self.refresh_auth_token(_token)
+
+        # if refreshed tokenis valid save and return
+        if _token:
+            logger.debug("Token refreshed successfully")
+            self.auth_token = _token
+            self._save_cached_token(self.auth_token)
+            print("Authenticated successfully.")
+
+        # 4. else try to obtain new token using username/password
+        elif username is not None and password is not None:
+            logger.debug(
+                "Current access token is invalid, trying to obtain new token using username/password"
+            )
+            self._clear_cached_token()
+            self.auth_token = self.obtain_auth_token(
+                username=username, password=password
+            )
+            if self.auth_token:
+                logger.debug("New token obtained successfully")
+                self._save_cached_token(self.auth_token)
+                print("Authenticated successfully.")
+
+        # 5. if still no valid token, then warn user and proceed without auth
+        else:
+            logger.warning(
+                "No username, password provided. Proceeding without authentication."
+            )
+        return
 
 
 def to_mgnipy_config(input: MGnipyConfig | dict | None) -> MGnipyConfig:

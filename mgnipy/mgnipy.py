@@ -37,40 +37,30 @@ class MGnipy:
     def __init__(
         self,
         config: Optional[MGnipyConfig | dict] = None,
+        interactive_auth: bool = False,
         **config_kwargs,
     ):
 
+        # init config
         self._config: MGnipyConfig = (
             to_mgnipy_config(config) if config else MGnipyConfig(**config_kwargs)
         )
+        # and resolve auth token if needed
+        self._config.resolve_auth_token(interactive=interactive_auth)
 
         self._endpoints = self.list_resources()
 
-    def __getattr__(self, name: str):
+    @property
+    def config(self):
+        return self._config
 
-        if name == "cache_dir":
-            return self._config.cache_dir
-
-        endpoint = SupportedEndpoints.validate(name)
-
-        if endpoint in V2_ENDPOINT_LIST_PROXIES:
-
-            list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
-            return list_cls(config=self._config)
-
-        if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
-            detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
-
-            # Return a callable so required args like accession/biome_lineage
-            # are provided when user calls MG.study(...), MG.biome(...), etc.
-            def _detail_factory(id: Optional[str] = None, **kwargs):
-                return detail_cls(id=id, config=self._config, **kwargs)
-
-            return _detail_factory
-
-        raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
+    def close(self):
+        pass
 
     def list_resources(self):
+        """
+        List all supported resources (endpoints) from MGnify API that are supported by mgnipy.
+        """
         return SupportedEndpoints.as_list()
 
     def describe_resource(
@@ -200,6 +190,30 @@ class MGnipy:
             logger.info(
                 f"Cache directory {self.cache_dir} does not exist, nothing to clear."
             )
+
+    def __getattr__(self, name: str):
+
+        if name == "cache_dir":
+            return self._config.cache_dir
+
+        endpoint = SupportedEndpoints.validate(name)
+
+        if endpoint in V2_ENDPOINT_LIST_PROXIES:
+
+            list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
+            return list_cls(config=self._config)
+
+        if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
+            detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
+
+            # Return a callable so required args like accession/biome_lineage
+            # are provided when user calls MG.study(...), MG.biome(...), etc.
+            def _detail_factory(id: Optional[str] = None, **kwargs):
+                return detail_cls(id=id, config=self._config, **kwargs)
+
+            return _detail_factory
+
+        raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
 
     def __str__(self):
         return f"MGnipy(config={self._config})"
