@@ -1,8 +1,35 @@
-# `mgnipy.MGnifier`s as API Resource `proxies`
-> **The main idea 🗝️ :**  
-> `mgnipy.MGnipy().studies` is the exact same as `mgnipy.V2.proxies.Studies()`which is just a `mgnipy.MGnifier(resource="studies")` with added `studies`-specific functions.
+# MGnify API Endpoint ≈ a `mgnipy.MGnifier`  
+
+In mgnipy, MGnifier's are `proxies` (i.e., "intermediary", "act on behalf of") for the [endpoints](https://www.ebi.ac.uk/metagenomics/api/v2/) (i.e., request url + http protocol) in the MGnify API. 
+
+> **TLDR; `mgnipy.MGnifier`s as API Resource `proxies`🗝️**
+> `mgnipy.MGnipy().studies` is the exact same as `mgnipy.V2.proxies.Studies()` which is just a `mgnipy.MGnifier(resource="studies")` with added `studies`-specific functions.
 
 And this is the same for all of the resource proxies (analyses, analysis, study, samples, etc.) not just "studies" in the above example. 
+
+---
+## The MGnify RESTful API: A crash course ⏱️
+
+### The "resources" vs. "endpoints"?
+- In REST (REpresentational State Transfer) styling, data are modelled as **"resources"** which can either be a singleton (e.g., `study`) or collection (collection of singletons e.g. `studies`) resource. More on RESTful APIs [here](https://restfulapi.net/resource-naming/). 
+
+- As explained in its [docs](https://www.ebi.ac.uk/metagenomics/api/v2/): In MGnigy API v2, collection resources are accessed via **"list" endpoints** e.g.
+    - `https://www.ebi.ac.uk/metagenomics/api/v2/studies/` or `.../analyses/`
+    - `.../studies/<studyID>/analyses/` (a "sub-collection")
+    - `.../samples/<sampleID>/runs/` (another sub-collection)
+
+- and singleton resources via **"detail" endpoints** e.g. `https://www.ebi.ac.uk/metagenomics/api/v2/studies/<studyID>` or `.../analyses/<analysisId>`
+
+### Querying a resource
+- Many of the list endpoints can be further queried/filtered :) the acceptable query parameters are clearly documented in the [docs](https://www.ebi.ac.uk/metagenomics/api/v2/) again e.g. [`/studies/` example](https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/list_mgnify_studies)
+- typically the query parameters will appear in the url after a `?` as key-value pairs combined via `&`s
+- together the resulting http request url would look something like e.g. 
+    - [`https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1`](https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1) 
+    - which requests from the `studies` collection resource, the first page of `study` singleton resources with "tomato" in their title 
+
+### Where are the results or MGnify datasets? 
+- The resulting taxonomic and functional annotation datasets from MGnify pipeline analyses can be downloaded via FTP urls
+- These ftp urls are provided in the `downloads` field of detail endpoints such as `/analyses/<analysisId>` and `/studies/<studyId>`
 
 ---
 
@@ -11,7 +38,7 @@ And this is the same for all of the resource proxies (analyses, analysis, study,
 Like how a magnifying glass 🔍 is often associated with searching/querying, the `mgnipy.MGnifier` class is the interface for building, executing and then caching MGnify API queries. 
 
 ### ✅ Builds query sets
-Using `MGnifier`, users can specify a resource endpoint and parameters, which get translated (built) into a request url or series of request urls (e.g., due to pagination) called a `QuerySet`
+Using `MGnifier`, users can specify a resource and query parameters, which get translated (built) into an endpoint (request url or series of request urls (e.g., due to pagination) called a `QuerySet`
 
 ### ✅ Query planning and inspection
 Prior to executing the queries, MGnifier has several built-in methods to estimate and preview the number of requests (pages) to be made, such as `.preview()` `.dry_run()` `.explain()`
