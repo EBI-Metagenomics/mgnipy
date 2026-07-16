@@ -1,5 +1,8 @@
 import logging
 
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
+
 logger = logging.getLogger(__name__)
 from typing import Optional
 
@@ -48,14 +51,31 @@ class MGnipy:
         # and resolve auth token if needed
         self._config.resolve_auth_token(interactive=interactive_auth)
 
-        self._endpoints = self.list_resources()
+        # set up Auth or unauth client
+        self._client: Client | AuthenticatedClient = init_httpx_client(self._config)
 
     @property
     def config(self):
         return self._config
 
     def close(self):
-        pass
+        if self._client._client:
+            self._client._client.close()
+
+    async def aclose(self):
+        if self._client._async_client:
+            await self._client._async_client.aclose()
+
+    # PICK UP HERE
+    @property
+    def client(self):
+        # some status info too
+        logger.info(
+            f"Client or AuthenticatedClient: {type(self._client).__name__}\n"
+            f"Open httpx_client session: {self._client._client is not None}\n"
+            f"Open async_httpx_client session: {self._client._async_client is not None}\n"
+        )
+        return self._client
 
     def list_resources(self):
         """
@@ -193,23 +213,26 @@ class MGnipy:
 
     def __getattr__(self, name: str):
 
+        # for cache_dir attr
         if name == "cache_dir":
             return self._config.cache_dir
 
+        # otherwise endpoint attrs
         endpoint = SupportedEndpoints.validate(name)
-
+        # if list endpoint, return list proxy instance
         if endpoint in V2_ENDPOINT_LIST_PROXIES:
-
             list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
-            return list_cls(config=self._config)
-
+            return list_cls(config=self._config, client=self.client)
+        # if detail endpoint, return a callable that returns a detail proxy instance
         if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
             detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
 
             # Return a callable so required args like accession/biome_lineage
             # are provided when user calls MG.study(...), MG.biome(...), etc.
             def _detail_factory(id: Optional[str] = None, **kwargs):
-                return detail_cls(id=id, config=self._config, **kwargs)
+                return detail_cls(
+                    id=id, config=self._config, client=self.client, **kwargs
+                )
 
             return _detail_factory
 
