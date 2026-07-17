@@ -26,6 +26,8 @@ class MGnipy:
     ----------
     config : MGnipyConfig or dict, optional
         Configuration for MGnipy, either as an MGnipyConfig instance or a dictionary of configuration parameters (default is None).
+    interactive_auth : bool, optional
+        Whether to prompt for authentication interactively if needed (default is False).
     **config_kwargs
         Additional keyword arguments to pass to the MGnipyConfig constructor if config is not provided.
         For example, cache_dir can be specified as a keyword argument. e.g. MGnipy(cache_dir="/path/to/cache")
@@ -66,16 +68,20 @@ class MGnipy:
         if self._client._async_client:
             await self._client._async_client.aclose()
 
-    # PICK UP HERE
     @property
     def client(self):
-        # some status info too
-        logger.info(
+        return self._client
+
+    @property
+    def status(self) -> None:
+        """
+        Print the status of the MGnipy client, including the type of client and whether the synchronous and asynchronous httpx client sessions are open.
+        """
+        print(
             f"Client or AuthenticatedClient: {type(self._client).__name__}\n"
             f"Open httpx_client session: {self._client._client is not None}\n"
             f"Open async_httpx_client session: {self._client._async_client is not None}\n"
         )
-        return self._client
 
     def list_resources(self):
         """
