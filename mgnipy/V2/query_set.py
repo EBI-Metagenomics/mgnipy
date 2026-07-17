@@ -141,15 +141,6 @@ class QuerySet:
         self._count: Optional[int] = None
         self._num_requests: Optional[int] = None
         self._results: dict[int, list[dict]] = None
-        # check that params are valid for new endpoint module
-        # _ = self.emgapi_handler.validate_endpoint_kwargs(**self.params)
-        # reset cache?
-
-        # resource_str = (
-        #     self.resource.value
-        #     if hasattr(self, "resource")
-        #     else self.__class__.__name__
-        # )
 
     @property
     def request_url(self) -> str:
@@ -163,9 +154,7 @@ class QuerySet:
             The constructed URL for the API request.
         """
         request_url = self._build_request_url()
-        logger.debug(
-            "Resolved request URL for %s: %s", self.resource.value, request_url
-        )
+        logger.debug(f"Resolved request URL for {self.resource.value}: {request_url}")
         return request_url
 
     @property
@@ -174,14 +163,13 @@ class QuerySet:
 
     @params.setter
     def params(self, new_params: dict[str, Any]):
-        logger.info("Updating params for %s", self.resource.value)
+        logger.info(f"Updating params for {self.resource.value}")
         self._params = new_params
         # check that params are valid for endpoint module
         _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
         # reset cache?
         logger.debug(
-            "Rebuilding cache handler after params update for %s",
-            self.resource.value,
+            f"Rebuilding cache handler after params update for {self.resource.value}",
         )
         self.cache_handler = DiskCheckpointer(
             params_getter=lambda: self.params,
@@ -199,7 +187,7 @@ class QuerySet:
 
     @resource.setter
     def resource(self, value: str):
-        logger.info("Setting resource to %s", value)
+        logger.info(f"Setting resource to {value}")
         self._resource = SupportedEndpoints.validate(value)
         self.endpoint_module = RESOURCES_ALL_ENDPOINTS[self._resource]
 
@@ -222,9 +210,7 @@ class QuerySet:
         """
 
         logger.debug(
-            "Spawning QuerySet from %s to %s",
-            self.resource.value,
-            target_resource or self.resource,
+            f"Spawning QuerySet from {self.resource.value} to {target_resource or self.resource}",
         )
 
         merged_params = {**(params or {}), **kwargs}
@@ -253,9 +239,7 @@ class QuerySet:
             A new instance of the same class with the updated parameters.
         """
         logger.debug(
-            "Cloning QuerySet for %s with overrides: %s",
-            self.resource.value,
-            sorted(param_overrides.keys()),
+            f"Cloning QuerySet for {self.resource.value} with overrides: {sorted(param_overrides.keys())}",
         )
         merged_params = {**self.params, **param_overrides}
         resource_override = merged_params.pop("resource", None)
@@ -293,9 +277,7 @@ class QuerySet:
         """
         # make a copy of current instance but with updated params
         logger.info(
-            "Filtering QuerySet for %s with keys: %s",
-            self.resource.value,
-            sorted(filters.keys()),
+            f"Filtering QuerySet for {self.resource.value} with keys: {sorted(filters.keys())}",
         )
         new_qs = self._clone(**filters)
         return new_qs
@@ -333,7 +315,7 @@ class QuerySet:
         path = self.emgapi_handler.url_path(**_params)
         # return full url with base url+sub_url+encoded params
         request_url = f"{str(self.base_url).rstrip('/')}/{path.lstrip('/')}"
-        logger.debug("Built request URL for %s: %s", self.resource.value, request_url)
+        logger.debug(f"Built request URL for {self.resource.value}: {request_url}")
         return request_url
 
     def list_urls(self) -> list[str]:
@@ -365,7 +347,7 @@ class QuerySet:
         for pg in self.emgapi_handler.page_param_iter(total_pages):
             _parm.update(pg)
             urls.append(self._build_request_url(params=_parm))
-        logger.debug("Generated %s URLs for %s", len(urls), self.resource.value)
+        logger.debug(f"Generated {len(urls)} URLs for {self.resource.value}")
         return urls
 
     def __call__(self, **kwargs):
@@ -388,7 +370,7 @@ class QuerySet:
                 "url": self.emgapi_handler.sub_url(**self.params),
                 "params": self.params,
             }
-            logger.debug("Built single-query plan for %s", self.resource.value)
+            logger.debug(f"Built single-query plan for {self.resource.value}")
             return {1: query_setup}
 
         if self.num_requests is None:
@@ -412,7 +394,7 @@ class QuerySet:
                 "params": _parm,
             }
             queries[pg] = query_setup
-        logger.debug("Built %s query entries for %s", len(queries), self.resource.value)
+        logger.debug(f"Built {len(queries)} query entries for {self.resource.value}")
         return queries
 
     @property
