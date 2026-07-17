@@ -229,7 +229,7 @@ class MGnipyConfig(BaseMGnipyConfig):
             self.mg_password = None
 
         if not self.mg_user or not self.mg_password:
-            print(
+            logger.info(
                 "Username/password not provided. " "Proceeding without authentication."
             )
         return self.mg_user, self.mg_password
@@ -380,9 +380,7 @@ class MGnipyConfig(BaseMGnipyConfig):
 
         # if all are None then stop process
         if not any([_token, username, password]):
-            logger.warning(
-                "No username, password provided. Proceeding without authentication."
-            )
+            logger.debug("No token, username, password. Exiting resolve_auth_token()")
             return
 
         # b) if no token, try to obtain one using username/password
