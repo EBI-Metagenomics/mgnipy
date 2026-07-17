@@ -31,7 +31,7 @@ class QueryExecutor:
     def __init__(
         self,
         query_set: "QuerySet",
-        httpx_client: Optional[Client | AuthenticatedClient] = None,
+        client: Optional[Client | AuthenticatedClient] = None,
     ):
         self.qs: "QuerySet" = query_set
         self._endpoint_str: str = self.qs.emgapi_handler.endpoint_module.__name__.split(
@@ -41,17 +41,33 @@ class QueryExecutor:
         # question: should this be shared across all instances of QueryExecutor or should each have their own?
         # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
         self._semaphore = get_semaphore()
+        # PICK UP HERE
+        self.client = client or init_httpx_client(self.qs.config)
 
-        self.httpx_client = httpx_client or init_httpx_client(self.qs.config)
-
-    def query_setups(
+    def _query_setups(
         self, request_num: Optional[int] = None, **httpx_kwargs
     ) -> dict[dict[str, Any]]:
+        """
+        A helper method to get the query parameters for a given request number (page).
+
+        Parameters
+        ----------
+        request_num : int, optional
+            The request number (page) to retrieve. If None, returns the full query setup.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the query parameters for the specified request number, or the full query setup if request_num is None.
+        """
         if request_num is None:
             return self.qs.queries(**httpx_kwargs)
         return self.qs.queries(**httpx_kwargs).get(request_num, None)
 
     def _parse_response(self, response: mpy_Response) -> Optional[Any]:
+        """
+        Parse the response from the MGnify API, validating the status code and returning the parsed content.
+        """
         logger.info(f"Response status code: {response.status_code}")
 
         if not validate_status_code(
@@ -114,9 +130,7 @@ class QueryExecutor:
                 f"Using cached count and num_requests vals: {self.qs.count}, {self.qs.num_requests}"
             )
         else:
-            self.qs.count = self.qs.emgapi_handler.get_num_items(
-                self._init_client(), params=self.qs.params
-            )
+            self.qs.count = self.qs.emgapi_handler.get_num_items(params=self.qs.params)
             self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
                 self.qs.count, page_size=self.qs.params.get("page_size", None)
             )
@@ -128,6 +142,7 @@ class QueryExecutor:
         if self.qs._results is None:
             self.qs._results = {}
 
+    # PICK UP HERE
     def _single_request(
         self,
         client: Optional[Client] = None,
@@ -202,7 +217,7 @@ class QueryExecutor:
         # init client if not provided
         a_client = client or self.httpx_client
         # getting params from qs
-        params = self.query_setups(page_num).get("params", None)
+        params = self._query_setups(page_num).get("params", None)
         logger.info(f"Fetching request num {page_num} with params: {params}")
         response = self._single_request(
             client=a_client,
@@ -269,7 +284,7 @@ class QueryExecutor:
             return self.qs._results.get(page_num, None)
 
         a_client = client or self._init_client()
-        params = self.query_setups(page_num).get("params", None)
+        params = self._query_setups(page_num).get("params", None)
         logger.info(f"Fetching page {page_num} with params={params}")
         response = await self._asingle_request(client=a_client, params=params)
         page_items = self._page_items(response)
