@@ -9,7 +9,6 @@ from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, ResourceStr
 from mgnipy._shared_helpers.validators import validate_gt_int
 from mgnipy.V2.describe import DescribeEmgapiModule
 from mgnipy.V2.endpoints import RESOURCES_ALL_ENDPOINTS
-from mgnipy.V2.mixins import DiskCheckpointer
 
 
 class QuerySet:
@@ -76,6 +75,8 @@ class QuerySet:
         self._count: Optional[int] = None
         self._num_requests: Optional[int] = None
         self._results: dict[int, list[dict]] = None
+        self._pages_from_cache: list[int] = []
+        self._cached_manifest: dict[str, Any] = {}
 
         self._params: dict[str, Any] = params or {}
         # add param_kwargs to params if provided, prioritizing param_kwargs
@@ -254,16 +255,6 @@ class QuerySet:
         self._params = new_params
         # check that params are valid for endpoint module
         _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
-        # reset cache?
-        logger.debug("Rebuilding cache handler after params update.")
-        self.cache_handler = DiskCheckpointer(
-            params_getter=lambda: self.params,
-            resource_str=self.resource.value,
-            config=self.config,
-            results_store=self._results,
-            count=self.count,
-            num_requests=self.num_requests,
-        )
 
     def filter(
         self,
@@ -436,13 +427,31 @@ class QuerySet:
         if getattr(self, "_cache_loaded", False):
             return
         try:
-            self.cache_handler.load_cache()
+            # load results
+            self._pages_from_cache = self.cache_handler.load_cache_results()
+            # load manifest
+            self._cached_manifest = self.cache_handler.load_cache_manifest()
+            # update counts from manifest
+            self.count = self._cached_manifest.get("count", None)
+            self.num_requests = self._cached_manifest.get("total_pages", None)
+            # set flag
             self._cache_loaded = True
         except Exception as e:
             logger.error(f"Error occurred while loading cache: {e}")
             self._cache_loaded = (
                 False  # Q: Or should this be set to True to avoid repeated attempts?
             )
+
+    def clear_cache(self):
+        """
+        Clear the cached results for the current resource and parameters.
+        This will delete any cached files associated with the current query parameters.
+        """
+        logger.warning(f"Clearing cache for {self.resource.value} at {self.cache_dir}")
+        self.cache_handler.clear_cache()
+        # reset loaded cache state
+        self._pages_from_cache = []
+        self._cached_manifest = {}
 
     def _is_in_results(self, request_num: int) -> bool:
         """

@@ -1,3 +1,5 @@
+"""MGnifier: A class for querying the MGnify API with support for caching, pagination, and metadata retrieval."""
+
 import asyncio
 import logging
 from pathlib import Path
@@ -17,12 +19,12 @@ from tqdm.asyncio import tqdm_asyncio
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import ResourceStr
 from mgnipy.V2.endpoints import ALL_SUPPORTED_RELATIONSHIPS
-from mgnipy.V2.mixins import DiskCheckpointer
+from mgnipy.V2.mixins import CheckpointMixin
 from mgnipy.V2.query_executor import QueryExecutor
 from mgnipy.V2.query_set import QuerySet
 
 
-class MGnifier(QuerySet):
+class MGnifier(QuerySet, CheckpointMixin):
     """
     MGnifier is a class that provides an interface for querying the MGnify API.
     It allows users to specify a resource and query parameters, and then fetch results in a paginated manner.
@@ -36,6 +38,12 @@ class MGnifier(QuerySet):
         Configuration for MGnipy, either as an MGnipyConfig instance or a dictionary of configuration parameters (default is None).
     params : dict, optional
         Query filter parameters (default is None).
+    client : Client or AuthenticatedClient, optional
+        An optional MGnify API client instance to use for requests (default is None).
+    resolve_auth : bool, optional
+        Whether to resolve authentication using the provided config (default is True).
+    interactive_auth : bool, optional
+        Whether to prompt for authentication interactively if needed (default is False).
     **param_kwargs
         Additional parameters treated as query filters.
 
@@ -50,7 +58,8 @@ class MGnifier(QuerySet):
         *,
         config: Optional[MGnipyConfig | dict] = None,
         params: Optional[dict[str, Any]] = None,
-        httpx_client: Optional[Client | AuthenticatedClient] = None,
+        client: Optional[Client | AuthenticatedClient] = None,
+        resolve_auth: bool = True,
         interactive_auth: bool = False,
         **param_kwargs,
     ) -> None:
@@ -64,6 +73,12 @@ class MGnifier(QuerySet):
             Configuration dictionary for authentication and base URL.
         params : dict, optional
             Query filter parameters.
+        client : Client or AuthenticatedClient, optional
+            An optional MGnify API client instance to use for requests (default is None).
+        resolve_auth : bool, optional
+            Whether to resolve authentication using the provided config (default is True).
+        interactive_auth : bool, optional
+            Whether to prompt for authentication interactively if needed (default is False).
         **param_kwargs
             Additional parameters treated as query filters.
 
@@ -81,52 +96,29 @@ class MGnifier(QuerySet):
             **param_kwargs,
         )
 
-        self.httpx_client = httpx_client or init_httpx_client(self.config)
-
+        self.client = client or init_httpx_client(self.config)
         # init executor with client
-        self.exec = QueryExecutor(self, self.httpx_client)
+        self.exec = QueryExecutor(self, self.client)
 
         # and iter
         self.reset_iterator()
 
-        # configuration and auth init
+        # configuration and auth (overwrites from queryset)
         self.config: MGnipyConfig = to_mgnipy_config(config)
-        # PICK UP HERE
-        self.config.resolve_auth_token(interactive=interactive_auth)
-
-        # cache handler
-        logger.debug(f"Creating cache handler for {self._resource.value}")
-        self.cache_handler = DiskCheckpointer(
-            params_getter=lambda: self.params,
-            resource_str=self.resource.value,
-            config=self.config,
-            results_store=self._results,
-        )
-        # load cache
-        # self.load_cache()
-
-    @QuerySet.count.setter
-    def count(self, value: int):
-        self._count = value
-        logger.debug(f"Set count to {value}")
-        # to the disk too
-        self.cache_handler._total_records = self._count
-
-    @QuerySet.num_requests.setter
-    def num_requests(self, value: int):
-        self._num_requests = value
-        logger.debug(f"Set num_requests to {value}")
-        # to the disk too
-        self.cache_handler._total_requests = self._num_requests
+        if resolve_auth:
+            self.config.resolve_auth_token(interactive=interactive_auth)
 
     @property
-    def progress(self):
-        completed = len(self.metadata.pages)
-        total = len(self.queries().keys())
-        percent = completed / total if total > 0 else 0
+    def progress(self) -> None:
+        """
+        Display the progress of the current query set.
+        """
+        completed: int = len(self.metadata.pages)
+        total: int = len(self.queries().keys())
+        percent: float = completed / total if total > 0 else 0
         # dummy bar for fun
-        bar_length = 20
-        filled = int(bar_length * percent)
+        bar_length: int = 20
+        filled: int = int(bar_length * percent)
         bar = "█" * filled + "░" * (bar_length - filled)
 
         progress_str = f"Retrieved pages: {percent:.0%}|{bar}| {completed}/{total}"
@@ -145,53 +137,130 @@ class MGnifier(QuerySet):
 
     @property
     def cache_dir(self) -> Optional[Path]:
-        return self.cache_handler._cache_dir
+        return self.cache_handler.cache_path
 
-    def load_cache(self):
-        # try to load from cache
+    def get(self):
+        """Alternative to getting the next page of results.
+
+        Returns
+        -------
+        The next page dict or ``None`` when iteration is complete.
+
+        Example
+        -------
+        >>> # Fetch next page via helper (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.get()  # doctest: +SKIP
+        """
         try:
-            # results
-            self._pages_from_cache = self.cache_handler.load_cache_results()
-            logger.info(
-                f"Loaded pages {self._pages_from_cache} from cache for resource {self.resource.value}"
-            )
-            # if cache results loaded, update
-            if self._pages_from_cache:
-                self._results = self.cache_handler._results
-            # manifest
-            self._cached_manifest = self.cache_handler.load_cache_manifest()
-            # update
-            self.count = self._cached_manifest.get("count", None)
-            self.num_requests = self._cached_manifest.get("total_pages", None)
-        except Exception as e:
-            logger.warning(f"Failed to load from cache: {e}")
-            self._pages_from_cache = []
-            self._cached_manifest = {}
+            return next(self)
+        except StopIteration:
+            return None
 
-    def clear_cache(self):
+    async def aget(self):
+        """Async alternative to fetch the next page.
+
+        Returns
+        -------
+        The next page dict or ``None`` when iteration is complete.
+
+        Example
+        -------
+        >>> # Async fetch via helper (doctest skipped)
+        >>> import asyncio
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> asyncio.run(executor.aget())  # doctest: +SKIP
         """
-        Clear the cached results for the current resource and parameters.
-        This will delete any cached files associated with the current query parameters.
+        try:
+            return await self.__anext__()
+        except StopAsyncIteration:
+            return None
+
+    def page(self, page_num: int):
         """
-        logger.warning(f"Clearing cache for {self.resource.value} at {self.cache_dir}")
-        self.cache_handler.clear_cache()
-        # reset loaded cache state
-        self._pages_from_cache = []
-        self._cached_manifest = {}
+        Retrieve a specific page of metadata for the current resource and parameters.
+        This method allows the user to retrieve metadata one page at a time,
+        which can be useful for previewing data or for manual pagination control.
 
-    def _leftover_pages(self) -> list[int]:
+        Parameters
+        ----------
+        page_num : int
+            The page number to retrieve (1-based index).
+        client : Client, optional
+            An optional MGnify API client instance to use for the request.
+            If None, a new client will be initialized.
 
-        # ensure counts/pages are known
-        self.exec._set_counts()
-        # compute pages we still need to fetch
-        return [x for x in self.queries() if x not in self.metadata.pages]
+        Returns
+        -------
+        Optional[dict[int, list[dict]]]
+            A dictionary containing the metadata from the specified page of results,
+            or None if the page is not found.
 
-    def _init_iter_state(self):
-        # stable order + iterator state
-        self._iter_page_nums = list(
-            self.queries().keys()
-        )  # sorted(self._leftover_pages())
-        self._iter_index = 0
+        Examples
+        --------
+        >>> from mgnipy import MGnifier  # doctest: +SKIP
+        >>> studies = MGnifier("studies")  # doctest: +SKIP
+        >>> page_data = studies.page(1)  # doctest: +SKIP
+        """
+
+        logger.debug(f"Fetching page {page_num}")
+        page_items = self.exec.request_page(
+            page_num=page_num,
+            client=self.client,
+        )
+        logger.debug(f"page_items type {type(page_items)}")
+
+        # checkpoint each page
+        try:
+            self.cache_handler.write_results(page_num, page_items)
+        except Exception:
+            logger.exception(f"Failed to checkpoint page {page_num}")
+        return page_items
+
+    async def apage(
+        self,
+        page_num: int,
+        client: Optional[Client] = None,
+    ) -> Optional[dict[int, list[dict]]]:
+        """
+        Asynchronously fetch a specific page or range of pages.
+
+        Parameters
+        ----------
+        page_num : int
+            The page number to retrieve (1-based index).
+        client : Client, optional
+            An optional MGnify API client instance to use for the request.
+            If None, a new client will be initialized.
+
+        Returns
+        -------
+        dict
+            The requested page(s) of results.
+
+        Examples
+        --------
+        >>> from mgnipy import MGnifier  # doctest: +SKIP
+        >>> studies = MGnifier("studies")  # doctest: +SKIP
+        >>> import asyncio  # doctest: +SKIP
+        >>> page_data = asyncio.run(studies.apage(1))  # doctest: +SKIP
+        """
+
+        logger.info(
+            f"Asynchronously fetching page {page_num} for resource {self.resource.value}"
+        )
+
+        page_items = await self.exec.arequest_page(
+            page_num=page_num,
+            client=client,
+        )
+
+        # checkpoint
+        try:
+            await self.cache_handler.awrite_results(page_num, page_items)
+        except Exception:
+            logger.exception(f"Failed to checkpoint page {page_num}")
+        return page_items
 
     def __iter__(self):
         """
@@ -266,128 +335,28 @@ class MGnifier(QuerySet):
             logger.error(f"Error fetching request num {p}: {e}")
             raise
 
-    def get(self):
-        """Alternative to getting the next page of results.
+    def _init_iter_state(self):
+        """
+        Initialize the iterator state for synchronous and asynchronous iteration.
+        This method sets up the list of page numbers to iterate over and resets the index for iteration
+        to the beginning. It is called at the start of both synchronous and asynchronous iteration.
+        """
+        # stable order + iterator state
+        self._iter_page_nums = list(
+            self.queries().keys()
+        )  # sorted(self._leftover_pages())
+        self._iter_index = 0
 
-        Returns
-        -------
-        The next page dict or ``None`` when iteration is complete.
+    def reset_iterator(self):
+        """Reset the iterator to start from the beginning.
 
         Example
         -------
-        >>> # Fetch next page via helper (doctest skipped)
         >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor.get()  # doctest: +SKIP
+        >>> executor.reset_iterator()  # doctest: +SKIP
         """
-        try:
-            return next(self)
-        except StopIteration:
-            return None
-
-    async def aget(self):
-        """Async alternative to fetch the next page.
-
-        Returns
-        -------
-        The next page dict or ``None`` when iteration is complete.
-
-        Example
-        -------
-        >>> # Async fetch via helper (doctest skipped)
-        >>> import asyncio
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> asyncio.run(executor.aget())  # doctest: +SKIP
-        """
-        try:
-            return await self.__anext__()
-        except StopAsyncIteration:
-            return None
-
-    def page(self, page_num: int, client: Optional[Client] = None):
-        """
-        Retrieve a specific page of metadata for the current resource and parameters.
-        This method allows the user to retrieve metadata one page at a time,
-        which can be useful for previewing data or for manual pagination control.
-
-        Parameters
-        ----------
-        page_num : int
-            The page number to retrieve (1-based index).
-        client : Client, optional
-            An optional MGnify API client instance to use for the request.
-            If None, a new client will be initialized.
-
-        Returns
-        -------
-        Optional[dict[int, list[dict]]]
-            A dictionary containing the metadata from the specified page of results,
-            or None if the page is not found.
-
-        Examples
-        --------
-        >>> from mgnipy import MGnifier  # doctest: +SKIP
-        >>> studies = MGnifier("studies")  # doctest: +SKIP
-        >>> page_data = studies.page(1)  # doctest: +SKIP
-        """
-
-        logger.debug(f"Fetching page {page_num} for resource {self.resource.value}")
-        page_items = self.exec.request_page(
-            page_num=page_num,
-            client=client,
-        )
-        logger.debug(f"page_items type {type(page_items)}")
-
-        # checkpoint each page
-        try:
-            self.cache_handler.write_results(page_num, page_items)
-        except Exception:
-            logger.exception(f"Failed to checkpoint page {page_num}")
-        return page_items
-
-    async def apage(
-        self,
-        page_num: int,
-        client: Optional[Client] = None,
-    ) -> Optional[dict[int, list[dict]]]:
-        """
-        Asynchronously fetch a specific page or range of pages.
-
-        Parameters
-        ----------
-        page_num : int
-            The page number to retrieve (1-based index).
-        client : Client, optional
-            An optional MGnify API client instance to use for the request.
-            If None, a new client will be initialized.
-
-        Returns
-        -------
-        dict
-            The requested page(s) of results.
-
-        Examples
-        --------
-        >>> from mgnipy import MGnifier  # doctest: +SKIP
-        >>> studies = MGnifier("studies")  # doctest: +SKIP
-        >>> import asyncio  # doctest: +SKIP
-        >>> page_data = asyncio.run(studies.apage(1))  # doctest: +SKIP
-        """
-
-        logger.info(
-            f"Asynchronously fetching page {page_num} for resource {self.resource.value}"
-        )
-
-        page_items = await self.exec.arequest_page(
-            page_num=page_num,
-            client=client,
-        )
-
-        # checkpoint
-        try:
-            await self.cache_handler.awrite_results(page_num, page_items)
-        except Exception:
-            logger.exception(f"Failed to checkpoint page {page_num}")
-        return page_items
+        self._iter_page_nums = []
+        self._iter_index = 0
 
     def bulk_fetch(
         self,
@@ -470,6 +439,13 @@ class MGnifier(QuerySet):
         ):
             await done
         return self
+
+    def _leftover_pages(self) -> list[int]:
+        """Compute the list of pages that have not yet been retrieved."""
+        # ensure counts/pages are known
+        self.exec._set_counts()
+        # compute pages we still need to fetch
+        return [x for x in self.queries() if x not in self.metadata.pages]
 
     def dry_run(self) -> None:
         """
@@ -670,14 +646,3 @@ class MGnifier(QuerySet):
             f"Is list endpoint (returns paginated results): {self.emgapi_handler.is_list_endpoint}\n"
             f"Cache directory: {self.cache_dir}\n"
         )
-
-    def reset_iterator(self):
-        """Reset the iterator to start from the beginning.
-
-        Example
-        -------
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor.reset_iterator()  # doctest: +SKIP
-        """
-        self._iter_page_nums = []
-        self._iter_index = 0

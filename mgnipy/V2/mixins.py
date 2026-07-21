@@ -6,13 +6,14 @@ import io
 import json
 import logging
 
+
 logger = logging.getLogger(__name__)
 import webbrowser
 import zlib
 from http.client import IncompleteRead
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Literal, Optional
+from typing import Any, Generator, Literal, Optional
 
 import httpx
 import ijson
@@ -22,7 +23,6 @@ from bigtree import Tree
 from pydantic import HttpUrl
 from skbio.io import read
 
-from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.biosamples_helper import (
     get_biosample_metadata,
     aget_all_biosample_metadata,
@@ -274,46 +274,41 @@ class ResultsHandler:
         return pl.from_pandas(df_pd, **polars_kwargs)
 
 
-class DiskCheckpointer:
+class CheckpointMixin:
     """
     Checkpoint manager for request-makers.
 
     This mixin provides methods to write paginated results to disk as they are retrieved, and to load them back into memory on subsequent runs. It generates a unique cache key based on the query parameters and resource type, and organizes cached pages in a directory structure under a specified cache root.
 
-    The mixin assumes the host class provides the following dependencies:
-    - `params_getter`: A callable that returns the current query parameters as a dictionary.
-    - `resource_str`: A string representing the type of resource being queried (e.g., "samples", "runs").
-    - `config`: An instance of `MGnipyConfig` containing configuration settings, including the cache directory.
-    - `results_store`: An optional dictionary to store loaded results in memory.
-    - `count`: An optional callable that returns the total number of records for the current query.
-    - `num_requests`: An optional callable that returns the total number of paginated requests needed for the current query.`
+    The mixin assumes the host class has the following attributes:
+    - `self.params`: A dictionary of query parameters for the current request.
+    - `self.config`: An instance of `MGnipyConfig` containing configuration settings, including the cache directory.
+    - `self.resource`: A string representing the type of resource being queried (e.g., "samples", "runs").
+    - `self._results`: A dictionary mapping page numbers to lists of dictionaries containing the query results.
+    - `self.count`: An integer representing the total number of records for the current query.
+    - `self.num_requests`: An integer representing the total number of paginated requests needed for the current query.
+    which is the case for: QuerySets, MGnifier, proxies
+
+    Example
+    -------
+    >>> from mgnipy.V2.query_set import QuerySet
+    >>> from mgnipy.V2.mixins import CheckpointMixin
+    >>> # Creating a class that uses mixin
+    >>> class MyQuerySet(QuerySet, CheckpointMixin):
+    ...     # Initialize QuerySet (not mixin)
+    ...     def __init__(self, *args, **kwargs):
+    ...         super().__init__(*args, **kwargs)
+    >>> # init
+    >>> qs = MyQuerySet(resource="studies") # default config is w/ cache enabled
+    >>> # now can use checkpoint methods, e.g.
+    >>> print(qs.cache_key) # print the unique cache key
+    ...
+    >>> qs.load_cache()
+    []
     """
 
-    def __init__(
-        self,
-        *,
-        params_getter: Callable[[], dict],
-        resource_str: str,
-        config: MGnipyConfig,
-        results_store: Optional[dict] = None,
-        count: Optional[Callable[[], int]] = None,
-        num_requests: Optional[Callable[[], int]] = None,
-    ):
-        """Initialize with explicit dependencies."""
-        logger.debug("Initializing DiskCheckpointer for %s", resource_str)
-        self._params_getter = params_getter
-        self._resource_val = resource_str
-        self.config = config
-        self._results = results_store or {}
-        self._total_records = count
-        self._total_requests = num_requests
-
     @property
-    def _cache_root(self) -> Optional[Path]:
-        return self.config.cache_dir
-
-    @property
-    def _cache_key(self) -> str:
+    def cache_key(self) -> str:
         """
         Generate deterministic hash from resource + params.
 
@@ -327,70 +322,69 @@ class DiskCheckpointer:
 
         Example
         -------
-        >>> # Imports
-        >>> from mgnipy.V2.mixins import DiskCheckpointer
+        >>> from mgnipy.V2.mixins import CheckpointMixin
         >>> from mgnipy import MGnipyConfig
         >>> # Prepare parameters and config
         >>> params = {'lineage': 'root:Environmental:Terrestrial'}
         >>> resource = 'biome'
         >>> config = MGnipyConfig(cache_dir="/path/to/cache")
-        >>> # Create DiskCheckpointer instance and compute cache key
-        >>> cache_handler = DiskCheckpointer(params_getter=lambda: params, resource_str=resource, config=config)
-        >>> cache_handler._cache_key
+        >>> # Create CheckpointMixin instance and compute cache key
+        >>> cache_handler = CheckpointMixin()
+        >>> cache_handler.params = params
+        >>> cache_handler.resource = resource
+        >>> cache_handler.config = config
+        >>> cache_handler.cache_key
         '1eb56ddf5a2e7d60d8155c8bbe01f032f959a2519d43e99f31f533abffa3166f'
         """
-        params = self._params_getter().copy()
-        serial = json.dumps(
-            {"resource": self._resource_val, "params": params},
+        params: dict = self.params.copy()
+        serial: str = json.dumps(
+            {"resource": self.resource.value, "params": params},
             sort_keys=True,
             default=str,
         )
-        cache_key = hashlib.sha256(serial.encode("utf-8")).hexdigest()
-        logger.debug("Computed cache key for %s: %s", self._resource_val, cache_key)
+        cache_key: str = hashlib.sha256(serial.encode("utf-8")).hexdigest()
+        logger.debug(f"Computed cache key: {cache_key}")
         return cache_key
 
     @property
-    def _cache_dir(self) -> Optional[Path]:
+    def cache_path(self) -> Optional[Path]:
         """Directory for this query's cached pages."""
-        root = self._cache_root
-        if root is None:
+        if self.config.cache_dir is None:
             return None
-        return root / self._cache_key
+        return self.config.cache_dir / self.cache_key
 
     @property
-    def _manifest_path(self) -> Optional[Path]:
+    def manifest_path(self) -> Optional[Path]:
         """Path to mgnipy_manifest.json storing metadata."""
-        cache_dir = self._cache_dir
-        if cache_dir is None:
+        if self.cache_path is None:
             return None
-        return cache_dir / "mgnipy_manifest.json"
+        return self.cache_path / "mgnipy_manifest.json"
 
     def write_results(self, request_num: int, items: Any) -> None:
         """Auto atomic write to disk."""
-        save_to = self._cache_dir
+        save_to = self.cache_path
         if save_to is None:
-            logger.debug(
-                "Skipping cache write for %s page %s because cache is disabled",
-                self._resource_val,
-                request_num,
-            )
+            logger.debug(f"Cache disabled: Skipping cache write for page {request_num}")
             return
 
-        logger.info("Writing cached results for page %s", request_num)
+        logger.debug(f"Creating cache dir if not exists: {save_to}")
         save_to.mkdir(parents=True, exist_ok=True)
 
+        # prep filenames/paths
         filepath = save_to / f"mgnipy_page_{request_num}.json"
-        manifest_path = self._manifest_path
+        manifest_path = self.manifest_path
+
         logger.info(
             f"Writing page {request_num} to {filepath} and manifest to {manifest_path}"
         )
         manifest = {
-            "resource": self._resource_val,
-            "params": self._params_getter(),
-            "count": self._total_records,
-            "total_pages": self._total_requests,
+            "resource": self.resource.value,
+            "params": self.params,
+            "count": self.count,
+            "total_pages": self.num_requests,
         }
 
+        # now actually writing the response results:
         # Write bytes (binary downloads) using atomic_write_bytes, otherwise JSON
         try:
             if isinstance(items, (bytes, bytearray)):
@@ -399,35 +393,51 @@ class DiskCheckpointer:
             else:
                 atomic_write_json(filepath, items)
         except Exception:
-            logger.warning(f"Failed to write cache file for page {request_num}")
+            logger.error(f"Failed to write cache file for page {request_num}")
+        # and also manifest
         if manifest_path is not None:
             atomic_write_json(manifest_path, manifest)
 
     async def awrite_results(self, request_num: int, items: Any) -> None:
         """Async wrapper for write_results."""
-        logger.debug("Asynchronously writing cached results for page %s", request_num)
+        logger.debug(f"Asynchronously writing cached results for page {request_num}")
         await asyncio.to_thread(self.write_results, request_num, items)
 
     def load_cache_results(self) -> list[int]:
-        """Load cached pages into self._results. Returns count loaded."""
-        load_from = self._cache_dir
+        """
+        Load cached pages/request nums into results.
+
+        Loads cached pages from disk into the in-memory results dictionary (self._results), if available.
+
+        Returns
+        -------
+        list of int
+            A list of request numbers (page numbers) that were successfully loaded from the cache.
+        """
+        # where to load from (or not)
+        load_from = self.cache_path
         if load_from is None:
             logger.debug(
-                "Skipping cache load for %s because cache is disabled",
-                self._resource_val,
+                f"Cache disabled: Skipping cache load for {self.resource.value}."
             )
             return []
 
         logger.info(f"Loading cached pages from {load_from}")
         if not load_from.exists():
-            logger.info(f"No cache directory found at {load_from}")
+            logger.info(f"No cache to load yet from {load_from}")
             return []
 
+        # initialize stores
+        if self._results is None:
+            self._results = {}
         pages_loaded = []
+        # load each page file
         for cache_file in sorted(load_from.glob("mgnipy_page_*.*")):
             if cache_file.suffix not in {".json", ".bin"}:
+                logger.info(f"Skipping {cache_file}")
                 continue
-            logger.info(f"Loading cached page from {cache_file}")
+
+            logger.info(f"Loading {cache_file}")
             try:
                 if cache_file.suffix == ".bin":
                     with cache_file.open("rb") as fh:
@@ -435,10 +445,13 @@ class DiskCheckpointer:
                 else:
                     with cache_file.open("r", encoding="utf-8") as fh:
                         data = json.load(fh)
+
                 # Extract page number from filename
                 request_num = int(cache_file.stem.split("_")[-1])
+
                 # load page if avail in cache
                 self._results[request_num] = data
+
                 # tracking
                 pages_loaded.append(request_num)
             except Exception:
@@ -447,8 +460,16 @@ class DiskCheckpointer:
         return pages_loaded
 
     def load_cache_manifest(self) -> dict:
+        """
+        Load the cache manifest file if present, and update total records and total requests.
+
+        Returns
+        -------
+        dict
+            The contents of the manifest file, or an empty dictionary if the manifest is not found or fails to load.
+        """
         # Load manifest if present
-        mpath = self._manifest_path
+        mpath = self.manifest_path
         if mpath is None:
             return {}
         if mpath.exists():
@@ -456,8 +477,8 @@ class DiskCheckpointer:
             try:
                 with mpath.open("r", encoding="utf-8") as fh:
                     manifest = json.load(fh)
-                    self._total_records = manifest.get("count")
-                    self._total_requests = manifest.get("total_pages")
+                    self.count = manifest.get("count")
+                    self.num_requests = manifest.get("total_pages")
             except Exception:
                 logger.warning(f"Failed to load manifest file: {mpath}")
                 manifest = {}
@@ -465,32 +486,40 @@ class DiskCheckpointer:
             manifest = {}
         return manifest
 
-    def load_cache(self) -> int:
-        load_from = self._cache_dir
+    def load_cache(self) -> list[int]:
+        """
+        Pick up where you left off. Loads cached results and manifest into memory.
+
+        Returns
+        -------
+        list of int
+            A list of request numbers (page numbers) that were successfully loaded from the cache.
+        """
+        load_from = self.cache_path
         if load_from is None:
-            logger.debug(
-                "Skipping cache load for %s because cache is disabled",
-                self._resource_val,
-            )
+            logger.debug("Skipping cache load because cache is disabled")
             return []
 
-        logger.info(f"Loading cache for {self._resource_val} from {self._cache_dir}")
+        logger.info(f"Loading cache from {self.cache_path}")
         pages_loaded = self.load_cache_results()
-        self.load_cache_manifest()
-        logger.info(f"Loaded {len(pages_loaded)} cached pages")
+        mani = self.load_cache_manifest()
+        logger.info(f"Loaded {len(pages_loaded)} cached pages and manifest: {mani}")
         return pages_loaded
 
-    async def aload_cache(self) -> int:
+    async def aload_cache(self) -> list[int]:
         """Async wrapper for load_cache."""
         return await asyncio.to_thread(self.load_cache)
 
     def clear_cache(self) -> None:
-        """Remove all cached pages for this query."""
-        load_from = self._cache_dir
+        """Remove all cached pages for this set of queries."""
+        load_from = self.cache_path
+
         if load_from is None:
+            logger.info("Cache is disabled; skipping cache clearing")
             return
+
         if load_from.exists():
-            logger.info("Clearing cache directory %s", load_from)
+            logger.info(f"Clearing cache directory {load_from}")
             for cache_file in load_from.iterdir():
                 # extra check just in case
                 if cache_file.name == "mgnipy_manifest.json" or (
@@ -498,7 +527,7 @@ class DiskCheckpointer:
                     and cache_file.suffix in {".json", ".bin"}
                 ):
                     try:
-                        logger.debug("Deleting cache file %s", cache_file)
+                        logger.debug(f"Deleting cache file {cache_file}")
                         cache_file.unlink()
                     except Exception:
                         logger.warning(f"Failed to delete cache file: {cache_file}")
