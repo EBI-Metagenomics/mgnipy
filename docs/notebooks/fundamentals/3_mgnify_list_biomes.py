@@ -67,13 +67,13 @@
 from mgnipy import MGnipy
 
 # init
-mg = MGnipy(
+MG = MGnipy(
     # configuration
     cache_dir=None,  # set to None to disable caching, or specify a directory for caching
 )
 
 # access proxy
-biomes = mg.biomes
+biomes = MG.biomes
 
 # checking it out
 print(biomes)
@@ -174,26 +174,28 @@ biomes.preview()
 
 # %%
 # getting first 5
-for _ in range(5):
-    biomes.get()
+with MG: # or biomes 
+    for _ in range(5):
+        biomes.get()
 
 # %% [markdown]
 # For each option there is an async option
 
 # %%
-for _ in range(5):
-    await biomes.aget()
+with MG: 
+    for _ in range(5):
+        await biomes.aget()
 
 # %% [markdown]
 # and you can take a look at the results as you go &#x1f600; :
 
 # %%
 # by page, e.g. page 5
-biomes.results[5]
+biomes.metadata.results[5]
 
 # %%
 # or by records, first 2 records
-biomes.to_list()[:2]
+biomes.metadata.to_list()[:2]
 # or via .records iterator
 # list(biomes.records)[:2]
 
@@ -210,7 +212,8 @@ biomes.show_tree()
 # - When calling page() on an alrady completed request, the api call is not repeated and instead the output is a page from the cache
 
 # %%
-biomes.page(3)
+with MG: 
+    biomes.page(3)
 
 # %% [markdown]
 # ### Option 3. `bulk_fetch()` of all requests (with safety limits)
@@ -231,25 +234,22 @@ biomes.dry_run()
 # Now we can get some data sync or async:
 
 # %%
-# synchronously fetch first 50 items/records
-biomes.bulk_fetch(
-    limit=50,  # number of items/records to fetch
-)
+# synchronously fetch up to 50 pages
+with MG: 
+    biomes.bulk_fetch(limit=50)
 
 # %%
 # and async
-await biomes.abulk_fetch(limit=50)
+with MG: 
+    await biomes.abulk_fetch(limit=50)
 
 # %% [markdown]
 # ## ⏳ Checking progress
 #
-# As we saw earlier in the notebook we can take a look at results as we go along. For a concise update on progress you can use `.progress` and `.last_successful_page`
+# As we saw earlier in the notebook we can take a look at results as we go along. For a concise update on progress you can use `.progress`
 
 # %%
 biomes.progress
-
-# %%
-biomes.last_successful_page
 
 # %%
 # no cache for this isntance but we can clear anywahys

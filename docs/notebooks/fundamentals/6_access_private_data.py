@@ -30,13 +30,12 @@
 #     </summary>
 #     <h1></h1>
 #
-#     - `mgnipy.MGnipyConfig` takes care of obtaining an authentication token from the [token_obtain_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding) endpoint of the MGnify API using your username/password
-#     - The auth token is verified using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint and, if valid, refreshed using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding) when needed.
-#         - The high-level methods within `mgnipy.MGnipyConfig` involved are `obtain_auth_token`, `verify_auth_token`, `refresh_auth_token`, and `resolve_auth_token`.
+#     - `mgnipy.MGnipyConfig` takes care of obtaining a sliding token (JWT) from the [token_obtain_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding) endpoint of the MGnify API using your username/password
+#     - Sliding JWT includes an Access token, shorter expiry, and Refresh token, longer expiry. 
+#     - The Access token is checked for validity using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint 
+#     - If the Access token is expired but the Refresh token has not then a new Access token can be obtained using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding)
+#     - The high-level methods within `mgnipy.MGnipyConfig` involved are `obtain_auth_token`, `verify_auth_token`, `refresh_auth_token`, and `resolve_auth_token`.
 #     - The resolved token is stored in `MGnipyConfig.auth_token` for the session and used for authenticated API requests.
-#     - By default the token is cached on disk under a platform-appropriate cache dir (via `platformdirs`) in a file named auth_<hash>.json.
-#         - You can disable disk caching by setting `cache_dir=None` on MGnipyConfig.
-#     - On success `resolve_auth_token()` will confirm authentication, it prints `"Authenticated successfully."`
 #
 #     <h1></h1>
 #     </details>

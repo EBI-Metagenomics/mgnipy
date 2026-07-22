@@ -15,10 +15,10 @@
 # %% [markdown]
 # # Understanding the cache
 #
-# This page provides a quick guide to the cache handled by `DiskCheckpointer` of the `mgnipy.V2.mixins`.
+# This page provides a quick guide to the cache handled by `CheckpointMixin` of the `mgnipy.V2.mixins`.
 #
 # ```{margin}
-# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder. 
+# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
 # ```
 # <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
 #
@@ -158,9 +158,7 @@ print("general cache dir:", samples.config.cache_dir)
 
 # %%
 # option 1: .cache_dir
-print(
-    "Planned cache directory based on params and resource:\n", samples.cache_dir
-)
+print("Planned cache directory based on params and resource:\n", samples.cache_dir)
 
 # %% [markdown]
 # The cache directory path is also included in the string representation of the proxy instance :)

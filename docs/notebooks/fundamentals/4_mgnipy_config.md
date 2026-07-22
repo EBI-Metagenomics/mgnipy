@@ -20,29 +20,21 @@ A [Pydantic-based settings object](https://pydantic.dev/docs/validation/latest/c
 
 `mgnipy.MGnipyConfig` takes care of 
 
-1. obtaining an authentication token from the [token_obtain_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding) endpoint of the MGnify API using your username/password
+1. Checking for cached [sliding JSON Web Tokens (JWT)](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/token_types.html#sliding-tokens) which comprises a shorter-lived Access token and a longer Refresh token.
 
-2. verifying auth tokens using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint 
+2. Verifying the validity of Access tokens using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint 
 
-3. and, if valid, refreshing using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding) when needed.
+3. Refreshing access, getting a new Access token if the Refresh token is at least still valid using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding)
 
-4. On success `resolve_auth_token()` will confirm authentication, it prints `"Authenticated successfully."`
+4. Or obtaining new Access and Refresh tokens using login credentials (e.g., like from a .env file) from the [token_obtain_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding) endpoint of the MGnify API using your username/password
 
-5. the resolved token is stored in `MGnipyConfig.auth_token` for the session and used for authenticated API requests.
+5. Caching the token and stored in `MGnipyConfig.auth_token` for the session and used for authenticated API requests.
 
 ```{note}
 - By default the token is cached on disk under a platform-appropriate cache dir (via `platformdirs`) in a file named auth_<hash>.json. -- unless cache is disabled via `cache_dir=None`
+- Cached tokens are stored per base URL + username (hashed) to avoid collisions when using multiple endpoints/accounts.
 ```
 
-See [next accessing private data page](https://mgnipy.mgnify.org/notebooks/fundamentals/6_access_private_data.html) on how to configure for private data. 
+See [accessing private data page](https://mgnipy.mgnify.org/notebooks/fundamentals/6_access_private_data.html) on how to configure for private data. 
 
----
-
-**Tips & notes**
-
-- If you pass a pre-obtained `auth_token` to the config it will still be verified and refreshed automatically when appropriate.
-- Cached tokens are stored per base URL + username (hashed) to avoid collisions when using multiple endpoints/accounts.
-- `MGnipyConfig` prints `Authenticated successfully.` upon resolving a valid token via `resolve_auth_token()`.
-
----
 

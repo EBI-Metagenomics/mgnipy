@@ -33,7 +33,10 @@
 #
 # - **Unified configuration:** Central `MGnipyConfig` for base URL, credentials, token handling, and cache settings — one place to change behavior
 #
+# - **Client as a context manager**: Helps make sure that any connections are closed via `with` block also has helpers for checking status `.status` and to `.close()`/`.aclose()` 
+#
 # - **Tidier cache invalidation:** All the cache files across all resource endpoints (e.g., `MG.studies`, `MG.analysis`, `MG.biome`) go to a consistent place. The `MG.clear_subcaches()` can then clear all the mgnipy cache files for all different requests made.
+#
 #
 
 # %% [markdown]
@@ -45,14 +48,55 @@
 from mgnipy import MGnipy
 
 # Create a default client (will pick up .env if present)
-MG = MGnipy()
+MG = MGnipy(cache_dir="temp_example")
 
-# for example we can access the samples MGnify resource easily
+# details
+print(MG)
+
+# check if there is an active session (shouldnt be one)
+MG.status
+
+# %% [markdown]
+# We can then easily point to the different MGnify API endpoints
+
+# %%
+# for example we can access the samples MGnify resource
 samples = MG.samples
+
 # some info
 print(samples)
+
 # more info
 samples.describe_endpoint()
+
+# %% [markdown]
+# ## Client as Context Manager
+#
+# > Context managers allow you to allocate and release resources precisely when you want to. The most widely used example of context managers is the with statement. ...
+# [Read more here](https://book.pythontips.com/en/latest/context_managers.html)
+#
+# MGnipy will take care of closing the clients if you use `with` blocks -- alternatively you can `.close()` manually 
+#
+# For example:
+
+# %%
+# small query to get 3 per page 
+modified_search = samples.filter(page_size=3)
+
+with MG: 
+    # within this client context, get 3 pages of samples resource
+    modified_search.bulk_fetch(limit=2)
+
+modified_search.metadata.to_pandas(expand_nested_dicts=True)
+
+# %% [markdown]
+# we can check the status of the client to be sure
+
+# %%
+MG.status
+
+# also can manuallly close 
+# MG.close()
 
 # %% [markdown]
 # ## API helpers
