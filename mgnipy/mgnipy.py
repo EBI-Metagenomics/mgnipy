@@ -1,5 +1,6 @@
 import logging
 
+from mgnipy.V2.mixins import ClientManagerMixin
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
 
@@ -16,9 +17,10 @@ from mgnipy.V2.proxies import (
 V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 
 
-class MGnipy:
+class MGnipy(ClientManagerMixin):
     """
-    Main class for interacting with the MGnify API.
+    MGnipy is a Python client for interacting with the MGnify API (https://www.ebi.ac.uk/metagenomics/api/v2/).
+
     Provides methods to access different resources (e.g., studies, samples, analyses) and their details,
     as well as utility methods for listing resources and describing endpoints.
 
@@ -47,41 +49,16 @@ class MGnipy:
     ):
 
         # init config
-        self._config: MGnipyConfig = (
+        self.config: MGnipyConfig = (
             to_mgnipy_config(config) if config else MGnipyConfig(**config_kwargs)
         )
         # and resolve auth token if needed
-        self._config.resolve_auth_token(interactive=interactive_auth)
+        self.interactive_auth = interactive_auth
+        self.config.resolve_auth_token(interactive=self.interactive_auth)
 
         # set up Auth or unauth client
-        self._client: Client | AuthenticatedClient = init_httpx_client(self._config)
-
-    @property
-    def config(self):
-        return self._config
-
-    def close(self):
-        if self._client._client:
-            self._client._client.close()
-
-    async def aclose(self):
-        if self._client._async_client:
-            await self._client._async_client.aclose()
-
-    @property
-    def client(self):
-        return self._client
-
-    @property
-    def status(self) -> None:
-        """
-        Print the status of the MGnipy client, including the type of client and whether the synchronous and asynchronous httpx client sessions are open.
-        """
-        print(
-            f"Client or AuthenticatedClient: {type(self._client).__name__}\n"
-            f"Open httpx_client session: {self._client._client is not None}\n"
-            f"Open async_httpx_client session: {self._client._async_client is not None}\n"
-        )
+        self.client: Client | AuthenticatedClient = init_httpx_client(self.config)
+        self._owns_client = True
 
     def list_resources(self):
         """
@@ -118,7 +95,7 @@ class MGnipy:
 
         proxy_cls = V2_ALL_PROXIES[endpoint]
         logger.debug(f"Using proxy class {proxy_cls} to describe resource '{resource}'")
-        proxy = proxy_cls(config=self._config)
+        proxy = proxy_cls(config=self.config)
         return proxy.emgapi_handler.describe_endpoint(as_dict=as_dict)
 
     def describe_resources(
@@ -162,6 +139,9 @@ class MGnipy:
         """
 
         if self.cache_dir is None:
+            logger.warning(
+                f"Cache directory is not set: {self.cache_dir}. Cannot clear cache. Please set cache_dir in MGnipyConfig."
+            )
             return
 
         if self.cache_dir.exists():
@@ -221,28 +201,40 @@ class MGnipy:
 
         # for cache_dir attr
         if name == "cache_dir":
-            return self._config.cache_dir
+            return self.config.cache_dir
 
-        # otherwise endpoint attrs
-        endpoint = SupportedEndpoints.validate(name)
-        # if list endpoint, return list proxy instance
-        if endpoint in V2_ENDPOINT_LIST_PROXIES:
-            list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
-            return list_cls(config=self._config, client=self.client)
-        # if detail endpoint, return a callable that returns a detail proxy instance
-        if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
-            detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
-
-            # Return a callable so required args like accession/biome_lineage
-            # are provided when user calls MG.study(...), MG.biome(...), etc.
-            def _detail_factory(id: Optional[str] = None, **kwargs):
-                return detail_cls(
-                    id=id, config=self._config, client=self.client, **kwargs
+        if SupportedEndpoints.is_valid(name):
+            # otherwise endpoint attrs
+            endpoint = SupportedEndpoints.validate(name)
+            # if list endpoint, return list proxy instance
+            if endpoint in V2_ENDPOINT_LIST_PROXIES:
+                list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
+                return list_cls(
+                    config=self.config,
+                    client=self.client,
+                    resolve_auth=False,
+                    interactive_auth=self.interactive_auth,
                 )
+            # if detail endpoint, return a callable that returns a detail proxy instance
+            if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
+                detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
 
-            return _detail_factory
+                # Return a callable so required args like accession/biome_lineage
+                # are provided when user calls MG.study(...), MG.biome(...), etc.
+                def _detail_factory(id: Optional[str] = None, **kwargs):
+                    return detail_cls(
+                        id=id,
+                        config=self.config,
+                        client=self.client,
+                        resolve_auth=False,
+                        interactive_auth=self.interactive_auth,
+                        **kwargs,
+                    )
 
+                return _detail_factory
+
+            raise ValueError(f"{type(self).__name__} has no endpoint {name!r}")
         raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
 
     def __str__(self):
-        return f"MGnipy(config={self._config})"
+        return f"MGnipy(config={self.config})"
