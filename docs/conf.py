@@ -8,7 +8,6 @@ from importlib import metadata
 
 # compatibility with plotly6
 os.environ["PLOTLY_RENDERER"] = "notebook"
-os.environ["MGNIPY_AUTHENTICATION_OFF"] = "1"
 
 # -- Project information -----------------------------------------------------
 
@@ -101,9 +100,7 @@ myst_enable_extensions = ["dollarmath", "amsmath"]
 #  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
 nb_execution_mode = "auto"
 nb_execution_timeout = -1  # -1 means no timeout
-nb_execution_raise_on_error = (
-    True  # fail the build if a notebook cell raises an error
-)
+nb_execution_raise_on_error = True  # fail the build if a notebook cell raises an error
 # Rendering
 nb_merge_streams = True
 nb_scroll_outputs = True

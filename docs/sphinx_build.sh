@@ -1,4 +1,3 @@
-export MGNIPY_AUTHENTICATION_OFF=1
 export SPHINX_APIDOC_OPTIONS="members,undoc-members,inherited-members,show-inheritance"
 
 jupytext notebooks/**/*.ipynb --sync
