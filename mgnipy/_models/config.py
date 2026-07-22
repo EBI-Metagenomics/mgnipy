@@ -1,13 +1,13 @@
 import hashlib
-import httpx
 import json
 import logging
 
+logger = logging.getLogger(__name__)
+from mgnipy.emgapi_v2_client.client import Client
 from mgnipy.emgapi_v2_client.models.webin_token_response import (
     WebinTokenResponse,
 )
 
-logger = logging.getLogger(__name__)
 from getpass import getpass
 from pathlib import Path
 from time import time
@@ -104,9 +104,9 @@ class MGnipyConfig(BaseMGnipyConfig):
     6. Cache the new token for future use.
     """
 
-    def _unauth_client(self) -> httpx.Client:
+    def _unauth_client(self) -> Client:
         """Client without auth for getting tokens"""
-        return httpx.Client(base_url=str(self.base_url))
+        return Client(base_url=str(self.base_url))
 
     @property
     def _token_cache_dir(self) -> Path:
@@ -276,6 +276,12 @@ class MGnipyConfig(BaseMGnipyConfig):
             result: WebinTokenRequest | None = token_obtain_sliding.sync(
                 client=client, body=body
             )
+
+        if not result:
+            logger.error(
+                "Failed to obtain auth token. Check credentials or API availability."
+            )
+            return None
 
         token = result.get("token", None)
         logger.debug(f"Token successfully obtained: {token is not None}")

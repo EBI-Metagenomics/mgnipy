@@ -34,13 +34,14 @@ from mgnipy.V2.metadata import MGnifyMetadata
 
 if TYPE_CHECKING:
     from mgnipy.V2.query_set import QuerySet
+    from mgnipy._models.config import MGnipyConfig
 
 
 class MGnifyList(MGnifier):
-    """Base class for MGnify list endpoints.
+    """
+    A proxy for a list resource in the MGnify API, such as studies, samples, or analyses.
 
-    Concrete subclasses bind a specific list resource such as studies, samples,
-    or analyses. Calling the proxy returns a new instance with merged filters.
+    This class provides methods to retrieve metadata, iterate over child details, and manage pagination and filtering for the list resource.
     """
 
     RESOURCE: ClassVar[Optional[ListResourceStr]] = None
@@ -48,63 +49,36 @@ class MGnifyList(MGnifier):
     def __init__(
         self,
         *,
-        config: Optional[dict] = None,
+        config: Optional[MGnipyConfig | dict] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
         # Accept accidental "resource" in kwargs, but do not expose it in signature
         passed_resource: Optional[ListResourceStr] = kwargs.pop("resource", None)
-        logger.debug(
-            f"Passed resource: {passed_resource!r}, class RESOURCE: {self.RESOURCE!r}"
-        )
         resolved_resource = self.RESOURCE or passed_resource
+
         if resolved_resource is None:
             raise TypeError(
-                "Use a concrete subclass like proxies.analyses.Analyses, or if using base MGnifyList one of the following `resource` param is required: {ListResourceStr!r}"
+                "Use a proxy e.g. proxies.studies.Studies or "
+                "`resource` arg required: {ListResourceStr!r}"
             )
 
         logger.debug(
-            f"Initializing MGnifyList with: {resolved_resource!r}, params: {params!r}, config: {config!r}, kwargs: {kwargs!r}"
+            f"Initializing MGnifyList with: {resolved_resource!r}, "
+            f"params: {params}, config: {config}, also: {kwargs!r}"
         )
-
         super().__init__(
             resource=resolved_resource,
-            params=params,
             config=config,
+            params=params,
             **kwargs,
         )
-        logger.debug(f"Initialized MGnifyList with resource: {self.resource!r}")
+        logger.debug(f"{self.resource!r} MGnifyList initialized.")
+
         self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
 
         self._collected_details: dict[str, "MGnifyDetail"] = {}
         self._collected_details_metadata: dict[str, dict] = {}
-
-    def __call__(self, **kwargs) -> "MGnifyList":
-        """Return a cloned list proxy with updated parameters.
-
-        Parameters
-        ----------
-        **kwargs
-            Query parameters to merge into the current parameter set. If
-            ``params`` is supplied, it replaces the current parameters before
-            the remaining keyword arguments are merged in.
-
-        Returns
-        -------
-        MGnifyList
-            A new proxy instance with the same resource and updated filters.
-
-        Examples
-        --------
-        >>> from mgnipy.V2.proxies import Studies
-        >>> studies = Studies(params={"search": "gut"}, config={})  # doctest: +SKIP
-        >>> studies(search="soil")  # doctest: +SKIP
-        """
-        params = kwargs.pop("params", None) or {}
-        # Merge with params, giving precedence to kwargs
-        params.update(kwargs)
-
-        return self.__class__(config=self.config, params=params)
 
     def __len__(self) -> int:
         """Return the number of child details based on results.
@@ -241,7 +215,13 @@ class MGnifyList(MGnifier):
             raise ValueError(
                 f"Unsupported child resource for detail: {self.child_resource}"
             )
-        return detail_cls(config=self.config)
+        return detail_cls(
+            config=self.config,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
+            semaphore=self.semaphore,
+        )
 
     @property
     def iter_details(self) -> Iterator[dict]:
@@ -430,6 +410,8 @@ class MGnifyList(MGnifier):
             x for x in self.metadata.ids if x not in self._collected_details_metadata
         ][:limit]
 
+        logger.debug(f"Number of details to enrich: {details_todo}")
+
         for count, detail_id in enumerate(
             tqdm_sync(
                 details_todo,
@@ -469,9 +451,7 @@ class MGnifyList(MGnifier):
             x for x in self.metadata.ids if x not in self._collected_details_metadata
         ][:limit]
 
-        logging.debug(
-            f"Number of details to enrich: {len(details_todo)}. First: {details_todo[0]}"
-        )
+        logging.debug(f"Number of details to enrich: {len(details_todo)}")
 
         logging.debug(
             f"Enriching details for {len(details_todo)} items asynchronously."
@@ -565,6 +545,10 @@ class MGnifyDetail(MGnifier):
             id=detail_id,
             config=self.config,
             params=merged_params,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
+            semaphore=self.semaphore,
         )
         new_qs.endpoint_module = self.endpoint_module
 
@@ -650,7 +634,10 @@ class MGnifyDetail(MGnifier):
             f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
-            config=self.config
+            config=self.config,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
         )
         logger.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
 
@@ -708,7 +695,10 @@ class MGnifyDetail(MGnifier):
             f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
-            config=self.config
+            config=self.config,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
         )
         logger.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
 

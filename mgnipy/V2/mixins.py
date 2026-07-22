@@ -6,6 +6,7 @@ import io
 import json
 import logging
 
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 
 logger = logging.getLogger(__name__)
 import webbrowser
@@ -343,7 +344,6 @@ class CheckpointMixin:
             default=str,
         )
         cache_key: str = hashlib.sha256(serial.encode("utf-8")).hexdigest()
-        logger.debug(f"Computed cache key: {cache_key}")
         return cache_key
 
     @property
@@ -431,10 +431,24 @@ class CheckpointMixin:
         if self._results is None:
             self._results = {}
         pages_loaded = []
+
         # load each page file
         for cache_file in sorted(load_from.glob("mgnipy_page_*.*")):
             if cache_file.suffix not in {".json", ".bin"}:
                 logger.info(f"Skipping {cache_file}")
+                continue
+
+            # Extract page number from filename
+            try:
+                request_num = int(cache_file.stem.split("_")[-1])
+            except Exception as e:
+                logger.error(f"Failed to extract page number from {cache_file}: {e}")
+                continue
+
+            if request_num in self._results:
+                logger.debug(
+                    f"Page {request_num} already loaded in memory; skipping {cache_file}"
+                )
                 continue
 
             logger.info(f"Loading {cache_file}")
@@ -446,10 +460,7 @@ class CheckpointMixin:
                     with cache_file.open("r", encoding="utf-8") as fh:
                         data = json.load(fh)
 
-                # Extract page number from filename
-                request_num = int(cache_file.stem.split("_")[-1])
-
-                # load page if avail in cache
+                # load page to results
                 self._results[request_num] = data
 
                 # tracking
@@ -535,6 +546,41 @@ class CheckpointMixin:
                 load_from.rmdir()
             except Exception:
                 logger.warning(f"Failed to delete cache directory: {load_from}")
+        # reset loaded cache state
+        self._pages_from_cache = []
+        self._cached_manifest = {}
+
+    def try_load_cache(self) -> None:
+        """
+        Attempt to load cached results and manifest into memory if not already loaded.
+        This method checks if the cache has already been loaded to avoid redundant operations.
+        If the cache has not been loaded, it will attempt to load it and set the `_cache_loaded` attribute accordingly.
+
+        Notes
+        -----
+        - This method is intended to be called internally before accessing cached results.
+        - If cache_dir is None then _cache_loaded will be True after initial attempt.
+        - If an error occurs during cache loading, it will be logged, and `_cache_loaded` will be set to False.
+        - Dependent on `.mixins.CheckpointMixin`
+        """
+
+        if getattr(self, "_cache_loaded", False):
+            return
+        try:
+            # load results
+            self._pages_from_cache = self.load_cache_results()
+            # load manifest
+            self._cached_manifest = self.load_cache_manifest()
+            # update counts from manifest
+            self.count = self._cached_manifest.get("count", None)
+            self.num_requests = self._cached_manifest.get("total_pages", None)
+            # set flag
+            self._cache_loaded = True
+        except Exception as e:
+            logger.error(f"Error occurred while loading cache: {e}")
+            self._cache_loaded = (
+                False  # Q: Or should this be set to True to avoid repeated attempts?
+            )
 
 
 class StreamMixin:
@@ -1481,3 +1527,74 @@ class BioSamplesMetadataMixin:
             logger.warning(
                 "Neither identifier nor detailed_metadata with ids found, cannot fetch BioSamples metadata."
             )
+
+
+class ClientManagerMixin:
+    """
+    Context manager mixin for managing the lifecycle of an HTTP client (synchronous or asynchronous) within a class. This mixin provides methods to enter and exit the context, ensuring that the client is properly initialized and closed, and handles cases where the client may have been closed or is not available.
+
+    Requirements
+    ------------
+    - `self.client` must be an instance of a class that implements the context manager protocol (i.e., has `__enter__` and `__exit__` methods for synchronous clients, and `__aenter__` and `__aexit__` methods for asynchronous clients).
+    - `self.config` must be a configuration object or dictionary that can be used to initialize a new HTTP client instance if the existing client is closed or unavailable.
+    """
+
+    def __enter__(self):
+        try:
+            self.client.__enter__()
+        except RuntimeError as e:
+            logger.warning(f"Opening a new client instance due to: {e}")
+            self.client = init_httpx_client(self.config)
+            self.client.__enter__()
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        if not getattr(self, "_owns_client", True):
+            logger.debug("Client is not owned by this instance; skipping __exit__().")
+            return False
+        self.client.__exit__(*args, **kwargs)
+        self.close()
+        logger.debug(f"Closing client: {self.client._client}")
+        return False
+
+    async def __aenter__(self):
+        try:
+            await self.client.__aenter__()
+        except RuntimeError as e:
+            logger.warning(f"Opening a new async client instance due to: {e}")
+            self.client = init_httpx_client(self.config)
+            await self.client.__aenter__()
+        return self
+
+    async def __aexit__(self, *args, **kwargs):
+        if not getattr(self, "_owns_client", True):
+            logger.debug("Client is not owned by this instance; skipping __aexit__().")
+            return False
+        await self.client.__aexit__(*args, **kwargs)
+        await self.aclose()
+        logger.debug(f"Closing async client: {self.client._async_client}")
+        return False
+
+    def close(self):
+        if self.client is not None and self.client._client is not None:
+            if not self.client._client.is_closed:
+                self.client._client.close()
+            self.client._client = None
+
+    async def aclose(self):
+        if self.client is not None and self.client._async_client is not None:
+            if not self.client._async_client.is_closed:
+                await self.client._async_client.aclose()
+            self.client._async_client = None
+
+    @property
+    def status(self) -> None:
+        """
+        Print the status of the MGnipy client, including the type of client and whether the synchronous and asynchronous httpx client sessions are open.
+        """
+        print(
+            f"Client or AuthenticatedClient type: {type(self.client).__name__}\n"
+            f"Owned by this instance: {getattr(self, '_owns_client', True)}\n"
+            f"HTTP client open: {self.client._client is not None and not self.client._client.is_closed}\n"
+            f"Async client open: {self.client._async_client is not None and not self.client._async_client.is_closed}\n"
+        )

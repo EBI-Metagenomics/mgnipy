@@ -6,7 +6,7 @@ from typing import Any, Optional
 from types import ModuleType
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, ResourceStr
-from mgnipy._shared_helpers.validators import validate_gt_int
+from mgnipy._shared_helpers.validators import validate_ge_int
 from mgnipy.V2.describe import DescribeEmgapiModule
 from mgnipy.V2.endpoints import RESOURCES_ALL_ENDPOINTS
 
@@ -15,7 +15,7 @@ class QuerySet:
     """
     Query Builder and State Manager for MGnify API interactions.
 
-    Builds a set of `.queries()` that represent the API calls to be made
+    Builds a set of `.build_queries()` that represent the API calls to be made
     based on the current resource (API endpoint) and parameters.
 
     Stores the current state of the query set (including the resource type, parameters) and any `results`.
@@ -117,7 +117,7 @@ class QuerySet:
     @count.setter
     def count(self, value: Optional[int]):
         if value is not None:
-            validated_count = validate_gt_int(value, 0)
+            validated_count = validate_ge_int(value, 0)
             self._count: int = validated_count
         else:
             self._count: Optional[int] = None
@@ -131,7 +131,7 @@ class QuerySet:
     @num_requests.setter
     def num_requests(self, value: Optional[int]):
         if value is not None:
-            validated_num = validate_gt_int(value, 0)
+            validated_num = validate_ge_int(value, 1)
             self._num_requests: int = validated_num
         else:
             self._num_requests: Optional[int] = None
@@ -281,36 +281,6 @@ class QuerySet:
         new_qs = self._clone(**filters)
         return new_qs
 
-    def _spawn(
-        self,
-        *,
-        target_resource: Optional[str] = None,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ) -> "QuerySet":
-        """
-        Spawn a new QuerySet instance for a related resource with given parameters.
-
-        Returns
-        -------
-        QuerySet
-            A new QuerySet instance with other resource and parameters.
-
-        """
-
-        logger.info(
-            f"Spawning QuerySet from {self.resource.value} to {target_resource or self.resource}",
-        )
-
-        merged_params = {**(params or {}), **kwargs}
-        resource_override = merged_params.pop("resource", None)
-
-        return QuerySet(
-            resource=target_resource or resource_override or self.resource,
-            config=self.config,
-            params=merged_params,
-        )
-
     def _clone(self, **param_overrides):
         """
         'polymorphism-aware, immutable-style clone helper' to create a new instance of the same class with updated parameters.
@@ -346,7 +316,7 @@ class QuerySet:
 
         return new_qs
 
-    def queries(self, **httpx_kwargs) -> list[dict[str, Any]]:
+    def build_queries(self, **httpx_kwargs) -> list[dict[str, Any]]:
         """
         Generate a list of query parameter dictionaries for each API request that would be made based on the current parameters.
         This allows the user to see the specific query parameters for each request before executing them.
@@ -362,6 +332,7 @@ class QuerySet:
             query_setup = {
                 "url": self.emgapi_handler.sub_url(**self.params),
                 "params": self.params,
+                **httpx_kwargs,
             }
             logger.debug(f"Built single-query plan for {self.resource.value}")
             return {1: query_setup}
@@ -385,6 +356,7 @@ class QuerySet:
             query_setup = {
                 "url": self.emgapi_handler.sub_url(**_parm),
                 "params": _parm,
+                **httpx_kwargs,
             }
             queries[pg] = query_setup
         logger.debug(f"Built {len(queries)} query entries for {self.resource.value}")
@@ -410,49 +382,6 @@ class QuerySet:
             )
         return self._results
 
-    def try_load_cache(self) -> None:
-        """
-        Attempt to load cached results and manifest into memory if not already loaded.
-        This method checks if the cache has already been loaded to avoid redundant operations.
-        If the cache has not been loaded, it will attempt to load it and set the `_cache_loaded` attribute accordingly.
-
-        Notes
-        -----
-        - This method is intended to be called internally before accessing cached results.
-        - If cache_dir is None then _cache_loaded will be True after initial attempt.
-        - If an error occurs during cache loading, it will be logged, and `_cache_loaded` will be set to False.
-        - Dependent on `.mixins.DiskCheckpointer`
-        """
-
-        if getattr(self, "_cache_loaded", False):
-            return
-        try:
-            # load results
-            self._pages_from_cache = self.cache_handler.load_cache_results()
-            # load manifest
-            self._cached_manifest = self.cache_handler.load_cache_manifest()
-            # update counts from manifest
-            self.count = self._cached_manifest.get("count", None)
-            self.num_requests = self._cached_manifest.get("total_pages", None)
-            # set flag
-            self._cache_loaded = True
-        except Exception as e:
-            logger.error(f"Error occurred while loading cache: {e}")
-            self._cache_loaded = (
-                False  # Q: Or should this be set to True to avoid repeated attempts?
-            )
-
-    def clear_cache(self):
-        """
-        Clear the cached results for the current resource and parameters.
-        This will delete any cached files associated with the current query parameters.
-        """
-        logger.warning(f"Clearing cache for {self.resource.value} at {self.cache_dir}")
-        self.cache_handler.clear_cache()
-        # reset loaded cache state
-        self._pages_from_cache = []
-        self._cached_manifest = {}
-
     def _is_in_results(self, request_num: int) -> bool:
         """
         Check if results for a specific request number already exist in the results.
@@ -469,7 +398,7 @@ class QuerySet:
         """
 
         # validate num is positive int
-        validated_int = validate_gt_int(request_num, 0)
+        validated_int = validate_ge_int(request_num, 1)
         in_results = validated_int in (self._results or [])
         logger.debug(f"Result presence check: {in_results}")
         return in_results

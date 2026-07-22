@@ -5,18 +5,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 from typing import TYPE_CHECKING, Any, Optional
-
-
-from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.validators import validate_status_code
-
-from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
-
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 
 if TYPE_CHECKING:
     from mgnipy.emgapi_v2_client.types import Response as mpy_Response
     from mgnipy.V2.query_set import QuerySet
+    from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 
 
 class QueryExecutor:
@@ -38,11 +33,188 @@ class QueryExecutor:
             "."
         )[-1]
 
-        # question: should this be shared across all instances of QueryExecutor or should each have their own?
-        # i meant for this to be a concurrency limiter to protect the server -- did I get this right?
-        self._semaphore = get_semaphore()
-        # PICK UP HERE
         self.client = client or init_httpx_client(self.qs.config)
+
+    def __getattr__(self, name: str):
+        if name == "httpx_client":
+            return self.client.get_httpx_client()
+        if name == "httpx_aclient":
+            return self.client.get_async_httpx_client()
+        if name == "api_version":
+            print(self.config.api_version)
+
+    def request_page(self, page_num: int) -> Optional[dict[int, list[dict]]]:
+        """
+        Retrieve a specific page of metadata for the current resource and parameters.
+        This method allows the user to retrieve metadata one page at a time,
+        which can be useful for previewing data or for manual pagination control.
+
+        Parameters
+        ----------
+        page_num : int
+            The page number to retrieve (1-based index).
+
+        Returns
+        -------
+        Optional[dict[int, list[dict]]]
+            A dictionary containing the metadata from the specified page of results,
+            or None if the page is not found.
+
+        Examples
+        --------
+        >>> # Fetch a single page (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.page(1)  # doctest: +SKIP
+        """
+        self._set_counts()
+
+        # check if alrady in results first
+        if self.qs._is_in_results(page_num):
+            logger.debug(f"Page {page_num} already retrieved.")
+            return self.qs._results.get(page_num, None)
+
+        logger.info(f"Page {page_num} not in results")
+
+        if self._query_setups(page_num) is None:
+            logger.error(
+                f"Page {page_num} is not a valid request number for the current query setup: {self._query_setups()}."
+            )
+            return []
+
+        # otherwise get page
+        # getting params from qs
+        params = self._query_setups(page_num).get("params", None)
+        logger.info(f"Fetching request num {page_num} with params: {params}")
+        response = self._single_request(
+            params=params,
+        )
+        # get out items
+        page_items = self._page_items(response)
+        # add to results
+        self.qs._results.update({page_num: page_items})
+        return page_items
+
+    async def arequest_page(
+        self,
+        page_num: int,
+    ) -> Optional[dict[int, list[dict]]]:
+        """Async fetch for a single page.
+
+        Example
+        -------
+        >>> import asyncio
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> asyncio.run(executor.apage(1))  # doctest: +SKIP
+        """
+        self._set_counts()
+        if self.qs._is_in_results(page_num):
+            logger.info(f"Page {page_num} already retrieved.")
+            return self.qs._results.get(page_num, None)
+
+        logger.info(f"Page {page_num} not in results")
+
+        if self._query_setups(page_num) is None:
+            logger.error(
+                f"Page {page_num} is not a valid request number for the current query setup: {self._query_setups()}."
+            )
+            return []
+
+        params = self._query_setups(page_num).get("params", None)
+        logger.info(f"Fetching page {page_num} with params={params}")
+        response = await self._asingle_request(params=params)
+        page_items = self._page_items(response)
+        self.qs._results.update({page_num: page_items})
+        return page_items
+
+    def _set_counts(self):
+        """
+        Helper method to set the count and num_requests attributes
+        based on the current parameters and endpoint.
+
+        Example
+        -------
+        >>> # Populate qs.count and qs.num_requests (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor._set_counts()  # doctest: +SKIP
+        """
+        if self.qs.count is not None and self.qs.num_requests is not None:
+            logger.debug(
+                f"Using cached count and num_requests vals: {self.qs.count}, {self.qs.num_requests}"
+            )
+        else:
+            self.qs.count = self.qs.emgapi_handler.get_num_items(params=self.qs.params)
+            self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
+                self.qs.count, page_size=self.qs.params.get("page_size", None)
+            )
+            logger.debug(
+                f"Computed count and num_requests: {self.qs.count}, {self.qs.num_requests}"
+            )
+
+        # also init results dict if not already for tracking pages results
+        if self.qs._results is None:
+            self.qs._results = {}
+
+    def _single_request(
+        self,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> Optional[dict]:
+        """
+        Retrieve a single get using the synchronous API client.
+        Handles pagination and not.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        params : dict, optional
+            Parameters for the API call.
+
+        Returns
+        -------
+        dict or None
+            Parsed response from the API, or None if the request failed.
+        """
+        # prep params
+        request_params = {**(params or self.qs.params), **kwargs}
+        # request
+        response = self.qs.endpoint_module.sync_detailed(
+            client=self.client,
+            **request_params,
+        )
+        return self._parse_response(response)
+
+    async def _asingle_request(
+        self,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> Optional[dict]:
+        """
+        Retrieve a single get asynchronously using the asynchronous API client.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        params : dict, optional
+            Parameters for the API call.
+        **kwargs
+            Additional keyword arguments for the API call.
+
+        Returns
+        -------
+        dict or None
+            Parsed response from the API, or None if the request failed.
+        """
+        # prep params
+        request_params = {**(params or self.qs.params), **kwargs}
+        # request
+        response = await self.qs.endpoint_module.asyncio_detailed(
+            client=self.client,
+            **request_params,
+        )
+
+        return self._parse_response(response)
 
     def _query_setups(
         self, request_num: Optional[int] = None, **httpx_kwargs
@@ -61,8 +233,8 @@ class QueryExecutor:
             A dictionary containing the query parameters for the specified request number, or the full query setup if request_num is None.
         """
         if request_num is None:
-            return self.qs.queries(**httpx_kwargs)
-        return self.qs.queries(**httpx_kwargs).get(request_num, None)
+            return self.qs.build_queries(**httpx_kwargs)
+        return self.qs.build_queries(**httpx_kwargs).get(request_num, None)
 
     def _parse_response(self, response: mpy_Response) -> Optional[Any]:
         """
@@ -113,188 +285,3 @@ class QueryExecutor:
                 return response["items"]  # only because of biomes -_-
             except Exception:
                 return response
-
-    def _set_counts(self):
-        """
-        Helper method to set the count and num_requests attributes
-        based on the current parameters and endpoint.
-
-        Example
-        -------
-        >>> # Populate qs.count and qs.num_requests (doctest skipped)
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor._set_counts()  # doctest: +SKIP
-        """
-        if self.qs.count is not None and self.qs.num_requests is not None:
-            logger.debug(
-                f"Using cached count and num_requests vals: {self.qs.count}, {self.qs.num_requests}"
-            )
-        else:
-            self.qs.count = self.qs.emgapi_handler.get_num_items(params=self.qs.params)
-            self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
-                self.qs.count, page_size=self.qs.params.get("page_size", None)
-            )
-            logger.debug(
-                f"Computed count and num_requests: {self.qs.count}, {self.qs.num_requests}"
-            )
-
-        # also init results dict if not already for tracking pages results
-        if self.qs._results is None:
-            self.qs._results = {}
-
-    # PICK UP HERE
-    def _single_request(
-        self,
-        client: Optional[Client] = None,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ) -> Optional[dict]:
-        """
-        Retrieve a single get using the synchronous API client.
-        Handles pagination and not.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        params : dict, optional
-            Parameters for the API call.
-
-        Returns
-        -------
-        dict or None
-            Parsed response from the API, or None if the request failed.
-        """
-        # prep client
-        a_client = client or init_httpx_client(self.qs.config)
-        # prep params
-        request_params = {**(params or self.qs.params), **kwargs}
-        # request
-        response = self.qs.endpoint_module.sync_detailed(
-            client=a_client,
-            **request_params,
-        )
-        return self._parse_response(response)
-
-    # getting specific page
-    def request_page(
-        self, page_num: int, client: Optional[Client] = None
-    ) -> Optional[dict[int, list[dict]]]:
-        """
-        Retrieve a specific page of metadata for the current resource and parameters.
-        This method allows the user to retrieve metadata one page at a time,
-        which can be useful for previewing data or for manual pagination control.
-
-        Parameters
-        ----------
-        page_num : int
-            The page number to retrieve (1-based index).
-        client : Client, optional
-            An optional MGnify API client instance to use for the request.
-            If None, a new client will be initialized.
-
-        Returns
-        -------
-        Optional[dict[int, list[dict]]]
-            A dictionary containing the metadata from the specified page of results,
-            or None if the page is not found.
-
-        Examples
-        --------
-        >>> # Fetch a single page (doctest skipped)
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor.page(1)  # doctest: +SKIP
-        """
-
-        self._set_counts()
-
-        # check if alrady in results first
-        if self.qs._is_in_results(page_num):
-            logger.debug(f"Page {page_num} already retrieved.")
-            return self.qs._results.get(page_num, None)
-
-        # otherwise get page
-        # init client if not provided
-        a_client = client or self.httpx_client
-        # getting params from qs
-        params = self._query_setups(page_num).get("params", None)
-        logger.info(f"Fetching request num {page_num} with params: {params}")
-        response = self._single_request(
-            client=a_client,
-            params=params,
-        )
-        # get out items
-        page_items = self._page_items(response)
-        # add to results
-        self.qs._results.update({page_num: page_items})
-        return page_items
-
-    async def _asingle_request(
-        self,
-        client: Optional[Client] = None,
-        params: Optional[dict[str, Any]] = None,
-        **kwargs,
-    ) -> Optional[dict]:
-        """
-        Retrieve a single get asynchronously using the asynchronous API client.
-
-        Parameters
-        ----------
-        client : Client
-            MGnify API client instance.
-        params : dict, optional
-            Parameters for the API call.
-        **kwargs
-            Additional keyword arguments for the API call.
-
-        Returns
-        -------
-        dict or None
-            Parsed response from the API, or None if the request failed.
-        """
-        # prep client
-        a_client = client or self._init_client()
-        # prep params
-        request_params = {**(params or self.qs.params), **kwargs}
-        # request
-        async with self._semaphore:
-            response = await self.qs.endpoint_module.asyncio_detailed(
-                client=a_client,
-                **request_params,
-            )
-
-        return self._parse_response(response)
-
-    async def arequest_page(
-        self,
-        page_num: int,
-        client: Optional[Client] = None,
-    ) -> Optional[dict[int, list[dict]]]:
-        """Async fetch for a single page.
-
-        Example
-        -------
-        >>> import asyncio
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> asyncio.run(executor.apage(1))  # doctest: +SKIP
-        """
-        self._set_counts()
-        if self.qs._is_in_results(page_num):
-            logger.info(f"Page {page_num} already retrieved.")
-            return self.qs._results.get(page_num, None)
-
-        a_client = client or self._init_client()
-        params = self._query_setups(page_num).get("params", None)
-        logger.info(f"Fetching page {page_num} with params={params}")
-        response = await self._asingle_request(client=a_client, params=params)
-        page_items = self._page_items(response)
-        self.qs._results.update({page_num: page_items})
-        return page_items
-
-    def __getattr__(self, name: str):
-        if name == "httpx_client":
-            return self._init_client().get_httpx_client()
-        if name == "httpx_aclient":
-            return self._init_client().get_async_httpx_client()
-        if name == "api_version":
-            print(self.config.api_version)

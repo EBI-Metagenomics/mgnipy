@@ -11,9 +11,8 @@ from types import ModuleType
 from typing import Any, Optional
 from urllib.parse import urlencode
 
-import httpx
-
 from mgnipy._shared_helpers.parsers import get_docstring, parse_docstring
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.V2.endpoints import ALL_LIST_ENDPOINTS, PRIVATE_ENDPOINTS, ID_PARAM
 
 
@@ -25,13 +24,15 @@ class DescribeEmgapiModule:
 
     Parameters
     ----------
-    endpoint_module : ModuleType, optional
-        The endpoint module to describe. If not provided, the class will need to be initialized with an endpoint module before using its methods.
+    endpoint_module : ModuleType
+        The endpoint module to describe.
     """
 
-    def __init__(self, endpoint_module: Optional[ModuleType] = None):
+    def __init__(
+        self,
+        endpoint_module: ModuleType,
+    ):
         self.endpoint_module = endpoint_module
-
         self.default_page_size: int = 25
 
     def list_supported_params(self) -> list[str]:
@@ -169,17 +170,16 @@ class DescribeEmgapiModule:
         """Checks if the endpoint module corresponds to a list endpoint."""
         return self.endpoint_module in ALL_LIST_ENDPOINTS
 
-    def get_num_items(
-        self, client: httpx.Client, params: Optional[dict] = None
-    ) -> Optional[int]:
+    def get_num_items(self, params: Optional[dict] = None) -> Optional[int]:
 
-        _params = deepcopy(params) or {}
+        _params: dict[str, Any] = deepcopy(params) or {}
 
         if not self.is_list_endpoint:
             return 1
 
+        # otherwise mini request with small page_size to get count
         _params.update({"page_size": 1})
-        with client as c:
+        with init_httpx_client() as c:
             response = self.endpoint_module.sync_detailed(client=c, **_params)
 
         if response.status_code == 200:
@@ -196,7 +196,7 @@ class DescribeEmgapiModule:
         if num_items is None:
             return None
         ps = page_size or self.default_page_size
-        return ceil(num_items / ps)
+        return ceil(num_items / ps) or 1
 
     def page_param_iter(self, num_pages: int) -> list[dict[str, int]]:
         """Generates a list of parameter dictionaries for each page based on the total number of pages."""
