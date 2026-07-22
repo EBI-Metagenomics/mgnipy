@@ -54,6 +54,49 @@ def validate_gt_int(input: int, smaller_int: int = 0) -> int:
         raise ValueError(f"Int must be greater than {smaller_int}: {input}") from e
 
 
+def validate_ge_int(input: int, smaller_int: int = 0) -> int:
+    """
+    Validates that the input integer is greater than or equal to a specified smaller integer (default is 0).
+    Raises a ValueError if the validation fails.
+
+    Parameters
+    ----------
+    input : int
+        The integer to validate.
+    smaller_int : int, optional
+        The integer that the input must be greater than or equal to (default is 0).
+
+    Returns
+    -------
+    int
+        The validated integer if it is greater than or equal to the smaller integer.
+
+    Raises
+    ------
+    ValueError
+        If the input integer is not greater than or equal to the smaller integer.
+
+    Examples
+    --------
+    >>> validate_ge_int(10, 5)
+    10
+
+    >>> validate_ge_int(3, 5)
+    Traceback (most recent call last):
+        ...
+    ValueError: Int must be greater than or equal to 5: 3
+
+    >>> validate_ge_int(5, 5)
+    5
+    """
+    try:
+        return TypeAdapter(conint(ge=smaller_int)).validate_python(input)
+    except ValidationError as e:
+        raise ValueError(
+            f"Int must be greater than or equal to {smaller_int}: {input}"
+        ) from e
+
+
 def validate_status_code(
     response: httpx.Response,
     db: str = "MGnify",
