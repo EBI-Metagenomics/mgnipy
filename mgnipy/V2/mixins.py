@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 import webbrowser
 import zlib
 from http.client import IncompleteRead
-from itertools import chain
 from pathlib import Path
 from typing import Any, Generator, Literal, Optional
 
@@ -31,248 +30,6 @@ from mgnipy._shared_helpers.biosamples_helper import (
     HEADERS,
 )
 from mgnipy._shared_helpers.writers import atomic_write_bytes, atomic_write_json
-
-
-class ResultsHandler:
-    """
-    Mixin providing methods to handle and convert paginated results.
-    This mixin provides methods to convert paginated results into various formats such as pandas DataFrames, lists of dictionaries, JSON strings, and Polars DataFrames.
-
-    The mixin assumes the host class provides the following dependencies:
-     - `data`: A property that returns an iterable of metadata records, typically a chain of dictionaries. This can be overridden by providing data directly to the conversion methods.
-    """
-
-    def __init__(self, data: Optional[chain[dict[str, Any]]] = None):
-        logger.debug("Initializing ResultsHandler")
-        self._data = data
-
-    @property
-    def data(self) -> chain[dict[str, Any]]:
-        """
-        results based on the current resource.
-        """
-
-        if getattr(self, "_data", None) is not None:
-            return self._data
-
-        return getattr(self, "records", []) or []
-
-    # helpers
-    def _df_expand_nested(
-        self, df: pd.DataFrame, cols: list[str] = None
-    ) -> pd.DataFrame:
-        """
-        Expand nested structures in the DataFrame into separate columns.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            The DataFrame to expand.
-        cols : list of str
-            List of column names to expand.
-
-        Returns
-        -------
-        pd.DataFrame
-            The expanded DataFrame.
-        """
-
-        cols = cols or [
-            "metadata",
-            "sample",
-            "study",
-            "biome",
-            "run",
-            "assembly",
-            "read_run",
-        ]
-
-        new_df = df.copy()
-        for c in cols:
-            if c in new_df.columns:
-                # expand the nested dict in column c into separate columns
-                attr_df = pd.json_normalize(new_df[c])
-                # rename the new columns to include the original column name as a prefix
-                attr_df.columns = [f"{c}__{subcol}" for subcol in attr_df.columns]
-                # drop c and concat new cols
-                new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
-        return new_df
-
-    # viewing the retrieved
-    def to_pandas(
-        self,
-        data: Optional[dict[int, list[dict]]] = None,
-        expand_nested_dicts: Optional[list[str] | bool] = False,
-        rename_columns: Optional[dict[str, str]] = None,
-        **kwargs,
-    ) -> pd.DataFrame:
-        """
-        Convert the current or provided metadata to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list of dict, optional
-            List of records to convert. If ``None``, uses :pyattr:`data`.
-        expand_nested_dicts : list of str or bool, optional
-            List of keys to expand into separate columns, or ``True`` to
-            expand defaults.
-        rename_columns : dict of str to str, optional
-            A dictionary mapping old column names to new column names.
-        **kwargs
-            Additional keyword arguments passed to ``pd.DataFrame``.
-
-        Returns
-        -------
-        pd.DataFrame or None
-            DataFrame containing the metadata or ``None`` when no data is
-            available.
-
-        Examples
-        --------
-        >>> handler = ResultsHandler(data=[{"a": 1, "b": 2}])
-        >>> df = handler.to_pandas()
-        >>> list(df.columns)
-        ['a', 'b']
-        >>> df.iloc[0]['a']
-        np.int64(1)
-        """
-
-        logger.debug(
-            "Converting results to pandas DataFrame; expand_nested_dicts=%s",
-            expand_nested_dicts,
-        )
-
-        _data = data or self.data
-        if _data == [] or _data is None:
-            logger.debug("No data available for pandas DataFrame conversion")
-            return None
-
-        _rename_columns = rename_columns or {"lineage": "biome_lineage"}
-        as_pandas = pd.DataFrame(_data, **kwargs).rename(columns=_rename_columns)
-
-        if expand_nested_dicts is None or expand_nested_dicts is False:
-            return as_pandas
-
-        if isinstance(expand_nested_dicts, list):
-            return self._df_expand_nested(
-                as_pandas,
-                cols=expand_nested_dicts,
-            )
-        if expand_nested_dicts is True:  # TODO
-            return self._df_expand_nested(as_pandas)
-
-        logger.debug("Returning pandas DataFrame without nested expansion")
-
-    def to_list(self, data: Optional[chain] = None) -> list[Any]:
-        """
-        Convert the current or provided metadata to a list of dictionaries.
-
-        Parameters
-        ----------
-        data : optional
-            The paginated data to convert. If ``None``, uses :pyattr:`data`.
-
-        Returns
-        -------
-        list
-            A list of metadata records as dictionaries, or ``None`` if no
-            data is available.
-
-        Examples
-        --------
-        >>> handler = ResultsHandler(data=[{"x": 10}])
-        >>> handler.to_list()
-        [{'x': 10}]
-        """
-        logger.debug("Converting results to list")
-        _data = data or self.data
-
-        if _data == [] or _data is None:
-            logger.debug("No data available for list conversion")
-            return None
-
-        return list(_data)
-
-    def to_json(
-        self,
-        data: Optional[chain] = None,
-        orient: str = "records",
-        lines: bool = True,
-        **json_kwargs,
-    ) -> str:
-        """
-        Convert the current metadata to a JSON string or save it to a file.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self.qs._results.
-        **json_kwargs
-            Additional keyword arguments passed to the JSON serialization function.
-
-        Returns
-        -------
-        str or None
-            The JSON string representation of the metadata, or None if no data is available.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-        logger.debug(
-            "Converting results to JSON; orient=%s lines=%s",
-            orient,
-            lines,
-        )
-        return self.to_pandas(data, expand_nested_dicts=False).to_json(
-            orient=orient, lines=lines, **json_kwargs
-        )
-
-    def to_polars(
-        self,
-        data: Optional[chain] = None,
-        expand_nested_dicts: Optional[list[str] | bool] = False,
-        rename_columns: Optional[dict[str, str]] = None,
-        **polars_kwargs,
-    ) -> pl.DataFrame:
-        """
-        Convert the current metadata to a Polars DataFrame.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self.qs._results.
-        **polars_kwargs
-            Additional keyword arguments passed to pl.DataFrame.
-
-        Returns
-        -------
-        pl.DataFrame
-            A Polars DataFrame containing the metadata.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-
-        logger.debug("Converting results to Polars DataFrame")
-
-        _data = data or self.data
-
-        if _data == [] or _data is None:
-            logger.debug("No data available for Polars DataFrame conversion")
-            return None
-
-        # first convert to pandas and then to polars to leverage the nested dict expansion and column renaming already implemented in to_pandas
-        df_pd = self.to_pandas(
-            data=_data,
-            expand_nested_dicts=expand_nested_dicts,
-            rename_columns=rename_columns,
-        )
-
-        return pl.from_pandas(df_pd, **polars_kwargs)
 
 
 class CheckpointMixin:
@@ -360,7 +117,12 @@ class CheckpointMixin:
             return None
         return self.cache_path / "mgnipy_manifest.json"
 
-    def write_results(self, request_num: int, items: Any) -> None:
+    def write_results(
+        self,
+        request_num: int,
+        items: Any,
+        include_manifest: bool = True,
+    ) -> None:
         """Auto atomic write to disk."""
         save_to = self.cache_path
         if save_to is None:
@@ -372,18 +134,7 @@ class CheckpointMixin:
 
         # prep filenames/paths
         filepath = save_to / f"mgnipy_page_{request_num}.json"
-        manifest_path = self.manifest_path
-
-        logger.info(
-            f"Writing page {request_num} to {filepath} and manifest to {manifest_path}"
-        )
-        manifest = {
-            "resource": self.resource.value,
-            "params": self.params,
-            "count": self.count,
-            "total_pages": self.num_requests,
-        }
-
+        logger.info(f"Writing page {request_num} to {filepath}")
         # now actually writing the response results:
         # Write bytes (binary downloads) using atomic_write_bytes, otherwise JSON
         try:
@@ -394,9 +145,21 @@ class CheckpointMixin:
                 atomic_write_json(filepath, items)
         except Exception:
             logger.error(f"Failed to write cache file for page {request_num}")
-        # and also manifest
-        if manifest_path is not None:
-            atomic_write_json(manifest_path, manifest)
+
+        if include_manifest:
+            manifest_path = self.manifest_path
+            logger.info(f"Writing manifest to {manifest_path}")
+            manifest = {
+                "resource": self.resource.value,
+                "params": self.params,
+                "count": self.count,
+                "total_pages": self.num_requests,
+            }
+
+            if manifest_path is not None:
+                atomic_write_json(manifest_path, manifest)
+        else:
+            logger.debug("Skipping manifest write for this page")
 
     async def awrite_results(self, request_num: int, items: Any) -> None:
         """Async wrapper for write_results."""
@@ -589,7 +352,6 @@ class StreamMixin:
 
     # TODO remove below dependencies on mgnifier
     This mixin assumes the host class provides the following helpers/properties:
-    - `_mgnifier_helper(url, cache_dir=None)` returning an object with
       `.exec.httpx_client` and `.exec.httpx_aclient` attributes
     - `_get_type_by_alias(alias)` to resolve file types
     - `downloads_df` when needed for examples/tests
@@ -598,12 +360,7 @@ class StreamMixin:
     on :class:`MGazine` so they can be reused by other classes.
     """
 
-    @property
-    def mgnifier_helper(self):
-        return getattr(self, "_mgnifier_helper", None)
-
     def _handle_incomplete_read(self, url: str):
-        # self._download_helper = DownloadMixin(self._mgnifier_helper)
         # TODO
         logger.warning(
             f"You can also download the file {url} using the 'download' method instead of streaming and then read it into memory from disk, which may be more reliable for unstable connections."
@@ -776,7 +533,6 @@ class StreamMixin:
         self,
         url: str,
         chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
         **httpx_kwargs,
     ) -> str | Generator:
         """
@@ -801,16 +557,14 @@ class StreamMixin:
             The full text as a string if chunksize is None, or a generator yielding lists of lines if chunksize is an integer.
         """
 
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
-
         if chunksize is None:
             # load as whole
-            with client.get(url, **httpx_kwargs) as response:
+            with self.httpx_client.get(url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 return response.text
         elif isinstance(chunksize, int) and chunksize > 0:
             # load in chunks
-            with client.stream("GET", url, **httpx_kwargs) as response:
+            with self.httpx_client.stream("GET", url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 chunk = []
                 for line in response.iter_text():
@@ -881,7 +635,6 @@ class StreamMixin:
         self,
         url: str,
         chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
         decode: bool = False,
         encoding: str = "utf-8",
         errors: str = "replace",
@@ -894,7 +647,6 @@ class StreamMixin:
         streaming file-like object is returned.
         """
 
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
         logger.debug(
             "stream_gzipped called url=%s chunksize=%s decode=%s",
             url,
@@ -904,7 +656,7 @@ class StreamMixin:
 
         if chunksize is None:
             logger.debug("Using full-download mode (chunksize=None)")
-            r = client.get(url, timeout=None, **httpx_kwargs)
+            r = self.httpx_client.get(url, timeout=None, **httpx_kwargs)
             r.raise_for_status()
             decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
             data = decompressor.decompress(r.content) + decompressor.flush()
@@ -920,7 +672,9 @@ class StreamMixin:
 
         class _HTTPGzipRaw(io.RawIOBase):
             def __init__(self):
-                self._cm = client.stream("GET", url, timeout=None, **httpx_kwargs)
+                self._cm = self.httpx_client.stream(
+                    "GET", url, timeout=None, **httpx_kwargs
+                )
                 self._resp = self._cm.__enter__()
                 self._resp.raise_for_status()
                 self._iter = self._resp.iter_raw(chunk_size=chunksize)
@@ -1004,19 +758,17 @@ class StreamMixin:
         self,
         url: str,
         chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
         **httpx_kwargs,
     ) -> dict | Generator:
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         if chunksize is None and not (url.endswith(".gz") or url.endswith(".gzip")):
-            with client.get(url, **httpx_kwargs) as response:
+            with self.httpx_client.get(url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 return response.json()
         elif chunksize is not None and not (
             url.endswith(".gz") or url.endswith(".gzip")
         ):
-            with client.stream("GET", url, **httpx_kwargs) as response:
+            with self.httpx_client.stream("GET", url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 for entry in ijson.kvitems(response.iter_text(), ""):
                     yield entry
@@ -1024,7 +776,6 @@ class StreamMixin:
             with self.stream_gzipped(
                 url,
                 chunksize=chunksize,
-                httpx_client=client,
                 decode=True,
                 **httpx_kwargs,
             ) as gzipped_stream:
@@ -1065,13 +816,11 @@ class StreamMixin:
         alias: Optional[str] = None,
         url: Optional[HttpUrl] = None,
         chunksize: int = 1000,
-        httpx_client: Optional[httpx.Client] = None,
         max_skip: int = 5,
         dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
         low_memory: bool = False,
         **kwargs,
     ):
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         _alias, _url = self._prioritize_alias(alias, url, required=True)
         file_type = self._get_type_by_alias(_alias)
@@ -1141,9 +890,7 @@ class StreamMixin:
             return lambda: self.stream_html(_url, **kwargs)
 
         if file_type == "txt":
-            return self.stream_txt(
-                _url, chunksize=chunksize, httpx_client=client, **kwargs
-            )
+            return self.stream_txt(_url, chunksize=chunksize, **kwargs)
 
         if file_type == "gff":
             return self.stream_gff(_url, **kwargs)
@@ -1164,9 +911,7 @@ class StreamMixin:
             )
         if file_type == "other" and ".json" in _url:
             if _url.endswith("json.gz") or _url.endswith("json.gzip"):
-                return self.stream_json(
-                    _url, chunksize=chunksize, httpx_client=client, **kwargs
-                )
+                return self.stream_json(_url, chunksize=chunksize, **kwargs)
 
             logger.info(
                 f"{_alias} is only available for download (e.g., `.download({_alias}))`"
@@ -1233,7 +978,6 @@ class StreamMixin:
         _alias, _url = self._prioritize_alias(alias, url, required=True)
 
         # return a single streamer result, not a dict of all streams
-        client = self._mgnifier_helper().exec.httpx_client
         logger.info("Setting up stream for alias=%s url=%s", _alias, _url)
 
         try:
@@ -1241,7 +985,6 @@ class StreamMixin:
                 alias=_alias,
                 url=_url,
                 chunksize=chunksize,
-                httpx_client=client,
                 max_skip=max_skip,
                 **kwargs,
             )
@@ -1598,3 +1341,11 @@ class ClientManagerMixin:
             f"HTTP client open: {self.client._client is not None and not self.client._client.is_closed}\n"
             f"Async client open: {self.client._async_client is not None and not self.client._async_client.is_closed}\n"
         )
+
+    def renew_client(self):
+        """
+        Init a new client instance and replace the existing one. This is useful if the current client has been closed or is no longer valid, allowing for a fresh start with a new HTTP client session.
+        """
+        logger.info(f"Renewing HTTP client instance. Old: {self.client}")
+        self.client = init_httpx_client(self.config)
+        logger.info(f"HTTP client refreshed. Now: {self.client}")
