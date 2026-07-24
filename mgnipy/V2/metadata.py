@@ -1,21 +1,35 @@
-from itertools import chain
 import logging
-from typing import Any, Literal, Optional
 
-from mgnipy.V2.proxies.analyses import AnalysisDetail
-from mgnipy.V2.proxies.runs import RunDetail
-from mgnipy.V2.proxies.samples import SampleDetail
-from mgnipy.V2.proxies.studies import StudyDetail
-from mgnipy.V2.proxies.assemblies import AssemblyDetail
+from mgnipy.V2.mixins import CheckpointMixin
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 
 logger = logging.getLogger(__name__)
 
+from itertools import chain
+from typing import Any, Literal, Optional
+
+from mgnipy.V2.proxies.runs import RunDetail
+from mgnipy.V2.proxies.samples import SampleDetail
+from mgnipy.V2.proxies.assemblies import AssemblyDetail
 from mgnipy.V2.endpoints import ID_PARAM
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
 import asyncio
 import pandas as pd
 import polars as pl
+
+from mgnipy._shared_helpers.biosamples_helper import (
+    get_biosample_metadata,
+)
+
+_RESULT_PAGE_BY_FIELD = {
+    "mgnify_runs": 1,
+    "mgnify_samples": 2,
+    "mgnify_studies": 3,
+    "biosamples_metadata": 4,
+    "mgnify_analyses": 5,
+    "mgnify_assemblies": 6,
+}
 
 
 class ResultsHandler:
@@ -46,13 +60,9 @@ class ResultsHandler:
             A new ResultsHandler instance containing the combined data from both instances.
         """
         # check
-        if not isinstance(other, ResultsHandler):
-            raise TypeError(
-                f"Can only add another ResultsHandler instance, got {type(other)}"
-            )
-        logger.debug("Combining ResultsHandler instances")
+        logger.debug(f"Combining {self.__class__.__name__} instances")
         combined_data = chain(self.data, other.data)
-        return ResultsHandler(combined_data)
+        return self.__class__(combined_data)
 
     @property
     def data(self) -> chain[dict[str, Any]]:
@@ -489,29 +499,31 @@ class MGnifyMetadata(ResultsHandler):
         return list(self.results.keys())
 
 
-class MetaMergeMixin:
-
-    _RESULT_PAGE_BY_FIELD = {
-        "mgnify_runs": 1,
-        "mgnify_samples": 2,
-        "mgnify_studies": 3,
-        "biosamples_metadata": 4,
-        "mgnify_analyses": 5,
-        "mgnify_assemblies": 6,
-    }
+class MetadataSettersMixin:
 
     def _set_cached_list(self, field: str, value: list[dict[str, Any]]) -> None:
         setattr(self, f"_{field}", value)
-        self.write_results(self._RESULT_PAGE_BY_FIELD[field], value)
+        try:
+            self.write_results(self._RESULT_PAGE_BY_FIELD[field], value)
+            logger.debug(f"Results written for field '{field}'.")
+        except AttributeError as e:
+            logger.debug(
+                f"CheckpointMixin not enabled. Cannot write results for field '{field}'. {e}"
+            )
 
     def _append_cached_item(self, field: str, value: dict[str, Any]) -> None:
         current = getattr(self, f"_{field}")
         current.append(value)
-        self.write_results(self._RESULT_PAGE_BY_FIELD[field], current)
+        try:
+            self.write_results(self._RESULT_PAGE_BY_FIELD[field], current)
+        except AttributeError as e:
+            logger.debug(
+                f"CheckpointMixin not enabled. Cannot write results for field '{field}'. {e}"
+            )
 
     @property
-    def mgnify_studies(self) -> ResultsHandler:
-        return ResultsHandler(self._mgnify_studies)
+    def mgnify_studies(self) -> MGnifyMetadata:
+        return MGnifyMetadata(self._mgnify_studies)
 
     @mgnify_studies.setter
     def mgnify_studies(self, value: list[dict[str, Any]]):
@@ -521,8 +533,8 @@ class MetaMergeMixin:
         self._append_cached_item("mgnify_studies", value)
 
     @property
-    def mgnify_samples(self) -> ResultsHandler:
-        return ResultsHandler(self._mgnify_samples)
+    def mgnify_samples(self) -> MGnifyMetadata:
+        return MGnifyMetadata(self._mgnify_samples)
 
     @mgnify_samples.setter
     def mgnify_samples(self, value: list[dict[str, Any]]):
@@ -532,8 +544,8 @@ class MetaMergeMixin:
         self._append_cached_item("mgnify_samples", value)
 
     @property
-    def mgnify_analyses(self) -> ResultsHandler:
-        return ResultsHandler(self._mgnify_analyses)
+    def mgnify_analyses(self) -> MGnifyMetadata:
+        return MGnifyMetadata(self._mgnify_analyses)
 
     @mgnify_analyses.setter
     def mgnify_analyses(self, value: list[dict[str, Any]]):
@@ -543,8 +555,8 @@ class MetaMergeMixin:
         self._append_cached_item("mgnify_analyses", value)
 
     @property
-    def mgnify_runs(self) -> ResultsHandler:
-        return ResultsHandler(self._mgnify_runs)
+    def mgnify_runs(self) -> MGnifyMetadata:
+        return MGnifyMetadata(self._mgnify_runs)
 
     @mgnify_runs.setter
     def mgnify_runs(self, value: list[dict[str, Any]]):
@@ -554,8 +566,8 @@ class MetaMergeMixin:
         self._append_cached_item("mgnify_runs", value)
 
     @property
-    def mgnify_assemblies(self) -> list[dict[str, Any]]:
-        return self._mgnify_assemblies or []
+    def mgnify_assemblies(self) -> MGnifyMetadata:
+        return MGnifyMetadata(self._mgnify_assemblies)
 
     @mgnify_assemblies.setter
     def mgnify_assemblies(self, value: list[dict[str, Any]]):
@@ -565,8 +577,8 @@ class MetaMergeMixin:
         self._append_cached_item("mgnify_assemblies", value)
 
     @property
-    def biosamples_metadata(self) -> list[dict[str, Any]]:
-        return self._biosamples_metadata or []
+    def biosamples_metadata(self) -> MGnifyMetadata:
+        return MGnifyMetadata(self._biosamples_metadata or [])
 
     @biosamples_metadata.setter
     def biosamples_metadata(self, value: list[dict[str, Any]]):
@@ -575,6 +587,48 @@ class MetaMergeMixin:
     def append_biosamples_metadata(self, value: dict[str, Any]):
         self._append_cached_item("biosamples_metadata", value)
 
+
+# PICK UP HERE
+class MetadataCheckpointMixin(CheckpointMixin):
+
+    @property
+    def resource(self) -> SupportedEndpoints:
+        """for checkpointmixin"""
+        return getattr(self, "_resource", None) or SupportedEndpoints(
+            "_custom_endpoint"
+        )
+
+    @property
+    def params(self) -> dict[str, Any]:
+        """for checkpointmixin"""
+        return getattr(self, "_params", None) or {
+            "mgazine": str(self),
+            "short_desc": sorted(self.short_desc),
+            "runs_accessions": sorted(self.runs_accessions),
+        }
+
+    @property
+    def runs_accessions(self) -> list:
+        """for checkpointmixin"""
+        try:
+            return self.lazy_merged.select("RunID").collect().to_series().to_list()
+        except Exception as e:
+            logger.error(f"Error occurred while fetching run accessions: {e}")
+            return []
+
+    def load_cache(self):
+        self._results = None
+        page_nums = self.load_cache_results()
+        for each in _RESULT_PAGE_BY_FIELD:
+            setattr(
+                self, f"_{each}", self._results.get(_RESULT_PAGE_BY_FIELD[each], [])
+            )
+        return page_nums
+
+
+class EnrichRunsMixin:
+
+    # PICK UP HERE
     def metadata(
         self,
         df_engine: Literal["polars", "pandas"] = "pandas",
@@ -690,7 +744,7 @@ class MetaMergeMixin:
 
     def enrich_mgnify(
         self,
-        resource: Literal["runs", "samples", "studies", "analyses", "assemblies"],
+        resource: Literal["runs", "samples", "assemblies"],
         limit: Optional[int] = 200,
         hide_progress: bool = False,
         strict: bool = True,
@@ -699,8 +753,6 @@ class MetaMergeMixin:
         resource_map = {
             "runs": self.mgnify_runs,
             "samples": self.mgnify_samples,
-            "studies": self.mgnify_studies,
-            "analyses": self.mgnify_analyses,
             "assemblies": self.mgnify_assemblies,
         }
 
@@ -708,8 +760,6 @@ class MetaMergeMixin:
         all_ids_map = {
             "runs": self.runs_accessions,
             "samples": [s.get("accession") for s in self.mgnify_samples],
-            "studies": [s.get("accession") for s in self.mgnify_studies],
-            "analyses": [a.get("accession") for a in self.mgnify_analyses],
             "assemblies": [a.get("accession") for a in self.mgnify_assemblies],
         }
 
@@ -717,16 +767,12 @@ class MetaMergeMixin:
             "runs": RunDetail,
             "assemblies": AssemblyDetail,
             "samples": SampleDetail,
-            "studies": StudyDetail,
-            "analyses": AnalysisDetail,
         }
 
         appender_map = {
             "runs": self.append_mgnify_runs,
             "assemblies": self.append_mgnify_assemblies,
             "samples": self.append_mgnify_samples,
-            "studies": self.append_mgnify_studies,
-            "analyses": self.append_mgnify_analyses,
         }
 
         logger.debug(
@@ -866,3 +912,121 @@ class MetaMergeMixin:
                 if "ERZ" in mg.get("accession", ""):
                     logger.debug(f"Enriching assembly {mg.get('accession')}")
                     self.append_mgnify_assemblies(mg)
+
+
+class BioSamplesMixin:
+
+    @property
+    def runs_to_samples(self) -> dict[str, str]:
+        return {
+            mg.get("accession"): mg.get("sample", {}).get("accession")
+            or mg.get("sample_accession")
+            for mg in self.mgnify_runs
+            if isinstance(mg, dict)
+        }
+
+    @property
+    def assemblies_to_samples(self) -> dict[str, str]:
+        return {
+            mg.get("accession"): mg.get("sample_accession")
+            for mg in self.mgnify_runs
+            if isinstance(mg, dict)
+        }
+
+    @property
+    def assemblies_to_runs(self) -> dict[str, str]:
+        return {
+            mg.get("accession"): mg.get("run_accession")
+            for mg in self.mgnify_assemblies
+            if isinstance(mg, dict)
+        }
+
+    @property
+    def _retrieved_biosamples_given_ids(self) -> list[str]:
+        return [
+            x.get("GivenID") for x in self.biosamples_metadata if isinstance(x, dict)
+        ]
+
+    def _iter_biosamples(self) -> list[str]:
+
+        copied_mapping = self.runs_to_samples.copy()
+
+        for k, v in self.runs_to_samples.items():
+            if v in self._retrieved_biosamples_given_ids:
+                del copied_mapping[k]
+
+        return list(copied_mapping.values())
+
+    def enrich_biosamples(
+        self,
+        limit: Optional[int] = 200,
+        hide_progress: bool = False,
+        incl_ena: bool = False,
+        strict: bool = True,
+    ):
+        """
+        Enriches the biosample metadata for the biosamples in the taxonomic dataset by iterating through the biosample accessions and retrieving their details using the BiosampleDetail proxy. The results are cached using the CheckpointMixin to avoid redundant API calls in future runs.
+
+        Parameters
+        ----------
+        limit : Optional[int], default=200
+            An optional integer to limit the number of biosamples to enrich. If not provided, it defaults to 200. This is useful for testing or when dealing with large datasets to avoid long runtimes during development. If set to None, there will be no limit on the number of biosamples enriched.
+
+        Returns
+        -------
+        None
+            The function does not return anything. It updates the `run_results` attribute of the TaxaMGazine instance with the enriched run metadata.
+
+        """
+
+        logger.debug(
+            f"Starting enrichment of biosample meta for short description with limit {limit}."
+        )
+
+        runs_todo: list[str] = self._iter_biosamples()[:limit]
+        logger.warning(
+            f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self.runs_to_samples)}. Already enriched: {len(self.biosamples_metadata)}."
+        )
+
+        for count, run in enumerate(
+            tqdm_sync(
+                runs_todo,
+                total=len(self.runs_accessions),
+                initial=len(self.biosamples_metadata),
+                desc="Enriching biosamples",
+                disable=hide_progress,
+            )
+        ):
+            logger.info(f"Enriching biosample {run}. Count: {count}")
+            # get metadata
+            try:
+                bm = get_biosample_metadata(run, incl_ena=incl_ena)
+            except Exception as e:
+                logger.error(f"Error occurred while enriching run {run}: {e}")
+                bm = False
+
+            if isinstance(bm, bool) and not strict:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for biosample {run}. Appending placeholder with GivenID only."
+                )
+                bm = {"GivenID": run}
+            elif isinstance(bm, bool) and strict:
+                logger.error(
+                    f"Strict mode is on and enrichment failed for biosample {run}. Skipping appending to results."
+                )
+            elif isinstance(bm, pd.DataFrame) and not bm.empty:
+                self.append_biosamples_metadata(bm.iloc[0].to_dict())
+            else:
+                logger.error(
+                    f"Enrichment for biosample {run} did not return a valid DataFrame. Skipping appending to results."
+                )
+
+    def aenrich_biosamples(
+        self,
+        limit: Optional[int] = 200,
+        hide_progress: bool = False,
+        incl_ena: bool = False,
+        strict: bool = True,
+    ):
+        # TODO
+        pass

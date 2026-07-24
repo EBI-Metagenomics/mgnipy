@@ -20,16 +20,13 @@ from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.V2.mixins import (
-    CheckpointMixin,
     ClientManagerMixin,
-    MetaMergeMixin,
+    MetadataSettersMixin,
     StreamMixin,
 )
 
-semaphore = get_semaphore()
 
-
-class MGazine(StreamMixin, ClientManagerMixin, CheckpointMixin, MetaMergeMixin):
+class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
     """
     MGazine is a class for managing and downloading datasets from MGnify.
     - Accepts a list of download-like dictionaries (for example
@@ -105,12 +102,16 @@ class MGazine(StreamMixin, ClientManagerMixin, CheckpointMixin, MetaMergeMixin):
             combined_downloads,
             config=self.config,
             client=self.client,
-            mgnify_studies=self.mgnify_studies + other.mgnify_studies,
-            mgnify_analyses=self.mgnify_analyses + other.mgnify_analyses,
-            mgnify_runs=self.mgnify_runs + other.mgnify_runs,
-            mgnify_samples=self.mgnify_samples + other.mgnify_samples,
-            mgnify_assemblies=self.mgnify_assemblies + other.mgnify_assemblies,
-            biosamples_metadata=self.biosamples_metadata + other.biosamples_metadata,
+            mgnify_studies=(self.mgnify_studies + other.mgnify_studies).to_list(),
+            mgnify_analyses=(self.mgnify_analyses + other.mgnify_analyses).to_list(),
+            mgnify_runs=(self.mgnify_runs + other.mgnify_runs).to_list(),
+            mgnify_samples=(self.mgnify_samples + other.mgnify_samples).to_list(),
+            mgnify_assemblies=(
+                self.mgnify_assemblies + other.mgnify_assemblies
+            ).to_list(),
+            biosamples_metadata=(
+                self.biosamples_metadata + other.biosamples_metadata
+            ).to_list(),
         )
         if new_mz.__class__ != self.__class__:
             try:
@@ -118,13 +119,22 @@ class MGazine(StreamMixin, ClientManagerMixin, CheckpointMixin, MetaMergeMixin):
                     mgazine=new_mz,
                     config=self.config,
                     client=self.client,
-                    mgnify_studies=self.mgnify_studies + other.mgnify_studies,
-                    mgnify_analyses=self.mgnify_analyses + other.mgnify_analyses,
-                    mgnify_runs=self.mgnify_runs + other.mgnify_runs,
-                    mgnify_samples=self.mgnify_samples + other.mgnify_samples,
-                    mgnify_assemblies=self.mgnify_assemblies + other.mgnify_assemblies,
-                    biosamples_metadata=self.biosamples_metadata
-                    + other.biosamples_metadata,
+                    mgnify_studies=(
+                        self.mgnify_studies + other.mgnify_studies
+                    ).to_list(),
+                    mgnify_analyses=(
+                        self.mgnify_analyses + other.mgnify_analyses
+                    ).to_list(),
+                    mgnify_runs=(self.mgnify_runs + other.mgnify_runs).to_list(),
+                    mgnify_samples=(
+                        self.mgnify_samples + other.mgnify_samples
+                    ).to_list(),
+                    mgnify_assemblies=(
+                        self.mgnify_assemblies + other.mgnify_assemblies
+                    ).to_list(),
+                    biosamples_metadata=(
+                        self.biosamples_metadata + other.biosamples_metadata
+                    ).to_list(),
                 )
             except Exception as e:
                 logger.warning(
