@@ -445,7 +445,7 @@ class StreamMixin:
         max_skip: int = 5,
         low_memory: bool = False,
         **pl_kwargs,
-    ):
+    ) -> pl.DataFrame | pl.LazyFrame:
         """
         Read a TSV from a URL or local file into a Polars DataFrame with resilient header handling.
 

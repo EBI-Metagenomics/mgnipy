@@ -4,7 +4,7 @@ import sys
 
 from mgnipy import MGnipy
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
-from mgnipy.V2.core import MGnifier
+from mgnipy.V2.mgnifier import MGnifier
 
 
 def _build_parser() -> argparse.ArgumentParser:

@@ -3,9 +3,27 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
+
+import pandas as pd
 import re
+from tqdm import tqdm as tqdm_sync
+from tqdm.asyncio import tqdm_asyncio
+
+from mgnipy.V2.mgnifier.metadata import MGnifyMetadata
+
+from mgnipy._models.constants.CONSTANTS import (
+    PipelineVersions,
+    SupportedEndpoints,
+    ListResourceStr,
+    DetailResourceStr,
+)
+from mgnipy.V2.mgnifier.endpoints import (
+    BETWEEN_RESOURCE_RELATIONSHIPS,
+    PARENT_CHILD_RESOURCES,
+    WITHIN_RESOURCE_RELATIONSHIPS,
+    ID_PARAM,
+)
 from typing import (
-    TYPE_CHECKING,
     Any,
     AsyncIterator,
     Callable,
@@ -14,27 +32,8 @@ from typing import (
     Optional,
 )
 
-import pandas as pd
-from tqdm import tqdm as tqdm_sync
-from tqdm.asyncio import tqdm_asyncio
-from mgnipy._models.constants.CONSTANTS import (
-    PipelineVersions,
-    SupportedEndpoints,
-    ListResourceStr,
-    DetailResourceStr,
-)
-from mgnipy.V2.core import MGnifier
-from mgnipy.V2.endpoints import (
-    BETWEEN_RESOURCE_RELATIONSHIPS,
-    PARENT_CHILD_RESOURCES,
-    WITHIN_RESOURCE_RELATIONSHIPS,
-    ID_PARAM,
-)
-from mgnipy.V2.metadata import MGnifyMetadata
-
-if TYPE_CHECKING:
-    from mgnipy.V2.query_set import QuerySet
-    from mgnipy._models.config import MGnipyConfig
+from mgnipy._models.config import MGnipyConfig
+from mgnipy.V2.mgnifier import MGnifier
 
 
 class MGnifyList(MGnifier):
@@ -297,7 +296,7 @@ class MGnifyList(MGnifier):
     async def _asingle_detail(
         self,
         key: int | str,
-    ) -> "QuerySet":
+    ) -> "MGnifyDetail":
         """
         Async version of _single_detail.
         Get MGnifyDetail for a specific accession/pubmed_id/catalogue_id.
@@ -589,7 +588,7 @@ class MGnifyDetail(MGnifier):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies", accession="MGYS000000001", config={})  # doctest: +SKIP
         >>> query.identifier  # doctest: +SKIP
         """
