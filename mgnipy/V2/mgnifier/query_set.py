@@ -7,8 +7,8 @@ from types import ModuleType
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, ResourceStr
 from mgnipy._shared_helpers.validators import validate_ge_int
-from mgnipy.V2.describe import DescribeEmgapiModule
-from mgnipy.V2.endpoints import RESOURCES_ALL_ENDPOINTS
+from mgnipy.V2.mgnifier.describe import DescribeEmgapiModule
+from mgnipy.V2.mgnifier.endpoints import RESOURCES_ALL_ENDPOINTS
 
 
 class QuerySet:

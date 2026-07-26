@@ -1,5 +1,5 @@
 from ..emgapi_v2_client.client import AuthenticatedClient, Client
-from .core import MGnifier
+from .mgnifier import MGnifier
 from .proxies.analyses import Analyses
 from .proxies.assemblies import Assemblies
 from .proxies.biomes import Biomes

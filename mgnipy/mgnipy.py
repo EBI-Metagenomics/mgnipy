@@ -1,9 +1,5 @@
 import logging
 
-from mgnipy.V2.mixins import ClientManagerMixin
-from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
-from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
-
 logger = logging.getLogger(__name__)
 from typing import Optional
 
@@ -13,6 +9,9 @@ from mgnipy.V2.proxies import (
     V2_ENDPOINT_DETAIL_PROXIES,
     V2_ENDPOINT_LIST_PROXIES,
 )
+from mgnipy.V2.mixins import ClientManagerMixin
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
 
 V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 

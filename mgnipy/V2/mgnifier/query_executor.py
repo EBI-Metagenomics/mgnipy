@@ -10,7 +10,7 @@ from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 
 if TYPE_CHECKING:
     from mgnipy.emgapi_v2_client.types import Response as mpy_Response
-    from mgnipy.V2.query_set import QuerySet
+    from mgnipy.V2.mgnifier.query_set import QuerySet
     from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 
 

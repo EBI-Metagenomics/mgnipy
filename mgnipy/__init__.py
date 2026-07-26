@@ -3,7 +3,7 @@ from importlib import metadata
 
 from mgnipy._models.config import MGnipyConfig as MGnipyConfig
 from mgnipy.mgnipy import MGnipy as MGnipy
-from mgnipy.V2.core import MGnifier as MGnifier
+from mgnipy.V2.mgnifier import MGnifier as MGnifier
 from mgnipy.V2.datasets import MGazine as MGazine
 
 # Do not configure logging handlers in libraries. Add a NullHandler so

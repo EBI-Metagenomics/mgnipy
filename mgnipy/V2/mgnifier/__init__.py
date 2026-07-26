@@ -4,7 +4,7 @@ import asyncio
 import logging
 from pathlib import Path
 
-from mgnipy.V2.metadata import MGnifyMetadata
+from mgnipy.V2.mgnifier.metadata import MGnifyMetadata
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
@@ -19,10 +19,10 @@ from tqdm.asyncio import tqdm_asyncio
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import ResourceStr
-from mgnipy.V2.endpoints import ALL_SUPPORTED_RELATIONSHIPS
+from mgnipy.V2.mgnifier.endpoints import ALL_SUPPORTED_RELATIONSHIPS
 from mgnipy.V2.mixins import CheckpointMixin, ClientManagerMixin
-from mgnipy.V2.query_executor import QueryExecutor
-from mgnipy.V2.query_set import QuerySet
+from mgnipy.V2.mgnifier.query_executor import QueryExecutor
+from mgnipy.V2.mgnifier.query_set import QuerySet
 
 
 class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
@@ -86,7 +86,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier
+        >>> from mgnipy.V2.mgnifier import MGnifier
         >>> query = MGnifier("studies")
         """
 
@@ -496,7 +496,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies", params={"search": "gut"})  # doctest: +SKIP
         >>> query.dry_run()  # doctest: +SKIP
         """
@@ -522,7 +522,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> query.explain(head=3)  # doctest: +SKIP
         """
@@ -550,7 +550,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> first_record = query.first()  # doctest: +SKIP
         """
@@ -575,7 +575,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> df = query.preview()  # doctest: +SKIP
         """
@@ -593,7 +593,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> params = query.list_supported_params()  # doctest: +SKIP
         """
@@ -609,7 +609,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> docs = query.describe_endpoint()  # doctest: +SKIP
         """
@@ -625,7 +625,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> relationships = query.list_relationships()  # doctest: +SKIP
         """
@@ -650,7 +650,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> query.describe_relationships()  # doctest: +SKIP
         """
@@ -666,7 +666,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> print(query)  # doctest: +SKIP
         """

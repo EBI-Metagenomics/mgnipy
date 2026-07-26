@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 
 from mgnipy._shared_helpers.parsers import get_docstring, parse_docstring
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
-from mgnipy.V2.endpoints import ALL_LIST_ENDPOINTS, PRIVATE_ENDPOINTS, ID_PARAM
+from mgnipy.V2.mgnifier.endpoints import ALL_LIST_ENDPOINTS, PRIVATE_ENDPOINTS, ID_PARAM
 
 
 class DescribeEmgapiModule:
