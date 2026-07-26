@@ -3,6 +3,8 @@ from __future__ import annotations
 import functools as ft
 import logging
 
+from mgnipy.V2.datasets.annotate import MetadataCheckpointMixin
+from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 
 logger = logging.getLogger(__name__)
 from typing import TYPE_CHECKING, Any, Literal, Optional
@@ -81,85 +83,26 @@ def prep_obs(
     return df_ranks
 
 
-class TaxaSetup:
-
-    def short_desc(self) -> str:
-        if len(self.list_pipeline_version()) > 1:
-            logger.warning(
-                "Multiple pipeline versions detected -- MGazine methods may not work as expected."
-            )
-
-        if len(self.list_short_descriptions()) > 1:
-            logger.warning(
-                f"Multiple descriptions detected & `short_desc` not specified -- MGazine methods may not work as expected.\n'{self.mz.list_short_descriptions()[0]}' used for `long_short_mapping` determination and caching."
-            )
-        return self.list_short_descriptions()[0]
-
-    def long_short_mapping(self, value: dict[str, str] = None) -> dict[str, str]:
-        # determine mapping
-        if value is not None:
-            return value
-        elif "PR2" in self.short_desc.upper():
-            return dict(zip(PR2_TAX_RANKS, SHORT_PR2_TAX_RANKS, strict=True))
-        elif "MOTUS" in self.short_desc.upper():
-            return dict(zip(MOTUS_TAX_RANKS, SHORT_MOTUS_TAX_RANKS, strict=True))
-        else:  # default to silva?
-            return dict(zip(SILVA_TAX_RANKS, SHORT_SILVA_TAX_RANKS, strict=True))
-
-    def lazy_merged(self):
-
-        lazyframes = [
-            self.stream(url=u, chunksize=1000, dataframe_engine="polars")
-            for u in self.url_list
-        ]
-
-        return pl.concat(lazyframes, how="vertical_relaxed")
-
-    def to_pandas(self, **pd_kwargs) -> pd.DataFrame:
-        if self._lazy_merged is None:
-            logger.warning(
-                "Lazy merged DataFrame not available. Returning empty DataFrame."
-            )
-            return pd.DataFrame()
-        return self.lazy_merged.collect().to_pandas(**pd_kwargs)
-
-    def to_polars(self) -> pl.DataFrame:
-        if self._lazy_merged is None:
-            logger.warning(
-                "Lazy merged DataFrame not available. Returning empty DataFrame."
-            )
-            return pl.DataFrame()
-        return self.lazy_merged.collect()
-
-    @property
-    def runs_accessions(self) -> list:
-        try:
-            return self.lazy_merged.select("RunID").collect().to_series().to_list()
-        except Exception as e:
-            logger.error(f"Error retrieving runs accessions: {e}")
-            return None
-
-
-class DWCTaxaMGazine(TaxaSetup):
+class DWCTaxaMGazine(MGazine, MetadataCheckpointMixin):
 
     def __init__(
         self,
-        mgazine: "MGazine",
+        downloads: list[dict[str, Any]],
         config: Optional[MGnipyConfig] = None,
         *,
-        long_short_mapping: Optional[dict[str, str]] = None,
-        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        client: Optional[Client | AuthenticatedClient] = None,
+        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
         mgnify_runs: Optional[list[dict[str, Any]]] = None,
         mgnify_samples: Optional[list[dict[str, Any]]] = None,
-        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
         biosamples_metadata: Optional[list[dict[str, Any]]] = None,
-        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
     ):
 
         super().__init__(
-            mgazine=mgazine,
+            downloads=downloads,
             config=config,
-            long_short_mapping=long_short_mapping,
+            client=client,
             mgnify_runs=mgnify_runs,
             mgnify_samples=mgnify_samples,
             mgnify_studies=mgnify_studies,
@@ -175,15 +118,41 @@ class DWCTaxaMGazine(TaxaSetup):
                 f"Short description {self.short_desc} does not contain 'dwc-ready'. This curator is intended for DwC-ready datasets. Proceeding anyway but results may not be as expected."
             )
 
-    def load(self):
-        """
-        Lazy loading and merging of the datasets contained in `url_list`.
-        This method should be called after instantiating to set up the internal state and load any cached results.
-        """
-        self._init_cache_handler_state()
-        logger.info(
-            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.mgnify_runs)} of total {len(self.runs_accessions)}."
+        self._run_accessions = None
+        self._params: dict[str, Any] = {
+            "mgazine": str(self),
+            "short_desc": self.short_desc,
+        }
+        print(
+            f"{self.__str__()}"
+            "-----------------------\n"
+            "Next steps: Use `.load()` to initialize.\n"
         )
+
+    def load(self):
+        # lazy loading and merging of the datasets contained in `url_list`.
+        _ = self.lazy_concat(urls=self.url_list)
+        # now get run accessions and params for cachekey
+        self._params: dict[str, Any] = {
+            "mgazine": str(self),
+            "short_desc": self.short_desc,
+            "runs_accessions": sorted(self.runs_accessions),
+        }
+        # load cache
+        self.load_cache()
+
+    @property
+    def runs_accessions(self) -> list:
+        if self._run_accessions is not None:
+            return self._run_accessions
+        else:
+            try:
+                self._run_accessions = (
+                    self.lazy_merged.select("RunID").collect().to_series().to_list()
+                )
+            except Exception as e:
+                logger.error(f"Error retrieving runs accessions: {e}")
+        return self._run_accessions
 
     def taxonomic_metadata(
         self,
@@ -199,21 +168,21 @@ class DWCTaxaMGazine(TaxaSetup):
             return df
 
 
-class TaxaMGazine(TaxaSetup):
+class TaxaMGazine(MGazine, MetadataCheckpointMixin):
     """not for dwc"""
 
     def __init__(
         self,
-        mgazine: "MGazine",
+        downloads: list[dict[str, Any]],
         config: Optional[MGnipyConfig] = None,
         *,
-        long_short_mapping: Optional[dict[str, str]] = None,
-        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        client: Optional[Client | AuthenticatedClient] = None,
+        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
         mgnify_runs: Optional[list[dict[str, Any]]] = None,
         mgnify_samples: Optional[list[dict[str, Any]]] = None,
-        mgnify_studies: Optional[list[dict[str, Any]]] = None,
+        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
         biosamples_metadata: Optional[list[dict[str, Any]]] = None,
-        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
     ):
 
         self.TAX_COLS = (
@@ -223,10 +192,11 @@ class TaxaMGazine(TaxaSetup):
             + PR2_TAX_RANKS
             + MOTUS_TAX_RANKS
         )
+
         super().__init__(
-            mgazine=mgazine,
+            downloads=downloads,
             config=config,
-            long_short_mapping=long_short_mapping,
+            client=client,
             mgnify_runs=mgnify_runs,
             mgnify_samples=mgnify_samples,
             mgnify_studies=mgnify_studies,
@@ -235,6 +205,11 @@ class TaxaMGazine(TaxaSetup):
             mgnify_assemblies=mgnify_assemblies,
         )
 
+        self._runs_accessions = None
+        self._params: dict[str, Any] = {
+            "mgazine": str(self),
+            "short_desc": self.short_desc,
+        }
         print(
             f"{self.__str__()}"
             "-----------------------\n"
@@ -242,14 +217,16 @@ class TaxaMGazine(TaxaSetup):
         )
 
     def load(self):
-        """
-        Lazy loading and merging of the datasets contained in `url_list`.
-        This method should be called after instantiating to set up the internal state and load any cached results.
-        """
-        self._init_cache_handler_state()
-        print(
-            f"{self.__class__.__name__} loaded with {len(self.url_list)} datasets. \nCached runs results: {len(self.mgnify_runs)} of total {len(self.runs_accessions)}."
-        )
+        # lazy loading and merging of the datasets contained in `url_list`.
+        _ = self._lazy_merger()
+        # now get run accessions and params for cachekey
+        self._params: dict[str, Any] = {
+            "mgazine": str(self),
+            "short_desc": self.short_desc,
+            "runs_accessions": sorted(self.runs_accessions),
+        }
+        # load cache
+        self.load_cache()
 
     @property
     def runs_accessions(self) -> list:
@@ -263,15 +240,25 @@ class TaxaMGazine(TaxaSetup):
         ]
         return self._runs_accessions
 
-    # overwrite
+    def long_short_mapping(self, value: dict[str, str] = None) -> dict[str, str]:
+        # determine mapping
+        if value is not None:
+            return value
+        elif "PR2" in self.short_desc.upper():
+            return dict(zip(PR2_TAX_RANKS, SHORT_PR2_TAX_RANKS, strict=True))
+        elif "MOTUS" in self.short_desc.upper():
+            return dict(zip(MOTUS_TAX_RANKS, SHORT_MOTUS_TAX_RANKS, strict=True))
+        else:  # default to silva?
+            return dict(zip(SILVA_TAX_RANKS, SHORT_SILVA_TAX_RANKS, strict=True))
+
     def _lazy_merger(self):
 
         # lazyframes for given short_desc
         lazyframes = [
-            self.mz.stream(url=u, chunksize=1000, dataframe_engine="polars").rename(
+            self.stream(url=u, chunksize=1000, dataframe_engine="polars").rename(
                 {"#SampleID": "taxonomy"}, strict=False
             )
-            for u in self.mz.url_list
+            for u in self.url_list
         ]
 
         # otherwise
@@ -302,7 +289,6 @@ class TaxaMGazine(TaxaSetup):
             )
             self._lazy_merged = pl.concat(lazyframes, how="vertical_relaxed")
 
-    # overwrite
     def taxonomic_metadata(
         self,
         fill_na: Any = "NA",

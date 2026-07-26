@@ -12,6 +12,7 @@ from typing import Any, Optional
 import aiofiles
 import httpx
 import pandas as pd
+import polars as pl
 from pydantic import DirectoryPath, HttpUrl
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
@@ -21,9 +22,9 @@ from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.V2.mixins import (
     ClientManagerMixin,
-    MetadataSettersMixin,
     StreamMixin,
 )
+from mgnipy.V2.datasets.annotate import MetadataSettersMixin
 
 
 class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
@@ -84,6 +85,8 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         self._mgnify_assemblies = mgnify_assemblies
         self._biosamples_metadata = biosamples_metadata
 
+        self._lazy_merged: list[pl.LazyFrame] | None = None
+
     def __str__(self):
         return (
             f"MGazine containing:\n"
@@ -143,76 +146,97 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         return new_mz
 
     def __getattr__(self, name):
-        if name in self.list_pipeline_version():
-            logger.info(
-                f"Setting up mgazine only for datasets of pipeline version {name} via attribute access."
-            )
-            return MGazine(
-                self.by_pipeline_version()[name],
-                config=self.config,
-                client=self.client,
-            )
+        if name.startswith("taxonomic"):
 
-        raise AttributeError(f"'{self.__class__.__name__}' has no attribute '{name}'.")
+            taxonom_downloads = []
+            for k, v in self.by_downloads_col("download_type").items():
+                if "taxonom" in k.lower():
+                    taxonom_downloads.extend(v)
+
+            if len(taxonom_downloads) == 0:
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object has no attribute '{name}' because no taxonomic downloads are available."
+                )
+
+            no_dwc = [
+                d
+                for d in taxonom_downloads
+                if "dwc-ready" not in d.get("short_description", "").lower()
+            ]
+
+            dwc_ready = [
+                d
+                for d in taxonom_downloads
+                if "dwc-ready" in d.get("short_description", "").lower()
+            ]
+
+            if name == "taxonomic" and len(no_dwc) > 0:
+                return TaxaMGazine(
+                    downloads=no_dwc,
+                    config=self.config,
+                    client=self.client,
+                    mgnify_studies=self.mgnify_studies,
+                    mgnify_analyses=self.mgnify_analyses,
+                    mgnify_runs=self.mgnify_runs,
+                    mgnify_samples=self.mgnify_samples,
+                    mgnify_assemblies=self.mgnify_assemblies,
+                    biosamples_metadata=self.biosamples_metadata,
+                )
+            elif name == "taxonomic" and len(no_dwc) == 0:
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object has no attribute '{name}' because no taxonomic downloads are available."
+                )
+            elif name == "taxonomic_dwc_ready" and len(dwc_ready) == 0:
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object has no attribute '{name}' because no DWC-ready taxonomic downloads are available."
+                )
+            elif name == "taxonomic_dwc_ready" and len(dwc_ready) > 0:
+                return DWCTaxaMGazine(
+                    downloads=dwc_ready,
+                    config=self.config,
+                    client=self.client,
+                    mgnify_studies=self.mgnify_studies,
+                    mgnify_analyses=self.mgnify_analyses,
+                    mgnify_runs=self.mgnify_runs,
+                    mgnify_samples=self.mgnify_samples,
+                    mgnify_assemblies=self.mgnify_assemblies,
+                    biosamples_metadata=self.biosamples_metadata,
+                )
+            else:
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object has no attribute '{name}'"
+                )
+        # elif TODO other types
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{name}'"
+        )
 
     def __getitem__(self, key):
-        if key in self.list_short_descriptions():
-
-            new_mz = MGazine(
-                self.by_short_desc()[key],
-                config=self.config,
-                client=self.client,
-                mgnify_studies=self.mgnify_studies,
-                mgnify_analyses=self.mgnify_analyses,
-                mgnify_runs=self.mgnify_runs,
-                mgnify_samples=self.mgnify_samples,
-                mgnify_assemblies=self.mgnify_assemblies,
-                biosamples_metadata=self.biosamples_metadata,
+        if key in self.list_pipeline_version():
+            downloads_list: list[dict[str, Any]] = self.by_downloads_col(
+                "pipeline_version"
+            )[key]
+        elif key in self.list_short_descriptions():
+            downloads_list: list[dict[str, Any]] = self.by_downloads_col(
+                "short_description"
+            )[key]
+        else:
+            raise KeyError(
+                f"'{self.__class__.__name__}' has no pipeline version or short description: '{key}'."
             )
 
-            download_type = (
-                self.downloads_df()[self.downloads_df()["short_description"] == key][
-                    "download_type"
-                ]
-                .unique()[0]
-                .lower()
-            )
-            logger.info(f"Download type for {key}: {download_type}")
-
-            if "taxonom" in download_type and "dwc-ready" in key.lower():
-                logger.debug(
-                    f"getting dwc-ready taxonomic datasets of short description {key} via item access."
-                )
-                return DWCTaxaMGazine(
-                    mgazine=new_mz,
-                    config=self.config,
-                    client=self.client,
-                    mgnify_studies=self.mgnify_studies,
-                    mgnify_analyses=self.mgnify_analyses,
-                    mgnify_runs=self.mgnify_runs,
-                    mgnify_samples=self.mgnify_samples,
-                    mgnify_assemblies=self.mgnify_assemblies,
-                    biosamples_metadata=self.biosamples_metadata,
-                )
-
-            if "taxonom" in download_type and "dwc-ready" not in key.lower():
-                logger.debug(
-                    f"getting taxonomic datasets of short description {key} via item access."
-                )
-                return TaxaMGazine(
-                    mgazine=new_mz,
-                    config=self.config,
-                    client=self.client,
-                    mgnify_studies=self.mgnify_studies,
-                    mgnify_analyses=self.mgnify_analyses,
-                    mgnify_runs=self.mgnify_runs,
-                    mgnify_samples=self.mgnify_samples,
-                    mgnify_assemblies=self.mgnify_assemblies,
-                    biosamples_metadata=self.biosamples_metadata,
-                )
-
-            # TODO other download types
-            return new_mz
+        return MGazine(
+            downloads_list,
+            config=self.config,
+            client=self.client,
+            mgnify_studies=self.mgnify_studies,
+            mgnify_analyses=self.mgnify_analyses,
+            mgnify_runs=self.mgnify_runs,
+            mgnify_samples=self.mgnify_samples,
+            mgnify_assemblies=self.mgnify_assemblies,
+            biosamples_metadata=self.biosamples_metadata,
+        )
 
     @property
     def aliases(self) -> list[str]:
@@ -302,6 +326,36 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         #    df = self._add_pipeline_col(df)
 
         return df
+
+    def by_downloads_col(self, col: str) -> dict[str, list[dict[str, Any]]]:
+        """
+        Group downloads by a specified column in the downloads dataframe.
+
+        Parameters
+        ----------
+        col : str
+            The column name to group by.
+
+        Returns
+        -------
+        dict
+            A dictionary where keys are unique values from the specified column and values are lists of download dictionaries.
+
+        Raises
+        ------
+        ValueError
+            If the specified column is not present in the downloads dataframe.
+        """
+
+        df = self.downloads_df()
+        if col not in df.columns:
+            raise ValueError(
+                f"Cannot group by {col} because '{col}' column is missing."
+            )
+        grouped = self.downloads_df().groupby(col)
+
+        groups = {value: group.to_dict(orient="records") for value, group in grouped}
+        return groups
 
     def _get_url_by_alias(
         self, alias: str, df: Optional[pd.DataFrame] = None
@@ -432,47 +486,18 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         return alias, url
 
-    def by_pipeline_version(self) -> dict[str, list[dict[str, Any]]]:
-        """
-        Group downloads by pipeline version based on the 'pipeline_version' column in the downloads dataframe.
-
-        Returns
-        -------
-        dict
-            A dictionary where keys are pipeline versions and values are lists of download dictionaries.
-        """
-
-        df = self.downloads_df()
-        if "pipeline_version" not in df.columns:
-            raise ValueError(
-                "Cannot group by version because 'pipeline_version' column is missing."
+    @property
+    def short_desc(self) -> str:
+        if len(self.list_pipeline_version()) > 1:
+            logger.warning(
+                "Multiple pipeline versions detected -- MGazine methods may not work as expected."
             )
-        grouped = self.downloads_df().groupby("pipeline_version")
 
-        groups = {
-            version: group.to_dict(orient="records") for version, group in grouped
-        }
-        return groups
-
-    def by_short_desc(self) -> dict[str, list[dict[str, Any]]]:
-        """
-        Group downloads by short description based on the 'short_description' column in the downloads dataframe.
-
-        Returns
-        -------
-        dict
-            A dictionary where keys are short descriptions and values are lists of download dictionaries.
-        """
-
-        df = self.downloads_df()
-        if "short_description" not in df.columns:
-            raise ValueError(
-                "Cannot group by short description because 'short_description' column is missing."
+        if len(self.list_short_descriptions()) > 1:
+            logger.warning(
+                f"Multiple descriptions detected & `short_desc` not specified -- MGazine methods may not work as expected.\n'{self.list_short_descriptions()[0]}' may be used for e.g., caching, `long_short_mapping`."
             )
-        grouped = self.downloads_df().groupby("short_description")
-
-        groups = {desc: group.to_dict(orient="records") for desc, group in grouped}
-        return groups
+        return self.list_short_descriptions()[0]
 
     def list_pipeline_version(self):
         """Return a list of pipeline versions extracted from the download groups.
@@ -847,6 +872,90 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                 except Exception as e:
                     # flag and continue with downloads ..
                     logger.error(f"Error occurred while downloading {f}: {e}")
+
+    # streaming to combine
+    def lazy_concat(
+        self,
+        aliases: list[str] | None = None,
+        urls: list[str] | None = None,
+        how="vertical_relaxed",
+        **pl_kwargs,
+    ) -> pl.LazyFrame:
+        """
+        Return a concatenated Polars LazyFrame of the datasets corresponding to the provided aliases or URLs.
+
+        Parameters
+        ----------
+        aliases : list[str] or None, optional
+            List of download aliases to stream and concatenate. If provided, this takes precedence over `urls`.
+        urls : list[str] or None, optional
+            List of download URLs to stream and concatenate. Used only if `aliases` is not provided.
+        how : str, optional
+            Concatenation method. Options include 'vertical', 'horizontal', 'vertical_relaxed', etc. See Polars documentation for details.
+        **pl_kwargs
+            Additional keyword arguments to pass to the Polars concatenation function.
+
+        Returns
+        -------
+        pl.LazyFrame
+            A Polars LazyFrame representing the concatenated datasets.
+        """
+
+        if not aliases and not urls:
+            raise ValueError("Either `aliases` or `urls` must be provided.")
+
+        if urls and aliases:
+            logger.warning("Both `aliases` and `urls` provided. Ignoring urls.")
+
+        if aliases:
+            self._lazy_merged = pl.concat(
+                [
+                    self.stream(alias=alias, chunksize=1000, dataframe_engine="polars")
+                    for alias in aliases
+                ],
+                how=how,
+                **pl_kwargs,
+            )
+
+        if urls:
+            self._lazy_merged = pl.concat(
+                [
+                    self.stream(url=url, chunksize=1000, dataframe_engine="polars")
+                    for url in urls
+                ],
+                how=how,
+                **pl_kwargs,
+            )
+
+        return self.lazy_merged
+
+    @property
+    def lazy_merged(self) -> pl.LazyFrame | None:
+        """
+        Return the current lazy merged Polars LazyFrame if available.
+
+        Returns
+        -------
+        pl.LazyFrame or None
+            The current lazy merged Polars LazyFrame, or None if not set.
+        """
+        return self._lazy_merged
+
+    def lazy_to_pandas(self, **pd_kwargs) -> pd.DataFrame:
+        if self._lazy_merged is None:
+            logger.warning(
+                "Lazy merged DataFrame not available. Returning empty DataFrame."
+            )
+            return pd.DataFrame()
+        return self.lazy_merged.collect().to_pandas(**pd_kwargs)
+
+    def lazy_to_polars(self) -> pl.DataFrame:
+        if self._lazy_merged is None:
+            logger.warning(
+                "Lazy merged DataFrame not available. Returning empty DataFrame."
+            )
+            return pl.DataFrame()
+        return self.lazy_merged.collect()
 
     def renew_client(self):
         """Overwrite of the renew_client method in ClientManagerMixin"""
