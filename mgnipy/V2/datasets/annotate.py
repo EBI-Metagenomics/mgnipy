@@ -1,10 +1,21 @@
 import logging
 
 logger = logging.getLogger(__name__)
+
+# import asyncio
+# from mgnipy.V2.proxies.runs import RunDetail
+# from mgnipy.V2.proxies.samples import SampleDetail
+# from mgnipy.V2.proxies.assemblies import AssemblyDetail
+from mgnipy.V2.mgnifier.endpoints import ID_PARAM
+
+# from tqdm import tqdm as tqdm_sync
+# from tqdm.asyncio import tqdm_asyncio
 from typing import (
     Any,
+    Literal,
 )
-
+import pandas as pd
+import polars as pl
 from mgnipy.V2.mgnifier.metadata import MGnifyMetadata, ResultsHandler
 from mgnipy.V2.mixins import CheckpointMixin
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
@@ -16,6 +27,33 @@ _RESULT_PAGE_BY_FIELD = {
     "biosamples_metadata": 4,
     "mgnify_analyses": 5,
     "mgnify_assemblies": 6,
+}
+
+_JOIN_ON = {
+    "mgnify_runs__mgnify_samples": {
+        "left_on": "sample_accession",
+        "right_on": ID_PARAM[SupportedEndpoints.SAMPLES],
+    },
+    "mgnify_runs__mgnify_studies": {
+        "left_on": "study_accession",
+        "right_on": ID_PARAM[SupportedEndpoints.STUDIES],
+    },
+    "mgnify_assemblies__mgnify_runs": {
+        "left_on": "run_accession",
+        "right_on": ID_PARAM[SupportedEndpoints.RUNS],
+    },
+    "mgnify_assemblies__mgnify_samples": {
+        "left_on": "sample_accession",
+        "right_on": ID_PARAM[SupportedEndpoints.SAMPLES],
+    },
+    "mgnify_assemblies__mgnify_studies": {
+        "left_on": "assembly_study_accession",
+        "right_on": ID_PARAM[SupportedEndpoints.STUDIES],
+    },
+    "biosamples_metadata__mgnify_runs": {
+        "left_on": "GivenID",
+        "right_on": "sample_accession",
+    },
 }
 
 
@@ -107,6 +145,46 @@ class MetadataSettersMixin:
     def append_biosamples_metadata(self, value: dict[str, Any]):
         self._append_cached_item("biosamples_metadata", value)
 
+    def metadata(
+        self,
+        df_engine: Literal["polars", "pandas"] = "pandas",
+        expand_nested_dicts: bool = True,
+        how="full",
+        coalesce: bool = True,
+    ) -> pl.DataFrame | pd.DataFrame:
+
+        # init dict
+        paired_dfs: dict[str, pl.DataFrame] = {}
+        # go through each pair in _JOIN_ON and perform the join
+        for pair in _JOIN_ON:
+            left, right = pair.split("__")
+            left_data: MGnifyMetadata = getattr(self, left)
+            if len(left_data) == 0:
+                logger.warning(
+                    f"Dataset '{left}' is empty. Skipping join for this pair."
+                )
+                continue
+            right_data: MGnifyMetadata = getattr(self, right)
+            if len(right_data) == 0:
+                logger.warning(
+                    f"Dataset '{right}' is empty. Skipping join for this pair."
+                )
+                continue
+
+            left_df: pl.DataFrame = left_data.to_polars(
+                expand_nested_dicts=expand_nested_dicts
+            )
+            right_df: pl.DataFrame = right_data.to_polars(
+                expand_nested_dicts=expand_nested_dicts
+            )
+            join_params: dict[str, str] = _JOIN_ON[pair]
+            merged: pl.DataFrame = left_df.join(
+                right_df, how=how, coalesce=coalesce, **join_params
+            )
+            paired_dfs[pair] = merged
+
+        return paired_dfs
+
 
 class MetadataCheckpointMixin(CheckpointMixin):
 
@@ -141,95 +219,9 @@ class MetadataCheckpointMixin(CheckpointMixin):
 
 # class EnrichRunsMixin:
 
-#     # PICK UP HERE
-#     def metadata(
-#         self,
-#         df_engine: Literal["polars", "pandas"] = "pandas",
-#         strict: bool = False,
-#         expand_nested_dicts: bool = True,
-#         incl_mgnify_runs: bool = True,
-#         incl_mgnify_samples: bool = True,
-#         incl_mgnify_studies: bool = True,
-#         incl_biosamples_metadata: bool = True,
-#         incl_mgnify_analyses: bool = True,
-#         incl_mgnify_assemblies: bool = True,
-#     ) -> pl.DataFrame | pd.DataFrame:
-
-#         merge_these = {}
-
-#         if incl_mgnify_runs and self.mgnify_runs:
-#             runs_results = ResultsHandler(
-#                 data=self.mgnify_runs,
-#             )
-#             merge_these["runs"] = runs_results
-#         else:
-#             logger.warning(
-#                 "No runs have been enriched yet. Returning empty metadata DataFrame. Please run `enrich_runs()` first to populate the metadata."
-#             )
-#             if df_engine == "pandas":
-#                 return pd.DataFrame(
-#                     self.runs_accessions, columns=["accession"]
-#                 ).set_index("accession")
-#             elif df_engine == "polars":
-#                 return pl.DataFrame(
-#                     self.runs_accessions,
-#                     columns=["accession"],
-#                 )
-
-#         if incl_mgnify_samples and self.mgnify_samples:
-#             samples_results = ResultsHandler(
-#                 data=self.mgnify_samples,
-#             )
-#             merge_these["samples"] = samples_results
-
-#         if incl_mgnify_studies and self.mgnify_studies:
-#             studies_results = ResultsHandler(
-#                 data=self.mgnify_studies,
-#             )
-#             merge_these["studies"] = studies_results
-
-#         if incl_biosamples_metadata and self.biosamples_metadata:
-#             biosamples_results = ResultsHandler(
-#                 data=self.biosamples_metadata,
-#             )
-#             merge_these["biosamples"] = biosamples_results
-
-#         if incl_mgnify_analyses and self.mgnify_analyses:
-#             analyses_results = ResultsHandler(
-#                 data=self.mgnify_analyses,
-#             )
-#             merge_these["analyses"] = analyses_results
-
-#         if incl_mgnify_assemblies and self.mgnify_assemblies:
-#             assemblies_results = ResultsHandler(
-#                 data=self.mgnify_assemblies,
-#             )
-#             merge_these["assemblies"] = assemblies_results
-
-#         if strict and len(self.mgnify_runs) < len(self.runs_accessions):
-#             logger.warning(
-#                 f"Strict mode is on but only {len(self.mgnify_runs)} runs have been enriched out of {len(self.runs_accessions)} total runs. Returning without enrichment."
-#             )
-#             if df_engine == "pandas":
-#                 return pd.DataFrame(
-#                     self.runs_accessions, columns=["accession"]
-#                 ).set_index("accession")
-#             elif df_engine == "polars":
-#                 return pl.DataFrame(
-#                     self.runs_accessions,
-#                     columns=["accession"],
-#                 )
-
-#         # if df_engine == "pandas":
-#         #     return results_helper.to_pandas(
-#         #         expand_nested_dicts=expand_nested_dicts
-#         #     ).set_index("accession")
-#         # elif df_engine == "polars":
-#         #     return results_helper.to_polars(
-#         #         expand_nested_dicts=expand_nested_dicts,
-#         #     )  # .with_row_index("accession")
-
-#     def _iter_leftovers(self, results: ResultsHandler, all_ids: list[str]) -> list[str]:
+#     def _iter_leftovers(
+#         self, results: ResultsHandler, all_ids: list[str] = None
+#     ) -> list[str]:
 #         """
 #         Identify and return the list of run accessions that have not yet been enriched.
 
@@ -245,15 +237,9 @@ class MetadataCheckpointMixin(CheckpointMixin):
 #         list of str
 #             A list of run accessions that are present in `all_ids` but not in `enriched_ids`.
 #         """
+#         if all_ids is None:
+#             all_ids = getattr(self, "runs_accessions", [])
 #         return [x for x in all_ids if x not in results.get_ids()]
-
-#     @property
-#     def runs_accessions(self) -> list:
-#         try:
-#             return self.lazy_merged.select("RunID").collect().to_series().to_list()
-#         except Exception as e:
-#             logger.error(f"Error occurred while fetching run accessions: {e}")
-#             return []
 
 #     def enrich_mgnify(
 #         self,
@@ -427,119 +413,119 @@ class MetadataCheckpointMixin(CheckpointMixin):
 #                     self.append_mgnify_assemblies(mg)
 
 
-# class BioSamplesMixin:
+# # class BioSamplesMixin:
 
-#     @property
-#     def runs_to_samples(self) -> dict[str, str]:
-#         return {
-#             mg.get("accession"): mg.get("sample", {}).get("accession")
-#             or mg.get("sample_accession")
-#             for mg in self.mgnify_runs
-#             if isinstance(mg, dict)
-#         }
+# #     @property
+# #     def runs_to_samples(self) -> dict[str, str]:
+# #         return {
+# #             mg.get("accession"): mg.get("sample", {}).get("accession")
+# #             or mg.get("sample_accession")
+# #             for mg in self.mgnify_runs
+# #             if isinstance(mg, dict)
+# #         }
 
-#     @property
-#     def assemblies_to_samples(self) -> dict[str, str]:
-#         return {
-#             mg.get("accession"): mg.get("sample_accession")
-#             for mg in self.mgnify_runs
-#             if isinstance(mg, dict)
-#         }
+# #     @property
+# #     def assemblies_to_samples(self) -> dict[str, str]:
+# #         return {
+# #             mg.get("accession"): mg.get("sample_accession")
+# #             for mg in self.mgnify_runs
+# #             if isinstance(mg, dict)
+# #         }
 
-#     @property
-#     def assemblies_to_runs(self) -> dict[str, str]:
-#         return {
-#             mg.get("accession"): mg.get("run_accession")
-#             for mg in self.mgnify_assemblies
-#             if isinstance(mg, dict)
-#         }
+# #     @property
+# #     def assemblies_to_runs(self) -> dict[str, str]:
+# #         return {
+# #             mg.get("accession"): mg.get("run_accession")
+# #             for mg in self.mgnify_assemblies
+# #             if isinstance(mg, dict)
+# #         }
 
-#     @property
-#     def _retrieved_biosamples_given_ids(self) -> list[str]:
-#         return [
-#             x.get("GivenID") for x in self.biosamples_metadata if isinstance(x, dict)
-#         ]
+# #     @property
+# #     def _retrieved_biosamples_given_ids(self) -> list[str]:
+# #         return [
+# #             x.get("GivenID") for x in self.biosamples_metadata if isinstance(x, dict)
+# #         ]
 
-#     def _iter_biosamples(self) -> list[str]:
+# #     def _iter_biosamples(self) -> list[str]:
 
-#         copied_mapping = self.runs_to_samples.copy()
+# #         copied_mapping = self.runs_to_samples.copy()
 
-#         for k, v in self.runs_to_samples.items():
-#             if v in self._retrieved_biosamples_given_ids:
-#                 del copied_mapping[k]
+# #         for k, v in self.runs_to_samples.items():
+# #             if v in self._retrieved_biosamples_given_ids:
+# #                 del copied_mapping[k]
 
-#         return list(copied_mapping.values())
+# #         return list(copied_mapping.values())
 
-#     def enrich_biosamples(
-#         self,
-#         limit: Optional[int] = 200,
-#         hide_progress: bool = False,
-#         incl_ena: bool = False,
-#         strict: bool = True,
-#     ):
-#         """
-#         Enriches the biosample metadata for the biosamples in the taxonomic dataset by iterating through the biosample accessions and retrieving their details using the BiosampleDetail proxy. The results are cached using the CheckpointMixin to avoid redundant API calls in future runs.
+# #     def enrich_biosamples(
+# #         self,
+# #         limit: Optional[int] = 200,
+# #         hide_progress: bool = False,
+# #         incl_ena: bool = False,
+# #         strict: bool = True,
+# #     ):
+# #         """
+# #         Enriches the biosample metadata for the biosamples in the taxonomic dataset by iterating through the biosample accessions and retrieving their details using the BiosampleDetail proxy. The results are cached using the CheckpointMixin to avoid redundant API calls in future runs.
 
-#         Parameters
-#         ----------
-#         limit : Optional[int], default=200
-#             An optional integer to limit the number of biosamples to enrich. If not provided, it defaults to 200. This is useful for testing or when dealing with large datasets to avoid long runtimes during development. If set to None, there will be no limit on the number of biosamples enriched.
+# #         Parameters
+# #         ----------
+# #         limit : Optional[int], default=200
+# #             An optional integer to limit the number of biosamples to enrich. If not provided, it defaults to 200. This is useful for testing or when dealing with large datasets to avoid long runtimes during development. If set to None, there will be no limit on the number of biosamples enriched.
 
-#         Returns
-#         -------
-#         None
-#             The function does not return anything. It updates the `run_results` attribute of the TaxaMGazine instance with the enriched run metadata.
+# #         Returns
+# #         -------
+# #         None
+# #             The function does not return anything. It updates the `run_results` attribute of the TaxaMGazine instance with the enriched run metadata.
 
-#         """
+# #         """
 
-#         logger.debug(
-#             f"Starting enrichment of biosample meta for short description with limit {limit}."
-#         )
+# #         logger.debug(
+# #             f"Starting enrichment of biosample meta for short description with limit {limit}."
+# #         )
 
-#         runs_todo: list[str] = self._iter_biosamples()[:limit]
-#         logger.warning(
-#             f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self.runs_to_samples)}. Already enriched: {len(self.biosamples_metadata)}."
-#         )
+# #         runs_todo: list[str] = self._iter_biosamples()[:limit]
+# #         logger.warning(
+# #             f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self.runs_to_samples)}. Already enriched: {len(self.biosamples_metadata)}."
+# #         )
 
-#         for count, run in enumerate(
-#             tqdm_sync(
-#                 runs_todo,
-#                 total=len(self.runs_accessions),
-#                 initial=len(self.biosamples_metadata),
-#                 desc="Enriching biosamples",
-#                 disable=hide_progress,
-#             )
-#         ):
-#             logger.info(f"Enriching biosample {run}. Count: {count}")
-#             # get metadata
-#             try:
-#                 bm = get_biosample_metadata(run, incl_ena=incl_ena)
-#             except Exception as e:
-#                 logger.error(f"Error occurred while enriching run {run}: {e}")
-#                 bm = False
+# #         for count, run in enumerate(
+# #             tqdm_sync(
+# #                 runs_todo,
+# #                 total=len(self.runs_accessions),
+# #                 initial=len(self.biosamples_metadata),
+# #                 desc="Enriching biosamples",
+# #                 disable=hide_progress,
+# #             )
+# #         ):
+# #             logger.info(f"Enriching biosample {run}. Count: {count}")
+# #             # get metadata
+# #             try:
+# #                 bm = get_biosample_metadata(run, incl_ena=incl_ena)
+# #             except Exception as e:
+# #                 logger.error(f"Error occurred while enriching run {run}: {e}")
+# #                 bm = False
 
-#             if isinstance(bm, bool) and not strict:
-#                 logger.error(
-#                     f"Strict mode is on and enrichment failed for biosample {run}. Appending placeholder with GivenID only."
-#                 )
-#                 bm = {"GivenID": run}
-#             elif isinstance(bm, bool) and strict:
-#                 logger.error(
-#                     f"Strict mode is on and enrichment failed for biosample {run}. Skipping appending to results."
-#                 )
-#             elif isinstance(bm, pd.DataFrame) and not bm.empty:
-#                 self.append_biosamples_metadata(bm.iloc[0].to_dict())
-#             else:
-#                 logger.error(
-#                     f"Enrichment for biosample {run} did not return a valid DataFrame. Skipping appending to results."
-#                 )
+# #             if isinstance(bm, bool) and not strict:
+# #                 logger.error(
+# #                     f"Strict mode is on and enrichment failed for biosample {run}. Appending placeholder with GivenID only."
+# #                 )
+# #                 bm = {"GivenID": run}
+# #             elif isinstance(bm, bool) and strict:
+# #                 logger.error(
+# #                     f"Strict mode is on and enrichment failed for biosample {run}. Skipping appending to results."
+# #                 )
+# #             elif isinstance(bm, pd.DataFrame) and not bm.empty:
+# #                 self.append_biosamples_metadata(bm.iloc[0].to_dict())
+# #             else:
+# #                 logger.error(
+# #                     f"Enrichment for biosample {run} did not return a valid DataFrame. Skipping appending to results."
+# #                 )
 
-#     def aenrich_biosamples(
-#         self,
-#         limit: Optional[int] = 200,
-#         hide_progress: bool = False,
-#         incl_ena: bool = False,
-#         strict: bool = True,
-#     ):
-#         # TODO
-#         pass
+# #     def aenrich_biosamples(
+# #         self,
+# #         limit: Optional[int] = 200,
+# #         hide_progress: bool = False,
+# #         incl_ena: bool = False,
+# #         strict: bool = True,
+# #     ):
+# #         # TODO
+# #         pass

@@ -42,16 +42,24 @@ class ResultsHandler:
         combined_data = chain(self.data, other.data)
         return self.__class__(combined_data)
 
+    def __len__(self) -> int:
+        """
+        Get the number of records in the current instance.
+
+        Returns
+        -------
+        int
+            The number of records in the data.
+        """
+        return len(list(self.data or []))
+
     @property
     def data(self) -> chain[dict[str, Any]]:
         """
         Get the data associated with the current instance.
         """
 
-        if getattr(self, "_data", None) is not None:
-            return self._data
-
-        return getattr(self, "records", []) or []
+        return self._data
 
     # helpers
     def _df_expand_nested(
@@ -140,13 +148,16 @@ class ResultsHandler:
 
         _data = data or self.data
         if _data == [] or _data is None:
-            logger.debug("No data available for pandas DataFrame conversion")
+            logger.debug(
+                "No data available for pandas DataFrame conversion, to_pandas returning None"
+            )
             return None
 
         _rename_columns = rename_columns or {"lineage": "biome_lineage"}
         as_pandas = pd.DataFrame(_data, **kwargs).rename(columns=_rename_columns)
 
         if expand_nested_dicts is None or expand_nested_dicts is False:
+            logger.debug("Returning pandas DataFrame without nested expansion")
             return as_pandas
 
         if isinstance(expand_nested_dicts, list):
@@ -154,10 +165,8 @@ class ResultsHandler:
                 as_pandas,
                 cols=expand_nested_dicts,
             )
-        if expand_nested_dicts is True:  # TODO
+        if expand_nested_dicts is True:
             return self._df_expand_nested(as_pandas)
-
-        logger.debug("Returning pandas DataFrame without nested expansion")
 
     def to_list(self, data: Optional[chain] = None) -> list[Any]:
         """
@@ -289,19 +298,27 @@ class ResultsHandler:
         ValueError
             If no data is available to extract IDs from.
         """
-        logger.debug("Extracting IDs from results")
         _data = self.data
 
         if _data == [] or _data is None:
             logger.debug("No data available for ID extraction")
             return []
 
+        logger.debug("Extracting IDs from results")
         # Determine the default label based on the resource type if not provided
         if label is None:
             resource_type = getattr(self, "resource", None)
             label = ID_PARAM.get(resource_type, "accession")
 
-        return [item.get(label) for item in _data if item.get(label) is not None]
+        if isinstance(_data, list):
+            return [item.get(label) for item in _data if item.get(label) is not None]
+        elif isinstance(_data, dict):
+            return [
+                item.get(label)
+                for page in _data.values()
+                for item in page
+                if item.get(label) is not None
+            ]
 
 
 class MGnifyMetadata(ResultsHandler):
@@ -311,12 +328,17 @@ class MGnifyMetadata(ResultsHandler):
         results: dict[int, list[dict]] | None = None,
         id_label: Optional[str] = None,
     ):
+
+        self._results: dict[int, list[dict]] | None = results
         # init results
-        self._results = results
+        if isinstance(results, dict):
+            super().__init__(data=list(self.records))
+        else:
+            super().__init__(data=self._results)
         self._id_label = id_label
 
-    def __len__(self):
-        return len(list(self.records))
+    # def __len__(self):
+    #     return len(list(self._unpageinate_results()))
 
     def __str__(self) -> str:
         """Return a human-readable summary of the metadata state.
@@ -358,7 +380,7 @@ class MGnifyMetadata(ResultsHandler):
             An iterator that yields individual metadata records from all pages.
         """
         logger.debug("Flattening paginated results")
-        _data = data or self.results
+        _data = data or self._results
 
         def _page_to_records(page):
             if page is None:
@@ -369,7 +391,9 @@ class MGnifyMetadata(ResultsHandler):
                 return [page]
             return [page]
 
-        return chain.from_iterable(_page_to_records(v) for v in _data.values())
+        if isinstance(_data, dict):
+            return chain.from_iterable(_page_to_records(v) for v in _data.values())
+        return chain.from_iterable(_page_to_records(_data))
 
     @property
     def records(self) -> Optional[chain]:
@@ -384,10 +408,9 @@ class MGnifyMetadata(ResultsHandler):
         chain or None
             An iterator that yields individual metadata records if results are available, otherwise None.
         """
-        if self.results is None:
-            logger.warning(".results is None. No record iterator available")
+        if self._results is None:
+            logger.warning(".data/.results is None. No record iterator available")
             return None
-        logger.debug("Returning record iterator")
         return self._unpageinate_results()
 
     @property
@@ -406,18 +429,13 @@ class MGnifyMetadata(ResultsHandler):
         >>> query.get()  # doctest: +SKIP
         >>> ids = query.metadata.ids  # doctest: +SKIP
         """
-        if self.results is None:
+        if self.data is None:
             logger.warning(
                 "No attempts for results to be retieved yet (e.g., .get(), .page()), so no accessions/ids available."
             )
             return None
 
-        try:
-            return [record[self._id_label] for record in self._unpageinate_results()]
-        except KeyError as exc:
-            raise KeyError(
-                f"Identifier key '{self._id_label}' not found in results. Cannot extract accessions/ids. Check .results"
-            ) from exc
+        return self.get_ids(label=self._id_label)
 
     def _resolve_id_param(
         self, key: int | str, param_name: Optional[str] = None
@@ -471,7 +489,7 @@ class MGnifyMetadata(ResultsHandler):
         list[int]
             A list of page numbers available in the results.
         """
-        if self.results is None:
-            logger.warning(".results is None. No pages available.")
-            return []
-        return list(self.results.keys())
+        if isinstance(self.results, dict):
+            return list(self.results.keys())
+        logger.debug("No pages available in results; returning empty list")
+        return []

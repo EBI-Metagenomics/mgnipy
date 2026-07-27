@@ -230,12 +230,12 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             downloads_list,
             config=self.config,
             client=self.client,
-            mgnify_studies=self.mgnify_studies,
-            mgnify_analyses=self.mgnify_analyses,
-            mgnify_runs=self.mgnify_runs,
-            mgnify_samples=self.mgnify_samples,
-            mgnify_assemblies=self.mgnify_assemblies,
-            biosamples_metadata=self.biosamples_metadata,
+            mgnify_studies=self._mgnify_studies,
+            mgnify_analyses=self._mgnify_analyses,
+            mgnify_runs=self._mgnify_runs,
+            mgnify_samples=self._mgnify_samples,
+            mgnify_assemblies=self._mgnify_assemblies,
+            biosamples_metadata=self._biosamples_metadata,
         )
 
     @property
