@@ -167,6 +167,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         Display the progress of the current query set.
         """
         self.try_load_cache()
+        self.exec._set_counts()
 
         completed: int = len(self.metadata.pages)
         total: int = len(self.build_queries().keys())
@@ -189,7 +190,8 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
             An object containing the retrieved metadata results and related methods.
         """
         self.try_load_cache()
-        return MGnifyMetadata(results=self._results, id_label=self._id_label)
+        self.exec._set_counts()
+        return MGnifyMetadata(data=self._results, id_label=self._id_label)
 
     @property
     def cache_dir(self) -> Optional[Path]:
@@ -239,6 +241,8 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         mg = MGnifier("studies")  # doctest: +SKIP
         next_page = next(mg)  # doctest: +SKIP
         """
+        self.try_load_cache()
+        self.exec._set_counts()
         # if no pages loaded, load with limits to next batch
         if not self._iter_page_nums:
             self._init_iter_state()
@@ -271,6 +275,8 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         mg = MGnifier("studies")  # doctest: +SKIP
         next_page = await next(mg)  # doctest: +SKIP
         """
+        self.try_load_cache()
+        self.exec._set_counts()
         if not self._iter_page_nums:
             self._init_iter_state()
 
@@ -314,6 +320,8 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         page_data = mg.page(1)  # doctest: +SKIP
         """
         self.try_load_cache()
+        self.exec._set_counts()
+
         logger.debug(f"Fetching page {page_num}")
         page_items = self.exec.request_page(page_num=page_num)
 
@@ -347,6 +355,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         page_data = asyncio.run(mg.apage(1))  # doctest: +SKIP
         """
         self.try_load_cache()
+        self.exec._set_counts()
         logger.info(f"Asynchronously fetching page {page_num}")
 
         async with self.semaphore:
