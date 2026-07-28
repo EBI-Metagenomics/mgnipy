@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 from typing import Optional
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, DetailResourceStr
 from mgnipy.V2.proxies import (
     V2_ENDPOINT_DETAIL_PROXIES,
     V2_ENDPOINT_LIST_PROXIES,
@@ -12,6 +12,7 @@ from mgnipy.V2.proxies import (
 from mgnipy.V2.mixins import ClientManagerMixin
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
+from mgnipy.V2.collect import MGnetizer, BioSampler
 
 V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 
@@ -233,7 +234,23 @@ class MGnipy(ClientManagerMixin):
                 return _detail_factory
 
             raise ValueError(f"{type(self).__name__} has no endpoint {name!r}")
+
+        if name == "mgnetizer":
+            return MGnetizer(
+                resource=None, all_ids=[], config=self.config, client=self.client
+            )
+
+        if name == "biosampler":
+            return BioSampler(run_ids=[], config=self.config, client=self.client)
+
         raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
+
+    def __getitem__(self, key: str):
+        if key in DetailResourceStr.__args__:
+            return MGnetizer(
+                resource=key, all_ids=[], config=self.config, client=self.client
+            )
+        raise KeyError(f"{type(self).__name__} has no endpoint {key!r}")
 
     def __str__(self):
         return f"MGnipy(config={self.config})"
