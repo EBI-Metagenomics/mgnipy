@@ -78,12 +78,12 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         self.async_httpx_client = self.client.get_async_httpx_client()
         self.semaphore = get_semaphore()
 
-        self._mgnify_studies = mgnify_studies
-        self._mgnify_analyses = mgnify_analyses
-        self._mgnify_runs = mgnify_runs
-        self._mgnify_samples = mgnify_samples
-        self._mgnify_assemblies = mgnify_assemblies
-        self._biosamples_metadata = biosamples_metadata
+        self._mgnify_studies: list[dict[str, Any]] | None = mgnify_studies
+        self._mgnify_analyses: list[dict[str, Any]] | None = mgnify_analyses
+        self._mgnify_runs: list[dict[str, Any]] | None = mgnify_runs
+        self._mgnify_samples: list[dict[str, Any]] | None = mgnify_samples
+        self._mgnify_assemblies: list[dict[str, Any]] | None = mgnify_assemblies
+        self._biosamples_metadata: list[dict[str, Any]] | None = biosamples_metadata
 
         self._lazy_merged: list[pl.LazyFrame] | None = None
 
@@ -175,12 +175,12 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     downloads=no_dwc,
                     config=self.config,
                     client=self.client,
-                    mgnify_studies=self.mgnify_studies,
-                    mgnify_analyses=self.mgnify_analyses,
-                    mgnify_runs=self.mgnify_runs,
-                    mgnify_samples=self.mgnify_samples,
-                    mgnify_assemblies=self.mgnify_assemblies,
-                    biosamples_metadata=self.biosamples_metadata,
+                    mgnify_studies=self._mgnify_studies,
+                    mgnify_analyses=self._mgnify_analyses,
+                    mgnify_runs=self._mgnify_runs,
+                    mgnify_samples=self._mgnify_samples,
+                    mgnify_assemblies=self._mgnify_assemblies,
+                    biosamples_metadata=self._biosamples_metadata,
                 )
             elif name == "taxonomic" and len(no_dwc) == 0:
                 raise AttributeError(
@@ -195,12 +195,12 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     downloads=dwc_ready,
                     config=self.config,
                     client=self.client,
-                    mgnify_studies=self.mgnify_studies,
-                    mgnify_analyses=self.mgnify_analyses,
-                    mgnify_runs=self.mgnify_runs,
-                    mgnify_samples=self.mgnify_samples,
-                    mgnify_assemblies=self.mgnify_assemblies,
-                    biosamples_metadata=self.biosamples_metadata,
+                    mgnify_studies=self._mgnify_studies,
+                    mgnify_analyses=self._mgnify_analyses,
+                    mgnify_runs=self._mgnify_runs,
+                    mgnify_samples=self._mgnify_samples,
+                    mgnify_assemblies=self._mgnify_assemblies,
+                    biosamples_metadata=self._biosamples_metadata,
                 )
             else:
                 raise AttributeError(

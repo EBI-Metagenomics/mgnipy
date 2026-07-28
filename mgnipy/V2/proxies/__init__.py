@@ -339,7 +339,7 @@ class MGnifyList(MGnifier):
                 f"No {self.child_resource} details collected of total {len(self)}. Run `enrich_details()` first to populate details."
             )
         return MGnifyMetadata(
-            results=self._collected_details_metadata,
+            data=self._collected_details_metadata,
             id_label=self._detail_cls._id_label,
         )
 

@@ -259,7 +259,7 @@ class QueryExecutor:
         else:
             return response.parsed.to_dict()
 
-    def _page_items(self, response: "mpy_Response") -> Optional[Any]:
+    def _page_items(self, response: "mpy_Response") -> Optional[list[dict[str, Any]]]:
         """Extract the 'items' from the API response.
 
         Example
@@ -284,4 +284,4 @@ class QueryExecutor:
             try:
                 return response["items"]  # only because of biomes -_-
             except Exception:
-                return response
+                return [response]

@@ -19,7 +19,7 @@ class ResultsHandler:
      - `data`: A property that returns an iterable of metadata records, typically a chain of dictionaries. This can be overridden by providing data directly to the conversion methods.
     """
 
-    def __init__(self, data: Optional[chain[dict[str, Any]]] = None):
+    def __init__(self, data: Optional[list[dict[str, Any]]] = None):
         logger.debug("Initializing ResultsHandler")
         self._data = data
 
@@ -54,12 +54,16 @@ class ResultsHandler:
         return len(list(self.data or []))
 
     @property
-    def data(self) -> chain[dict[str, Any]]:
+    def data(self) -> list[dict[str, Any]]:
         """
         Get the data associated with the current instance.
         """
 
         return self._data
+
+    @data.setter
+    def data(self, value: list[dict[str, Any]]):
+        self._data = list(value)
 
     # helpers
     def _df_expand_nested(
@@ -301,7 +305,6 @@ class ResultsHandler:
         _data = self.data
 
         if _data == [] or _data is None:
-            logger.debug("No data available for ID extraction")
             return []
 
         logger.debug("Extracting IDs from results")
@@ -325,20 +328,17 @@ class MGnifyMetadata(ResultsHandler):
 
     def __init__(
         self,
-        results: dict[int, list[dict]] | None = None,
+        data: dict[int, list[dict]] | None = None,
         id_label: Optional[str] = None,
     ):
 
-        self._results: dict[int, list[dict]] | None = results
+        self._res: dict[int, list[dict]] | None = data
         # init results
-        if isinstance(results, dict):
+        if isinstance(data, dict):
             super().__init__(data=list(self.records))
-        else:
-            super().__init__(data=self._results)
+        else:  # list or None
+            super().__init__(data=self._res)
         self._id_label = id_label
-
-    # def __len__(self):
-    #     return len(list(self._unpageinate_results()))
 
     def __str__(self) -> str:
         """Return a human-readable summary of the metadata state.
@@ -366,7 +366,7 @@ class MGnifyMetadata(ResultsHandler):
         Get the retrieved metadata results, if available.
         Results are stored in a dictionary with request number (e.g. page number) as keys.
         """
-        return self._results
+        return self._res
 
     def _unpageinate_results(self, data: Optional[dict] = None) -> chain:
         """
@@ -380,7 +380,7 @@ class MGnifyMetadata(ResultsHandler):
             An iterator that yields individual metadata records from all pages.
         """
         logger.debug("Flattening paginated results")
-        _data = data or self._results
+        _data = data or self._res
 
         def _page_to_records(page):
             if page is None:
@@ -408,7 +408,7 @@ class MGnifyMetadata(ResultsHandler):
         chain or None
             An iterator that yields individual metadata records if results are available, otherwise None.
         """
-        if self._results is None:
+        if self._res is None:
             logger.warning(".data/.results is None. No record iterator available")
             return None
         return self._unpageinate_results()
@@ -429,11 +429,11 @@ class MGnifyMetadata(ResultsHandler):
         >>> query.get()  # doctest: +SKIP
         >>> ids = query.metadata.ids  # doctest: +SKIP
         """
-        if self.data is None:
-            logger.warning(
-                "No attempts for results to be retieved yet (e.g., .get(), .page()), so no accessions/ids available."
-            )
-            return None
+        # if self.data is None:
+        #     logger.warning(
+        #         "No attempts for results to be retieved yet (e.g., .get(), .page()), so no accessions/ids available."
+        #     )
+        #     return None
 
         return self.get_ids(label=self._id_label)
 
