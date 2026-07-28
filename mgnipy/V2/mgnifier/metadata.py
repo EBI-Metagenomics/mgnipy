@@ -393,7 +393,7 @@ class MGnifyMetadata(ResultsHandler):
 
         if isinstance(_data, dict):
             return chain.from_iterable(_page_to_records(v) for v in _data.values())
-        return chain.from_iterable(_page_to_records(_data))
+        return chain.from_iterable(_page_to_records(v) for v in _data)
 
     @property
     def records(self) -> Optional[chain]:
@@ -493,3 +493,30 @@ class MGnifyMetadata(ResultsHandler):
             return list(self.results.keys())
         logger.debug("No pages available in results; returning empty list")
         return []
+
+    @property
+    def downloads(self) -> Optional[list[dict]]:
+        """
+        Get the downloads information from the current results, if available.
+        This property extracts the 'downloads' key from each record in the results.
+
+        Returns
+        -------
+        list[dict] or None
+            A list of download information dictionaries, or None if no results are available.
+        """
+        if self.records is None:
+            logger.warning("No records available to extract downloads information")
+            return None
+
+        downloads_list = []
+        for record in self.records:
+            downloads = record.get("downloads")
+            if downloads is not None:
+                downloads_list.append(downloads)
+
+        return (
+            [item for sublist in downloads_list for item in sublist]
+            if downloads_list
+            else None
+        )
