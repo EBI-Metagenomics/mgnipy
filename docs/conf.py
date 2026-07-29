@@ -32,6 +32,7 @@ extensions = [
     "sphinx_copybutton",  # add copy button to code blocks
     "sphinx.ext.autosummary",
     "sphinx_thebe",
+    "sphinx_togglebutton",
 ]
 
 exclude_patterns = [
@@ -89,6 +90,7 @@ autosummary_generate = True
 
 ## autodoc options
 autodoc_typehints = "description"
+add_module_names = False
 
 ## sphinx_new_tab_link
 new_tab_link_show_external_link_icon = True
@@ -113,3 +115,7 @@ intersphinx_mapping = {
     "anndata": ("https://anndata.readthedocs.io/en/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
 }
+
+## togglebutton
+togglebutton_hint = "Click to open. More Info:"
+togglebutton_hint_hide = "Click to Hide. More Info:"
