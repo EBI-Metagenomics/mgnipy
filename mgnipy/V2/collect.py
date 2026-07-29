@@ -23,6 +23,40 @@ from mgnipy.V2.proxies import V2_ENDPOINT_DETAIL_PROXIES, MGnifyDetail
 
 
 class MGnetizer(CheckpointMixin):
+    """Fetch detailed metadata for a given list of MGnify accessions.
+
+    MGnetizer is designed to retrieve the rich metadata from `MGnify`_ for a list of accessions/ids.
+
+    Unlike :class:`MGnifier` or the :mod:`mgnipy.V2.proxies` module, which are designed to search for MGnify lists OR fetch detailed metadata for a single accession at a time, MGnetizer allows for batch processing of multiple accessions. It uses the :class:`.MGnifyDetail` proxy to fetch detailed metadata for each accession and stores the results in a :class:`.MGnifyMetadata` instance.
+
+    Parameters
+    ----------
+    resource : DetailResourceStr
+        The type of resource to fetch metadata for. Must be one of the supported :class:`MGnifyDetail` resource types (e.g., "study", "sample", "run", etc.).
+    all_ids : list of str
+        A list of MGnify accessions/ids for which to fetch detailed metadata.
+    config : MGnipyConfig, optional
+        An optional configuration object for MGnipy. If not provided, a default configuration will be used.
+    client : Client or AuthenticatedClient, optional
+        An optional HTTP client for making requests. If not provided, a default client will be initialized using the provided or default configuration.
+    mgnify_metadata : MGnifyMetadata, optional
+        An optional :class:`.MGnifyMetadata` instance to store the enriched metadata.
+    detail_proxy : MGnifyDetail, optional
+        An optional :class:`.MGnifyDetail` proxy instance to use for fetching detailed metadata. If not provided, the appropriate proxy will be selected based on the specified resource.
+
+    Attributes
+    ----------
+    resource : DetailResourceStr
+        The type of resource being processed.
+    all_ids : list of str
+        The complete list of MGnify accessions/ids provided during initialization.
+    mgnify_metadata : MGnifyMetadata
+        The enriched metadata as a :class:`.MGnifyMetadata` instance.
+    metadata : MGnifyMetadata
+        Alias for :attr:`mgnify_metadata`.
+    params : dict
+        A dictionary of parameters used for checkpointing, including the resource type and a sorted list of accessions/ids. Used for caching and resuming enrichment processes.
+    """
 
     def __init__(
         self,
@@ -35,13 +69,18 @@ class MGnetizer(CheckpointMixin):
     ):
 
         if resource:
+            # Validate and set the resource type
             self._resource = SupportedEndpoints(resource)
+            # Set the appropriate detail proxy based on the resource type, if not provided
             self.detail_proxy: MGnifyDetail = (
                 detail_proxy or V2_ENDPOINT_DETAIL_PROXIES.get(self._resource)
             )
         else:
+            # If no resource is provided, set to None
             self._resource = None
+            # keep the detail_proxy as provided (can be None)
             self.detail_proxy: MGnifyDetail = detail_proxy
+
         self._all_ids = sorted(all_ids)
         self._mgnify_metadata = mgnify_metadata or MGnifyMetadata([])
         self.config = config or MGnipyConfig()
@@ -55,7 +94,7 @@ class MGnetizer(CheckpointMixin):
         detail_proxy: "MGnifyDetail" = None,
     ) -> "MGnetizer":
         """
-        Creates a new instance of MGnetizer with the specified resource, all_ids, mgnify_metadata, and detail_proxy. This allows for creating a new MGnetizer instance with different parameters without modifying the existing instance.
+        Creates a new instance of MGnetizer with the specified resource, :meth:`all_ids`, :meth:`mgnify_metadata`, and detail_proxy. This allows for creating a new MGnetizer instance with different parameters without modifying the existing instance.
         """
         return MGnetizer(
             resource=resource,
@@ -68,6 +107,7 @@ class MGnetizer(CheckpointMixin):
 
     @property
     def mgnify_metadata(self) -> MGnifyMetadata:
+        """The enriched metadata as an MGnifyMetadata instance."""
         return self._mgnify_metadata
 
     @mgnify_metadata.setter
@@ -86,7 +126,7 @@ class MGnetizer(CheckpointMixin):
 
     @property
     def resource(self) -> str:
-        """for checkpointmixin"""
+        """For :class:`.CheckpointMixin`"""
         return self._resource
 
     @resource.setter
@@ -102,6 +142,7 @@ class MGnetizer(CheckpointMixin):
 
     @property
     def all_ids(self) -> list[str]:
+        """The list of MGnify accessions/ids set during initialization."""
         return self._all_ids
 
     @all_ids.setter
@@ -112,7 +153,7 @@ class MGnetizer(CheckpointMixin):
 
     @property
     def params(self) -> dict[str, Any]:
-        """for checkpointmixin"""
+        """For :class:`.CheckpointMixin`"""
         return {
             "annotator": str(self.__class__),
             "resource": self.resource.value,
@@ -120,33 +161,26 @@ class MGnetizer(CheckpointMixin):
         }
 
     def _iter_leftovers(self) -> list[str]:
-        """
-        Identify and return the list of run accessions that have not yet been enriched.
-
-        Parameters
-        ----------
-        all_ids : list of str
-            The complete list of run accessions.
-        enriched_ids : list of str
-            The list of run accessions that have already been enriched.
+        """Identify and return the list of accessions that have not yet been enriched.
 
         Returns
         -------
         list of str
-            A list of run accessions that are present in `all_ids` but not in `enriched_ids`.
+            A list of accessions that are present in :attr:`all_ids` but not in :meth:`.MGnifyMetadata.ids`.
         """
+
         self.try_load_cache()
         return [x for x in self.all_ids if x not in self._mgnify_metadata.ids]
 
     def enrich(self, limit: Optional[int] = 200, hide_progress: bool = False) -> None:
-        """
-        Enriches the metadata for the given ids by iterating through the ids and retrieving their details using the corresponding MGnifyDetail proxy. The results are cached using the CheckpointMixin to avoid redundant API calls in future runs.
+        """Fetches MGnify metadata for the given accessions.
+
+        This method iterates through the list of MGnify or ENA run accessions provided during initialization and retrieves their corresponding MGnify detail metadata. The results are stored in the :class:`.MGnifyMetadata` instance associated with this class. This does not return anything.
 
         Parameters
         ----------
         limit : Optional[int], default=200
-            An optional integer to limit the number of ids to enrich. If not provided, it defaults to 200.
-            If set to None, there will be no limit on the number of ids enriched.
+            An optional integer to limit the number of detaile metadata to retrieve. If set to None, there will be no limit on the number of accessions enriched.
         hide_progress : bool, default=False
             Whether to hide the progress bar during enrichment.
         """
@@ -183,16 +217,9 @@ class MGnetizer(CheckpointMixin):
     async def aenrich(
         self, limit: Optional[int] = 200, hide_progress: bool = False
     ) -> None:
-        """
-        Asynchronously enriches the metadata for the given ids by iterating through the ids and retrieving their details using the corresponding MGnifyDetail proxy. The results are cached using the CheckpointMixin to avoid redundant API calls in future runs.
+        """Async version of :meth:`enrich`.
 
-        Parameters
-        ----------
-        limit : Optional[int], default=200
-            An optional integer to limit the number of ids to enrich. If not provided, it defaults to 200.
-            If set to None, there will be no limit on the number of ids enriched.
-        hide_progress : bool, default=False
-            Whether to hide the progress bar during enrichment.
+        See :meth:`enrich` for details on parameters and behavior.
         """
         ids_todo: list[str] = self._iter_leftovers()[:limit]
 
@@ -241,31 +268,68 @@ class MGnetizer(CheckpointMixin):
 
 
 class BioSampler(CheckpointMixin):
+    """Fetches BioSamples metadata for a given list of ENA run or sample accessions.
+
+    BioSampler is designed to retrieve the rich sample metadata from `BioSamples`_ for a list of Run or Sample `ENA`_ accessions.
+
+    It uses the :func:`~.biosamples_helper.get_biosample_metadata` or :func:`~.biosamples_helper.aget_biosample_metadata` (TODO) function to fetch the metadata for each accession with option to cache the results using the :class:`.CheckpointMixin` to avoid redundant API calls in future runs.
+
+    Parameters
+    ----------
+    sample_ids : list of str
+        A list of ENA run or sample accessions for which to fetch the BioSamples metadata. If a run accession then :meth:`~BioSampler.enrich(incl_ena=True)` is required so that the sample accession can be retrieved from ENA first and then passed to a BioSamples API request.
+    config : MGnipyConfig, optional
+        An optional configuration object for MGnipy. If not provided, a default configuration will be used.
+    client : Client or AuthenticatedClient, optional
+        An optional HTTP client for making requests. If not provided, a default client will be initialized using the provided or default configuration.
+    metadata : ResultsHandler, optional
+        An optional :class:`.ResultsHandler` instance to store the enriched metadata. If not provided, a new :class:`~.ResultsHandler` will be created to hold the results.
+
+    Attributes
+    ----------
+    all_ids : list of str
+        The complete list of ENA run or sample accessions provided during initialization.
+    metadata : ResultsHandler
+        The enriched metadata as a :class:`~.ResultsHandler` instance.
+
+    Notes
+    -----
+    - The :meth:`enrich` method iterates through the list of accessions and fetches their metadata, storing the results in a :class:`~ResultsHandler` instance.
+    - By default there is the option to include ENA metadata in the enrichment process, which can be controlled via the `incl_ena` parameter. If `incl_ena` is False, then only sample accessions will return BioSamples metadata!
+    - The :meth:`aenrich` method is intended to provide an asynchronous version of the enrichment process, but it is currently not implemented. Future updates will include asynchronous fetching of metadata to improve performance for large datasets.
+    - The class is designed to be flexible, allowing users to specify a limit on the number of accessions to enrich in a single run, which is useful for testing or when dealing with large datasets to avoid long runtimes during development. If the limit is set to None, there will be no limit on the number of accessions enriched.
+    - It uses the CheckpointMixin to cache results and avoid redundant API calls.
+
+    .. _BioSamples: https://www.ebi.ac.uk/biosamples/
+    .. _ENA: https://www.ebi.ac.uk/ena/browser/home
+    """
 
     def __init__(
         self,
-        run_ids: list[str],
+        sample_ids: list[str],
         config: MGnipyConfig = None,
         client: Optional[Client | AuthenticatedClient] = None,
         metadata: ResultsHandler = None,
     ):
 
-        self._all_ids = sorted(run_ids)
-        self._metadata = metadata or ResultsHandler([])
-        self.config = config or MGnipyConfig()
-        self.client = client or init_httpx_client(self.config)
-        self._resource = SupportedEndpoints("_custom_endpoint")
+        self._all_ids: list[str] = sorted(sample_ids)
+        self._metadata: ResultsHandler = metadata or ResultsHandler([])
+        self.config: MGnipyConfig = config or MGnipyConfig()
+        self.client: Client | AuthenticatedClient = client or init_httpx_client(
+            self.config
+        )
+        self._resource: SupportedEndpoints = SupportedEndpoints("_custom_endpoint")
 
     def __call__(
         self,
-        run_ids: list[str],
+        sample_ids: list[str],
         metadata: ResultsHandler = None,
     ) -> "MGnetizer":
         """
         Creates a new instance of MGnetizer with the specified resource, all_ids, mgnify_metadata, and detail_proxy. This allows for creating a new MGnetizer instance with different parameters without modifying the existing instance.
         """
         return BioSampler(
-            run_ids=run_ids,
+            sample_ids=sample_ids,
             config=self.config,
             client=self.client,
             metadata=metadata or self._metadata,
@@ -273,12 +337,12 @@ class BioSampler(CheckpointMixin):
 
     @property
     def resource(self) -> str:
-        """for checkpointmixin"""
+        """For :class:`.CheckpointMixin`"""
         return self._resource
 
     @property
     def metadata(self) -> ResultsHandler:
-        """Returns the enriched metadata as a ResultsHandler instance."""
+        """The enriched metadata as a ResultsHandler instance."""
         return self._metadata
 
     @metadata.setter
@@ -297,6 +361,7 @@ class BioSampler(CheckpointMixin):
 
     @property
     def all_ids(self) -> list[str]:
+        """The list of ENA run or sample accessions set during initialization."""
         return self._all_ids
 
     @all_ids.setter
@@ -307,7 +372,7 @@ class BioSampler(CheckpointMixin):
 
     @property
     def params(self) -> dict[str, Any]:
-        """for checkpointmixin"""
+        """For :class:`.CheckpointMixin`"""
         return {
             "annotator": str(self.__class__),
             "resource": "biosamples",
@@ -315,20 +380,12 @@ class BioSampler(CheckpointMixin):
         }
 
     def _iter_leftovers(self) -> list[str]:
-        """
-        Identify and return the list of run accessions that have not yet been enriched.
-
-        Parameters
-        ----------
-        all_ids : list of str
-            The complete list of run accessions.
-        enriched_ids : list of str
-            The list of run accessions that have already been enriched.
+        """Identify and return the list of run accessions that have not yet been enriched.
 
         Returns
         -------
         list of str
-            A list of run accessions that are present in `all_ids` but not in `enriched_ids`.
+            A list of run accessions that are present in :attr:`all_ids` but not in :meth:`.ResultsHandler.get_ids`.
         """
         self.try_load_cache()
         return [x for x in self.all_ids if x not in self._metadata.get_ids("SampleID")]
@@ -340,19 +397,20 @@ class BioSampler(CheckpointMixin):
         incl_ena: bool = True,
         skip_failed: bool = True,
     ):
-        """
-        Enriches the biosample metadata for the biosamples in the taxonomic dataset by iterating through the biosample accessions and retrieving their details using the BiosampleDetail proxy. The results are cached using the CheckpointMixin to avoid redundant API calls in future runs.
+        """Fetches BioSample metadata for the given run/sample accessions.
+
+        This method iterates through the list of ENA run or sample accessions provided during initialization and retrieves their corresponding BioSample metadata. The results are stored in the :class:`.ResultsHandler` instance associated with this class. This does not return anything.
 
         Parameters
         ----------
         limit : Optional[int], default=200
-            An optional integer to limit the number of biosamples to enrich. If not provided, it defaults to 200. This is useful for testing or when dealing with large datasets to avoid long runtimes during development. If set to None, there will be no limit on the number of biosamples enriched.
-
-        Returns
-        -------
-        None
-            The function does not return anything. It updates the `run_results` attribute of the TaxaMGazine instance with the enriched run metadata.
-
+            An optional integer to limit the number of biosamples to enrich. If set to None, there will be no limit on the number of biosamples enriched.
+        hide_progress : bool, default=False
+            Whether to hide the progress bar during enrichment.
+        incl_ena : bool, default=True
+            Whether to include an API call to ENA prior to the BioSamples requeßst. If set to False, only sample accessions will return BioSamples metadata.
+        skip_failed : bool, default=True
+            Whether to skip failed enrichments. If set to True, failed enrichments will be logged and skipped, and a placeholder with the GivenID will be appended to the results (appear as completed in :meth:`.ResultsHandler.get_ids`). If set to False, any failed enrichments will not be appended to the results (appear as still left to do).
         """
 
         logger.debug(
@@ -360,9 +418,9 @@ class BioSampler(CheckpointMixin):
         )
 
         runs_todo: list[str] = self._iter_leftovers()[:limit]
-        # logger.warning(
-        #     f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self.runs_to_samples)}. Already enriched: {len(self.biosamples_metadata)}."
-        # )
+        logger.warning(
+            f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self._metadata.get_ids('SampleID'))}. Already enriched: {len(self._metadata)}."
+        )
 
         for count, run in enumerate(
             tqdm_sync(
@@ -403,16 +461,11 @@ class BioSampler(CheckpointMixin):
         incl_ena: bool = True,
         skip_failed: bool = True,
     ) -> None:
-        """
-        Asynchronously enriches the metadata for the given ids by iterating through the ids and retrieving their details using the corresponding MGnifyDetail proxy. The results are cached using the CheckpointMixin to avoid redundant API calls in future runs.
+        """Async version of :meth:`enrich`.
 
-        Parameters
-        ----------
-        limit : Optional[int], default=200
-            An optional integer to limit the number of ids to enrich. If not provided, it defaults to 200.
-            If set to None, there will be no limit on the number of ids enriched.
-        hide_progress : bool, default=False
-            Whether to hide the progress bar during enrichment.
+        See :meth:`enrich` for details on parameters and behavior.
+
+        This is a placeholder and not yet implemented.
         """
         # TODO
         logger.error(
