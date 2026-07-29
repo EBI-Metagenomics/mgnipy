@@ -1,14 +1,13 @@
 from __future__ import annotations
+import logging
+
+logger = logging.getLogger(__name__)
 
 import functools as ft
 import logging
 
-from mgnipy.V2.datasets.annotate import MetadataCheckpointMixin
 from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
-
-logger = logging.getLogger(__name__)
-from typing import TYPE_CHECKING, Any, Literal, Optional
-
+from typing import Any, Literal, Optional
 import anndata as ad
 import pandas as pd
 import polars as pl
@@ -22,9 +21,6 @@ from mgnipy._models.constants.tax_ranks import (
 )
 from mgnipy._models.config import MGnipyConfig
 from mgnipy.V2.datasets import MGazine
-
-if TYPE_CHECKING:
-    from mgnipy.V2.datasets import MGazine
 
 
 def prep_obs(
@@ -83,7 +79,7 @@ def prep_obs(
     return df_ranks
 
 
-class DWCTaxaMGazine(MGazine, MetadataCheckpointMixin):
+class DWCTaxaMGazine(MGazine):
 
     def __init__(
         self,
@@ -98,6 +94,7 @@ class DWCTaxaMGazine(MGazine, MetadataCheckpointMixin):
         mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
         biosamples_metadata: Optional[list[dict[str, Any]]] = None,
     ):
+        """A specialized MGazine class for handling DwC-ready taxonomic datasets."""
 
         super().__init__(
             downloads=downloads,
@@ -118,31 +115,34 @@ class DWCTaxaMGazine(MGazine, MetadataCheckpointMixin):
                 f"Short description {self.short_desc} does not contain 'dwc-ready'. This curator is intended for DwC-ready datasets. Proceeding anyway but results may not be as expected."
             )
 
-        self._run_accessions = None
-        self._params: dict[str, Any] = {
-            "mgazine": str(self),
-            "short_desc": self.short_desc,
-        }
+        self._run_accessions: list | None = None
+
         print(
             f"{self.__str__()}"
             "-----------------------\n"
             "Next steps: Use `.load()` to initialize.\n"
         )
 
-    def load(self):
+    def load(self) -> None:
+        """Lazy load taxonomic datasets.
+
+        This method lazily loads and attempts to merge all the datasets contained in :meth:`url_list`.
+        Lazy loads as a :class:`polars.LazyFrame` which can then be accessed via property :meth:`lazy_merged`).
+        Doesnt return anything.
+        """
         # lazy loading and merging of the datasets contained in `url_list`.
         _ = self.lazy_concat(urls=self.url_list)
-        # now get run accessions and params for cachekey
-        self._params: dict[str, Any] = {
-            "mgazine": str(self),
-            "short_desc": self.short_desc,
-            "runs_accessions": sorted(self.runs_accessions),
-        }
-        # load cache
-        self.load_cache()
 
     @property
     def runs_accessions(self) -> list:
+        """The list of run accessions from the merged taxonomic datasets.
+
+        Notes
+        -----
+        - This property retrieves the list of run accessions from the merged taxonomic datasets.
+        - If the run accessions have already been computed and cached, it returns the cached value.
+        - Otherwise, it attempts to compute the run accessions by selecting the "RunID" column from the merged dataset and collecting it into a list.
+        """
         if self._run_accessions is not None:
             return self._run_accessions
         else:
@@ -156,19 +156,32 @@ class DWCTaxaMGazine(MGazine, MetadataCheckpointMixin):
 
     def taxonomic_metadata(
         self,
-        fill_na: Any = "NA",
         df_engine: Literal["polars", "pandas"] = "pandas",
-        strict: bool = False,
     ) -> pl.DataFrame | pd.DataFrame:
+        """Gets the taxonomic metadata.
 
-        df = self.lazy_merged.select(list(self.long_short_mapping.keys())).collect()
+        Prepares the taxonomic metadata DataFrame by splitting the taxonomy string into separate columns for each taxonomic rank.
+
+        Parameters
+        ----------
+        df_engine : Literal["polars", "pandas"], optional
+            The DataFrame engine to use for the output.
+            If "polars" is specified, a :class:`polars.DataFrame` is returned;
+            if "pandas" is specified, a :class:`pandas.DataFrame` is returned.
+        """
+
+        # the taxa columns to get
+        col_names: list[str] = list(self.long_short_mapping.keys())
+        # collect the lazyframe and select only the taxa columns
+        df = self.lazy_merged.select(col_names).collect()
+        # return the appropriate DataFrame engine
         if df_engine == "pandas":
             return df.to_pandas()
         elif df_engine == "polars":
             return df
 
 
-class TaxaMGazine(MGazine, MetadataCheckpointMixin):
+class TaxaMGazine(MGazine):
     """not for dwc"""
 
     def __init__(
@@ -216,7 +229,7 @@ class TaxaMGazine(MGazine, MetadataCheckpointMixin):
             "Next steps: Use `.load()` to initialize.\n"
         )
 
-    def load(self):
+    def load(self) -> None:
         # lazy loading and merging of the datasets contained in `url_list`.
         _ = self._lazy_merger()
         # now get run accessions and params for cachekey

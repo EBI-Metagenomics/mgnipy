@@ -28,7 +28,8 @@ from mgnipy.V2.datasets.annotate import MetadataSettersMixin
 
 
 class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
-    """
+    """Reads or downloads datasets from MGnify.
+
     MGazine is a class for managing and downloading datasets from MGnify.
     - Accepts a list of download-like dictionaries (for example
     the objects returned by the MGnify API for downloads) and provides
@@ -37,25 +38,48 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
     Parameters
     ----------
-    downloads : list[dict]
-        List of download descriptors with keys such as ``alias``, ``url``
-        and ``file_type``.
+    downloads : list of dict
+        A list of download-like dictionaries, each containing keys such as ``alias``, ``url``, ``file_type``, ``download_group``, ``short_description``, and ``pipeline_version``.
     config : MGnipyConfig, optional
-        Optional configuration to use; when omitted the global
-        :class:`MGnipyConfig` is used.
+        An optional configuration object for MGnipy. If not provided, a default configuration is used.
+    client : Client or AuthenticatedClient, optional
+        An optional client object for making HTTP requests. If not provided, a default client is used.
+    mgnify_[studies|analyses|runs|samples|assemblies] : list of dict, optional
+        Lists of dictionaries containing metadata for each respective MGnify dataset.
+    biosamples_metadata : list of dict, optional
+        A list of dictionaries containing metadata for BioSamples.
 
-    Examples
-    --------
+    Attributes
+    ----------
+    downloads : list of dict
+        The list of download-like dictionaries provided during initialization.
+    downloads_df : pandas.DataFrame
+        A DataFrame representation of the downloads, with columns such as ``alias``, ``url``, and ``file_type``.
+    aliases: list of str
+        A list of all download aliases extracted from the downloads.
+    urls: list of str
+        An alias for ``url_list``, providing a list of all download URLs.
+    url_list : list of str
+        A list of URLs extracted from the downloads.
+    url_dict : dict
+        A dictionary mapping each download alias to its corresponding URL.
+    lazy_merged : polars.LazyFrame or None
+        A lazy frame containing the merged datasets, if initialized.
+    short_desc : str
+        The short description of the MGazine, derived from the downloads. If multiple short descriptions are present, a warning is issued.
+
+    Example
+    -------
     >>> downloads = [
-    ...     {"alias": "a", "url": "/tmp/a.txt", "file_type": "txt"},
+    ...    {"alias": "a", "url": "/tmp/a.txt", "file_type": "txt", "short_description": "desc1", "pipeline_version": "v5"},
+    ...    {"alias": "boop", "url": "/tmp/b.fasta", "file_type": "fasta", "short_description": "desc2", "pipeline_version": "v5"},
     ... ]
     >>> mg = MGazine(downloads)
-    >>> isinstance(mg, MGazine)
-    True
-    >>> mg.url_dict['a']
-    '/tmp/a.txt'
-    >>> mg.url_list
-    ['/tmp/a.txt']
+    >>> print(mg)
+    MGazine containing:
+    - MGnify pipeline versions: ['v5']
+    - Number of downloads: 2
+    - Short descriptions: ['desc1', 'desc2']
     """
 
     def __init__(
@@ -96,12 +120,8 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         )
 
     def __add__(self, other):
-        if not isinstance(other, MGazine):
-            raise ValueError(
-                f"Can only add another MGazine instance, got {type(other)}"
-            )
         combined_downloads = self.downloads + other.downloads
-        new_mz = MGazine(
+        return MGazine(
             combined_downloads,
             config=self.config,
             client=self.client,
@@ -116,38 +136,27 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                 self.biosamples_metadata + other.biosamples_metadata
             ).to_list(),
         )
-        if new_mz.__class__ != self.__class__:
-            try:
-                return self.__class__(
-                    mgazine=new_mz,
-                    config=self.config,
-                    client=self.client,
-                    mgnify_studies=(
-                        self.mgnify_studies + other.mgnify_studies
-                    ).to_list(),
-                    mgnify_analyses=(
-                        self.mgnify_analyses + other.mgnify_analyses
-                    ).to_list(),
-                    mgnify_runs=(self.mgnify_runs + other.mgnify_runs).to_list(),
-                    mgnify_samples=(
-                        self.mgnify_samples + other.mgnify_samples
-                    ).to_list(),
-                    mgnify_assemblies=(
-                        self.mgnify_assemblies + other.mgnify_assemblies
-                    ).to_list(),
-                    biosamples_metadata=(
-                        self.biosamples_metadata + other.biosamples_metadata
-                    ).to_list(),
-                )
-            except Exception as e:
-                logger.warning(
-                    f"Failed to create instance of {self.__class__} with combined MGazine: {e}. Returning base MGazine instead."
-                )
-        return new_mz
 
     def __getattr__(self, name):
+        """Can access dataset types by name.
+
+        Right now only "taxonomic" and "taxonomic_dwc_ready" are supported.
+
+        Returns
+        -------
+        TaxaMGazine or DWCTaxaMGazine
+            These are specialized subclasses of :class:`MGazine` that provide additional methods for working with taxonomic datasets. See :class:`TaxaMGazine` and :class:`DWCTaxaMGazine` for more details.
+
+        Examples
+        --------
+        mg = MGazine(downloads) # doctest: +SKIP
+        mg.taxonomic # doctest: +SKIP
+        # Or if you want the Darwin core ready files
+        mg.taxonomic_dwc_ready # doctest: +SKIP
+        """
         if name.startswith("taxonomic"):
 
+            # get all downloads with "taxonom" in the download_type
             taxonom_downloads = []
             for k, v in self.by_downloads_col("download_type").items():
                 if "taxonom" in k.lower():
@@ -158,6 +167,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     f"'{self.__class__.__name__}' object has no attribute '{name}' because no taxonomic downloads are available."
                 )
 
+            # split into dwc-ready and non-dwc-ready
             no_dwc = [
                 d
                 for d in taxonom_downloads
@@ -213,6 +223,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         )
 
     def __getitem__(self, key):
+        """Filter the MGazine by a specific pipeline version or short description."""
         if key in self.list_pipeline_version():
             downloads_list: list[dict[str, Any]] = self.by_downloads_col(
                 "pipeline_version"
@@ -242,31 +253,25 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
     def aliases(self) -> list[str]:
         """Return a list of all download aliases.
 
-        Examples
+        Example
         --------
-        >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
-        ... ]
+        >>> downloads = [{"alias": "example.txt", "url": "http://ex/x"}]
         >>> MGazine(downloads).aliases
         ['example.txt']
         """
-
         return [f["alias"] for f in self.downloads if "alias" in f]
 
     @property
     def urls(self) -> list[Optional[str]]:
         """
-        Return a list of all download URLs. Same as ``url_list``.
+        Return a list of all download URLs. Same as :meth:`url_list`.
 
         Examples
         --------
-        >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
-        ... ]
+        >>> downloads = [{"alias": "example.txt", "url": "http://ex/x"}]
         >>> MGazine(downloads).urls
         ['http://ex/x']
         """
-
         return self.url_list
 
     @property
@@ -282,11 +287,9 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         Examples
         --------
-        >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
-        ... ]
-        >>> MGazine(downloads).url_dict['example.txt']
-        'http://ex/x'
+        >>> downloads = [{"alias": "example.txt", "url": "http://ex/x"}]
+        >>> MGazine(downloads).url_dict
+        {'example.txt': 'http://ex/x'}
         """
 
         return {f["alias"]: f.get("url", None) for f in self.downloads}
@@ -297,34 +300,38 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         Examples
         --------
-        >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
-        ... ]
-        >>> MGazine(downloads).url_list
+        >>> downloads = [{"alias": "example.txt", "url": "http://ex/x"}]
+        >>> MGazine(downloads).urls
         ['http://ex/x']
         """
-
         return [f.get("url", None) for f in self.downloads]
 
     def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
-        """Return a ``pandas.DataFrame`` of all downloads.
+        """The downloads as a DataFrame.
 
-        The dataframe will contain columns such as ``alias``, ``url`` and
-        ``file_type`` when those keys exist in the provided download dicts.
+        This returns a :class:`pandas.DataFrame` of all downloads. The dataframe should contain columns such as ``alias``, ``url`` and ``file_type`` (TODO pandera).
+
+        Parameters
+        ----------
+        pd_kwargs : dict
+            Additional keyword arguments to pass to the :class:`pandas.DataFrame` constructor.
+
+        Returns
+        -------
+        pd.DataFrame
+            A DataFrame containing the downloads information
 
         Examples
         --------
-        >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"},
-        ... ]
-        >>> df = MGazine(downloads).downloads_df()
+        >>> downloads = [{"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"}]
+        >>> mag = MGazine(downloads)
+        >>> df = mag.downloads_df(index=["boop"])
         >>> list(df.columns)
         ['alias', 'url', 'file_type']
+        >>> df.index
+        Index(['boop'], dtype='object')
         """
         df = pd.DataFrame(self.downloads, **pd_kwargs)
-        # add pipeline version column if possible
-        #    df = self._add_pipeline_col(df)
-
         return df
 
     def by_downloads_col(self, col: str) -> dict[str, list[dict[str, Any]]]:
@@ -488,6 +495,11 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
     @property
     def short_desc(self) -> str:
+        """The short description of the MGazine.
+
+        This property returns the FIRST short description of the MGazine, which is derived from the downloads.
+        If multiple short descriptions are present, a warning is issued.
+        """
         if len(self.list_pipeline_version()) > 1:
             logger.warning(
                 "Multiple pipeline versions detected -- MGazine methods may not work as expected."
@@ -499,17 +511,19 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             )
         return self.list_short_descriptions()[0]
 
-    def list_pipeline_version(self):
-        """Return a list of pipeline versions extracted from the download groups.
+    def list_pipeline_version(self) -> list[str]:
+        """A list of unique pipeline versions in the MGazine.
 
-        This looks for patterns like '.v4.1' in the 'download_group' field
-        of the downloads and extracts the version number.
+        Returns
+        -------
+        list of str
+            A list of unique pipeline versions extracted from the downloads.
 
         Examples
         --------
         >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.v4.1", "pipeline_version": 'v4_1'},
-        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.v5", "pipeline_version": 'v5'},
+        ...     {"alias": "example.txt", "url": "http://ex/x", "pipeline_version": 'v4_1'},
+        ...     {"alias": "example2.txt", "url": "http://ex/x2", "pipeline_version": 'v5'},
         ... ]
         >>> MGazine(downloads).list_pipeline_version()
         ['v4_1', 'v5']
@@ -522,17 +536,22 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         return avail_vers
 
-    def list_short_descriptions(self):
-        """Return a list of short descriptions extracted from the download groups.
+    def list_short_descriptions(self) -> list[str]:
+        """A list of unique short descriptions of the downloads.
 
-        This looks for patterns like 'shortdesc' in the 'download_group' field
-        of the downloads and extracts the short description.
+        The unique short descriptions in the given column
+
+        Returns
+        -------
+        list of str
+            A list of unique short descriptions extracted from the downloads.
 
         Examples
         --------
         >>> downloads = [
-        ...     {"alias": "example.txt", "url": "http://ex/x", "file_type": "txt", "download_group": "group.shortdesc1", "pipeline_version": 4.1, "short_description": "shortdesc1"},
-        ...     {"alias": "example2.txt", "url": "http://ex/x2", "file_type": "txt", "download_group": "group.shortdesc2", "pipeline_version": 4.1, "short_description": "shortdesc2"},
+        ...     {"alias": "example.txt", "short_description": "shortdesc1"},
+        ...     {"alias": "boo.txt", "short_description": "shortdesc1"},
+        ...     {"alias": "example2.txt", "short_description": "shortdesc2"},
         ... ]
         >>> MGazine(downloads).list_short_descriptions()
         ['shortdesc1', 'shortdesc2']
@@ -556,7 +575,8 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         overwrite: bool = False,
         hide_progress: bool = False,
     ):
-        """
+        """Download a file by its alias or URL.
+
         Download a file from an alias or URL to a local directory.
 
         Parameters
@@ -573,10 +593,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         filename : str or None, optional
             Filename to use for the saved file. When omitted the alias
             is used.
-        httpx_client : httpx.Client, optional
-            Optional `httpx.Client` to use for the HTTP request. If not
-            supplied a temporary client from `_mgnifier_helper` is
-            used.
         overwrite : bool, optional
             If ``False`` and the destination file already exists the
             download is skipped. When ``True`` the existing file will be
@@ -591,13 +607,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         Examples
         --------
-        downloads = [
-        ... {
-        ... "alias": "example.txt",
-        ... "url": "http://ex/x",
-        ... "file_type": "txt",
-        ... }]
-        mg = MGazine(downloads)
+        mg = MGazine(downloads) # doctest: +SKIP
         mg.download("download_to_here", alias="example.txt") # doctest: +SKIP
         """
         # get alias/url
@@ -941,7 +951,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         """
         return self._lazy_merged
 
-    def lazy_to_pandas(self, **pd_kwargs) -> pd.DataFrame:
+    def to_pandas(self, **pd_kwargs) -> pd.DataFrame:
         if self._lazy_merged is None:
             logger.warning(
                 "Lazy merged DataFrame not available. Returning empty DataFrame."
@@ -949,7 +959,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             return pd.DataFrame()
         return self.lazy_merged.collect().to_pandas(**pd_kwargs)
 
-    def lazy_to_polars(self) -> pl.DataFrame:
+    def to_polars(self) -> pl.DataFrame:
         if self._lazy_merged is None:
             logger.warning(
                 "Lazy merged DataFrame not available. Returning empty DataFrame."
