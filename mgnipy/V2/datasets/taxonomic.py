@@ -180,6 +180,26 @@ class DWCTaxaMGazine(MGazine):
         elif df_engine == "polars":
             return df
 
+    def X(
+        self, df_engine: Literal["polars", "pandas"] = "pandas"
+    ) -> pl.DataFrame | pd.DataFrame:
+        """Gets the feature matrix (X) from the merged taxonomic datasets.
+
+        Parameters
+        ----------
+        df_engine : Literal["polars", "pandas"], optional
+            The DataFrame engine to use for the output.
+            If "polars" is specified, a :class:`polars.DataFrame` is returned;
+            if "pandas" is specified, a :class:`pandas.DataFrame` is returned.
+        """
+        # collect the lazyframe and drop the taxa columns
+        df_pl = self.lazy_merged.collect().drop(list(self.long_short_mapping.keys()))
+        # return the appropriate DataFrame engine
+        if df_engine == "pandas":
+            return df_pl.to_pandas()
+        elif df_engine == "polars":
+            return df_pl
+
 
 class TaxaMGazine(MGazine):
     """not for dwc"""
@@ -343,6 +363,20 @@ class TaxaMGazine(MGazine):
     def X(
         self, df_engine: Literal["polars", "pandas"] = "pandas"
     ) -> pl.DataFrame | pd.DataFrame:
+        """Gets the feature matrix (X) from the merged taxonomic datasets.
+
+        Parameters
+        ----------
+        df_engine : Literal["polars", "pandas"], optional
+            The DataFrame engine to use for the output.
+            If "polars" is specified, a :class:`polars.DataFrame` is returned;
+            if "pandas" is specified, a :class:`pandas.DataFrame` is returned.
+
+        Returns
+        -------
+        pl.DataFrame or pd.DataFrame
+            The feature matrix (X) containing the non-taxonomic columns from the merged taxonomic datasets
+        """
         df_pl = self.lazy_merged.collect()
         df_pl = df_pl.drop(self.TAX_COLS, strict=False)
         if df_engine == "pandas":
@@ -368,7 +402,7 @@ class TaxaMGazine(MGazine):
             return ad.AnnData(
                 self.X()[sorted(self.X().columns)],
                 obs=self.taxonomic_metadata(),
-                var=self.metadata().sort_index(),
+                var=self.metadata().sort_index(),  # TODO, pick up here, this doesnt work
                 **anndata_kwargs,
             )
         except ValueError as e:
