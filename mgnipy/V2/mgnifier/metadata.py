@@ -39,7 +39,10 @@ class ResultsHandler:
         """
         # check
         logger.debug(f"Combining {self.__class__.__name__} instances")
-        combined_data = chain(self.data, other.data)
+        the_one = self.data or []
+        the_other = other.data or []
+
+        combined_data = the_one + the_other
         return self.__class__(combined_data)
 
     def __len__(self) -> int:
@@ -197,7 +200,9 @@ class ResultsHandler:
         _data = data or self.data
 
         if _data == [] or _data is None:
-            logger.debug("No data available for list conversion")
+            logger.debug(
+                f"{self.__class__.__name__}: No data available for list conversion"
+            )
             return None
 
         return list(_data)
