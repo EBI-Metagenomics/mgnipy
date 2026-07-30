@@ -23,10 +23,22 @@ from mgnipy._models.config import MGnipyConfig
 from mgnipy.V2.datasets import MGazine
 
 
+def long_short_mapper(desc: str, mapping: dict[str, str] = None) -> dict[str, str]:
+    # determine mapping
+    if mapping is not None:
+        return mapping
+    elif "PR2" in desc.upper():
+        return dict(zip(PR2_TAX_RANKS, SHORT_PR2_TAX_RANKS, strict=True))
+    elif "MOTUS" in desc.upper():
+        return dict(zip(MOTUS_TAX_RANKS, SHORT_MOTUS_TAX_RANKS, strict=True))
+    else:  # default to silva?
+        return dict(zip(SILVA_TAX_RANKS, SHORT_SILVA_TAX_RANKS, strict=True))
+
+
 def prep_obs(
     df: pl.DataFrame,
     tax_col: Literal["taxonomy", "#SampleID"],
-    long_short_mapping: Optional[dict[str, str]],
+    long_short_mapping: dict[str, str],
     fill_na: Any = "NA",
 ) -> pl.DataFrame:
     """
@@ -38,9 +50,9 @@ def prep_obs(
         A Polars DataFrame containing a column named 'taxonomy' with taxonomic classifications in a semicolon-separated format.
     tax_col : Literal["taxonomy", "#SampleID"]
         The name of the column in the DataFrame that contains the taxonomy string to be split.
-    long_short_mapping : Optional[dict[str, str]]
+    long_short_mapping : dict[str, str]
         A dictionary mapping the long taxonomic rank names (e.g., "Superkingdom") to their corresponding short prefixes (e.g., "sk"). This is used to clean the taxonomic rank values by stripping the short prefixes.
-    fill_na : Optional[Any], default="NA"
+    fill_na : Any, default="NA"
         The value to use for filling empty strings or null values in the taxonomic rank columns after stripping the short prefixes. If not provided, it defaults to "NA".
 
     Returns
@@ -80,6 +92,30 @@ def prep_obs(
 
 
 class DWCTaxaMGazine(MGazine):
+    """A special MGazine for handling Darwin Core (DwC) ready taxonomic datasets.
+
+    This class extends :class:`MGazine` providing additional functionality for working with taxonomic assignment data and metadata from MGnify that has been formated in a standard Darwin Core (`DwC`_) format.
+
+    There are methods for merging the feature matrices (X) and getting the taxonomic label metadata (i.e., taxonomic ranks). Additionally the data can be converted into DataFrames, :class:`polars.DataFrame` or :class:`pandas.DataFrame` or :class:`anndata.AnnData`.
+
+    Parameters
+    ----------
+    See :class:`MGazine` for parameters
+
+    Attributes
+    ----------
+    taxonomic_metadata : pl.DataFrame | pd.DataFrame
+        The taxonomic metadata as either a :class:`polars.DataFrame` or a :class:`pandas.DataFrame, depending on the specified engine. The taxonomic ranks are split into separate columns.
+    X : pl.DataFrame | pd.DataFrame
+        The feature matrix (X) from the merged taxonomic datasets -  counts. The feature matrix contains the non-taxonomic columns from the merged dataset.
+    to_anndata : ad.AnnData
+        Converts the taxonomic metadata and feature matrix into an :class:`anndata.AnnData` dataframe. The taxonomic ranks are stored in the `obs` attribute of the AnnData object, and the feature matrix :meth:`X` is sent to the :meth:`ad.Anndata.X` property.
+    runs_accessions : list
+        A list of run accessions from the merged taxonomic datasets. This property retrieves the list of run accessions from the merged taxonomic datasets from the 'RunID' column.
+    see also :class:`MGazine` for additional attributes and methods.
+
+    .. _DwC: https://dwc.tdwg.org/
+    """
 
     def __init__(
         self,
@@ -154,6 +190,17 @@ class DWCTaxaMGazine(MGazine):
                 logger.error(f"Error retrieving runs accessions: {e}")
         return self._run_accessions
 
+    @property
+    def long_short_mapping(self) -> dict[str, str]:
+        """Returns the long to short taxonomic rank mapping based on the short description of the dataset.
+
+        Returns
+        -------
+        dict[str, str]
+            A dictionary mapping the long taxonomic rank names (e.g., "Superkingdom") to their corresponding short prefixes (e.g., "sk").
+        """
+        return long_short_mapper(self.short_desc)
+
     def taxonomic_metadata(
         self,
         df_engine: Literal["polars", "pandas"] = "pandas",
@@ -200,9 +247,64 @@ class DWCTaxaMGazine(MGazine):
         elif df_engine == "polars":
             return df_pl
 
+    def to_anndata(self, **anndata_kwargs) -> ad.AnnData:
+        """
+        Converts the taxonomic metadata and feature matrix into an AnnData object.
+
+        Parameters
+        ----------
+        **anndata_kwargs
+            Additional keyword arguments to pass to the `AnnData` constructor.
+
+        Returns
+        -------
+        ad.AnnData
+            An AnnData object containing the taxonomic metadata in the `obs` attribute and the feature matrix in the `X` attribute.
+        """
+        try:
+            return ad.AnnData(
+                self.X()[sorted(self.X().columns)],
+                obs=self.taxonomic_metadata(),
+                var=self.metadata().sort_index(),  # TODO, pick up here, this doesnt work
+                **anndata_kwargs,
+            )
+        except ValueError as e:
+            logger.error(
+                f"Returning without metadata() as var - Error occurred while converting to AnnData: {e}"
+            )
+            return ad.AnnData(
+                self.X(),
+                obs=self.taxonomic_metadata(),
+                var=None,
+                **anndata_kwargs,
+            )
+
 
 class TaxaMGazine(MGazine):
-    """not for dwc"""
+    """A special MGazine for handling taxonomic datasets.
+
+    This class extends :class:`MGazine` providing additional functionality for working with taxonomic assignment data and metadata from MGnify.
+
+    There are methods for merging the feature matrices (X) and getting the taxonomic label metadata (i.e., taxonomic ranks). Additionally the data can be converted into DataFrames, :class:`polars.DataFrame` or :class:`pandas.DataFrame` or :class:`anndata.AnnData`.
+
+    Parameters
+    ----------
+    See :class:`MGazine` for parameters
+
+    Attributes
+    ----------
+    taxonomic_metadata : pl.DataFrame | pd.DataFrame
+        The taxonomic metadata as either a :class:`polars.DataFrame` or a :class:`pandas.DataFrame, depending on the specified engine. The taxonomic ranks are split into separate columns.
+    X : pl.DataFrame | pd.DataFrame
+        The feature matrix (X) from the merged taxonomic datasets -  counts. The feature matrix contains the non-taxonomic columns from the merged dataset.
+    to_anndata : ad.AnnData
+        Converts the taxonomic metadata and feature matrix into an :class:`anndata.AnnData` dataframe. The taxonomic ranks are stored in the `obs` attribute of the AnnData object, and the feature matrix :meth:`X` is sent to the :meth:`ad.Anndata.X` property.
+    runs_accessions : list
+        A list of run accessions from the merged taxonomic datasets. This property retrieves the list of run accessions from the merged taxonomic datasets from the 'RunID' column.
+    see also :class:`MGazine` for additional attributes and methods.
+
+    .. _DwC: https://dwc.tdwg.org/
+    """
 
     def __init__(
         self,
@@ -239,10 +341,7 @@ class TaxaMGazine(MGazine):
         )
 
         self._runs_accessions = None
-        self._params: dict[str, Any] = {
-            "mgazine": str(self),
-            "short_desc": self.short_desc,
-        }
+
         print(
             f"{self.__str__()}"
             "-----------------------\n"
@@ -252,14 +351,6 @@ class TaxaMGazine(MGazine):
     def load(self) -> None:
         # lazy loading and merging of the datasets contained in `url_list`.
         _ = self._lazy_merger()
-        # now get run accessions and params for cachekey
-        self._params: dict[str, Any] = {
-            "mgazine": str(self),
-            "short_desc": self.short_desc,
-            "runs_accessions": sorted(self.runs_accessions),
-        }
-        # load cache
-        self.load_cache()
 
     @property
     def runs_accessions(self) -> list:
@@ -273,16 +364,16 @@ class TaxaMGazine(MGazine):
         ]
         return self._runs_accessions
 
-    def long_short_mapping(self, value: dict[str, str] = None) -> dict[str, str]:
-        # determine mapping
-        if value is not None:
-            return value
-        elif "PR2" in self.short_desc.upper():
-            return dict(zip(PR2_TAX_RANKS, SHORT_PR2_TAX_RANKS, strict=True))
-        elif "MOTUS" in self.short_desc.upper():
-            return dict(zip(MOTUS_TAX_RANKS, SHORT_MOTUS_TAX_RANKS, strict=True))
-        else:  # default to silva?
-            return dict(zip(SILVA_TAX_RANKS, SHORT_SILVA_TAX_RANKS, strict=True))
+    @property
+    def long_short_mapping(self) -> dict[str, str]:
+        """Returns the long to short taxonomic rank mapping based on the short description of the dataset.
+
+        Returns
+        -------
+        dict[str, str]
+            A dictionary mapping the long taxonomic rank names (e.g., "Superkingdom") to their corresponding short prefixes (e.g., "sk").
+        """
+        return long_short_mapper(self.short_desc)
 
     def _lazy_merger(self):
 
@@ -379,6 +470,8 @@ class TaxaMGazine(MGazine):
         """
         df_pl = self.lazy_merged.collect()
         df_pl = df_pl.drop(self.TAX_COLS, strict=False)
+        # with sorted columns
+        df_pl = df_pl.select(sorted(df_pl.columns))
         if df_engine == "pandas":
             return df_pl.to_pandas()
         elif df_engine == "polars":
