@@ -49,7 +49,7 @@ class CheckpointMixin:
 
     Example
     -------
-    >>> from mgnipy.V2.query_set import QuerySet
+    >>> from mgnipy.V2.mgnifier.query_set import QuerySet
     >>> from mgnipy.V2.mixins import CheckpointMixin
     >>> # Creating a class that uses mixin
     >>> class MyQuerySet(QuerySet, CheckpointMixin):
@@ -59,8 +59,8 @@ class CheckpointMixin:
     >>> # init
     >>> qs = MyQuerySet(resource="studies") # default config is w/ cache enabled
     >>> # now can use checkpoint methods, e.g.
-    >>> print(qs.cache_key) # print the unique cache key
-    ...
+    >>> qs.cache_key # print the unique cache key
+    '...'
     >>> qs.load_cache()
     []
     """
@@ -96,7 +96,7 @@ class CheckpointMixin:
         """
         params: dict = self.params.copy()
         serial: str = json.dumps(
-            {"resource": self.resource.value, "params": params},
+            {"resource": str(self.resource), "params": params},
             sort_keys=True,
             default=str,
         )
@@ -150,7 +150,7 @@ class CheckpointMixin:
             manifest_path = self.manifest_path
             logger.info(f"Writing manifest to {manifest_path}")
             manifest = {
-                "resource": self.resource.value,
+                "resource": str(self.resource),
                 "params": self.params,
                 "count": self.count,
                 "total_pages": self.num_requests,
@@ -181,7 +181,7 @@ class CheckpointMixin:
         load_from = self.cache_path
         if load_from is None:
             logger.debug(
-                f"Cache disabled: Skipping cache load for {self.resource.value}."
+                f"Cache disabled: Skipping cache load for {str(self.resource)}."
             )
             return []
 
@@ -192,11 +192,16 @@ class CheckpointMixin:
 
         # initialize stores
         if self._results is None:
+            logger.debug("Initializing self._results as empty dict for cache load")
             self._results = {}
+
         pages_loaded = []
 
+        possible_pages = sorted(load_from.glob("mgnipy_page_*.*"))
+
+        logger.debug(f"Possible pages: {possible_pages}")
         # load each page file
-        for cache_file in sorted(load_from.glob("mgnipy_page_*.*")):
+        for cache_file in possible_pages:
             if cache_file.suffix not in {".json", ".bin"}:
                 logger.info(f"Skipping {cache_file}")
                 continue
@@ -222,14 +227,17 @@ class CheckpointMixin:
                 else:
                     with cache_file.open("r", encoding="utf-8") as fh:
                         data = json.load(fh)
+                        # logger.debug(f"Loaded JSON data for page {request_num}: {data}")
 
                 # load page to results
                 self._results[request_num] = data
+                logger.debug(f"Loaded page {request_num} to self._results")
 
                 # tracking
                 pages_loaded.append(request_num)
-            except Exception:
-                logger.warning(f"Failed to load cache file: {cache_file}")
+                logger.debug(f"Pages loaded so far: {pages_loaded}")
+            except Exception as e:
+                logger.warning(f"Failed to load cache file: {cache_file}. Error: {e}")
 
         return pages_loaded
 
@@ -328,6 +336,11 @@ class CheckpointMixin:
         """
 
         if getattr(self, "_cache_loaded", False):
+            logger.debug(
+                f"Cache already loaded; skipping load attempt. "
+                f"Pages loaded: {self._pages_from_cache}"
+                f"Manifest: {self._cached_manifest}"
+            )
             return
         try:
             # load results
