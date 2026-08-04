@@ -36,9 +36,9 @@ class MGnipy(ClientManagerMixin):
 
     Examples
     --------
-    >>> MG = MGnipy(cache_dir="/path/to/cache")
-    >>> print(MG.cache_dir)
-    /path/to/cache
+    >>> MG = MGnipy(cache_dir=None)  # or MGnipy(cache_dir="/path/to/cache")
+    >>> MG.cache_dir
+
     """
 
     def __init__(
