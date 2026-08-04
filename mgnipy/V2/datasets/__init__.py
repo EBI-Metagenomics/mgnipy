@@ -80,6 +80,8 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
     - MGnify pipeline versions: ['v5']
     - Number of downloads: 2
     - Short descriptions: ['desc1', 'desc2']
+    - Nonempty metadata sets:
+
     """
 
     def __init__(
@@ -88,12 +90,12 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         config: Optional[MGnipyConfig] = None,
         *,
         client: Optional[Client | AuthenticatedClient] = None,
-        mgnify_studies: Optional[list[dict[str, Any]]] = None,
-        mgnify_analyses: Optional[list[dict[str, Any]]] = None,
-        mgnify_runs: Optional[list[dict[str, Any]]] = None,
-        mgnify_samples: Optional[list[dict[str, Any]]] = None,
-        mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
-        biosamples_metadata: Optional[list[dict[str, Any]]] = None,
+        mgnify_studies: list[dict[str, Any]] | None = None,
+        mgnify_analyses: list[dict[str, Any]] | None = None,
+        mgnify_runs: list[dict[str, Any]] | None = None,
+        mgnify_samples: list[dict[str, Any]] | None = None,
+        mgnify_assemblies: list[dict[str, Any]] | None = None,
+        biosamples_metadata: list[dict[str, Any]] | None = None,
     ):
         self.downloads = downloads
         self.config = config or MGnipyConfig()
@@ -117,6 +119,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             f"- MGnify pipeline versions: {self.list_pipeline_version()}\n"
             f"- Number of downloads: {len(self.downloads)}\n"
             f"- Short descriptions: {pformat(self.list_short_descriptions())}\n"
+            f"- Nonempty metadata sets: {', '.join([f'.{m}' for m in self.available_metadata_sets])}\n"
         )
 
     def __add__(self, other):
@@ -248,6 +251,33 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             mgnify_assemblies=self._mgnify_assemblies,
             biosamples_metadata=self._biosamples_metadata,
         )
+
+    @property
+    def available_metadata_sets(self) -> list[str]:
+        """Return a list of available metadata sets in the MGazine.
+
+        This property checks which metadata sets (e.g., studies, analyses, runs, samples, assemblies, biosamples) are non-empty and returns their names as a list.
+
+        Returns
+        -------
+        list of str
+            A list of names of non-empty metadata sets available in the MGazine.
+
+        Examples
+        --------
+        >>> mg = MGazine(downloads) # doctest: +SKIP
+        >>> mg.available_metadata_sets # doctest: +SKIP
+        ['mgnify_studies', 'mgnify_analyses', 'mgnify_runs']
+        """
+        metadata_sets = [
+            "mgnify_runs",
+            "mgnify_assemblies",
+            "mgnify_samples",
+            "mgnify_studies",
+            "mgnify_analyses",
+            "biosamples_metadata",
+        ]
+        return [f for f in metadata_sets if len(getattr(self, f)) > 0]
 
     @property
     def aliases(self) -> list[str]:
