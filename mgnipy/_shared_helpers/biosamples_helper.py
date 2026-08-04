@@ -37,6 +37,9 @@ from tqdm.asyncio import tqdm_asyncio
 
 URL = "https://www.ebi.ac.uk/biosamples/samples"
 HEADERS = {"Accept": "application/json"}
+SAMPLE_ID = "SampleID"
+RUN_ID = "RunID"
+GIVEN_ID = "GivenID"
 
 
 def get_biosample_metadata(
@@ -109,19 +112,21 @@ def get_biosample_metadata(
 
     _given_id = sample_acc
     run_acc = None
-    char_texts = {"GivenID": _given_id}
+    char_texts = {GIVEN_ID: _given_id}
 
     if incl_ena:
-        ena_metadata = get_ena_metadata_from_run_acc(sample_acc)
+        logger.debug(f"Attempting to retrieve ENA metadata for sample {sample_acc}")
+        ena_metadata = get_ena_metadata_from_run_acc(sample_acc, client=client)
         if ena_metadata is not False:
             # note saving over given sample_acc
-            sample_acc = ena_metadata.loc[0, "SampleID"]
-            run_acc = ena_metadata.loc[0, "RunID"]
+            sample_acc = ena_metadata.loc[0, SAMPLE_ID]
+            run_acc = ena_metadata.loc[0, RUN_ID]
             logger.debug(
                 f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
             )
             # adding all ENA metadata fields to char_texts to be included in BioSamples results
             for col in ena_metadata.columns:
+                logger.debug(f"Adding ENA metadta field {col}")
                 char_texts[col] = ena_metadata.loc[0, col]
 
         else:
@@ -129,9 +134,13 @@ def get_biosample_metadata(
                 f"No ENA metadata found for sample {sample_acc}, proceeding with BioSamples query without ENA parameters."
             )
             char_texts = {
-                "SampleID": sample_acc,
-                "RunID": run_acc,
+                SAMPLE_ID: sample_acc,
+                RUN_ID: run_acc,
             }
+    else:
+        logger.debug(
+            f"incl_ena is set to False. Proceeding with BioSamples query for sample {sample_acc} without ENA metadata."
+        )
 
     param = {"filter": f"acc:{sample_acc}"}
 
@@ -183,15 +192,15 @@ def get_biosample_metadata(
         return text if text else "NA"
 
     sample_acc = first_text("External Id")
-    if char_texts.get("GivenID") != sample_acc and run_acc is None:
+    if char_texts.get(GIVEN_ID) != sample_acc and run_acc is None:
         # assuming given id is run if doesn't match sample id
-        run_acc = char_texts.get("GivenID")
+        run_acc = char_texts.get(GIVEN_ID)
 
     # add sampleID, name, taxid, SRA accession,
     char_texts.update(
         {
-            "SampleID": sample_acc,
-            "RunID": run_acc,
+            SAMPLE_ID: sample_acc,
+            RUN_ID: run_acc,
             "SRA accession": biosample_record.get("sraAccession", "NA"),
             "name": biosample_record.get("name", "NA"),
             "taxid": biosample_record.get("taxId", "NA"),
@@ -312,19 +321,21 @@ async def aget_biosample_metadata(
 
     _given_id = sample_acc
     run_acc = None
-    char_texts = {"GivenID": _given_id}
+    char_texts = {GIVEN_ID: _given_id}
 
     if incl_ena:
-        ena_metadata = await aget_ena_metadata_from_run_acc(sample_acc)
+        logger.debug(f"Attempting to retrieve ENA metadata for sample {sample_acc}")
+        ena_metadata = await aget_ena_metadata_from_run_acc(sample_acc, client=client)
         if ena_metadata is not False:
             # note saving over given sample_acc
-            sample_acc = ena_metadata.loc[0, "SampleID"]
-            run_acc = ena_metadata.loc[0, "RunID"]
+            sample_acc = ena_metadata.loc[0, SAMPLE_ID]
+            run_acc = ena_metadata.loc[0, RUN_ID]
             logger.debug(
                 f"ENA metadata found for sample {sample_acc} and run {run_acc}, including in BioSamples query parameters."
             )
             # adding all ENA metadata fields to char_texts to be included in BioSamples results
             for col in ena_metadata.columns:
+                logger.debug(f"Adding ENA metadta field {col}")
                 char_texts[col] = ena_metadata.loc[0, col]
 
         else:
@@ -332,10 +343,15 @@ async def aget_biosample_metadata(
                 f"No ENA metadata found for sample {sample_acc}, proceeding with BioSamples query without ENA parameters."
             )
             char_texts = {
-                "SampleID": sample_acc,
-                "RunID": run_acc,
+                SAMPLE_ID: sample_acc,
+                RUN_ID: run_acc,
             }
+    else:
+        logger.debug(
+            f"incl_ena is set to False. Proceeding with BioSamples query for sample {sample_acc} without ENA metadata."
+        )
 
+    logger.debug(f"client: {client}")
     results: httpx.Response = await client.get(
         URL, headers=HEADERS, params={"filter": f"acc:{sample_acc}"}
     )
@@ -375,23 +391,23 @@ async def aget_biosample_metadata(
     )
 
     # function to get the first text value for a given characteristic, or "NA" if not available
-    def first_text(name: str) -> str:
+    async def first_text(name: str) -> str:
         values = characteristics.get(name, [])
         if not values:
             return "NA"
         text = values[0].get("text", "")
         return text if text else "NA"
 
-    sample_acc = first_text("External Id")
-    if char_texts.get("GivenID") != sample_acc and run_acc is None:
+    sample_acc = await first_text("External Id")
+    if char_texts.get(GIVEN_ID) != sample_acc and run_acc is None:
         # assuming given id is run if doesn't match sample id
-        run_acc = char_texts.get("GivenID")
+        run_acc = char_texts.get(GIVEN_ID)
 
     # add sampleID, name, taxid, SRA accession,
     char_texts.update(
         {
-            "SampleID": sample_acc,
-            "RunID": run_acc,
+            SAMPLE_ID: sample_acc,
+            RUN_ID: run_acc,
             "SRA accession": biosample_record.get("sraAccession", "NA"),
             "name": biosample_record.get("name", "NA"),
             "taxid": biosample_record.get("taxId", "NA"),
@@ -399,7 +415,7 @@ async def aget_biosample_metadata(
     )
 
     # now adding characteristics texts
-    char_texts.update({key: first_text(key) for key in characteristics.keys()})
+    char_texts.update({key: await first_text(key) for key in characteristics.keys()})
 
     # to pandas
     df = pd.DataFrame(char_texts, index=[0])

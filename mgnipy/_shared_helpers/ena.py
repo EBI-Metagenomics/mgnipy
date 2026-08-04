@@ -134,6 +134,9 @@ def _fetch_run(
         results = httpx.get(URL, headers=HEADERS, params=run_query_args)
 
     if not validate_status_code(response=results, acc=run_acc, logger=logger, db="ENA"):
+        logger.error(
+            f"Failed to fetch ENA run metadata for run {run_acc}. Status code: {results.status_code}"
+        )
         return False
 
     # check if response is empty
@@ -174,6 +177,9 @@ def _fetch_sample(
     if not validate_status_code(
         response=results, acc=sample_acc, logger=logger, db="ENA"
     ):
+        logger.error(
+            f"Failed to fetch ENA sample metadata for sample {sample_acc}. Status code: {results.status_code}"
+        )
         return False
 
     # check if response is empty
@@ -206,10 +212,14 @@ async def _afetch_run(run_acc: str, client: httpx.AsyncClient) -> dict | bool:
     run_query_args["includeAccessions"] = run_acc
 
     # fetch data
+    logger.debug(f"afetch_run client: {client}")
     results = await client.get(URL, headers=HEADERS, params=run_query_args)
 
     # checks
     if not validate_status_code(response=results, acc=run_acc, logger=logger, db="ENA"):
+        logger.error(
+            f"Failed to fetch ENA run metadata for run {run_acc}. Status code: {results.status_code}"
+        )
         return False
     # check if response is empty
     run_payload = results.json()
@@ -247,11 +257,14 @@ async def _afetch_sample(sample_acc: str, client: httpx.AsyncClient) -> dict | b
     if not validate_status_code(
         response=results, acc=sample_acc, logger=logger, db="ENA"
     ):
+        logger.error(
+            f"Failed to fetch ENA sample metadata for sample {sample_acc}. Status code: {results.status_code}"
+        )
         return False
     # check if response is empty
     sample_payload = results.json()
     if not sample_payload:
-        logger.error(f"Empty ENA response for sample {sample_acc}: {results.json()}")
+        logger.error(f"Empty ENA response for sample {sample_acc}")
         return False
 
     return sample_payload[0]
@@ -291,12 +304,14 @@ def get_ena_metadata_from_run_acc(
     - connection clean up is not handled in this function! If a client is passed, it is the caller's responsibility to manage its lifecycle (e.g., closing it after use).
     """
     run_record: dict | bool = _fetch_run(run_acc, client=client)
+    logger.debug(f"Fetched run record for {run_acc}")
     if run_record is False:
         return False
 
     sample_acc = run_record["sample_accession"]
 
     sample_record: dict | bool = _fetch_sample(sample_acc, client=client)
+    logger.debug(f"Fetched sample record for {sample_acc}")
     if sample_record is False:
         return False
 
@@ -310,11 +325,13 @@ async def aget_ena_metadata_from_run_acc(
     Async version of get_ena_metadata_from_run_acc.
     """
     run_record: dict | bool = await _afetch_run(run_acc, client=client)
+    logger.debug(f"Fetched run record for {run_acc}")
     if run_record is False:
         return False
 
     sample_acc = run_record["sample_accession"]
     sample_record: dict | bool = await _afetch_sample(sample_acc, client=client)
+    logger.debug(f"Fetched sample record for {sample_acc}")
     if sample_record is False:
         return False
 
