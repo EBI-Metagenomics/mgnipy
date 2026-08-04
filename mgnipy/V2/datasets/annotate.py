@@ -77,7 +77,7 @@ class MetadataSettersMixin:
 
     @property
     def biosamples_metadata(self) -> ResultsHandler:
-        return ResultsHandler(self._biosamples_metadata or [])
+        return ResultsHandler(self._biosamples_metadata or None)
 
     @biosamples_metadata.setter
     def biosamples_metadata(self, value: list[dict[str, Any]]):

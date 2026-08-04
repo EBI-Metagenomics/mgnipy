@@ -1,7 +1,14 @@
 import logging
 
-from mgnipy.V2.mixins import CheckpointMixin
-from mgnipy._shared_helpers.biosamples_helper import get_biosample_metadata
+from mgnipy.V2.mixins import CheckpointMixin, ClientManagerMixin
+from mgnipy._shared_helpers.biosamples_helper import (
+    get_biosample_metadata,
+    aget_biosample_metadata,
+    URL as BIOSAMPLES_URL,
+    HEADERS as BIOSAMPLES_HEADERS,
+    SAMPLE_ID as BIOSAMPLES_SAMPLE_ID,
+    GIVEN_ID as BIOSAMPLES_GIVEN_ID,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -15,14 +22,16 @@ from typing import (
 )
 
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, DetailResourceStr
-from mgnipy.V2.mgnifier.metadata import MGnifyMetadata, ResultsHandler
+from mgnipy.V2.mgnifier.metadata import MGnifyMetadata
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy._models.config import MGnipyConfig
 from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 from mgnipy.V2.proxies import V2_ENDPOINT_DETAIL_PROXIES, MGnifyDetail
 
+BIOSAMPLES_CONFIG_ADDONS = {"base_url": BIOSAMPLES_URL}
 
-class MGnetizer(CheckpointMixin):
+
+class MGnetizer(CheckpointMixin, ClientManagerMixin):
     """Fetch detailed metadata for a given list of MGnify accessions.
 
     MGnetizer is designed to retrieve the rich metadata from `MGnify`_ for a list of accessions/ids.
@@ -82,9 +91,10 @@ class MGnetizer(CheckpointMixin):
             self.detail_proxy: MGnifyDetail = detail_proxy
 
         self._all_ids = sorted(all_ids)
-        self._mgnify_metadata = mgnify_metadata or MGnifyMetadata([])
+        self._mgnify_metadata = mgnify_metadata or MGnifyMetadata()
         self.config = config or MGnipyConfig()
         self.client = client or init_httpx_client(self.config)
+        self._results = self._mgnify_metadata._results  # For CheckpointMixi
 
     def __call__(
         self,
@@ -105,6 +115,20 @@ class MGnetizer(CheckpointMixin):
             detail_proxy=detail_proxy or self.detail_proxy,
         )
 
+    def __repr__(self):
+        return (
+            f"MGnetizer(resource={self._resource}, len(all_ids)={len(self._all_ids)}, "
+            f"mgnify_metadata={self._mgnify_metadata}, detail_proxy={self.detail_proxy})"
+        )
+
+    def __str__(self):
+        return (
+            f"MGnetizer for resource '{self._resource}' with {len(self._all_ids)} ids. \n"
+            f"Enriched metadata contains {len(self._mgnify_metadata)} entries. \n"
+            f" Detail proxy: {self.detail_proxy.__class__.__name__ if self.detail_proxy else None} \n"
+            f"Cache directory: {self.cache_path} \n"
+        )
+
     @property
     def mgnify_metadata(self) -> MGnifyMetadata:
         """The enriched metadata as an MGnifyMetadata instance."""
@@ -115,14 +139,6 @@ class MGnetizer(CheckpointMixin):
         if not isinstance(value, MGnifyMetadata):
             raise ValueError("mgnify_metadata must be an instance of MGnifyMetadata.")
         self._mgnify_metadata = value
-
-    @property
-    def _results(self):
-        return self._mgnify_metadata.data
-
-    @_results.setter
-    def _results(self, value):
-        self._mgnify_metadata.data = value
 
     @property
     def resource(self) -> str:
@@ -156,7 +172,7 @@ class MGnetizer(CheckpointMixin):
         """For :class:`.CheckpointMixin`"""
         return {
             "annotator": str(self.__class__),
-            "resource": self.resource.value,
+            "resource": str(self.resource),
             "given_ids": self.all_ids,
         }
 
@@ -170,6 +186,8 @@ class MGnetizer(CheckpointMixin):
         """
 
         self.try_load_cache()
+        self._mgnify_metadata._sync_data()
+        logger.debug(f"Num ids in cache: {len(self._mgnify_metadata.ids)}")
         return [x for x in self.all_ids if x not in self._mgnify_metadata.ids]
 
     def enrich(self, limit: Optional[int] = 200, hide_progress: bool = False) -> None:
@@ -210,9 +228,9 @@ class MGnetizer(CheckpointMixin):
                 logger.warning(f"Error occurred while enriching id {run}: {e}.")
 
             if mg is not None:
-                self._mgnify_metadata.data.extend(mg)
-                logger.debug(f"{self._mgnify_metadata.data}")
-                self.write_results(1, self._results)
+                # save over page 1
+                self._mgnify_metadata.append_result(page_num=1, value=mg)
+                self.write_results(1, self._mgnify_metadata.data)
 
     async def aenrich(
         self, limit: Optional[int] = 200, hide_progress: bool = False
@@ -248,8 +266,8 @@ class MGnetizer(CheckpointMixin):
         ):
             mg = await done
             if mg:
-                self._mgnify_metadata.data.extend(mg)
-                self.write_results(1, self._results)
+                self._mgnify_metadata.append_result(page_num=1, value=mg)
+                self.write_results(1, self._mgnify_metadata.data)
 
     @property
     def metadata(self) -> MGnifyMetadata:
@@ -267,7 +285,7 @@ class MGnetizer(CheckpointMixin):
         )
 
 
-class BioSampler(CheckpointMixin):
+class BioSampler(CheckpointMixin, ClientManagerMixin):
     """Fetches BioSamples metadata for a given list of ENA run or sample accessions.
 
     BioSampler is designed to retrieve the rich sample metadata from `BioSamples`_ for a list of Run or Sample `ENA`_ accessions.
@@ -308,22 +326,30 @@ class BioSampler(CheckpointMixin):
         self,
         sample_ids: list[str],
         config: MGnipyConfig = None,
-        client: Optional[Client | AuthenticatedClient] = None,
-        metadata: ResultsHandler = None,
+        metadata: MGnifyMetadata = None,
     ):
 
         self._all_ids: list[str] = sorted(sample_ids)
-        self._metadata: ResultsHandler = metadata or ResultsHandler([])
-        self.config: MGnipyConfig = config or MGnipyConfig()
-        self.client: Client | AuthenticatedClient = client or init_httpx_client(
-            self.config
+        self._metadata: MGnifyMetadata = metadata or MGnifyMetadata()
+        self._results = self._metadata._results  # For CheckpointMixin
+        if config:
+            # replace with BIOSAMPLES_URL and BIOSAMPLES_HEADERS
+            self.config: MGnipyConfig = MGnipyConfig.model_validate(
+                config.model_dump() | BIOSAMPLES_CONFIG_ADDONS
+            )
+        else:
+            self.config = MGnipyConfig(**BIOSAMPLES_CONFIG_ADDONS)
+
+        self.client: Client | AuthenticatedClient = init_httpx_client(
+            self.config, headers=BIOSAMPLES_HEADERS
         )
+
         self._resource: SupportedEndpoints = SupportedEndpoints("_custom_endpoint")
 
     def __call__(
         self,
         sample_ids: list[str],
-        metadata: ResultsHandler = None,
+        metadata: MGnifyMetadata = None,
     ) -> "MGnetizer":
         """
         Creates a new instance of MGnetizer with the specified resource, all_ids, mgnify_metadata, and detail_proxy. This allows for creating a new MGnetizer instance with different parameters without modifying the existing instance.
@@ -331,8 +357,20 @@ class BioSampler(CheckpointMixin):
         return BioSampler(
             sample_ids=sample_ids,
             config=self.config,
-            client=self.client,
             metadata=metadata or self._metadata,
+        )
+
+    def __repr__(self):
+        return (
+            f"BioSampler(len(sample_ids)={len(self._all_ids)}, "
+            f"metadata={self._metadata})"
+        )
+
+    def __str__(self):
+        return (
+            f"BioSampler with {len(self._all_ids)} sample_ids. \n"
+            f"Enriched metadata contains {len(self._metadata)} entries. \n"
+            f"Cache directory: {self.cache_path} \n"
         )
 
     @property
@@ -341,23 +379,15 @@ class BioSampler(CheckpointMixin):
         return self._resource
 
     @property
-    def metadata(self) -> ResultsHandler:
-        """The enriched metadata as a ResultsHandler instance."""
+    def metadata(self) -> MGnifyMetadata:
+        """The enriched metadata as a MGnifyMetadata instance."""
         return self._metadata
 
     @metadata.setter
-    def metadata(self, value: ResultsHandler):
-        if not isinstance(value, ResultsHandler):
-            raise ValueError("metadata must be an instance of ResultsHandler.")
+    def metadata(self, value: MGnifyMetadata):
+        if not isinstance(value, MGnifyMetadata):
+            raise ValueError("metadata must be an instance of MGnifyMetadata.")
         self._metadata = value
-
-    @property
-    def _results(self):
-        return self._metadata.data
-
-    @_results.setter
-    def _results(self, value):
-        self._metadata.data = value
 
     @property
     def all_ids(self) -> list[str]:
@@ -388,13 +418,18 @@ class BioSampler(CheckpointMixin):
             A list of run accessions that are present in :attr:`all_ids` but not in :meth:`.ResultsHandler.get_ids`.
         """
         self.try_load_cache()
-        return [x for x in self.all_ids if x not in self._metadata.get_ids("SampleID")]
+        self._metadata._sync_data()
+        return [
+            x
+            for x in self.all_ids
+            if x not in self._metadata.get_ids(BIOSAMPLES_SAMPLE_ID)
+        ]
 
     def enrich(
         self,
         limit: Optional[int] = 200,
         hide_progress: bool = False,
-        incl_ena: bool = True,
+        incl_ena: bool = False,
         skip_failed: bool = True,
     ):
         """Fetches BioSample metadata for the given run/sample accessions.
@@ -419,7 +454,7 @@ class BioSampler(CheckpointMixin):
 
         runs_todo: list[str] = self._iter_leftovers()[:limit]
         logger.warning(
-            f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self._metadata.get_ids('SampleID'))}. Already enriched: {len(self._metadata)}."
+            f"Enriching {len(runs_todo)} biosamples. Total samples (with runs enriched): {len(self._metadata.get_ids(BIOSAMPLES_SAMPLE_ID))}. Already enriched: {len(self._metadata)}."
         )
 
         for count, run in enumerate(
@@ -435,14 +470,24 @@ class BioSampler(CheckpointMixin):
 
             # get metadata
             try:
-                bm = get_biosample_metadata(run, incl_ena=incl_ena)
+                bm = get_biosample_metadata(
+                    run, client=self.client.get_httpx_client(), incl_ena=incl_ena
+                )
+            except RuntimeError as e:
+                self.renew_client()
+                bm = get_biosample_metadata(
+                    run, client=self.client.get_httpx_client(), incl_ena=incl_ena
+                )
             except Exception as e:
                 logger.error(f"Error occurred while enriching run {run}: {e}")
                 bm = False
 
             if isinstance(bm, pd.DataFrame) and not bm.empty:
-                self._metadata.data.extend([bm.iloc[0].to_dict()])
-                self.write_results(1, self._results)
+                logger.debug(
+                    "Enriched biosample metadata is non-empty DataFrame. Appending to results."
+                )
+                self._metadata.append_result(page_num=1, value=[bm.iloc[0].to_dict()])
+                self.write_results(1, self._metadata.data)
                 continue
 
             if not skip_failed:
@@ -451,15 +496,17 @@ class BioSampler(CheckpointMixin):
                 logger.error(
                     f"Enrichment for biosample {run} did not return a valid DataFrame. Appending placeholder with GivenID only."
                 )
-                self._metadata.data.extend([{"GivenID": run}])
-                self.write_results(1, self._results)
+                self._metadata.append_result(
+                    page_num=1, value=[{BIOSAMPLES_GIVEN_ID: run}]
+                )
+                self.write_results(1, self._metadata.data)
 
     async def aenrich(
         self,
         limit: Optional[int] = 200,
         hide_progress: bool = False,
-        incl_ena: bool = True,
-        skip_failed: bool = True,
+        incl_ena: bool = False,
+        skip_failed: bool = False,
     ) -> None:
         """Async version of :meth:`enrich`.
 
@@ -467,46 +514,53 @@ class BioSampler(CheckpointMixin):
 
         This is a placeholder and not yet implemented.
         """
-        # TODO
-        logger.error(
-            "Asynchronous enrichment of biosample metadata is not yet implemented."
+        ids_todo: list[str] = self._iter_leftovers()[:limit]
+
+        logger.warning(
+            f"Enriching {len(ids_todo)} ids. "
+            f"Total runs: {len(self.all_ids)}. "
+            f"Already enriched: {len(self._metadata)}."
         )
 
-        # ids_todo: list[str] = self._iter_leftovers()[:limit]
+        async def _fetch(run: str) -> list[dict[str, Any]]:
+            """Fetches the biosample metadata for a given run accession asynchronously."""
+            try:
+                logger.debug(f"client: {self.client}")
+                r = await aget_biosample_metadata(
+                    run, client=self.client.get_async_httpx_client(), incl_ena=incl_ena
+                )
+                return r
+            except RuntimeError as e:
+                self.renew_client()
+                r = await aget_biosample_metadata(
+                    run, client=self.client.get_async_httpx_client(), incl_ena=incl_ena
+                )
+                return r
+            except Exception as e:
+                logger.error(f"Error occurred while enriching run {run}: {e}")
+                return False
 
-        # logger.warning(
-        #     f"Enriching {len(ids_todo)} ids. Total runs: {len(self.all_ids)}. Already enriched: {len(self._metadata)}."
-        # )
+        # to coroutines
+        tasks = [asyncio.create_task(_fetch(run)) for run in ids_todo]
 
-        # async def _fetch(run: str) -> list[dict[str, Any]]:
-        #     try:
-        #         r = await aget_biosample_metadata(run, incl_ena=incl_ena)
-        #         return r
-        #     except Exception as e:
-        #         logger.error(f"Error occurred while enriching run {run}: {e}")
-        #         return False
+        for done in tqdm_asyncio.as_completed(
+            tasks,
+            total=len(self.all_ids),
+            initial=len(self._metadata),
+            desc="Enriching biosamples",
+            disable=hide_progress,
+        ):
+            bm = await done
+            if isinstance(bm, pd.DataFrame) and not bm.empty:
+                logger.debug(
+                    "(Async) Enriched biosample metadata is non-empty DataFrame. Appending to results."
+                )
+                self._metadata.append_result(page_num=1, value=[bm.iloc[0].to_dict()])
+                self.write_results(1, self._metadata.data)
+                continue
 
-        # tasks = [asyncio.create_task(_fetch(run)) for run in ids_todo]
-
-        # for done in tqdm_asyncio.as_completed(
-        #     tasks,
-        #     total=len(self.all_ids),
-        #     initial=len(self._metadata),
-        #     desc="Enriching biosamples",
-        #     disable=hide_progress,
-        # ):
-        #     bm = await done
-        #     logger.debug(f"Enriched biosample metadata: {bm}")
-        #     if isinstance(bm, pd.DataFrame) and not bm.empty:
-        #         self._metadata.data.extend([bm.iloc[0].to_dict()])
-        #         self.write_results(1, self._results)
-        #         continue
-
-        #     if not skip_failed:
-        #         continue
-        #     else:
-        #         logger.error(
-        #             f"Enrichment for biosample {run} did not return a valid DataFrame. Appending placeholder with GivenID only."
-        #         )
-        #         self._metadata.data.extend([{"GivenID": run}])
-        #         self.write_results(1, self._results)
+            if not skip_failed:
+                continue
+            else:
+                logger.error(f"`skip_failed` is not yet implemented for async.")
+                continue
