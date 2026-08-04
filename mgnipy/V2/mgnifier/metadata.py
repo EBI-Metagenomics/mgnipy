@@ -20,7 +20,6 @@ class ResultsHandler:
     """
 
     def __init__(self, data: Optional[list[dict[str, Any]]] = None):
-        logger.debug("Initializing ResultsHandler")
         self._data = data
 
     def __add__(self, other: "ResultsHandler") -> "ResultsHandler":
@@ -310,9 +309,9 @@ class ResultsHandler:
         _data = self.data
 
         if _data == [] or _data is None:
+            logger.debug("No data available to extract IDs; returning empty list")
             return []
 
-        logger.debug("Extracting IDs from results")
         # Determine the default label based on the resource type if not provided
         if label is None:
             resource_type = getattr(self, "resource", None)
@@ -337,12 +336,16 @@ class MGnifyMetadata(ResultsHandler):
         id_label: Optional[str] = None,
     ):
 
-        self._res: dict[int, list[dict]] | None = data
         # init results
         if isinstance(data, dict):
-            super().__init__(data=list(self.records))
+            self._results: dict[int, list[dict]] = data
+            super().__init__(data=list(self._unpageinate_results(data=data)))
+        elif isinstance(data, list):
+            self._results = {1: data}
+            super().__init__(data=data)
         else:  # list or None
-            super().__init__(data=self._res)
+            self._results = {}
+            super().__init__(data=None)
         self._id_label = id_label
 
     def __str__(self) -> str:
@@ -371,7 +374,49 @@ class MGnifyMetadata(ResultsHandler):
         Get the retrieved metadata results, if available.
         Results are stored in a dictionary with request number (e.g. page number) as keys.
         """
-        return self._res
+        return self._results
+
+    @results.setter
+    def results(self, value: dict[int, list[dict]]):
+        """
+        Set the retrieved metadata results.
+        This allows updating the results with new data, typically after a new request.
+
+        Parameters
+        ----------
+        value : dict of int to list of dict
+            The new results to set, with request numbers as keys and lists of metadata records as values.
+        """
+        if not isinstance(value, dict):
+            raise TypeError(
+                f"Results must be a dict with <int> : lists of metadata records."
+            )
+        self._results = value
+        # also update data
+        self._sync_data()
+
+    def append_result(self, page_num: int, value: dict[str, Any]):
+        """
+        Append a single metadata record to the results.
+        This method adds a new record to the existing results, typically used when processing paginated responses.
+
+        Parameters
+        ----------
+        page_num : int
+            The page number (or request number) to which the record should be appended.
+        value : dict
+            A single metadata record to append to the results.
+        """
+        if not isinstance(value, list):
+            raise ValueError(
+                f"value must be a list of dictionaries representing metadata records. {value}"
+            )
+        # append to the specified page
+        if page_num not in self._results:
+            self._results[page_num] = []
+        self._results[page_num].extend(value)
+        # also update data prop
+        self._sync_data()
 
     def _unpageinate_results(self, data: Optional[dict] = None) -> chain:
         """
@@ -384,8 +429,7 @@ class MGnifyMetadata(ResultsHandler):
         chain
             An iterator that yields individual metadata records from all pages.
         """
-        logger.debug("Flattening paginated results")
-        _data = data or self._res
+        _data = data or self._results
 
         def _page_to_records(page):
             if page is None:
@@ -413,7 +457,7 @@ class MGnifyMetadata(ResultsHandler):
         chain or None
             An iterator that yields individual metadata records if results are available, otherwise None.
         """
-        if self._res is None:
+        if self._results is None:
             logger.warning(".data/.results is None. No record iterator available")
             return None
         return self._unpageinate_results()
@@ -434,12 +478,8 @@ class MGnifyMetadata(ResultsHandler):
         >>> query.get()  # doctest: +SKIP
         >>> ids = query.metadata.ids  # doctest: +SKIP
         """
-        # if self.data is None:
-        #     logger.warning(
-        #         "No attempts for results to be retieved yet (e.g., .get(), .page()), so no accessions/ids available."
-        #     )
-        #     return None
-
+        # make sure data is updated from results
+        self._sync_data()
         return self.get_ids(label=self._id_label)
 
     def _resolve_id_param(
@@ -525,3 +565,14 @@ class MGnifyMetadata(ResultsHandler):
             if downloads_list
             else None
         )
+
+    def _sync_data(self):
+        """
+        Update the internal data property based on the current results.
+        This method is useful when the results have been modified and the data property needs to be refreshed.
+
+        Returns
+        -------
+        None
+        """
+        self._data = list(self._unpageinate_results(data=self._results))
