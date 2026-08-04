@@ -241,7 +241,7 @@ class MGnipy(ClientManagerMixin):
             )
 
         if name == "biosampler":
-            return BioSampler(run_ids=[], config=self.config, client=self.client)
+            return BioSampler(sample_ids=[], config=self.config)
 
         raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
 
