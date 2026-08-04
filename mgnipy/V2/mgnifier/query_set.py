@@ -167,7 +167,7 @@ class QuerySet:
         list of str
             A list of URLs corresponding to each API request that would be made.
         """
-        logger.info("Listing request URLs for %s", self.resource.value)
+        logger.info("Listing request URLs for %s", str(self.resource))
 
         if self.num_requests is None:
             logger.warning(
@@ -186,7 +186,7 @@ class QuerySet:
         for pg in self.emgapi_handler.page_param_iter(total_pages):
             _parm.update(pg)
             urls.append(self._build_request_url(params=_parm))
-        logger.debug(f"Generated {len(urls)} URLs for {self.resource.value}")
+        logger.debug(f"Generated {len(urls)} URLs for {str(self.resource)}")
         return urls
 
     @property
@@ -201,7 +201,7 @@ class QuerySet:
             The constructed URL for the API request.
         """
         request_url: str = self._build_request_url()
-        logger.debug(f"Resolved URL for {self.resource.value}: {request_url}")
+        logger.debug(f"Resolved URL for {str(self.resource)}: {request_url}")
         return request_url
 
     def _build_request_url(
@@ -233,7 +233,7 @@ class QuerySet:
         path = self.emgapi_handler.url_path(**_params)
         # return full url with base url+sub_url+encoded params
         request_url = f"{str(self.base_url).rstrip('/')}/{path.lstrip('/')}"
-        logger.debug(f"Built request URL for {self.resource.value}: {request_url}")
+        logger.debug(f"Built request URL for {str(self.resource)}: {request_url}")
         return request_url
 
     @property
@@ -251,7 +251,7 @@ class QuerySet:
 
     @params.setter
     def params(self, new_params: dict[str, Any]):
-        logger.info(f"Updating params for {self.resource.value}: {new_params}")
+        logger.info(f"Updating params for {str(self.resource)}: {new_params}")
         self._params = new_params
         # check that params are valid for endpoint module
         _ = self.emgapi_handler.validate_endpoint_kwargs(**self._params)
@@ -276,7 +276,7 @@ class QuerySet:
         """
         # make a copy of current instance but with updated params
         logger.info(
-            f"Filtering QuerySet for {self.resource.value} with keys: {sorted(filters.keys())}",
+            f"Filtering QuerySet for {str(self.resource)} with keys: {sorted(filters.keys())}",
         )
         new_qs = self._clone(**filters)
         return new_qs
@@ -298,7 +298,7 @@ class QuerySet:
             A new instance of the same class with the updated parameters.
         """
         logger.info(
-            f"Cloning QuerySet for {self.resource.value} with overrides: {sorted(param_overrides.keys())}",
+            f"Cloning QuerySet for {str(self.resource)} with overrides: {sorted(param_overrides.keys())}",
         )
         merged_params = {**self.params, **param_overrides}
         resource_override = merged_params.pop("resource", None)
@@ -326,7 +326,7 @@ class QuerySet:
         list of dict
             A list of dictionaries, each containing the query parameters for a corresponding API request.
         """
-        logger.debug(f"Building query plan for {self.resource.value}")
+        logger.debug(f"Building query plan for {str(self.resource)}")
 
         if not self.emgapi_handler.is_list_endpoint:
             query_setup = {
@@ -334,7 +334,7 @@ class QuerySet:
                 "params": self.params,
                 **httpx_kwargs,
             }
-            logger.debug(f"Built single-query plan for {self.resource.value}")
+            logger.debug(f"Built single-query plan for {str(self.resource)}")
             return {1: query_setup}
 
         if self.num_requests is None:
@@ -359,7 +359,7 @@ class QuerySet:
                 **httpx_kwargs,
             }
             queries[pg] = query_setup
-        logger.debug(f"Built {len(queries)} query entries for {self.resource.value}")
+        logger.debug(f"Built {len(queries)} query entries for {str(self.resource)}")
         return queries
 
     @property
@@ -372,13 +372,13 @@ class QuerySet:
         self.try_load_cache()
 
         if self._results is None:
-            logger.warning(f"No results available for {self.resource.value}")
+            logger.warning(f"No results available for {str(self.resource)}")
             print(
                 "No results available. Please execute a query first e.g. .get(), .page()"
             )
         else:
             logger.debug(
-                f"Returning results for {self.resource.value} with pages: {list(self._results.keys())}"
+                f"Returning results for {str(self.resource)} with pages: {list(self._results.keys())}"
             )
         return self._results
 
