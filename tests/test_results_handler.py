@@ -1,6 +1,6 @@
 import json
 
-from mgnipy.V2.mixins import ResultsHandler
+from mgnipy.V2.mgnifier.metadata import ResultsHandler
 
 
 def test_results_handler_to_list_and_to_json():
