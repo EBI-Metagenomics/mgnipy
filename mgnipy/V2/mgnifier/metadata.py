@@ -2,12 +2,79 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import re
 from itertools import chain
+import numpy as np
+import pandas as pd
+import polars as pl
 from typing import Any, Optional
 
 from mgnipy.V2.mgnifier.endpoints import ID_PARAM
-import pandas as pd
-import polars as pl
+from mgnipy._models.constants.CONSTANTS import PipelineVersions
+
+
+def _add_single_pipe_ver(item_dict: dict[str, Any]):
+    """
+    Add a single pipeline version to a download record.
+
+    Parameters
+    ----------
+    item_dict : dict
+        A dictionary representing a metadata record.
+    a_pipe : str or None
+        The pipeline version to add. If None, no version is added.
+
+    Returns
+    -------
+    None
+        The function modifies the `each_download` dictionary in place.
+    """
+    # get pipeline_version from row if avail, i.e., analysisdetail
+    if "pipeline_version" in item_dict and isinstance(
+        item_dict["pipeline_version"], str
+    ):
+        a_pipe = item_dict["pipeline_version"].lower().strip("v")
+    else:
+        a_pipe = None
+
+    for each_download in item_dict.get("downloads", []):
+
+        # if pipeline in download_group, use that instead
+        v_group = re.search(
+            r"\.v(\d+(?:\.\d+)?)",
+            each_download.get("download_group", ""),
+            re.IGNORECASE,
+        ).group(1)
+        # priority to ver in download_group
+        pipe = v_group or a_pipe
+
+        if pipe is not None:
+            try:
+                pipe = PipelineVersions(float(pipe)).name
+            except Exception as e:
+                logger.error(
+                    f"Could not parse pipeline version from {pipe!r} for download {each_download!r}: {e}"
+                )
+
+        each_download.update({"pipeline_version": pipe})
+
+
+def add_pipeline_version_field(records: list[dict[str, Any]]):
+    for item_dict in records:
+        _add_single_pipe_ver(item_dict)
+
+
+def _add_single_id(given_id: str, id_label: str, item_dict: dict[str, Any]):
+    for each_download in item_dict.get("downloads", []):
+        # keep id
+        each_download.update({id_label: given_id})
+
+
+def add_id_param_field(given_id: str, id_label: str, records: list[dict[str, Any]]):
+
+    for item_dict in records:
+        logger.debug(f"{item_dict.keys()}")
+        _add_single_id(given_id, id_label, item_dict)
 
 
 class ResultsHandler:
@@ -21,6 +88,16 @@ class ResultsHandler:
 
     def __init__(self, data: Optional[list[dict[str, Any]]] = None):
         self._data = data
+
+    def __getitem__(self, key: int | slice) -> "ResultsHandler":
+        """
+        A new ResultsHandler instsance with filtered down data based on the provided key. The key can be an integer index, a string identifier, or a slice.
+        """
+        if self.data is None:
+            raise IndexError("No data available to retrieve records.")
+
+        if isinstance(key, (int, slice)):
+            return ResultsHandler(data=[self.data[key]])
 
     def __add__(self, other: "ResultsHandler") -> "ResultsHandler":
         """
@@ -41,7 +118,9 @@ class ResultsHandler:
         the_one = self.data or []
         the_other = other.data or []
 
-        combined_data = the_one + the_other
+        combined_data: list[dict[str, Any]] = self.to_list(
+            data=the_one + the_other, drop_duplicates=True
+        )
         return self.__class__(combined_data)
 
     def __len__(self) -> int:
@@ -174,7 +253,9 @@ class ResultsHandler:
         if expand_nested_dicts is True:
             return self._df_expand_nested(as_pandas)
 
-    def to_list(self, data: Optional[chain] = None) -> list[Any]:
+    def to_list(
+        self, *, data: Optional[chain] = None, drop_duplicates: bool = False
+    ) -> list[Any]:
         """
         Convert the current or provided metadata to a list of dictionaries.
 
@@ -182,6 +263,8 @@ class ResultsHandler:
         ----------
         data : optional
             The paginated data to convert. If ``None``, uses :pyattr:`data`.
+        drop_duplicates : bool, default True
+            Whether to drop duplicate records from the list.
 
         Returns
         -------
@@ -204,6 +287,21 @@ class ResultsHandler:
             )
             return None
 
+        if drop_duplicates:
+            try:
+                return self.to_polars(data=_data).unique().to_dicts()
+            except Exception as e:
+                logger.error(
+                    f"Error converting to Polars DataFrame for unique filtering: {e}. Falling back to list conversion."
+                )
+                seen = set()
+                unique_list = []
+                for item in _data:
+                    item_tuple = tuple(sorted(item.items()))
+                    if item_tuple not in seen:
+                        seen.add(item_tuple)
+                        unique_list.append(item)
+                return unique_list
         return list(_data)
 
     def to_json(
@@ -368,6 +466,43 @@ class MGnifyMetadata(ResultsHandler):
             f"Contains Pages/Request#/Details: {self.pages}\n"
         )
 
+    def __getitem__(self, key: int | slice | list) -> "MGnifyMetadata":
+        """
+        Return a new MGnifyMetadata instance with filtered down data based on the provided key.
+        The key can be an integer index, a slice, or a list of indices.
+
+        Parameters
+        ----------
+        key : int, slice, list of str or int
+            The index, indices, id, or ids to filter the data.
+
+        Returns
+        -------
+        MGnifyMetadata
+            A new MGnifyMetadata instance containing the filtered data.
+
+        Raises
+        ------
+        IndexError
+            If the key is out of bounds for the current data.
+        """
+        if self.data is None:
+            raise IndexError("No data available to retrieve records.")
+
+        if isinstance(key, (int, slice)):
+            return MGnifyMetadata(data=[self.data[key]], id_label=self._id_label)
+
+        if isinstance(key, (list, np.ndarray)):
+            if all(isinstance(k, int) for k in key):
+                return MGnifyMetadata(
+                    data=[self.data[k] for k in key], id_label=self._id_label
+                )
+            if all(isinstance(k, str) for k in key):
+                filtered_data = [
+                    item for item in self.data if item.get(self._id_label) in key
+                ]
+                return MGnifyMetadata(data=filtered_data, id_label=self._id_label)
+
     @property
     def results(self) -> dict[int, list[dict]]:
         """
@@ -389,7 +524,7 @@ class MGnifyMetadata(ResultsHandler):
         """
         if not isinstance(value, dict):
             raise TypeError(
-                f"Results must be a dict with <int> : lists of metadata records."
+                "Results must be a dict with <int> : lists of metadata records."
             )
         self._results = value
         # also update data
@@ -558,6 +693,20 @@ class MGnifyMetadata(ResultsHandler):
         for record in self.records:
             downloads = record.get("downloads")
             if downloads is not None:
+
+                resource_type = getattr(self, "resource", None)
+                idid = ID_PARAM.get(resource_type, "accession")
+
+                temp_df = pd.DataFrame(downloads)
+                if "pipeline_version" not in temp_df.columns:
+                    logger.debug(
+                        "Adding pipeline_version field to downloads as it is missing"
+                    )
+                    _add_single_pipe_ver(record)
+                if idid not in temp_df.columns:
+                    logger.debug(f"Adding {idid} field to downloads as it is missing")
+                    _add_single_id(record.get(idid), idid, record)
+
                 downloads_list.append(downloads)
 
         return (
@@ -576,3 +725,13 @@ class MGnifyMetadata(ResultsHandler):
         None
         """
         self._data = list(self._unpageinate_results(data=self._results))
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, value: list[dict[str, Any]]):
+        super().data = value
+        logger.warning("Setting .data directly forces .results to only 1 page")
+        self._results = {1: self._data}

@@ -5,14 +5,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 import pandas as pd
-import re
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
 
-from mgnipy.V2.mgnifier.metadata import MGnifyMetadata
+from mgnipy.V2.mgnifier.metadata import (
+    MGnifyMetadata,
+    add_pipeline_version_field,
+    add_id_param_field,
+)
 
 from mgnipy._models.constants.CONSTANTS import (
-    PipelineVersions,
     SupportedEndpoints,
     ListResourceStr,
     DetailResourceStr,
@@ -770,44 +772,10 @@ class MGnifyDetail(MGnifier):
         return pd.DataFrame(self.downloads, **pd_kwargs)
 
     def _add_pipeline_version_field(self):
-        for item_dict in self.metadata.records:
-
-            # get pipeline_version from row if avail, i.e., analysisdetail
-            if "pipeline_version" in item_dict and isinstance(
-                item_dict["pipeline_version"], str
-            ):
-                a_pipe = item_dict["pipeline_version"].lower().strip("v")
-            else:
-                a_pipe = None
-
-            for each_download in item_dict.get("downloads", []):
-
-                # if pipeline in download_group, use that instead
-                v_group = re.search(
-                    r"\.v(\d+(?:\.\d+)?)",
-                    each_download.get("download_group", ""),
-                    re.IGNORECASE,
-                ).group(1)
-                # priority to ver in download_group
-                pipe = v_group or a_pipe
-
-                if pipe is not None:
-                    try:
-                        pipe = PipelineVersions(float(pipe)).name
-                    except Exception as e:
-                        logger.error(
-                            f"Could not parse pipeline version from {pipe!r} for download {each_download!r}: {e}"
-                        )
-
-                each_download.update({"pipeline_version": pipe})
+        add_pipeline_version_field(self.metadata.records)
 
     def _add_id_param_field(self, given_id: str):
-
-        for item_dict in self.metadata.records:
-            logger.debug(f"{item_dict.keys()}")
-            for each_download in item_dict.get("downloads", []):
-                # keep id
-                each_download.update({self._id_label: given_id})
+        add_id_param_field(given_id, self._id_label, self.metadata.records)
 
     def __getattr__(self, name: str):
         # if is a supported relationship
