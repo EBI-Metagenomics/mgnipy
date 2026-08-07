@@ -10,6 +10,13 @@ from mgnipy.V2.mgnifier.endpoints import ID_PARAM
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy.V2.mgnifier.metadata import MGnifyMetadata, ResultsHandler
 
+from mgnipy._shared_helpers.biosamples_helper import (
+    SAMPLE_ID as BIOSAMPLES_SAMPLE_ID,
+    RUN_ID as BIOSAMPLES_RUN_ID,
+)
+
+UNIQUE_RUN_ID_COL_NAME = "_mgnipy_runs_accs"
+
 
 class MetadataSettersMixin:
 
@@ -86,52 +93,42 @@ class MetadataSettersMixin:
     def append_biosamples_metadata(self, value: dict[str, Any]):
         self._append_cached_item("biosamples_metadata", value)
 
-    def metadata(
+    def _merge_meta(
         self,
         df_engine: Literal["polars", "pandas"] = "pandas",
         expand_nested_dicts: bool = True,
         how="left",
         coalesce: bool = True,
         for_runs: Optional[list[str]] = None,
+        index_col_name: str = UNIQUE_RUN_ID_COL_NAME,
     ) -> pl.DataFrame | pd.DataFrame:
 
+        ## getting the runs accessions to filter on
         _runs = for_runs or getattr(self, "runs_accessions", None)
         if _runs is None:
             logger.warning("No runs accessions provided. Returning empty dataframe.")
             return pl.DataFrame() if df_engine == "polars" else pd.DataFrame()
-
         # getting run accessions as sorted_index
         sorted_index = sorted(self.X(df_engine="polars").columns)
 
-        base = pl.DataFrame(sorted_index, schema=["mgnify_run_accession_index"])
+        # creating base dataframe with index
+        base = pl.DataFrame(sorted_index, schema=[index_col_name])
 
+        ## if no meta then return empty dataframe with index
         if len(self.available_metadata_sets) == 0:
             logger.warning(
                 "No non-empty metadata sets available. Returning empty dataframe."
             )
 
-            if df_engine == "polars":
-                logger.warning("Polars dataframe does not support empty df with index.")
-                return base
-
-            if df_engine == "pandas":
-                return pd.DataFrame(index=sorted_index)
-
-        # for runs
-        if (
-            "mgnify_runs" not in self.available_metadata_sets
-            and "biosamples_metadata" not in self.available_metadata_sets
-        ):
-            logger.warning(
-                "runs metadata set is not available. Returning empty dataframe."
-            )
             return (
-                pl.DataFrame(sorted_index)
+                base
                 if df_engine == "polars"
-                else pd.DataFrame(index=sorted_index)
+                else base.to_pandas().set_index(index_col_name)
             )
 
-        elif (
+        ## otherwise, need runs first
+        # if only runs
+        if (
             "mgnify_runs" in self.available_metadata_sets
             and "biosamples_metadata" not in self.available_metadata_sets
         ):
@@ -143,9 +140,11 @@ class MetadataSettersMixin:
                 pl_runs,
                 how=how,
                 coalesce=coalesce,
-                left_on="mgnify_run_accession_index",
+                left_on=UNIQUE_RUN_ID_COL_NAME,
                 right_on=ID_PARAM[SupportedEndpoints.RUNS],
+                suffix="__mgnify_runs",
             )
+        # if only biosamples
         elif (
             "biosamples_metadata" in self.available_metadata_sets
             and "mgnify_runs" not in self.available_metadata_sets
@@ -154,13 +153,26 @@ class MetadataSettersMixin:
                 expand_nested_dicts=expand_nested_dicts
             )
 
+            # make sure RunIDs isnt null (ie., incl_ena = False)
+            if len(pl_biosamples.filter(pl.col(BIOSAMPLES_RUN_ID).is_not_null())) == 0:
+                logger.warning(
+                    ".biosamples_metadata set is available but no RunIDs found. Returning empty dataframe."
+                )
+                return (
+                    base
+                    if df_engine == "polars"
+                    else base.to_pandas().set_index(index_col_name)
+                )
+
             base = base.join(
                 pl_biosamples,
                 how=how,
                 coalesce=coalesce,
-                left_on="mgnify_run_accession_index",
-                right_on="RunID",
+                left_on=UNIQUE_RUN_ID_COL_NAME,
+                right_on=BIOSAMPLES_RUN_ID,
+                suffix="__biosamples_metadata",
             )
+        # if both runs and biosamples are available
         elif (
             "biosamples_metadata" in self.available_metadata_sets
             and "mgnify_runs" in self.available_metadata_sets
@@ -176,65 +188,116 @@ class MetadataSettersMixin:
                 pl_runs,
                 how=how,
                 coalesce=coalesce,
-                left_on="mgnify_run_accession_index",
+                left_on=UNIQUE_RUN_ID_COL_NAME,
                 right_on=ID_PARAM[SupportedEndpoints.RUNS],
+                suffix="__mgnify_runs",
             )
 
             base = base.join(
                 pl_biosamples,
                 how=how,
                 coalesce=coalesce,
-                left_on="mgnify_run_accession_index",
-                right_on="RunID",
+                left_on="sample_accession",
+                right_on=BIOSAMPLES_SAMPLE_ID,
+                suffix="__biosamples_metadata",
+            )
+        else:
+            logger.warning(
+                "No non-empty metadata sets available. Returning empty dataframe."
+            )
+            return (
+                base
+                if df_engine == "polars"
+                else base.to_pandas().set_index(index_col_name)
             )
 
-        # now to the samples
+        ## now to the samples
         if (
             "mgnify_samples" in self.available_metadata_sets
-            and "mgnify_runs" in self.available_metadata_sets
+            and "sample_accession" not in base.columns
+            and BIOSAMPLES_SAMPLE_ID not in base.columns
         ):
-
-            right = self.mgnify_samples.to_polars(
+            logger.error(
+                f".mgnify_samples set is available but .mgnify_runs/.biosamples_metadata set does not provide a 'sample_accession'/'{BIOSAMPLES_SAMPLE_ID}' column for joining. Returning without .mgnify_samples metadata."
+            )
+        elif (
+            "mgnify_samples" in self.available_metadata_sets
+            and "sample_accession" in base.columns
+        ):
+            # getting the samples metadata as polars dataframe
+            pl_samples = self.mgnify_samples.to_polars(
                 expand_nested_dicts=expand_nested_dicts
             )
 
             base = base.join(
-                right,
+                pl_samples,
                 how=how,
                 coalesce=coalesce,
                 left_on="sample_accession",
                 right_on=ID_PARAM[SupportedEndpoints.SAMPLES],
+                suffix="__mgnify_samples",
             )
-            return (
-                base
-                if df_engine == "polars"
-                else base.to_pandas().set_index("mgnify_run_accession_index")
-            )
-
-        if (
+        elif (
             "mgnify_samples" in self.available_metadata_sets
-            and "biosamples_metadata" in self.available_metadata_sets
+            and "sample_accession" in base.columns
         ):
-
-            right = self.biosamples_metadata.to_polars(
+            pl_samples = self.mgnify_samples.to_polars(
                 expand_nested_dicts=expand_nested_dicts
             )
-
             base = base.join(
-                right,
+                pl_samples,
                 how=how,
                 coalesce=coalesce,
-                left_on="sample_accession",
-                right_on="SampleID",
-            )
-            return (
-                base
-                if df_engine == "polars"
-                else base.to_pandas().set_index("mgnify_run_accession_index")
+                left_on=BIOSAMPLES_SAMPLE_ID,
+                right_on=ID_PARAM[SupportedEndpoints.SAMPLES],
+                suffix="__biosamples_metadata",
             )
 
         return (
             base
             if df_engine == "polars"
-            else base.to_pandas().set_index("mgnify_run_accession_index")
+            else base.to_pandas().set_index(index_col_name)
+        )
+
+    @property
+    def obs(self) -> ResultsHandler:
+        return ResultsHandler(self._obs or None)
+
+    @obs.setter
+    def obs(self, value: list[dict[str, Any]]):
+        self._set_cached_list("obs", value)
+
+    def append_obs(self, value: dict[str, Any]):
+        self._append_cached_item("obs", value)
+
+    def obs_metadata(
+        self,
+        df_engine: Literal["polars", "pandas"] = "pandas",
+        expand_nested_dicts: bool = True,
+        how="left",
+        coalesce: bool = True,
+        for_runs: Optional[list[str]] = None,
+        index_col_name: str = UNIQUE_RUN_ID_COL_NAME,
+    ) -> pl.DataFrame | pd.DataFrame:
+
+        if self._obs is None:
+
+            return self._merge_meta(
+                df_engine=df_engine,
+                expand_nested_dicts=expand_nested_dicts,
+                how=how,
+                coalesce=coalesce,
+                for_runs=for_runs,
+                index_col_name=index_col_name,
+            )
+
+        if len(self.available_metadata_sets) > 0:
+            logger.warning(
+                "Observations metadata has already been set. Ignoring any new metadata sets provided."
+            )
+
+        return (
+            pl.DataFrame(self._obs, schema=[index_col_name])
+            if df_engine == "polars"
+            else pd.DataFrame(self._obs).set_index(index_col_name)
         )
