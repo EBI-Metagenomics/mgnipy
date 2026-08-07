@@ -129,6 +129,7 @@ class DWCTaxaMGazine(MGazine):
         mgnify_samples: Optional[list[dict[str, Any]]] = None,
         mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
         biosamples_metadata: Optional[list[dict[str, Any]]] = None,
+        obs: Optional[list[dict[str, Any]]] = None,
     ):
         """A specialized MGazine class for handling DwC-ready taxonomic datasets."""
 
@@ -142,6 +143,7 @@ class DWCTaxaMGazine(MGazine):
             biosamples_metadata=biosamples_metadata,
             mgnify_analyses=mgnify_analyses,
             mgnify_assemblies=mgnify_assemblies,
+            obs=obs,
         )
         # extra dwc check
         if ("dwc-ready" not in self.short_desc.lower()) or (
@@ -318,6 +320,7 @@ class TaxaMGazine(MGazine):
         mgnify_samples: Optional[list[dict[str, Any]]] = None,
         mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
         biosamples_metadata: Optional[list[dict[str, Any]]] = None,
+        obs: Optional[list[dict[str, Any]]] = None,
     ):
 
         self.TAX_COLS = (
@@ -338,6 +341,7 @@ class TaxaMGazine(MGazine):
             biosamples_metadata=biosamples_metadata,
             mgnify_analyses=mgnify_analyses,
             mgnify_assemblies=mgnify_assemblies,
+            obs=obs,
         )
 
         self._runs_accessions = None
@@ -495,10 +499,25 @@ class TaxaMGazine(MGazine):
             return ad.AnnData(
                 self.X()[sorted(self.X().columns)],
                 obs=self.taxonomic_metadata(),
-                var=self.metadata().sort_index(),  # TODO, pick up here, this doesnt work
+                var=self.obs_metadata().sort_index(),  # TODO, pick up here, this doesnt work
                 **anndata_kwargs,
             )
         except ValueError as e:
+            logger.error(
+                f"Attempting to match columns - Error occurred while converting to AnnData: {e}"
+            )
+            ok = self.X()[
+                self.X().columns[
+                    self.X().columns.isin(self.obs_metadata().index.to_list())
+                ]
+            ]
+            return ad.AnnData(
+                ok[sorted(ok.columns)],
+                obs=self.taxonomic_metadata(),
+                var=self.obs_metadata().sort_index(),  # TODO, pick up here, this doesnt work
+                **anndata_kwargs,
+            )
+        except Exception as e:
             logger.error(
                 f"Returning without metadata() as var - Error occurred while converting to AnnData: {e}"
             )

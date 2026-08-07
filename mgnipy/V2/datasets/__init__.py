@@ -96,6 +96,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         mgnify_samples: list[dict[str, Any]] | None = None,
         mgnify_assemblies: list[dict[str, Any]] | None = None,
         biosamples_metadata: list[dict[str, Any]] | None = None,
+        obs: list[dict[str, Any]] | None = None,
     ):
         self.downloads = downloads
         self.config = config or MGnipyConfig()
@@ -110,8 +111,44 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         self._mgnify_samples: list[dict[str, Any]] | None = mgnify_samples
         self._mgnify_assemblies: list[dict[str, Any]] | None = mgnify_assemblies
         self._biosamples_metadata: list[dict[str, Any]] | None = biosamples_metadata
-
+        self._obs: list[dict[str, Any]] | None = obs
         self._lazy_merged: list[pl.LazyFrame] | None = None
+
+    def __call__(
+        self,
+        downloads: list[dict[str, Any]],
+        *,
+        mgnify_studies: list[dict[str, Any]] | None = None,
+        mgnify_analyses: list[dict[str, Any]] | None = None,
+        mgnify_runs: list[dict[str, Any]] | None = None,
+        mgnify_samples: list[dict[str, Any]] | None = None,
+        mgnify_assemblies: list[dict[str, Any]] | None = None,
+        biosamples_metadata: list[dict[str, Any]] | None = None,
+        obs: list[dict[str, Any]] | None = None,
+    ) -> "MGazine":
+        """
+        Creates a new instance of MGnetizer with the specified resource, :meth:`all_ids`, :meth:`mgnify_metadata`, and detail_proxy. This allows for creating a new MGnetizer instance with different parameters without modifying the existing instance.
+        """
+        return self.__class__(
+            downloads,
+            config=self.config,
+            client=self.client,
+            mgnify_studies=mgnify_studies or self._mgnify_studies,
+            mgnify_analyses=mgnify_analyses or self._mgnify_analyses,
+            mgnify_runs=mgnify_runs or self._mgnify_runs,
+            mgnify_samples=mgnify_samples or self._mgnify_samples,
+            mgnify_assemblies=mgnify_assemblies or self._mgnify_assemblies,
+            biosamples_metadata=biosamples_metadata or self._biosamples_metadata,
+            obs=obs or self._obs,
+        )
+
+    def __repr__(self):
+        return (
+            f"MGazine(downloads={len(self.downloads)}, "
+            f"pipeline_versions={self.list_pipeline_version()}, "
+            f"short_descriptions={self.list_short_descriptions()}, "
+            f"available_metadata_sets={self.available_metadata_sets})"
+        )
 
     def __str__(self):
         return (
@@ -138,6 +175,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             biosamples_metadata=(
                 self.biosamples_metadata + other.biosamples_metadata
             ).to_list(),
+            obs=(self.obs + other.obs).to_list(),
         )
 
     def __getattr__(self, name):
@@ -194,6 +232,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     mgnify_samples=self._mgnify_samples,
                     mgnify_assemblies=self._mgnify_assemblies,
                     biosamples_metadata=self._biosamples_metadata,
+                    obs=self._obs,
                 )
             elif name == "taxonomic" and len(no_dwc) == 0:
                 raise AttributeError(
@@ -214,6 +253,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     mgnify_samples=self._mgnify_samples,
                     mgnify_assemblies=self._mgnify_assemblies,
                     biosamples_metadata=self._biosamples_metadata,
+                    obs=self._obs,
                 )
             else:
                 raise AttributeError(
@@ -250,6 +290,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             mgnify_samples=self._mgnify_samples,
             mgnify_assemblies=self._mgnify_assemblies,
             biosamples_metadata=self._biosamples_metadata,
+            obs=self._obs,
         )
 
     @property
@@ -276,6 +317,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             "mgnify_studies",
             "mgnify_analyses",
             "biosamples_metadata",
+            "obs",
         ]
         return [f for f in metadata_sets if len(getattr(self, f)) > 0]
 
