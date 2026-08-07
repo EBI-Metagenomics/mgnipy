@@ -1,5 +1,6 @@
 import logging
 
+from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.mixins import CheckpointMixin, ClientManagerMixin
 from mgnipy._shared_helpers.biosamples_helper import (
     get_biosample_metadata,
@@ -124,8 +125,8 @@ class MGnetizer(CheckpointMixin, ClientManagerMixin):
     def __str__(self):
         return (
             f"MGnetizer for resource '{self._resource}' with {len(self._all_ids)} ids. \n"
-            f"Enriched metadata contains {len(self._mgnify_metadata)} entries. \n"
-            f" Detail proxy: {self.detail_proxy.__class__.__name__ if self.detail_proxy else None} \n"
+            f"Progress: {len(self._mgnify_metadata)} ids. \n"
+            f"Detail proxy: {self.detail_proxy.__name__ if self.detail_proxy else None} \n"
             f"Cache directory: {self.cache_path} \n"
         )
 
@@ -284,6 +285,26 @@ class MGnetizer(CheckpointMixin, ClientManagerMixin):
             self.config.model_dump() | {"cache_dir": None}
         )
 
+    @property
+    def downloads(self) -> list[str]:
+        """Returns the list of downloads from the enriched metadata."""
+        return self._mgnify_metadata.downloads
+
+    @property
+    def datasets(self) -> "MGazine":
+        """Returns a MGazine instance containing the enriched datasets."""
+
+        if str(self.resource) != "study":
+            raise ValueError(
+                f"MGnetizer.datasets is only available for resource 'study', not '{self.resource}'."
+            )
+        return MGazine(
+            downloads=self.downloads,
+            config=self.config,
+            client=self.client,
+            mgnify_studies=self._mgnify_metadata.to_list(),
+        )
+
 
 class BioSampler(CheckpointMixin, ClientManagerMixin):
     """Fetches BioSamples metadata for a given list of ENA run or sample accessions.
@@ -369,7 +390,7 @@ class BioSampler(CheckpointMixin, ClientManagerMixin):
     def __str__(self):
         return (
             f"BioSampler with {len(self._all_ids)} sample_ids. \n"
-            f"Enriched metadata contains {len(self._metadata)} entries. \n"
+            f"Progress: {len(self._metadata)} ids. \n"
             f"Cache directory: {self.cache_path} \n"
         )
 
@@ -473,7 +494,7 @@ class BioSampler(CheckpointMixin, ClientManagerMixin):
                 bm = get_biosample_metadata(
                     run, client=self.client.get_httpx_client(), incl_ena=incl_ena
                 )
-            except RuntimeError as e:
+            except RuntimeError:
                 self.renew_client()
                 bm = get_biosample_metadata(
                     run, client=self.client.get_httpx_client(), incl_ena=incl_ena
@@ -530,7 +551,7 @@ class BioSampler(CheckpointMixin, ClientManagerMixin):
                     run, client=self.client.get_async_httpx_client(), incl_ena=incl_ena
                 )
                 return r
-            except RuntimeError as e:
+            except RuntimeError:
                 self.renew_client()
                 r = await aget_biosample_metadata(
                     run, client=self.client.get_async_httpx_client(), incl_ena=incl_ena
@@ -562,5 +583,5 @@ class BioSampler(CheckpointMixin, ClientManagerMixin):
             if not skip_failed:
                 continue
             else:
-                logger.error(f"`skip_failed` is not yet implemented for async.")
+                logger.error("`skip_failed` is not yet implemented for async.")
                 continue
