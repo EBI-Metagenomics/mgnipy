@@ -1,5 +1,7 @@
 import logging
 
+from mgnipy.V2.datasets.taxonomic import DWCTaxaMGazine, TaxaMGazine
+
 logger = logging.getLogger(__name__)
 from typing import Optional
 
@@ -13,6 +15,7 @@ from mgnipy.V2.mixins import ClientManagerMixin
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
 from mgnipy.V2.collect import MGnetizer, BioSampler
+from mgnipy.V2.datasets import MGazine
 
 V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 
@@ -243,6 +246,15 @@ class MGnipy(ClientManagerMixin):
         if name == "biosampler":
             return BioSampler(sample_ids=[], config=self.config)
 
+        if name == "mgazine":
+            return MGazine(downloads=[], config=self.config, client=self.client)
+
+        if name == "taxonomic":
+            return TaxaMGazine(downloads=[], config=self.config, client=self.client)
+
+        if name == "taxonomic_dwc_ready":
+            return DWCTaxaMGazine(downloads=[], config=self.config, client=self.client)
+
         raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
 
     def __getitem__(self, key: str):
@@ -253,4 +265,7 @@ class MGnipy(ClientManagerMixin):
         raise KeyError(f"{type(self).__name__} has no endpoint {key!r}")
 
     def __str__(self):
-        return f"MGnipy(config={self.config})"
+        return f"MGnipy(config={self.config}) \n status: {self.status}"
+
+    def __repr__(self):
+        return f"MGnipy(config={self.config}) \n status: {self.status}"
