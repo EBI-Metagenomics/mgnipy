@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class GenomeCatalogueBaseCatalogueType(str, Enum):
     EUKARYOTES = "eukaryotes"
     PROKARYOTES = "prokaryotes"

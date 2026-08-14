@@ -1,5 +1,6 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
+from urllib.parse import quote
 
 import httpx
 
@@ -7,10 +8,10 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.ninja_pagination_response_schema_biome import (
-    NinjaPaginationResponseSchemaBiome,
-)
-from ...types import Unset
+from ...models.ninja_pagination_response_schema_biome import NinjaPaginationResponseSchemaBiome
+from ...types import UNSET, Unset
+from typing import cast
+
 
 
 def _get_kwargs(
@@ -19,7 +20,11 @@ def _get_kwargs(
     max_depth: int | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> dict[str, Any]:
+    
+
+    
 
     params: dict[str, Any] = {}
 
@@ -46,7 +51,9 @@ def _get_kwargs(
         json_page_size = page_size
     params["page_size"] = json_page_size
 
+
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
 
     _kwargs: dict[str, Any] = {
         "method": "get",
@@ -54,14 +61,16 @@ def _get_kwargs(
         "params": params,
     }
 
+
     return _kwargs
 
 
-def _parse_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> NinjaPaginationResponseSchemaBiome | None:
+
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> NinjaPaginationResponseSchemaBiome | None:
     if response.status_code == 200:
         response_200 = NinjaPaginationResponseSchemaBiome.from_dict(response.json())
+
+
 
         return response_200
 
@@ -71,9 +80,7 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[NinjaPaginationResponseSchemaBiome]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[NinjaPaginationResponseSchemaBiome]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -89,8 +96,9 @@ def sync_detailed(
     max_depth: int | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> Response[NinjaPaginationResponseSchemaBiome]:
-    """List all biomes
+    """ List all biomes
 
      List all biomes in the MGnify database.
 
@@ -107,13 +115,15 @@ def sync_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaBiome]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         biome_lineage=biome_lineage,
-        max_depth=max_depth,
-        page=page,
-        page_size=page_size,
+max_depth=max_depth,
+page=page,
+page_size=page_size,
+
     )
 
     response = client.get_httpx_client().request(
@@ -122,7 +132,6 @@ def sync_detailed(
 
     return _build_response(client=client, response=response)
 
-
 def sync(
     *,
     client: AuthenticatedClient | Client,
@@ -130,8 +139,9 @@ def sync(
     max_depth: int | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> NinjaPaginationResponseSchemaBiome | None:
-    """List all biomes
+    """ List all biomes
 
      List all biomes in the MGnify database.
 
@@ -148,16 +158,17 @@ def sync(
 
     Returns:
         NinjaPaginationResponseSchemaBiome
-    """
+     """
+
 
     return sync_detailed(
         client=client,
-        biome_lineage=biome_lineage,
-        max_depth=max_depth,
-        page=page,
-        page_size=page_size,
-    ).parsed
+biome_lineage=biome_lineage,
+max_depth=max_depth,
+page=page,
+page_size=page_size,
 
+    ).parsed
 
 async def asyncio_detailed(
     *,
@@ -166,8 +177,9 @@ async def asyncio_detailed(
     max_depth: int | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> Response[NinjaPaginationResponseSchemaBiome]:
-    """List all biomes
+    """ List all biomes
 
      List all biomes in the MGnify database.
 
@@ -184,19 +196,22 @@ async def asyncio_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaBiome]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         biome_lineage=biome_lineage,
-        max_depth=max_depth,
-        page=page,
-        page_size=page_size,
+max_depth=max_depth,
+page=page,
+page_size=page_size,
+
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await client.get_async_httpx_client().request(
+        **kwargs
+    )
 
     return _build_response(client=client, response=response)
-
 
 async def asyncio(
     *,
@@ -205,8 +220,9 @@ async def asyncio(
     max_depth: int | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> NinjaPaginationResponseSchemaBiome | None:
-    """List all biomes
+    """ List all biomes
 
      List all biomes in the MGnify database.
 
@@ -223,14 +239,14 @@ async def asyncio(
 
     Returns:
         NinjaPaginationResponseSchemaBiome
-    """
+     """
 
-    return (
-        await asyncio_detailed(
-            client=client,
-            biome_lineage=biome_lineage,
-            max_depth=max_depth,
-            page=page,
-            page_size=page_size,
-        )
-    ).parsed
+
+    return (await asyncio_detailed(
+        client=client,
+biome_lineage=biome_lineage,
+max_depth=max_depth,
+page=page,
+page_size=page_size,
+
+    )).parsed

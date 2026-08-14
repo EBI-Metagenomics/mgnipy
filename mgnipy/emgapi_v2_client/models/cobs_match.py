@@ -1,33 +1,44 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from ..types import UNSET, Unset
 from typing import cast
+
+
+
+
+
 
 T = TypeVar("T", bound="CobsMatch")
 
 
+
 @_attrs_define
 class CobsMatch:
-    """
-    Attributes:
-        genome (str):
-        percent_kmers_found (float | None | Unset):  Default: 0.0.
-        num_kmers (int | None | Unset):
-        num_kmers_found (int | None | Unset):
-    """
+    """ 
+        Attributes:
+            genome (str):
+            percent_kmers_found (float | None | Unset):  Default: 0.0.
+            num_kmers (int | None | Unset):
+            num_kmers_found (int | None | Unset):
+     """
 
     genome: str
     percent_kmers_found: float | None | Unset = 0.0
     num_kmers: int | None | Unset = UNSET
     num_kmers_found: int | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+
+
+
+
 
     def to_dict(self) -> dict[str, Any]:
         genome = self.genome
@@ -50,13 +61,12 @@ class CobsMatch:
         else:
             num_kmers_found = self.num_kmers_found
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "genome": genome,
-            }
-        )
+        field_dict.update({
+            "genome": genome,
+        })
         if percent_kmers_found is not UNSET:
             field_dict["percent_kmers_found"] = percent_kmers_found
         if num_kmers is not UNSET:
@@ -65,6 +75,8 @@ class CobsMatch:
             field_dict["num_kmers_found"] = num_kmers_found
 
         return field_dict
+
+
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
@@ -78,9 +90,8 @@ class CobsMatch:
                 return data
             return cast(float | None | Unset, data)
 
-        percent_kmers_found = _parse_percent_kmers_found(
-            d.pop("percent_kmers_found", UNSET)
-        )
+        percent_kmers_found = _parse_percent_kmers_found(d.pop("percent_kmers_found", UNSET))
+
 
         def _parse_num_kmers(data: object) -> int | None | Unset:
             if data is None:
@@ -91,6 +102,7 @@ class CobsMatch:
 
         num_kmers = _parse_num_kmers(d.pop("num_kmers", UNSET))
 
+
         def _parse_num_kmers_found(data: object) -> int | None | Unset:
             if data is None:
                 return data
@@ -100,12 +112,14 @@ class CobsMatch:
 
         num_kmers_found = _parse_num_kmers_found(d.pop("num_kmers_found", UNSET))
 
+
         cobs_match = cls(
             genome=genome,
             percent_kmers_found=percent_kmers_found,
             num_kmers=num_kmers,
             num_kmers_found=num_kmers_found,
         )
+
 
         cobs_match.additional_properties = d
         return cobs_match

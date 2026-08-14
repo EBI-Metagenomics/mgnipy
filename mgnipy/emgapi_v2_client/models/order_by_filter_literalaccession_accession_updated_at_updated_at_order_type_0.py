@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class OrderByFilterLiteralaccessionAccessionUpdatedAtUpdatedAtOrderType0(str, Enum):
     ACCESSION = "accession"
     UPDATED_AT = "updated_at"

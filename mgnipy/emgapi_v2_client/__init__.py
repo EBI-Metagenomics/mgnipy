@@ -1,5 +1,5 @@
-"""A client library for accessing MGnify API"""
 
+""" A client library for accessing MGnify API """
 from .client import AuthenticatedClient, Client
 
 __all__ = (

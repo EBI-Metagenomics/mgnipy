@@ -1,35 +1,43 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote
 
 import httpx
 
 from ...client import AuthenticatedClient, Client
-from ...types import Response
+from ...types import Response, UNSET
 from ... import errors
 
 from ...models.genome_catalogue_detail import GenomeCatalogueDetail
+from typing import cast
+
 
 
 def _get_kwargs(
     catalogue_id: str,
+
 ) -> dict[str, Any]:
+    
+
+    
+
+    
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/genomes/catalogues/{catalogue_id}".format(
-            catalogue_id=quote(str(catalogue_id), safe=""),
-        ),
+        "url": "/metagenomics/api/v2/genomes/catalogues/{catalogue_id}".format(catalogue_id=quote(str(catalogue_id), safe=""),),
     }
+
 
     return _kwargs
 
 
-def _parse_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> GenomeCatalogueDetail | None:
+
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> GenomeCatalogueDetail | None:
     if response.status_code == 200:
         response_200 = GenomeCatalogueDetail.from_dict(response.json())
+
+
 
         return response_200
 
@@ -39,9 +47,7 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[GenomeCatalogueDetail]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[GenomeCatalogueDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -53,9 +59,10 @@ def _build_response(
 def sync_detailed(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+
 ) -> Response[GenomeCatalogueDetail]:
-    """Get genome catalogue by ID
+    """ Get genome catalogue by ID
 
     Args:
         catalogue_id (str):
@@ -66,10 +73,12 @@ def sync_detailed(
 
     Returns:
         Response[GenomeCatalogueDetail]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         catalogue_id=catalogue_id,
+
     )
 
     response = client.get_httpx_client().request(
@@ -78,13 +87,13 @@ def sync_detailed(
 
     return _build_response(client=client, response=response)
 
-
 def sync(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+
 ) -> GenomeCatalogueDetail | None:
-    """Get genome catalogue by ID
+    """ Get genome catalogue by ID
 
     Args:
         catalogue_id (str):
@@ -95,20 +104,22 @@ def sync(
 
     Returns:
         GenomeCatalogueDetail
-    """
+     """
+
 
     return sync_detailed(
         catalogue_id=catalogue_id,
-        client=client,
-    ).parsed
+client=client,
 
+    ).parsed
 
 async def asyncio_detailed(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+
 ) -> Response[GenomeCatalogueDetail]:
-    """Get genome catalogue by ID
+    """ Get genome catalogue by ID
 
     Args:
         catalogue_id (str):
@@ -119,23 +130,27 @@ async def asyncio_detailed(
 
     Returns:
         Response[GenomeCatalogueDetail]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         catalogue_id=catalogue_id,
+
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await client.get_async_httpx_client().request(
+        **kwargs
+    )
 
     return _build_response(client=client, response=response)
-
 
 async def asyncio(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+
 ) -> GenomeCatalogueDetail | None:
-    """Get genome catalogue by ID
+    """ Get genome catalogue by ID
 
     Args:
         catalogue_id (str):
@@ -146,11 +161,11 @@ async def asyncio(
 
     Returns:
         GenomeCatalogueDetail
-    """
+     """
 
-    return (
-        await asyncio_detailed(
-            catalogue_id=catalogue_id,
-            client=client,
-        )
-    ).parsed
+
+    return (await asyncio_detailed(
+        catalogue_id=catalogue_id,
+client=client,
+
+    )).parsed

@@ -1,57 +1,69 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from ..types import UNSET, Unset
 from dateutil.parser import isoparse
 from typing import cast
 import datetime
 
 if TYPE_CHECKING:
-    from ..models.biome import Biome
-    from ..models.m_gnify_study_detail_metadata import MGnifyStudyDetailMetadata
-    from ..models.m_gnify_study_download_file import MGnifyStudyDownloadFile
+  from ..models.biome import Biome
+  from ..models.m_gnify_study_detail_metadata import MGnifyStudyDetailMetadata
+  from ..models.m_gnify_study_download_file import MGnifyStudyDownloadFile
+
+
+
 
 
 T = TypeVar("T", bound="MGnifyStudyDetail")
 
 
+
 @_attrs_define
 class MGnifyStudyDetail:
-    """
-    Attributes:
-        accession (str):
-        ena_accessions (list[str]):
-        title (str):
-        biome (Biome | None):
-        updated_at (datetime.datetime):
-        downloads (list[MGnifyStudyDownloadFile]):
-        metadata (MGnifyStudyDetailMetadata): Metadata associated with the study, a partial copy of the ENA Study
-            record.
-        first_accession (None | str | Unset): Preferred ENA accession for the study (derived from ENA/INSDC accessions)
-    """
+    """ 
+        Attributes:
+            accession (str):
+            ena_accessions (list[str]):
+            title (str):
+            biome (Biome | None):
+            updated_at (datetime.datetime):
+            metadata (MGnifyStudyDetailMetadata): Metadata associated with the study, a partial copy of the ENA Study
+                record.
+            downloads (list[MGnifyStudyDownloadFile]):
+            first_accession (None | str | Unset): Preferred ENA accession for the study (derived from ENA/INSDC accessions)
+     """
 
     accession: str
     ena_accessions: list[str]
     title: str
     biome: Biome | None
     updated_at: datetime.datetime
-    downloads: list[MGnifyStudyDownloadFile]
     metadata: MGnifyStudyDetailMetadata
+    downloads: list[MGnifyStudyDownloadFile]
     first_accession: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
         from ..models.biome import Biome
-
+        from ..models.m_gnify_study_download_file import MGnifyStudyDownloadFile
+        from ..models.m_gnify_study_detail_metadata import MGnifyStudyDetailMetadata
         accession = self.accession
 
         ena_accessions = self.ena_accessions
+
+
 
         title = self.title
 
@@ -63,12 +75,14 @@ class MGnifyStudyDetail:
 
         updated_at = self.updated_at.isoformat()
 
+        metadata = self.metadata.to_dict()
+
         downloads = []
         for downloads_item_data in self.downloads:
             downloads_item = downloads_item_data.to_dict()
             downloads.append(downloads_item)
 
-        metadata = self.metadata.to_dict()
+
 
         first_accession: None | str | Unset
         if isinstance(self.first_accession, Unset):
@@ -76,34 +90,35 @@ class MGnifyStudyDetail:
         else:
             first_accession = self.first_accession
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "accession": accession,
-                "ena_accessions": ena_accessions,
-                "title": title,
-                "biome": biome,
-                "updated_at": updated_at,
-                "downloads": downloads,
-                "metadata": metadata,
-            }
-        )
+        field_dict.update({
+            "accession": accession,
+            "ena_accessions": ena_accessions,
+            "title": title,
+            "biome": biome,
+            "updated_at": updated_at,
+            "metadata": metadata,
+            "downloads": downloads,
+        })
         if first_accession is not UNSET:
             field_dict["first_accession"] = first_accession
 
         return field_dict
+
+
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.biome import Biome
         from ..models.m_gnify_study_detail_metadata import MGnifyStudyDetailMetadata
         from ..models.m_gnify_study_download_file import MGnifyStudyDownloadFile
-
         d = dict(src_dict)
         accession = d.pop("accession")
 
         ena_accessions = cast(list[str], d.pop("ena_accessions"))
+
 
         title = d.pop("title")
 
@@ -115,6 +130,8 @@ class MGnifyStudyDetail:
                     raise TypeError()
                 biome_type_0 = Biome.from_dict(data)
 
+
+
                 return biome_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
@@ -122,16 +139,26 @@ class MGnifyStudyDetail:
 
         biome = _parse_biome(d.pop("biome"))
 
+
         updated_at = isoparse(d.pop("updated_at"))
+
+
+
+
+        metadata = MGnifyStudyDetailMetadata.from_dict(d.pop("metadata"))
+
+
+
 
         downloads = []
         _downloads = d.pop("downloads")
-        for downloads_item_data in _downloads:
+        for downloads_item_data in (_downloads):
             downloads_item = MGnifyStudyDownloadFile.from_dict(downloads_item_data)
+
+
 
             downloads.append(downloads_item)
 
-        metadata = MGnifyStudyDetailMetadata.from_dict(d.pop("metadata"))
 
         def _parse_first_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -142,16 +169,18 @@ class MGnifyStudyDetail:
 
         first_accession = _parse_first_accession(d.pop("first_accession", UNSET))
 
+
         m_gnify_study_detail = cls(
             accession=accession,
             ena_accessions=ena_accessions,
             title=title,
             biome=biome,
             updated_at=updated_at,
-            downloads=downloads,
             metadata=metadata,
+            downloads=downloads,
             first_accession=first_accession,
         )
+
 
         m_gnify_study_detail.additional_properties = d
         return m_gnify_study_detail

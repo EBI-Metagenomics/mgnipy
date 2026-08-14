@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class PipelineVersions(str, Enum):
     V1 = "V1"
     V2 = "V2"

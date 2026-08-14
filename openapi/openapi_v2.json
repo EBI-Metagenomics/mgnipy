@@ -793,6 +793,48 @@
         ]
       }
     },
+    "/metagenomics/api/v2/studies/insdc/{accession}": {
+      "get": {
+        "operationId": "get_mgnify_study_accession_by_insdc_accession",
+        "summary": "Find a MGnify study by its corresponding INSDC study/project accession",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accession",
+            "schema": {
+              "title": "Accession",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MGnifyStudyAccessionLookup"
+                }
+              }
+            },
+            "links": {
+              "GetStudyForStudyAccession": {
+                "operationId": "get_mgnify_study",
+                "parameters": {
+                  "accession": "$response.body#/accession"
+                },
+                "description": "The accession is an identifier that can be used to access the Study detail"
+              }
+            }
+          }
+        },
+        "description": "Returns the MGnify study accession corresponding to an INSDC study/project accession.",
+        "tags": [
+          "Studies"
+        ]
+      }
+    },
     "/metagenomics/api/v2/studies/{accession}": {
       "get": {
         "operationId": "get_mgnify_study",
@@ -1346,6 +1388,22 @@
               "type": "string"
             },
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "catalogue_id",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Catalogue Id"
+            },
+            "required": false
           }
         ],
         "responses": {
@@ -1372,6 +1430,14 @@
         "description": "MGnify Genomes are either isolates, or MAGs derived from binned metagenomes.",
         "tags": [
           "Genomes"
+        ],
+        "security": [
+          {
+            "WebinJWTAuth": []
+          },
+          {
+            "NoAuth": []
+          }
         ]
       }
     },
@@ -1388,6 +1454,22 @@
               "type": "string"
             },
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "catalogue_id",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Catalogue Id"
+            },
+            "required": false
           }
         ],
         "responses": {
@@ -1405,6 +1487,14 @@
         "description": "Annotations are taxonomic and functional assignments for the genome.",
         "tags": [
           "Genomes"
+        ],
+        "security": [
+          {
+            "WebinJWTAuth": []
+          },
+          {
+            "NoAuth": []
+          }
         ]
       }
     },
@@ -1474,7 +1564,7 @@
               ],
               "description": "Search with genome taxonomies and accessions",
               "q": [
-                "accession",
+                "genome__accession",
                 "taxon_lineage__icontains",
                 "catalogue__catalogue_id__icontains"
               ],
@@ -1579,6 +1669,14 @@
         "description": "MGnify Genomes Catalogues are biome-specific collections of isolate and MAG genomes.",
         "tags": [
           "Genomes"
+        ],
+        "security": [
+          {
+            "WebinJWTAuth": []
+          },
+          {
+            "NoAuth": []
+          }
         ]
       }
     },
@@ -1611,6 +1709,14 @@
         },
         "tags": [
           "Genomes"
+        ],
+        "security": [
+          {
+            "WebinJWTAuth": []
+          },
+          {
+            "NoAuth": []
+          }
         ]
       }
     },
@@ -1689,7 +1795,7 @@
               ],
               "description": "Search with genome taxonomies and accessions",
               "q": [
-                "accession",
+                "genome__accession",
                 "taxon_lineage__icontains",
                 "catalogue__catalogue_id__icontains"
               ],
@@ -1741,6 +1847,14 @@
         },
         "tags": [
           "Genomes"
+        ],
+        "security": [
+          {
+            "WebinJWTAuth": []
+          },
+          {
+            "NoAuth": []
+          }
         ]
       }
     },
@@ -3659,6 +3773,41 @@
         "title": "NinjaPaginationResponseSchema[MGnifyAnalysisTypedAnnotation]",
         "type": "object"
       },
+      "ENAStudyFields": {
+        "enum": [
+          "breed",
+          "broker_name",
+          "center_name",
+          "cultivar",
+          "datahub",
+          "description",
+          "first_public",
+          "geo_accession",
+          "isolate",
+          "keywords",
+          "last_updated",
+          "parent_study_accession",
+          "project_name",
+          "scientific_name",
+          "secondary_study_accession",
+          "secondary_study_alias",
+          "secondary_study_center_name",
+          "status",
+          "strain",
+          "study_accession",
+          "study_alias",
+          "study_description",
+          "study_name",
+          "study_title",
+          "submission_tool",
+          "tag",
+          "tax_division",
+          "tax_id",
+          "tax_lineage"
+        ],
+        "title": "ENAStudyFields",
+        "type": "string"
+      },
       "MGnifyPublicationDetail": {
         "properties": {
           "pubmed_id": {
@@ -3762,6 +3911,25 @@
             "format": "date-time",
             "title": "Updated At",
             "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "description": "Metadata associated with the study, a partial copy of the ENA Study record.",
+            "examples": [
+              {
+                "center_name": "NASA",
+                "study_description": "Dust was taken from a vacuum cleaner on the Internal Space Station.",
+                "study_title": "ISS Metagenomes"
+              },
+              {
+                "study_title": "Healthy stool samples"
+              }
+            ],
+            "propertyNames": {
+              "$ref": "#/components/schemas/ENAStudyFields"
+            },
+            "title": "Metadata",
+            "type": "object"
           }
         },
         "required": [
@@ -3769,7 +3937,8 @@
           "ena_accessions",
           "title",
           "biome",
-          "updated_at"
+          "updated_at",
+          "metadata"
         ],
         "title": "MGnifyStudy",
         "type": "object"
@@ -4642,40 +4811,22 @@
         "title": "NinjaPaginationResponseSchema[AssemblyDetail]",
         "type": "object"
       },
-      "ENAStudyFields": {
-        "enum": [
-          "breed",
-          "broker_name",
-          "center_name",
-          "cultivar",
-          "datahub",
-          "description",
-          "first_public",
-          "geo_accession",
-          "isolate",
-          "keywords",
-          "last_updated",
-          "parent_study_accession",
-          "project_name",
-          "scientific_name",
-          "secondary_study_accession",
-          "secondary_study_alias",
-          "secondary_study_center_name",
-          "status",
-          "strain",
-          "study_accession",
-          "study_alias",
-          "study_description",
-          "study_name",
-          "study_title",
-          "submission_tool",
-          "tag",
-          "tax_division",
-          "tax_id",
-          "tax_lineage"
+      "MGnifyStudyAccessionLookup": {
+        "properties": {
+          "accession": {
+            "description": "The MGnify study accession corresponding to the requested INSDC study/project accession.",
+            "examples": [
+              "MGYS00000001"
+            ],
+            "title": "Accession",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accession"
         ],
-        "title": "ENAStudyFields",
-        "type": "string"
+        "title": "MGnifyStudyAccessionLookup",
+        "type": "object"
       },
       "MGnifyStudyDetail": {
         "properties": {
@@ -4724,6 +4875,25 @@
             "title": "Updated At",
             "type": "string"
           },
+          "metadata": {
+            "additionalProperties": true,
+            "description": "Metadata associated with the study, a partial copy of the ENA Study record.",
+            "examples": [
+              {
+                "center_name": "NASA",
+                "study_description": "Dust was taken from a vacuum cleaner on the Internal Space Station.",
+                "study_title": "ISS Metagenomes"
+              },
+              {
+                "study_title": "Healthy stool samples"
+              }
+            ],
+            "propertyNames": {
+              "$ref": "#/components/schemas/ENAStudyFields"
+            },
+            "title": "Metadata",
+            "type": "object"
+          },
           "first_accession": {
             "anyOf": [
               {
@@ -4746,25 +4916,6 @@
             },
             "title": "Downloads",
             "type": "array"
-          },
-          "metadata": {
-            "additionalProperties": true,
-            "description": "Metadata associated with the study, a partial copy of the ENA Study record.",
-            "examples": [
-              {
-                "center_name": "NASA",
-                "study_description": "Dust was taken from a vacuum cleaner on the Internal Space Station.",
-                "study_title": "ISS Metagenomes"
-              },
-              {
-                "study_title": "Healthy stool samples"
-              }
-            ],
-            "propertyNames": {
-              "$ref": "#/components/schemas/ENAStudyFields"
-            },
-            "title": "Metadata",
-            "type": "object"
           }
         },
         "required": [
@@ -4773,8 +4924,8 @@
           "title",
           "biome",
           "updated_at",
-          "downloads",
-          "metadata"
+          "metadata",
+          "downloads"
         ],
         "title": "MGnifyStudyDetail",
         "type": "object"
@@ -5267,6 +5418,16 @@
             "title": "Name",
             "type": "string"
           },
+          "status": {
+            "enum": [
+              "draft",
+              "ready",
+              "published",
+              "retired"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
           "description": {
             "anyOf": [
               {
@@ -5405,6 +5566,7 @@
           "catalogue_id",
           "version",
           "name",
+          "status",
           "description",
           "protein_catalogue_description",
           "updated_at",
@@ -5709,6 +5871,16 @@
             "title": "Name",
             "type": "string"
           },
+          "status": {
+            "enum": [
+              "draft",
+              "ready",
+              "published",
+              "retired"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
           "description": {
             "anyOf": [
               {
@@ -5847,6 +6019,7 @@
           "catalogue_id",
           "version",
           "name",
+          "status",
           "description",
           "protein_catalogue_description",
           "updated_at",
@@ -6156,6 +6329,39 @@
             ],
             "title": "Num Proteins"
           },
+          "pangenome_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pangenome Size"
+          },
+          "pangenome_core_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pangenome Core Size"
+          },
+          "pangenome_accessory_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pangenome Accessory Size"
+          },
           "downloads": {
             "items": {
               "$ref": "#/components/schemas/MGnifyGenomeDownloadFile"
@@ -6367,7 +6573,7 @@
             ],
             "description": "Search with genome taxonomies and accessions",
             "q": [
-              "accession",
+              "genome__accession",
               "taxon_lineage__icontains",
               "catalogue__catalogue_id__icontains"
             ],
@@ -6502,8 +6708,15 @@
             "type": "integer"
           },
           "num_genomes_total": {
-            "title": "Num Genomes Total",
-            "type": "integer"
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Genomes Total"
           },
           "n_50": {
             "title": "N 50",
@@ -6663,6 +6876,16 @@
             "title": "Name",
             "type": "string"
           },
+          "status": {
+            "enum": [
+              "draft",
+              "ready",
+              "published",
+              "retired"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
           "description": {
             "anyOf": [
               {
@@ -6801,6 +7024,7 @@
           "catalogue_id",
           "version",
           "name",
+          "status",
           "description",
           "protein_catalogue_description",
           "updated_at",

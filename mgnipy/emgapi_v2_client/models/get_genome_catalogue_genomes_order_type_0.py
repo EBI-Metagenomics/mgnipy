@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class GetGenomeCatalogueGenomesOrderType0(str, Enum):
     ACCESSION = "accession"
     COMPLETENESS = "completeness"

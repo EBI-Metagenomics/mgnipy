@@ -70,24 +70,24 @@ mv "$FOLDER_PATH/$PROJECT_NAME_TWO/$PACKAGE_DIR_TWO" "$DEST_V2_DIR"
 
 ##------------------FOR API V1------------------##
 # config
-PROJECT_NAME_ONE="$(read_yaml_key "$CONFIG_V1" "project_name_override")"
-PACKAGE_NAME_ONE="$(read_yaml_key "$CONFIG_V1" "package_name_override")"
-# Fallbacks if config keys are missing
-PROJECT_NAME_ONE=${PROJECT_NAME_ONE:-"emgapi-v1-client"}
-PACKAGE_NAME_ONE=${PACKAGE_NAME_ONE:-"emgapi_v1_client"}
-# Normalize package dirs for filesystem/import safety
-PACKAGE_DIR_ONE="${PACKAGE_NAME_ONE//-/_}"
+# PROJECT_NAME_ONE="$(read_yaml_key "$CONFIG_V1" "project_name_override")"
+# PACKAGE_NAME_ONE="$(read_yaml_key "$CONFIG_V1" "package_name_override")"
+# # Fallbacks if config keys are missing
+# PROJECT_NAME_ONE=${PROJECT_NAME_ONE:-"emgapi-v1-client"}
+# PACKAGE_NAME_ONE=${PACKAGE_NAME_ONE:-"emgapi_v1_client"}
+# # Normalize package dirs for filesystem/import safety
+# PACKAGE_DIR_ONE="${PACKAGE_NAME_ONE//-/_}"
 
 
-# file downloaded from https://www.ebi.ac.uk/metagenomics/api/schema
-curl -fL "https://www.ebi.ac.uk/metagenomics/api/schema" \
-    -o "$V1_SCHEMA_FILE"
+# # file downloaded from https://www.ebi.ac.uk/metagenomics/api/schema
+# curl -fL "https://www.ebi.ac.uk/metagenomics/api/schema" \
+#     -o "$V1_SCHEMA_FILE"
 
-openapi-python-client generate \
-    --path "$V1_SCHEMA_FILE" \
-    --output-path "$FOLDER_PATH/$PROJECT_NAME_ONE" \
-    --config "$CONFIG_V1" \
-    --overwrite
+# openapi-python-client generate \
+#     --path "$V1_SCHEMA_FILE" \
+#     --output-path "$FOLDER_PATH/$PROJECT_NAME_ONE" \
+#     --config "$CONFIG_V1" \
+#     --overwrite
 
 ### uncomment below to move the generated modules into mgnipy based on config
 ### WARNING: this will overwrite any existing files in the destination directories, so use with caution and make sure to have backups or version control

@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class ListMgnifyStudiesOrderType0(str, Enum):
     ACCESSION = "accession"
     UPDATED_AT = "updated_at"

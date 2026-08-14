@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class DownloadFileIndexFileIndexType(str, Enum):
     CSI = "csi"
     FAI = "fai"

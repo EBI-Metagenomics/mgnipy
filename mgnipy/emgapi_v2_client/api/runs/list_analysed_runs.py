@@ -1,5 +1,6 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
+from urllib.parse import quote
 
 import httpx
 
@@ -8,10 +9,10 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.experiment_types import ExperimentTypes
-from ...models.ninja_pagination_response_schema_analysed_run import (
-    NinjaPaginationResponseSchemaAnalysedRun,
-)
-from ...types import Unset
+from ...models.ninja_pagination_response_schema_analysed_run import NinjaPaginationResponseSchemaAnalysedRun
+from ...types import UNSET, Unset
+from typing import cast
+
 
 
 def _get_kwargs(
@@ -19,7 +20,11 @@ def _get_kwargs(
     has_experiment_type: ExperimentTypes | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> dict[str, Any]:
+    
+
+    
 
     params: dict[str, Any] = {}
 
@@ -41,7 +46,9 @@ def _get_kwargs(
         json_page_size = page_size
     params["page_size"] = json_page_size
 
+
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
 
     _kwargs: dict[str, Any] = {
         "method": "get",
@@ -49,16 +56,16 @@ def _get_kwargs(
         "params": params,
     }
 
+
     return _kwargs
 
 
-def _parse_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> NinjaPaginationResponseSchemaAnalysedRun | None:
+
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> NinjaPaginationResponseSchemaAnalysedRun | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaAnalysedRun.from_dict(
-            response.json()
-        )
+        response_200 = NinjaPaginationResponseSchemaAnalysedRun.from_dict(response.json())
+
+
 
         return response_200
 
@@ -68,9 +75,7 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[NinjaPaginationResponseSchemaAnalysedRun]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[NinjaPaginationResponseSchemaAnalysedRun]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -85,8 +90,9 @@ def sync_detailed(
     has_experiment_type: ExperimentTypes | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> Response[NinjaPaginationResponseSchemaAnalysedRun]:
-    """List all analysed runs
+    """ List all analysed runs
 
      List all analysed runs in the MGnify database.
 
@@ -102,12 +108,14 @@ def sync_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaAnalysedRun]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         has_experiment_type=has_experiment_type,
-        page=page,
-        page_size=page_size,
+page=page,
+page_size=page_size,
+
     )
 
     response = client.get_httpx_client().request(
@@ -116,15 +124,15 @@ def sync_detailed(
 
     return _build_response(client=client, response=response)
 
-
 def sync(
     *,
     client: AuthenticatedClient,
     has_experiment_type: ExperimentTypes | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> NinjaPaginationResponseSchemaAnalysedRun | None:
-    """List all analysed runs
+    """ List all analysed runs
 
      List all analysed runs in the MGnify database.
 
@@ -140,15 +148,16 @@ def sync(
 
     Returns:
         NinjaPaginationResponseSchemaAnalysedRun
-    """
+     """
+
 
     return sync_detailed(
         client=client,
-        has_experiment_type=has_experiment_type,
-        page=page,
-        page_size=page_size,
-    ).parsed
+has_experiment_type=has_experiment_type,
+page=page,
+page_size=page_size,
 
+    ).parsed
 
 async def asyncio_detailed(
     *,
@@ -156,8 +165,9 @@ async def asyncio_detailed(
     has_experiment_type: ExperimentTypes | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> Response[NinjaPaginationResponseSchemaAnalysedRun]:
-    """List all analysed runs
+    """ List all analysed runs
 
      List all analysed runs in the MGnify database.
 
@@ -173,18 +183,21 @@ async def asyncio_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaAnalysedRun]
-    """
+     """
+
 
     kwargs = _get_kwargs(
         has_experiment_type=has_experiment_type,
-        page=page,
-        page_size=page_size,
+page=page,
+page_size=page_size,
+
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await client.get_async_httpx_client().request(
+        **kwargs
+    )
 
     return _build_response(client=client, response=response)
-
 
 async def asyncio(
     *,
@@ -192,8 +205,9 @@ async def asyncio(
     has_experiment_type: ExperimentTypes | None | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
+
 ) -> NinjaPaginationResponseSchemaAnalysedRun | None:
-    """List all analysed runs
+    """ List all analysed runs
 
      List all analysed runs in the MGnify database.
 
@@ -209,13 +223,13 @@ async def asyncio(
 
     Returns:
         NinjaPaginationResponseSchemaAnalysedRun
-    """
+     """
 
-    return (
-        await asyncio_detailed(
-            client=client,
-            has_experiment_type=has_experiment_type,
-            page=page,
-            page_size=page_size,
-        )
-    ).parsed
+
+    return (await asyncio_detailed(
+        client=client,
+has_experiment_type=has_experiment_type,
+page=page,
+page_size=page_size,
+
+    )).parsed

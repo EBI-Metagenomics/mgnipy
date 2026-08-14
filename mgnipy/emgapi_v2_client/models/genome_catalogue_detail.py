@@ -1,60 +1,62 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from ..models.genome_catalogue_detail_catalogue_type import (
-    GenomeCatalogueDetailCatalogueType,
-)
+from ..models.genome_catalogue_detail_catalogue_type import GenomeCatalogueDetailCatalogueType
+from ..models.genome_catalogue_detail_status import GenomeCatalogueDetailStatus
+from ..types import UNSET, Unset
 from dateutil.parser import isoparse
 from typing import cast
 import datetime
 
 if TYPE_CHECKING:
-    from ..models.biome import Biome
-    from ..models.genome_catalogue_detail_other_stats_type_0 import (
-        GenomeCatalogueDetailOtherStatsType0,
-    )
-    from ..models.m_gnify_genome_catalogue_download_file import (
-        MGnifyGenomeCatalogueDownloadFile,
-    )
+  from ..models.biome import Biome
+  from ..models.genome_catalogue_detail_other_stats_type_0 import GenomeCatalogueDetailOtherStatsType0
+  from ..models.m_gnify_genome_catalogue_download_file import MGnifyGenomeCatalogueDownloadFile
+
+
+
 
 
 T = TypeVar("T", bound="GenomeCatalogueDetail")
 
 
+
 @_attrs_define
 class GenomeCatalogueDetail:
-    """
-    Attributes:
-        catalogue_id (str):
-        version (str):
-        name (str):
-        description (None | str):
-        protein_catalogue_description (None | str):
-        updated_at (datetime.datetime):
-        result_directory (None | str):
-        unclustered_genome_count (int | None): Total number of genomes in the catalogue, including non-cluster-
-            representatives not available via this API.
-        ftp_url (str):
-        pipeline_version_tag (str):
-        catalogue_biome_label (str):
-        catalogue_type (GenomeCatalogueDetailCatalogueType):
-        other_stats (GenomeCatalogueDetailOtherStatsType0 | None):
-        downloads (list[MGnifyGenomeCatalogueDownloadFile]):
-        protein_catalogue_name (None | str | Unset):
-        genome_count (int | None | Unset):
-        biome (Biome | None | Unset):
-    """
+    """ 
+        Attributes:
+            catalogue_id (str):
+            version (str):
+            name (str):
+            status (GenomeCatalogueDetailStatus):
+            description (None | str):
+            protein_catalogue_description (None | str):
+            updated_at (datetime.datetime):
+            result_directory (None | str):
+            unclustered_genome_count (int | None): Total number of genomes in the catalogue, including non-cluster-
+                representatives not available via this API.
+            ftp_url (str):
+            pipeline_version_tag (str):
+            catalogue_biome_label (str):
+            catalogue_type (GenomeCatalogueDetailCatalogueType):
+            other_stats (GenomeCatalogueDetailOtherStatsType0 | None):
+            downloads (list[MGnifyGenomeCatalogueDownloadFile]):
+            protein_catalogue_name (None | str | Unset):
+            genome_count (int | None | Unset):
+            biome (Biome | None | Unset):
+     """
 
     catalogue_id: str
     version: str
     name: str
+    status: GenomeCatalogueDetailStatus
     description: None | str
     protein_catalogue_description: None | str
     updated_at: datetime.datetime
@@ -71,17 +73,21 @@ class GenomeCatalogueDetail:
     biome: Biome | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-    def to_dict(self) -> dict[str, Any]:
-        from ..models.genome_catalogue_detail_other_stats_type_0 import (
-            GenomeCatalogueDetailOtherStatsType0,
-        )
-        from ..models.biome import Biome
 
+
+
+
+    def to_dict(self) -> dict[str, Any]:
+        from ..models.biome import Biome
+        from ..models.genome_catalogue_detail_other_stats_type_0 import GenomeCatalogueDetailOtherStatsType0
+        from ..models.m_gnify_genome_catalogue_download_file import MGnifyGenomeCatalogueDownloadFile
         catalogue_id = self.catalogue_id
 
         version = self.version
 
         name = self.name
+
+        status = self.status.value
 
         description: None | str
         description = self.description
@@ -116,6 +122,8 @@ class GenomeCatalogueDetail:
             downloads_item = downloads_item_data.to_dict()
             downloads.append(downloads_item)
 
+
+
         protein_catalogue_name: None | str | Unset
         if isinstance(self.protein_catalogue_name, Unset):
             protein_catalogue_name = UNSET
@@ -136,26 +144,26 @@ class GenomeCatalogueDetail:
         else:
             biome = self.biome
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "catalogue_id": catalogue_id,
-                "version": version,
-                "name": name,
-                "description": description,
-                "protein_catalogue_description": protein_catalogue_description,
-                "updated_at": updated_at,
-                "result_directory": result_directory,
-                "unclustered_genome_count": unclustered_genome_count,
-                "ftp_url": ftp_url,
-                "pipeline_version_tag": pipeline_version_tag,
-                "catalogue_biome_label": catalogue_biome_label,
-                "catalogue_type": catalogue_type,
-                "other_stats": other_stats,
-                "downloads": downloads,
-            }
-        )
+        field_dict.update({
+            "catalogue_id": catalogue_id,
+            "version": version,
+            "name": name,
+            "status": status,
+            "description": description,
+            "protein_catalogue_description": protein_catalogue_description,
+            "updated_at": updated_at,
+            "result_directory": result_directory,
+            "unclustered_genome_count": unclustered_genome_count,
+            "ftp_url": ftp_url,
+            "pipeline_version_tag": pipeline_version_tag,
+            "catalogue_biome_label": catalogue_biome_label,
+            "catalogue_type": catalogue_type,
+            "other_stats": other_stats,
+            "downloads": downloads,
+        })
         if protein_catalogue_name is not UNSET:
             field_dict["protein_catalogue_name"] = protein_catalogue_name
         if genome_count is not UNSET:
@@ -165,22 +173,24 @@ class GenomeCatalogueDetail:
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.biome import Biome
-        from ..models.genome_catalogue_detail_other_stats_type_0 import (
-            GenomeCatalogueDetailOtherStatsType0,
-        )
-        from ..models.m_gnify_genome_catalogue_download_file import (
-            MGnifyGenomeCatalogueDownloadFile,
-        )
-
+        from ..models.genome_catalogue_detail_other_stats_type_0 import GenomeCatalogueDetailOtherStatsType0
+        from ..models.m_gnify_genome_catalogue_download_file import MGnifyGenomeCatalogueDownloadFile
         d = dict(src_dict)
         catalogue_id = d.pop("catalogue_id")
 
         version = d.pop("version")
 
         name = d.pop("name")
+
+        status = GenomeCatalogueDetailStatus(d.pop("status"))
+
+
+
 
         def _parse_description(data: object) -> None | str:
             if data is None:
@@ -189,16 +199,19 @@ class GenomeCatalogueDetail:
 
         description = _parse_description(d.pop("description"))
 
+
         def _parse_protein_catalogue_description(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        protein_catalogue_description = _parse_protein_catalogue_description(
-            d.pop("protein_catalogue_description")
-        )
+        protein_catalogue_description = _parse_protein_catalogue_description(d.pop("protein_catalogue_description"))
+
 
         updated_at = isoparse(d.pop("updated_at"))
+
+
+
 
         def _parse_result_directory(data: object) -> None | str:
             if data is None:
@@ -207,14 +220,14 @@ class GenomeCatalogueDetail:
 
         result_directory = _parse_result_directory(d.pop("result_directory"))
 
+
         def _parse_unclustered_genome_count(data: object) -> int | None:
             if data is None:
                 return data
             return cast(int | None, data)
 
-        unclustered_genome_count = _parse_unclustered_genome_count(
-            d.pop("unclustered_genome_count")
-        )
+        unclustered_genome_count = _parse_unclustered_genome_count(d.pop("unclustered_genome_count"))
+
 
         ftp_url = d.pop("ftp_url")
 
@@ -224,17 +237,18 @@ class GenomeCatalogueDetail:
 
         catalogue_type = GenomeCatalogueDetailCatalogueType(d.pop("catalogue_type"))
 
-        def _parse_other_stats(
-            data: object,
-        ) -> GenomeCatalogueDetailOtherStatsType0 | None:
+
+
+
+        def _parse_other_stats(data: object) -> GenomeCatalogueDetailOtherStatsType0 | None:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                other_stats_type_0 = GenomeCatalogueDetailOtherStatsType0.from_dict(
-                    data
-                )
+                other_stats_type_0 = GenomeCatalogueDetailOtherStatsType0.from_dict(data)
+
+
 
                 return other_stats_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -243,14 +257,16 @@ class GenomeCatalogueDetail:
 
         other_stats = _parse_other_stats(d.pop("other_stats"))
 
+
         downloads = []
         _downloads = d.pop("downloads")
-        for downloads_item_data in _downloads:
-            downloads_item = MGnifyGenomeCatalogueDownloadFile.from_dict(
-                downloads_item_data
-            )
+        for downloads_item_data in (_downloads):
+            downloads_item = MGnifyGenomeCatalogueDownloadFile.from_dict(downloads_item_data)
+
+
 
             downloads.append(downloads_item)
+
 
         def _parse_protein_catalogue_name(data: object) -> None | str | Unset:
             if data is None:
@@ -259,9 +275,8 @@ class GenomeCatalogueDetail:
                 return data
             return cast(None | str | Unset, data)
 
-        protein_catalogue_name = _parse_protein_catalogue_name(
-            d.pop("protein_catalogue_name", UNSET)
-        )
+        protein_catalogue_name = _parse_protein_catalogue_name(d.pop("protein_catalogue_name", UNSET))
+
 
         def _parse_genome_count(data: object) -> int | None | Unset:
             if data is None:
@@ -271,6 +286,7 @@ class GenomeCatalogueDetail:
             return cast(int | None | Unset, data)
 
         genome_count = _parse_genome_count(d.pop("genome_count", UNSET))
+
 
         def _parse_biome(data: object) -> Biome | None | Unset:
             if data is None:
@@ -282,6 +298,8 @@ class GenomeCatalogueDetail:
                     raise TypeError()
                 biome_type_0 = Biome.from_dict(data)
 
+
+
                 return biome_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
@@ -289,10 +307,12 @@ class GenomeCatalogueDetail:
 
         biome = _parse_biome(d.pop("biome", UNSET))
 
+
         genome_catalogue_detail = cls(
             catalogue_id=catalogue_id,
             version=version,
             name=name,
+            status=status,
             description=description,
             protein_catalogue_description=protein_catalogue_description,
             updated_at=updated_at,
@@ -308,6 +328,7 @@ class GenomeCatalogueDetail:
             genome_count=genome_count,
             biome=biome,
         )
+
 
         genome_catalogue_detail.additional_properties = d
         return genome_catalogue_detail

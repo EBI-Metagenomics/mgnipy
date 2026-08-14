@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class DownloadFileType(str, Enum):
     BIOM = "biom"
     CSV = "csv"

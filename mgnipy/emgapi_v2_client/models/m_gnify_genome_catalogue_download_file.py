@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -10,18 +10,23 @@ from ..types import UNSET, Unset
 
 from ..models.download_file_type import DownloadFileType
 from ..models.download_type import DownloadType
+from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
-    from ..models.download_file_index_file import DownloadFileIndexFile
+  from ..models.download_file_index_file import DownloadFileIndexFile
+
+
+
 
 
 T = TypeVar("T", bound="MGnifyGenomeCatalogueDownloadFile")
 
 
+
 @_attrs_define
 class MGnifyGenomeCatalogueDownloadFile:
-    """Download file representation for GenomeCatalogue objects.
+    """ Download file representation for GenomeCatalogue objects.
 
     Resolves a public URL using the catalogue's result_directory, if available.
 
@@ -37,7 +42,7 @@ class MGnifyGenomeCatalogueDownloadFile:
             index_file (DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset):
             parent_identifier (int | str | Unset):
             url (None | str | Unset):
-    """
+     """
 
     file_type: DownloadFileType
     download_type: DownloadType
@@ -47,16 +52,17 @@ class MGnifyGenomeCatalogueDownloadFile:
     download_group: None | str | Unset = UNSET
     path: str | Unset = UNSET
     file_size_bytes: int | None | Unset = UNSET
-    index_file: DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset = (
-        UNSET
-    )
+    index_file: DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset = UNSET
     parent_identifier: int | str | Unset = UNSET
     url: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
+
+
+
+
     def to_dict(self) -> dict[str, Any]:
         from ..models.download_file_index_file import DownloadFileIndexFile
-
         file_type = self.file_type.value
 
         download_type = self.download_type.value
@@ -92,6 +98,7 @@ class MGnifyGenomeCatalogueDownloadFile:
                 index_file_type_1_item = index_file_type_1_item_data.to_dict()
                 index_file.append(index_file_type_1_item)
 
+
         else:
             index_file = self.index_file
 
@@ -107,17 +114,16 @@ class MGnifyGenomeCatalogueDownloadFile:
         else:
             url = self.url
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "file_type": file_type,
-                "download_type": download_type,
-                "short_description": short_description,
-                "long_description": long_description,
-                "alias": alias,
-            }
-        )
+        field_dict.update({
+            "file_type": file_type,
+            "download_type": download_type,
+            "short_description": short_description,
+            "long_description": long_description,
+            "alias": alias,
+        })
         if download_group is not UNSET:
             field_dict["download_group"] = download_group
         if path is not UNSET:
@@ -133,14 +139,21 @@ class MGnifyGenomeCatalogueDownloadFile:
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.download_file_index_file import DownloadFileIndexFile
-
         d = dict(src_dict)
         file_type = DownloadFileType(d.pop("file_type"))
 
+
+
+
         download_type = DownloadType(d.pop("download_type"))
+
+
+
 
         short_description = d.pop("short_description")
 
@@ -157,6 +170,7 @@ class MGnifyGenomeCatalogueDownloadFile:
 
         download_group = _parse_download_group(d.pop("download_group", UNSET))
 
+
         path = d.pop("path", UNSET)
 
         def _parse_file_size_bytes(data: object) -> int | None | Unset:
@@ -168,9 +182,8 @@ class MGnifyGenomeCatalogueDownloadFile:
 
         file_size_bytes = _parse_file_size_bytes(d.pop("file_size_bytes", UNSET))
 
-        def _parse_index_file(
-            data: object,
-        ) -> DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset:
+
+        def _parse_index_file(data: object) -> DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -180,6 +193,8 @@ class MGnifyGenomeCatalogueDownloadFile:
                     raise TypeError()
                 index_file_type_0 = DownloadFileIndexFile.from_dict(data)
 
+
+
                 return index_file_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
@@ -188,21 +203,20 @@ class MGnifyGenomeCatalogueDownloadFile:
                     raise TypeError()
                 index_file_type_1 = []
                 _index_file_type_1 = data
-                for index_file_type_1_item_data in _index_file_type_1:
-                    index_file_type_1_item = DownloadFileIndexFile.from_dict(
-                        index_file_type_1_item_data
-                    )
+                for index_file_type_1_item_data in (_index_file_type_1):
+                    index_file_type_1_item = DownloadFileIndexFile.from_dict(index_file_type_1_item_data)
+
+
 
                     index_file_type_1.append(index_file_type_1_item)
 
                 return index_file_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(
-                DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset, data
-            )
+            return cast(DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset, data)
 
         index_file = _parse_index_file(d.pop("index_file", UNSET))
+
 
         def _parse_parent_identifier(data: object) -> int | str | Unset:
             if isinstance(data, Unset):
@@ -210,6 +224,7 @@ class MGnifyGenomeCatalogueDownloadFile:
             return cast(int | str | Unset, data)
 
         parent_identifier = _parse_parent_identifier(d.pop("parent_identifier", UNSET))
+
 
         def _parse_url(data: object) -> None | str | Unset:
             if data is None:
@@ -219,6 +234,7 @@ class MGnifyGenomeCatalogueDownloadFile:
             return cast(None | str | Unset, data)
 
         url = _parse_url(d.pop("url", UNSET))
+
 
         m_gnify_genome_catalogue_download_file = cls(
             file_type=file_type,
@@ -233,6 +249,7 @@ class MGnifyGenomeCatalogueDownloadFile:
             parent_identifier=parent_identifier,
             url=url,
         )
+
 
         m_gnify_genome_catalogue_download_file.additional_properties = d
         return m_gnify_genome_catalogue_download_file

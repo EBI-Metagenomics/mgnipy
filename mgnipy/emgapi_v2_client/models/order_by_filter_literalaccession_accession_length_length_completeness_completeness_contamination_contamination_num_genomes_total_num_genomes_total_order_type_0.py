@@ -1,9 +1,6 @@
 from enum import Enum
 
-
-class OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompletenessContaminationContaminationNumGenomesTotalNumGenomesTotalOrderType0(
-    str, Enum
-):
+class OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompletenessContaminationContaminationNumGenomesTotalNumGenomesTotalOrderType0(str, Enum):
     ACCESSION = "accession"
     COMPLETENESS = "completeness"
     CONTAMINATION = "contamination"

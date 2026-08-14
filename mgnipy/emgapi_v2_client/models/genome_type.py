@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class GenomeType(str, Enum):
     ISOLATE = "Isolate"
     MAG = "MAG"

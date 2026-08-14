@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -9,23 +9,34 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 from ..models.download_file_index_file_index_type import DownloadFileIndexFileIndexType
+from ..types import UNSET, Unset
 from typing import cast
+
+
+
+
+
 
 T = TypeVar("T", bound="DownloadFileIndexFile")
 
 
+
 @_attrs_define
 class DownloadFileIndexFile:
-    """An index file (e.g., a .fai for a FASTA file of .gzi for a bgzip file) of a DownloadFile.
+    """ An index file (e.g., a .fai for a FASTA file of .gzi for a bgzip file) of a DownloadFile.
 
-    Attributes:
-        index_type (DownloadFileIndexFileIndexType):
-        path (str | Unset):
-    """
+        Attributes:
+            index_type (DownloadFileIndexFileIndexType):
+            path (str | Unset):
+     """
 
     index_type: DownloadFileIndexFileIndexType
     path: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+
+
+
+
 
     def to_dict(self) -> dict[str, Any]:
         index_type = self.index_type.value
@@ -36,22 +47,26 @@ class DownloadFileIndexFile:
         else:
             path = self.path
 
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "index_type": index_type,
-            }
-        )
+        field_dict.update({
+            "index_type": index_type,
+        })
         if path is not UNSET:
             field_dict["path"] = path
 
         return field_dict
 
+
+
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
         index_type = DownloadFileIndexFileIndexType(d.pop("index_type"))
+
+
+
 
         def _parse_path(data: object) -> str | Unset:
             if isinstance(data, Unset):
@@ -60,10 +75,12 @@ class DownloadFileIndexFile:
 
         path = _parse_path(d.pop("path", UNSET))
 
+
         download_file_index_file = cls(
             index_type=index_type,
             path=path,
         )
+
 
         download_file_index_file.additional_properties = d
         return download_file_index_file
