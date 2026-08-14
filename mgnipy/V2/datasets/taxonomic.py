@@ -21,6 +21,7 @@ from mgnipy._models.constants.tax_ranks import (
 )
 from mgnipy._models.config import MGnipyConfig
 from mgnipy.V2.datasets import MGazine
+from mgnipy.V2.datasets.annotate import UNIQUE_RUN_ID_COL_NAME
 
 
 def long_short_mapper(desc: str, mapping: dict[str, str] = None) -> dict[str, str]:
@@ -73,11 +74,12 @@ def prep_obs(
             .alias("taxonomy_split")
         ).unnest("taxonomy_split")
         # select only these new columns
-        .select(list(long_short_mapping.keys()))
+        .select(tax_col, *list(long_short_mapping.keys()))
     )
 
     # cleaning the ranks
     df_ranks = df_ranks.with_columns(
+        tax_col,
         *[
             # for each col
             df_ranks[col_name]
@@ -86,7 +88,7 @@ def prep_obs(
             # fill empty strings / nulls
             .replace("", fill_na).fill_null(fill_na)
             for col_name in long_short_mapping
-        ]
+        ],
     )
     return df_ranks
 
@@ -229,58 +231,6 @@ class DWCTaxaMGazine(MGazine):
         elif df_engine == "polars":
             return df
 
-    def X(
-        self, df_engine: Literal["polars", "pandas"] = "pandas"
-    ) -> pl.DataFrame | pd.DataFrame:
-        """Gets the feature matrix (X) from the merged taxonomic datasets.
-
-        Parameters
-        ----------
-        df_engine : Literal["polars", "pandas"], optional
-            The DataFrame engine to use for the output.
-            If "polars" is specified, a :class:`polars.DataFrame` is returned;
-            if "pandas" is specified, a :class:`pandas.DataFrame` is returned.
-        """
-        # collect the lazyframe and drop the taxa columns
-        df_pl = self.lazy_merged.collect().drop(list(self.long_short_mapping.keys()))
-        # return the appropriate DataFrame engine
-        if df_engine == "pandas":
-            return df_pl.to_pandas()
-        elif df_engine == "polars":
-            return df_pl
-
-    def to_anndata(self, **anndata_kwargs) -> ad.AnnData:
-        """
-        Converts the taxonomic metadata and feature matrix into an AnnData object.
-
-        Parameters
-        ----------
-        **anndata_kwargs
-            Additional keyword arguments to pass to the `AnnData` constructor.
-
-        Returns
-        -------
-        ad.AnnData
-            An AnnData object containing the taxonomic metadata in the `obs` attribute and the feature matrix in the `X` attribute.
-        """
-        try:
-            return ad.AnnData(
-                self.X()[sorted(self.X().columns)],
-                obs=self.taxonomic_metadata(),
-                var=self.metadata().sort_index(),  # TODO, pick up here, this doesnt work
-                **anndata_kwargs,
-            )
-        except ValueError as e:
-            logger.error(
-                f"Returning without metadata() as var - Error occurred while converting to AnnData: {e}"
-            )
-            return ad.AnnData(
-                self.X(),
-                obs=self.taxonomic_metadata(),
-                var=None,
-                **anndata_kwargs,
-            )
-
 
 class TaxaMGazine(MGazine):
     """A special MGazine for handling taxonomic datasets.
@@ -421,6 +371,7 @@ class TaxaMGazine(MGazine):
         self,
         fill_na: Any = "NA",
         df_engine: Literal["polars", "pandas"] = "pandas",
+        hide_index: bool = True,
     ) -> pl.DataFrame | pd.DataFrame:
 
         col_names = self.lazy_merged.collect_schema().names()
@@ -439,8 +390,14 @@ class TaxaMGazine(MGazine):
                 long_short_mapping=self.long_short_mapping,
                 fill_na=fill_na,
             )
+            # rename the column to taxonomy for consistency
+            df = df.rename({"#SampleID": "taxonomy"}, strict=False)
         elif ("kingdom" in col_names) and ("phylum" in col_names):
             df = self.lazy_merged.select(["kingdom", "phylum"]).collect()
+            # combine into taxonomy column
+            df = df.with_columns(
+                pl.concat_str(["kingdom", "phylum"], separator=";").alias("taxonomy")
+            )
         else:
             logger.warning(
                 f"Could not determine taxonomy column in taxonomic dataset. Expected one of 'taxonomy' or '#SampleID' or at least 'kingdom' and 'phylum'. Attempting to match known taxonomic ranks in `long_short_mapping`. e.g. {list(self.long_short_mapping.keys())}"
@@ -448,11 +405,16 @@ class TaxaMGazine(MGazine):
             existing_tax_cols = [
                 col for col in self.long_short_mapping if col in col_names
             ]
-            df = self.lazy_merged.select(existing_tax_cols).collect()
+            df = self.lazy_merged.select("taxonomy", existing_tax_cols).collect()
 
         if df_engine == "pandas":
-            return df.to_pandas()
+            df_pandas = df.to_pandas().set_index("taxonomy").sort_index()
+            if hide_index:
+                df_pandas = df_pandas.reset_index(drop=True)
+            return df_pandas
         elif df_engine == "polars":
+            if hide_index:
+                df = df.drop("taxonomy", strict=False)
             return df
 
     def X(
@@ -472,16 +434,19 @@ class TaxaMGazine(MGazine):
         pl.DataFrame or pd.DataFrame
             The feature matrix (X) containing the non-taxonomic columns from the merged taxonomic datasets
         """
-        df_pl = self.lazy_merged.collect()
-        df_pl = df_pl.drop(self.TAX_COLS, strict=False)
+        df_pl = self.lazy_merged.collect().transpose(
+            include_header=True,
+            header_name=UNIQUE_RUN_ID_COL_NAME,
+            column_names="taxonomy",
+        )
         # with sorted columns
-        df_pl = df_pl.select(sorted(df_pl.columns))
+        df_pl = df_pl.select(UNIQUE_RUN_ID_COL_NAME, *sorted(df_pl.columns[1:]))
         if df_engine == "pandas":
-            return df_pl.to_pandas()
+            return df_pl.to_pandas().set_index(UNIQUE_RUN_ID_COL_NAME)
         elif df_engine == "polars":
             return df_pl
 
-    def to_anndata(self, **anndata_kwargs) -> ad.AnnData:
+    def to_anndata(self, drop_duplicates: bool = True, **anndata_kwargs) -> ad.AnnData:
         """
         Converts the taxonomic metadata to an AnnData object. The taxonomic ranks are stored in the `obs` attribute of the AnnData object.
 
@@ -495,35 +460,25 @@ class TaxaMGazine(MGazine):
         ad.AnnData
             An AnnData object containing the taxonomic metadata in the `obs` attribute.
         """
-        try:
+
+        if len(self.X()) == len(self.obs_metadata(drop_duplicates=drop_duplicates)):
             return ad.AnnData(
-                self.X()[sorted(self.X().columns)],
-                obs=self.taxonomic_metadata(),
-                var=self.obs_metadata().sort_index(),  # TODO, pick up here, this doesnt work
+                self.X()[sorted(self.X().columns)].sort_index(),
+                var=self.taxonomic_metadata(hide_index=False).sort_index(),
+                obs=self.obs_metadata(drop_duplicates=drop_duplicates).sort_index(),
                 **anndata_kwargs,
             )
-        except ValueError as e:
-            logger.error(
-                f"Attempting to match columns - Error occurred while converting to AnnData: {e}"
-            )
-            ok = self.X()[
-                self.X().columns[
-                    self.X().columns.isin(self.obs_metadata().index.to_list())
-                ]
-            ]
-            return ad.AnnData(
-                ok[sorted(ok.columns)],
-                obs=self.taxonomic_metadata(),
-                var=self.obs_metadata().sort_index(),  # TODO, pick up here, this doesnt work
-                **anndata_kwargs,
-            )
-        except Exception as e:
-            logger.error(
-                f"Returning without metadata() as var - Error occurred while converting to AnnData: {e}"
+        elif len(self.X()) != len(self.obs_metadata(drop_duplicates=drop_duplicates)):
+            intersection = list(
+                set(self.X().index).intersection(
+                    self.obs_metadata(drop_duplicates=drop_duplicates).index
+                )
             )
             return ad.AnnData(
-                self.X(),
-                obs=self.taxonomic_metadata(),
-                var=None,
+                self.X().loc[intersection, sorted(self.X().columns)].sort_index(),
+                var=self.taxonomic_metadata(hide_index=False).sort_index(),
+                obs=self.obs_metadata(drop_duplicates=drop_duplicates)
+                .loc[intersection]
+                .sort_index(),
                 **anndata_kwargs,
             )

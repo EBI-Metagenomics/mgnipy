@@ -193,6 +193,7 @@ class ResultsHandler:
         data: Optional[dict[int, list[dict]]] = None,
         expand_nested_dicts: Optional[list[str] | bool] = False,
         rename_columns: Optional[dict[str, str]] = None,
+        drop_duplicates: bool = False,
         **kwargs,
     ) -> pd.DataFrame:
         """
@@ -246,12 +247,16 @@ class ResultsHandler:
             return as_pandas
 
         if isinstance(expand_nested_dicts, list):
-            return self._df_expand_nested(
+            as_pandas = self._df_expand_nested(
                 as_pandas,
                 cols=expand_nested_dicts,
             )
-        if expand_nested_dicts is True:
-            return self._df_expand_nested(as_pandas)
+        elif expand_nested_dicts is True:
+            as_pandas = self._df_expand_nested(as_pandas)
+
+        if drop_duplicates:
+            return as_pandas.loc[~as_pandas.astype(str).duplicated()]
+        return as_pandas
 
     def to_list(
         self, *, data: Optional[chain] = None, drop_duplicates: bool = False
@@ -345,6 +350,7 @@ class ResultsHandler:
         data: Optional[chain] = None,
         expand_nested_dicts: Optional[list[str] | bool] = False,
         rename_columns: Optional[dict[str, str]] = None,
+        drop_duplicates: bool = False,
         **polars_kwargs,
     ) -> pl.DataFrame:
         """
@@ -381,6 +387,7 @@ class ResultsHandler:
             data=_data,
             expand_nested_dicts=expand_nested_dicts,
             rename_columns=rename_columns,
+            drop_duplicates=drop_duplicates,
         )
 
         return pl.from_pandas(df_pd, **polars_kwargs)

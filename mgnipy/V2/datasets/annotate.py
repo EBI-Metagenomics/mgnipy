@@ -16,6 +16,12 @@ from mgnipy._shared_helpers.biosamples_helper import (
 )
 
 UNIQUE_RUN_ID_COL_NAME = "_mgnipy_runs_accs"
+EXCLUDE_FROM_INDEX = [
+    "taxonomy",
+    UNIQUE_RUN_ID_COL_NAME,
+    BIOSAMPLES_SAMPLE_ID,
+    BIOSAMPLES_RUN_ID,
+]
 
 
 class MetadataSettersMixin:
@@ -97,6 +103,7 @@ class MetadataSettersMixin:
         self,
         df_engine: Literal["polars", "pandas"] = "pandas",
         expand_nested_dicts: bool = True,
+        drop_duplicates: bool = False,
         how="left",
         coalesce: bool = True,
         for_runs: Optional[list[str]] = None,
@@ -109,7 +116,9 @@ class MetadataSettersMixin:
             logger.warning("No runs accessions provided. Returning empty dataframe.")
             return pl.DataFrame() if df_engine == "polars" else pd.DataFrame()
         # getting run accessions as sorted_index
-        sorted_index = sorted(self.X(df_engine="polars").columns)
+        sorted_index = sorted(
+            [x for x in self.to_polars().columns if x not in EXCLUDE_FROM_INDEX]
+        )
 
         # creating base dataframe with index
         base = pl.DataFrame(sorted_index, schema=[index_col_name])
@@ -133,7 +142,7 @@ class MetadataSettersMixin:
             and "biosamples_metadata" not in self.available_metadata_sets
         ):
             pl_runs = self.mgnify_runs.to_polars(
-                expand_nested_dicts=expand_nested_dicts
+                expand_nested_dicts=expand_nested_dicts, drop_duplicates=drop_duplicates
             )
 
             base = base.join(
@@ -150,7 +159,7 @@ class MetadataSettersMixin:
             and "mgnify_runs" not in self.available_metadata_sets
         ):
             pl_biosamples = self.biosamples_metadata.to_polars(
-                expand_nested_dicts=expand_nested_dicts
+                expand_nested_dicts=expand_nested_dicts, drop_duplicates=drop_duplicates
             )
 
             # make sure RunIDs isnt null (ie., incl_ena = False)
@@ -178,10 +187,10 @@ class MetadataSettersMixin:
             and "mgnify_runs" in self.available_metadata_sets
         ):
             pl_biosamples = self.biosamples_metadata.to_polars(
-                expand_nested_dicts=expand_nested_dicts
+                expand_nested_dicts=expand_nested_dicts, drop_duplicates=drop_duplicates
             )
             pl_runs = self.mgnify_runs.to_polars(
-                expand_nested_dicts=expand_nested_dicts
+                expand_nested_dicts=expand_nested_dicts, drop_duplicates=drop_duplicates
             )
 
             base = base.join(
@@ -226,7 +235,7 @@ class MetadataSettersMixin:
         ):
             # getting the samples metadata as polars dataframe
             pl_samples = self.mgnify_samples.to_polars(
-                expand_nested_dicts=expand_nested_dicts
+                expand_nested_dicts=expand_nested_dicts, drop_duplicates=drop_duplicates
             )
 
             base = base.join(
@@ -242,7 +251,7 @@ class MetadataSettersMixin:
             and "sample_accession" in base.columns
         ):
             pl_samples = self.mgnify_samples.to_polars(
-                expand_nested_dicts=expand_nested_dicts
+                expand_nested_dicts=expand_nested_dicts, drop_duplicates=drop_duplicates
             )
             base = base.join(
                 pl_samples,
@@ -274,6 +283,7 @@ class MetadataSettersMixin:
         self,
         df_engine: Literal["polars", "pandas"] = "pandas",
         expand_nested_dicts: bool = True,
+        drop_duplicates: bool = False,
         how="left",
         coalesce: bool = True,
         for_runs: Optional[list[str]] = None,
@@ -285,6 +295,7 @@ class MetadataSettersMixin:
             return self._merge_meta(
                 df_engine=df_engine,
                 expand_nested_dicts=expand_nested_dicts,
+                drop_duplicates=drop_duplicates,
                 how=how,
                 coalesce=coalesce,
                 for_runs=for_runs,

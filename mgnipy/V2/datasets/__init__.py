@@ -144,7 +144,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
     def __repr__(self):
         return (
-            f"MGazine(downloads={len(self.downloads)}, "
+            f"{self.__class__.__name__}(downloads={len(self.downloads)}, "
             f"pipeline_versions={self.list_pipeline_version()}, "
             f"short_descriptions={self.list_short_descriptions()}, "
             f"available_metadata_sets={self.available_metadata_sets})"
@@ -152,7 +152,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
     def __str__(self):
         return (
-            f"MGazine containing:\n"
+            f"{self.__class__.__name__} containing:\n"
             f"- MGnify pipeline versions: {self.list_pipeline_version()}\n"
             f"- Number of downloads: {len(self.downloads)}\n"
             f"- Short descriptions: {pformat(self.list_short_descriptions())}\n"
