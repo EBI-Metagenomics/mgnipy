@@ -121,7 +121,7 @@ class MGnifyList(MGnifier):
         -------
         >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
         >>> studies = Studies(search="tomato")  # doctest: +SKIP
-        >>> studies.bulk_fetch()  # doctest: +SKIP
+        >>> studies.get_all()  # doctest: +SKIP
         >>> first_detail = studies.get_detail()  # doctest: +SKIP
         >>> second_detail = studies.get_detail()  # doctest: +SKIP
         """
@@ -660,7 +660,7 @@ class MGnifyDetail(MGnifier):
         if explain:
             list_endpoint.explain()
         if fetch:
-            list_endpoint.bulk_fetch()
+            list_endpoint.get_all()
         return list_endpoint
 
     async def aget_list(
@@ -719,7 +719,7 @@ class MGnifyDetail(MGnifier):
         if explain:
             list_endpoint.explain()
         if fetch:
-            await list_endpoint.abulk_fetch()
+            await list_endpoint.aget_all()
         return list_endpoint
 
     @property

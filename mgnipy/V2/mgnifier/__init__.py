@@ -418,7 +418,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         # compute pages we still need to fetch
         return [x for x in self.build_queries() if x not in self.metadata.pages]
 
-    def bulk_fetch(
+    def get_all(
         self,
         limit: Optional[int] = 200,
         *,
@@ -455,7 +455,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         return self
 
-    async def abulk_fetch(
+    async def aget_all(
         self,
         limit: Optional[int] = 200,
         *,
