@@ -1343,14 +1343,12 @@ class ClientManagerMixin:
                 await self.client._async_client.aclose()
             self.client._async_client = None
 
-    @property
     def status(self) -> None:
         """
         Print the status of the MGnipy client, including the type of client and whether the synchronous and asynchronous httpx client sessions are open.
         """
         print(
             f"Client or AuthenticatedClient type: {type(self.client).__name__}\n"
-            f"Owned by this instance: {getattr(self, '_owns_client', True)}\n"
             f"HTTP client open: {self.client._client is not None and not self.client._client.is_closed}\n"
             f"Async client open: {self.client._async_client is not None and not self.client._async_client.is_closed}\n"
         )
