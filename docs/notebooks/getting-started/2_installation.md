@@ -1,4 +1,4 @@
-# Installation
+# Installing MGni.py
 
 MGni.py is available for download from [PyPI](https://pypi.org/project/mgnipy/): 
 

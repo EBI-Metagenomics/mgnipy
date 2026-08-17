@@ -34,6 +34,7 @@ The aim of MGgni.py is to make it faster and easier to find and download MGnify 
 - In MGni.Py there are helper methods (e.g.,`list_resources()` and `describe_resource(...)`) to make it easier to inspect the API endpoints and their supported parameters
 - Additionally query-previewing helpers such as `.explain()` which show you the built query urls based on the given endpoint and parameters for learning
 
+---
 
 ## At a glance: A typical `mgnipy` workflow...
 
@@ -42,20 +43,23 @@ The aim of MGgni.py is to make it faster and easier to find and download MGnify 
 from mgnipy import MGnipy
 
 # Create a client (uses sensible defaults)
-mg = MGnipy()
+MG = MGnipy()
 ```
 ### 2. Search in MGnify resources using a `MGnifier` glass
 ```python
 # can access mgnifier as MGnipy attribute
-studies_glass = mg.studies
+studies_resource = MG.studies
 
 # and refine search (lazily builds queries)
-filtered_studies = studies_glass.filter(
+filtered_studies = studies_resource.filter(
     search="diabetes",
+    biome_lineage="root:Host-associated:Human:Digestive system"
 )
 
 # get the studies' metadata (executes queries)
-filtered_studies.enrich_details()
+with MG: # client context manager
+    filtered_studies.get_all() # populates list of studies
+    filtered_studies.enrich_details() # gets all studies details
 
 # access the metadata and view as pandas df
 filtered_studies.metadata.to_pandas()
@@ -63,8 +67,8 @@ filtered_studies.metadata.to_pandas()
 ### 3. Receive a `MGazine` of MGnify datasets
 ```python
 # access the mgazine 
-mz = filtered_studies.datasets
+MZ = filtered_studies.datasets
 
 # can download all datasets, or many more options...
-mz.download_all(to_dir="some-folder")
+MZ.download_all(to_dir="some-folder")
 ```
