@@ -1,42 +1,37 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import Any, TypeVar, TYPE_CHECKING
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
-  from ..models.m_gnify_sample import MGnifySample
-  from ..models.m_gnify_study import MGnifyStudy
-
-
-
+    from ..models.m_gnify_sample import MGnifySample
+    from ..models.m_gnify_study import MGnifyStudy
 
 
 T = TypeVar("T", bound="AnalysedRunDetail")
 
 
-
 @_attrs_define
 class AnalysedRunDetail:
-    """ 
-        Attributes:
-            experiment_type (str): Experiment type refers to the type of sequencing data that was analysed, e.g. amplicon
-                reads or a metagenome assembly
-            instrument_model (None | str):
-            instrument_platform (None | str):
-            sample (MGnifySample | None):
-            study (MGnifyStudy | None):
-            accession (None | str | Unset):
-            sample_accession (None | str | Unset): ENA accession of the sample associated with this run
-            study_accession (None | str | Unset): ENA accession of the study associated with this run
-     """
+    """
+    Attributes:
+        experiment_type (str): Experiment type refers to the type of sequencing data that was analysed, e.g. amplicon
+            reads or a metagenome assembly
+        instrument_model (None | str):
+        instrument_platform (None | str):
+        sample (MGnifySample | None):
+        study (MGnifyStudy | None):
+        accession (None | str | Unset):
+        sample_accession (None | str | Unset): ENA accession of the sample associated with this run
+        study_accession (None | str | Unset): ENA accession of the study associated with this run
+    """
 
     experiment_type: str
     instrument_model: None | str
@@ -48,13 +43,10 @@ class AnalysedRunDetail:
     study_accession: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
-        from ..models.m_gnify_sample import MGnifySample
         from ..models.m_gnify_study import MGnifyStudy
+        from ..models.m_gnify_sample import MGnifySample
+
         experiment_type = self.experiment_type
 
         instrument_model: None | str
@@ -93,16 +85,17 @@ class AnalysedRunDetail:
         else:
             study_accession = self.study_accession
 
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "experiment_type": experiment_type,
-            "instrument_model": instrument_model,
-            "instrument_platform": instrument_platform,
-            "sample": sample,
-            "study": study,
-        })
+        field_dict.update(
+            {
+                "experiment_type": experiment_type,
+                "instrument_model": instrument_model,
+                "instrument_platform": instrument_platform,
+                "sample": sample,
+                "study": study,
+            }
+        )
         if accession is not UNSET:
             field_dict["accession"] = accession
         if sample_accession is not UNSET:
@@ -112,12 +105,11 @@ class AnalysedRunDetail:
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.m_gnify_sample import MGnifySample
         from ..models.m_gnify_study import MGnifyStudy
+
         d = dict(src_dict)
         experiment_type = d.pop("experiment_type")
 
@@ -128,14 +120,12 @@ class AnalysedRunDetail:
 
         instrument_model = _parse_instrument_model(d.pop("instrument_model"))
 
-
         def _parse_instrument_platform(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
         instrument_platform = _parse_instrument_platform(d.pop("instrument_platform"))
-
 
         def _parse_sample(data: object) -> MGnifySample | None:
             if data is None:
@@ -145,15 +135,12 @@ class AnalysedRunDetail:
                     raise TypeError()
                 sample_type_0 = MGnifySample.from_dict(data)
 
-
-
                 return sample_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(MGnifySample | None, data)
 
         sample = _parse_sample(d.pop("sample"))
-
 
         def _parse_study(data: object) -> MGnifyStudy | None:
             if data is None:
@@ -163,15 +150,12 @@ class AnalysedRunDetail:
                     raise TypeError()
                 study_type_0 = MGnifyStudy.from_dict(data)
 
-
-
                 return study_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(MGnifyStudy | None, data)
 
         study = _parse_study(d.pop("study"))
-
 
         def _parse_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -182,7 +166,6 @@ class AnalysedRunDetail:
 
         accession = _parse_accession(d.pop("accession", UNSET))
 
-
         def _parse_sample_accession(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -192,7 +175,6 @@ class AnalysedRunDetail:
 
         sample_accession = _parse_sample_accession(d.pop("sample_accession", UNSET))
 
-
         def _parse_study_accession(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -201,7 +183,6 @@ class AnalysedRunDetail:
             return cast(None | str | Unset, data)
 
         study_accession = _parse_study_accession(d.pop("study_accession", UNSET))
-
 
         analysed_run_detail = cls(
             experiment_type=experiment_type,
@@ -213,7 +194,6 @@ class AnalysedRunDetail:
             sample_accession=sample_accession,
             study_accession=study_accession,
         )
-
 
         analysed_run_detail.additional_properties = d
         return analysed_run_detail

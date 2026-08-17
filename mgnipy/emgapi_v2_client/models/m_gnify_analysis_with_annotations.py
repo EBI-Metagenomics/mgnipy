@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import Any, TypeVar, TYPE_CHECKING
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -9,47 +9,48 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 from ..models.pipeline_versions import PipelineVersions
-from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
-  from ..models.analysed_run import AnalysedRun
-  from ..models.assembly import Assembly
-  from ..models.m_gnify_analysis_download_file import MGnifyAnalysisDownloadFile
-  from ..models.m_gnify_analysis_with_annotations_annotations import MGnifyAnalysisWithAnnotationsAnnotations
-  from ..models.m_gnify_analysis_with_annotations_metadata_type_0 import MGnifyAnalysisWithAnnotationsMetadataType0
-  from ..models.m_gnify_analysis_with_annotations_quality_control_summary_type_0 import MGnifyAnalysisWithAnnotationsQualityControlSummaryType0
-  from ..models.m_gnify_sample import MGnifySample
-
-
-
+    from ..models.analysed_run import AnalysedRun
+    from ..models.assembly import Assembly
+    from ..models.m_gnify_analysis_download_file import MGnifyAnalysisDownloadFile
+    from ..models.m_gnify_analysis_with_annotations_annotations import (
+        MGnifyAnalysisWithAnnotationsAnnotations,
+    )
+    from ..models.m_gnify_analysis_with_annotations_metadata_type_0 import (
+        MGnifyAnalysisWithAnnotationsMetadataType0,
+    )
+    from ..models.m_gnify_analysis_with_annotations_quality_control_summary_type_0 import (
+        MGnifyAnalysisWithAnnotationsQualityControlSummaryType0,
+    )
+    from ..models.m_gnify_sample import MGnifySample
 
 
 T = TypeVar("T", bound="MGnifyAnalysisWithAnnotations")
 
 
-
 @_attrs_define
 class MGnifyAnalysisWithAnnotations:
-    """ 
-        Attributes:
-            experiment_type (str): Experiment type refers to the type of sequencing data that was analysed, e.g. amplicon
-                reads or a metagenome assembly
-            study_accession (str):
-            accession (str):
-            run (AnalysedRun | None):
-            sample (MGnifySample | None):
-            assembly (Assembly | None):
-            pipeline_version (None | PipelineVersions):
-            read_run (list[AnalysedRun] | None): Metadata associated with the original read run(s) this analysis is based
-                on, whether or not those reads were assembled.
-            quality_control_summary (MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None):
-            annotations (MGnifyAnalysisWithAnnotationsAnnotations):
-            downloads (list[MGnifyAnalysisDownloadFile] | Unset):
-            results_dir (None | str | Unset): Directory path where analysis results are stored
-            metadata (MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset): Additional metadata associated with the
-                analysis
-     """
+    """
+    Attributes:
+        experiment_type (str): Experiment type refers to the type of sequencing data that was analysed, e.g. amplicon
+            reads or a metagenome assembly
+        study_accession (str):
+        accession (str):
+        run (AnalysedRun | None):
+        sample (MGnifySample | None):
+        assembly (Assembly | None):
+        pipeline_version (None | PipelineVersions):
+        read_run (list[AnalysedRun] | None): Metadata associated with the original read run(s) this analysis is based
+            on, whether or not those reads were assembled.
+        quality_control_summary (MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None):
+        annotations (MGnifyAnalysisWithAnnotationsAnnotations):
+        downloads (list[MGnifyAnalysisDownloadFile] | Unset):
+        results_dir (None | str | Unset): Directory path where analysis results are stored
+        metadata (MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset): Additional metadata associated with the
+            analysis
+    """
 
     experiment_type: str
     study_accession: str
@@ -59,25 +60,26 @@ class MGnifyAnalysisWithAnnotations:
     assembly: Assembly | None
     pipeline_version: None | PipelineVersions
     read_run: list[AnalysedRun] | None
-    quality_control_summary: MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None
+    quality_control_summary: (
+        MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None
+    )
     annotations: MGnifyAnalysisWithAnnotationsAnnotations
     downloads: list[MGnifyAnalysisDownloadFile] | Unset = UNSET
     results_dir: None | str | Unset = UNSET
     metadata: MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
-        from ..models.m_gnify_analysis_with_annotations_quality_control_summary_type_0 import MGnifyAnalysisWithAnnotationsQualityControlSummaryType0
-        from ..models.m_gnify_sample import MGnifySample
-        from ..models.m_gnify_analysis_download_file import MGnifyAnalysisDownloadFile
-        from ..models.analysed_run import AnalysedRun
-        from ..models.m_gnify_analysis_with_annotations_annotations import MGnifyAnalysisWithAnnotationsAnnotations
+        from ..models.m_gnify_analysis_with_annotations_metadata_type_0 import (
+            MGnifyAnalysisWithAnnotationsMetadataType0,
+        )
         from ..models.assembly import Assembly
-        from ..models.m_gnify_analysis_with_annotations_metadata_type_0 import MGnifyAnalysisWithAnnotationsMetadataType0
+        from ..models.analysed_run import AnalysedRun
+        from ..models.m_gnify_sample import MGnifySample
+        from ..models.m_gnify_analysis_with_annotations_quality_control_summary_type_0 import (
+            MGnifyAnalysisWithAnnotationsQualityControlSummaryType0,
+        )
+
         experiment_type = self.experiment_type
 
         study_accession = self.study_accession
@@ -115,12 +117,14 @@ class MGnifyAnalysisWithAnnotations:
                 read_run_type_0_item = read_run_type_0_item_data.to_dict()
                 read_run.append(read_run_type_0_item)
 
-
         else:
             read_run = self.read_run
 
         quality_control_summary: dict[str, Any] | None
-        if isinstance(self.quality_control_summary, MGnifyAnalysisWithAnnotationsQualityControlSummaryType0):
+        if isinstance(
+            self.quality_control_summary,
+            MGnifyAnalysisWithAnnotationsQualityControlSummaryType0,
+        ):
             quality_control_summary = self.quality_control_summary.to_dict()
         else:
             quality_control_summary = self.quality_control_summary
@@ -133,8 +137,6 @@ class MGnifyAnalysisWithAnnotations:
             for downloads_item_data in self.downloads:
                 downloads_item = downloads_item_data.to_dict()
                 downloads.append(downloads_item)
-
-
 
         results_dir: None | str | Unset
         if isinstance(self.results_dir, Unset):
@@ -150,21 +152,22 @@ class MGnifyAnalysisWithAnnotations:
         else:
             metadata = self.metadata
 
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "experiment_type": experiment_type,
-            "study_accession": study_accession,
-            "accession": accession,
-            "run": run,
-            "sample": sample,
-            "assembly": assembly,
-            "pipeline_version": pipeline_version,
-            "read_run": read_run,
-            "quality_control_summary": quality_control_summary,
-            "annotations": annotations,
-        })
+        field_dict.update(
+            {
+                "experiment_type": experiment_type,
+                "study_accession": study_accession,
+                "accession": accession,
+                "run": run,
+                "sample": sample,
+                "assembly": assembly,
+                "pipeline_version": pipeline_version,
+                "read_run": read_run,
+                "quality_control_summary": quality_control_summary,
+                "annotations": annotations,
+            }
+        )
         if downloads is not UNSET:
             field_dict["downloads"] = downloads
         if results_dir is not UNSET:
@@ -174,17 +177,22 @@ class MGnifyAnalysisWithAnnotations:
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.analysed_run import AnalysedRun
         from ..models.assembly import Assembly
         from ..models.m_gnify_analysis_download_file import MGnifyAnalysisDownloadFile
-        from ..models.m_gnify_analysis_with_annotations_annotations import MGnifyAnalysisWithAnnotationsAnnotations
-        from ..models.m_gnify_analysis_with_annotations_metadata_type_0 import MGnifyAnalysisWithAnnotationsMetadataType0
-        from ..models.m_gnify_analysis_with_annotations_quality_control_summary_type_0 import MGnifyAnalysisWithAnnotationsQualityControlSummaryType0
+        from ..models.m_gnify_analysis_with_annotations_annotations import (
+            MGnifyAnalysisWithAnnotationsAnnotations,
+        )
+        from ..models.m_gnify_analysis_with_annotations_metadata_type_0 import (
+            MGnifyAnalysisWithAnnotationsMetadataType0,
+        )
+        from ..models.m_gnify_analysis_with_annotations_quality_control_summary_type_0 import (
+            MGnifyAnalysisWithAnnotationsQualityControlSummaryType0,
+        )
         from ..models.m_gnify_sample import MGnifySample
+
         d = dict(src_dict)
         experiment_type = d.pop("experiment_type")
 
@@ -200,15 +208,12 @@ class MGnifyAnalysisWithAnnotations:
                     raise TypeError()
                 run_type_0 = AnalysedRun.from_dict(data)
 
-
-
                 return run_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(AnalysedRun | None, data)
 
         run = _parse_run(d.pop("run"))
-
 
         def _parse_sample(data: object) -> MGnifySample | None:
             if data is None:
@@ -218,15 +223,12 @@ class MGnifyAnalysisWithAnnotations:
                     raise TypeError()
                 sample_type_0 = MGnifySample.from_dict(data)
 
-
-
                 return sample_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(MGnifySample | None, data)
 
         sample = _parse_sample(d.pop("sample"))
-
 
         def _parse_assembly(data: object) -> Assembly | None:
             if data is None:
@@ -236,15 +238,12 @@ class MGnifyAnalysisWithAnnotations:
                     raise TypeError()
                 assembly_type_0 = Assembly.from_dict(data)
 
-
-
                 return assembly_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(Assembly | None, data)
 
         assembly = _parse_assembly(d.pop("assembly"))
-
 
         def _parse_pipeline_version(data: object) -> None | PipelineVersions:
             if data is None:
@@ -254,15 +253,12 @@ class MGnifyAnalysisWithAnnotations:
                     raise TypeError()
                 pipeline_version_type_0 = PipelineVersions(data)
 
-
-
                 return pipeline_version_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | PipelineVersions, data)
 
         pipeline_version = _parse_pipeline_version(d.pop("pipeline_version"))
-
 
         def _parse_read_run(data: object) -> list[AnalysedRun] | None:
             if data is None:
@@ -272,10 +268,10 @@ class MGnifyAnalysisWithAnnotations:
                     raise TypeError()
                 read_run_type_0 = []
                 _read_run_type_0 = data
-                for read_run_type_0_item_data in (_read_run_type_0):
-                    read_run_type_0_item = AnalysedRun.from_dict(read_run_type_0_item_data)
-
-
+                for read_run_type_0_item_data in _read_run_type_0:
+                    read_run_type_0_item = AnalysedRun.from_dict(
+                        read_run_type_0_item_data
+                    )
 
                     read_run_type_0.append(read_run_type_0_item)
 
@@ -286,41 +282,45 @@ class MGnifyAnalysisWithAnnotations:
 
         read_run = _parse_read_run(d.pop("read_run"))
 
-
-        def _parse_quality_control_summary(data: object) -> MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None:
+        def _parse_quality_control_summary(
+            data: object,
+        ) -> MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                quality_control_summary_type_0 = MGnifyAnalysisWithAnnotationsQualityControlSummaryType0.from_dict(data)
-
-
+                quality_control_summary_type_0 = (
+                    MGnifyAnalysisWithAnnotationsQualityControlSummaryType0.from_dict(
+                        data
+                    )
+                )
 
                 return quality_control_summary_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None, data)
+            return cast(
+                MGnifyAnalysisWithAnnotationsQualityControlSummaryType0 | None, data
+            )
 
-        quality_control_summary = _parse_quality_control_summary(d.pop("quality_control_summary"))
+        quality_control_summary = _parse_quality_control_summary(
+            d.pop("quality_control_summary")
+        )
 
-
-        annotations = MGnifyAnalysisWithAnnotationsAnnotations.from_dict(d.pop("annotations"))
-
-
-
+        annotations = MGnifyAnalysisWithAnnotationsAnnotations.from_dict(
+            d.pop("annotations")
+        )
 
         _downloads = d.pop("downloads", UNSET)
         downloads: list[MGnifyAnalysisDownloadFile] | Unset = UNSET
         if _downloads is not UNSET:
             downloads = []
             for downloads_item_data in _downloads:
-                downloads_item = MGnifyAnalysisDownloadFile.from_dict(downloads_item_data)
-
-
+                downloads_item = MGnifyAnalysisDownloadFile.from_dict(
+                    downloads_item_data
+                )
 
                 downloads.append(downloads_item)
-
 
         def _parse_results_dir(data: object) -> None | str | Unset:
             if data is None:
@@ -331,8 +331,9 @@ class MGnifyAnalysisWithAnnotations:
 
         results_dir = _parse_results_dir(d.pop("results_dir", UNSET))
 
-
-        def _parse_metadata(data: object) -> MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset:
+        def _parse_metadata(
+            data: object,
+        ) -> MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -340,9 +341,9 @@ class MGnifyAnalysisWithAnnotations:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                metadata_type_0 = MGnifyAnalysisWithAnnotationsMetadataType0.from_dict(data)
-
-
+                metadata_type_0 = MGnifyAnalysisWithAnnotationsMetadataType0.from_dict(
+                    data
+                )
 
                 return metadata_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -350,7 +351,6 @@ class MGnifyAnalysisWithAnnotations:
             return cast(MGnifyAnalysisWithAnnotationsMetadataType0 | None | Unset, data)
 
         metadata = _parse_metadata(d.pop("metadata", UNSET))
-
 
         m_gnify_analysis_with_annotations = cls(
             experiment_type=experiment_type,
@@ -367,7 +367,6 @@ class MGnifyAnalysisWithAnnotations:
             results_dir=results_dir,
             metadata=metadata,
         )
-
 
         m_gnify_analysis_with_annotations.additional_properties = d
         return m_gnify_analysis_with_annotations

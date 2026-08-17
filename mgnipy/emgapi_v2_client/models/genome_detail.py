@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import Any, TypeVar, TYPE_CHECKING
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -9,67 +9,62 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 from ..models.genome_type import GenomeType
-from ..types import UNSET, Unset
 from dateutil.parser import isoparse
 from typing import cast
 import datetime
 
 if TYPE_CHECKING:
-  from ..models.biome import Biome
-  from ..models.genome_catalogue_base import GenomeCatalogueBase
-  from ..models.m_gnify_genome_download_file import MGnifyGenomeDownloadFile
-
-
-
+    from ..models.biome import Biome
+    from ..models.genome_catalogue_base import GenomeCatalogueBase
+    from ..models.m_gnify_genome_download_file import MGnifyGenomeDownloadFile
 
 
 T = TypeVar("T", bound="GenomeDetail")
 
 
-
 @_attrs_define
 class GenomeDetail:
-    """ 
-        Attributes:
-            accession (str):
-            ena_genome_accession (None | str):
-            ena_sample_accession (None | str):
-            ena_study_accession (None | str):
-            ncbi_genome_accession (None | str):
-            ncbi_study_accession (None | str):
-            img_genome_accession (None | str):
-            patric_genome_accession (None | str):
-            length (int):
-            num_contigs (int):
-            n_50 (int):
-            gc_content (float):
-            type_ (GenomeType):
-            completeness (float):
-            contamination (float):
-            catalogue_id (str):
-            taxon_lineage (str):
-            updated_at (datetime.datetime):
-            geographic_origin (None | str):
-            downloads (list[MGnifyGenomeDownloadFile]):
-            num_genomes_total (int | None | Unset):
-            geographic_range (list[str] | None | Unset):
-            biome (Biome | None | Unset):
-            rna_5s (float | None | Unset):
-            rna_5_8s (float | None | Unset):
-            rna_16s (float | None | Unset):
-            rna_18s (float | None | Unset):
-            rna_23s (float | None | Unset):
-            rna_28s (float | None | Unset):
-            trnas (float | None | Unset):
-            nc_rnas (float | None | Unset):
-            eggnog_coverage (float | None | Unset):
-            ipr_coverage (float | None | Unset):
-            num_proteins (int | None | Unset):
-            pangenome_size (int | None | Unset):
-            pangenome_core_size (int | None | Unset):
-            pangenome_accessory_size (int | None | Unset):
-            catalogue (GenomeCatalogueBase | None | Unset):
-     """
+    """
+    Attributes:
+        accession (str):
+        ena_genome_accession (None | str):
+        ena_sample_accession (None | str):
+        ena_study_accession (None | str):
+        ncbi_genome_accession (None | str):
+        ncbi_study_accession (None | str):
+        img_genome_accession (None | str):
+        patric_genome_accession (None | str):
+        length (int):
+        num_contigs (int):
+        n_50 (int):
+        gc_content (float):
+        type_ (GenomeType):
+        completeness (float):
+        contamination (float):
+        catalogue_id (str):
+        taxon_lineage (str):
+        updated_at (datetime.datetime):
+        geographic_origin (None | str):
+        downloads (list[MGnifyGenomeDownloadFile]):
+        num_genomes_total (int | None | Unset):
+        geographic_range (list[str] | None | Unset):
+        biome (Biome | None | Unset):
+        rna_5s (float | None | Unset):
+        rna_5_8s (float | None | Unset):
+        rna_16s (float | None | Unset):
+        rna_18s (float | None | Unset):
+        rna_23s (float | None | Unset):
+        rna_28s (float | None | Unset):
+        trnas (float | None | Unset):
+        nc_rnas (float | None | Unset):
+        eggnog_coverage (float | None | Unset):
+        ipr_coverage (float | None | Unset):
+        num_proteins (int | None | Unset):
+        pangenome_size (int | None | Unset):
+        pangenome_core_size (int | None | Unset):
+        pangenome_accessory_size (int | None | Unset):
+        catalogue (GenomeCatalogueBase | None | Unset):
+    """
 
     accession: str
     ena_genome_accession: None | str
@@ -111,14 +106,10 @@ class GenomeDetail:
     catalogue: GenomeCatalogueBase | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
-        from ..models.biome import Biome
-        from ..models.m_gnify_genome_download_file import MGnifyGenomeDownloadFile
         from ..models.genome_catalogue_base import GenomeCatalogueBase
+        from ..models.biome import Biome
+
         accession = self.accession
 
         ena_genome_accession: None | str
@@ -170,8 +161,6 @@ class GenomeDetail:
             downloads_item = downloads_item_data.to_dict()
             downloads.append(downloads_item)
 
-
-
         num_genomes_total: int | None | Unset
         if isinstance(self.num_genomes_total, Unset):
             num_genomes_total = UNSET
@@ -183,7 +172,6 @@ class GenomeDetail:
             geographic_range = UNSET
         elif isinstance(self.geographic_range, list):
             geographic_range = self.geographic_range
-
 
         else:
             geographic_range = self.geographic_range
@@ -288,31 +276,32 @@ class GenomeDetail:
         else:
             catalogue = self.catalogue
 
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "accession": accession,
-            "ena_genome_accession": ena_genome_accession,
-            "ena_sample_accession": ena_sample_accession,
-            "ena_study_accession": ena_study_accession,
-            "ncbi_genome_accession": ncbi_genome_accession,
-            "ncbi_study_accession": ncbi_study_accession,
-            "img_genome_accession": img_genome_accession,
-            "patric_genome_accession": patric_genome_accession,
-            "length": length,
-            "num_contigs": num_contigs,
-            "n_50": n_50,
-            "gc_content": gc_content,
-            "type": type_,
-            "completeness": completeness,
-            "contamination": contamination,
-            "catalogue_id": catalogue_id,
-            "taxon_lineage": taxon_lineage,
-            "updated_at": updated_at,
-            "geographic_origin": geographic_origin,
-            "downloads": downloads,
-        })
+        field_dict.update(
+            {
+                "accession": accession,
+                "ena_genome_accession": ena_genome_accession,
+                "ena_sample_accession": ena_sample_accession,
+                "ena_study_accession": ena_study_accession,
+                "ncbi_genome_accession": ncbi_genome_accession,
+                "ncbi_study_accession": ncbi_study_accession,
+                "img_genome_accession": img_genome_accession,
+                "patric_genome_accession": patric_genome_accession,
+                "length": length,
+                "num_contigs": num_contigs,
+                "n_50": n_50,
+                "gc_content": gc_content,
+                "type": type_,
+                "completeness": completeness,
+                "contamination": contamination,
+                "catalogue_id": catalogue_id,
+                "taxon_lineage": taxon_lineage,
+                "updated_at": updated_at,
+                "geographic_origin": geographic_origin,
+                "downloads": downloads,
+            }
+        )
         if num_genomes_total is not UNSET:
             field_dict["num_genomes_total"] = num_genomes_total
         if geographic_range is not UNSET:
@@ -352,13 +341,12 @@ class GenomeDetail:
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.biome import Biome
         from ..models.genome_catalogue_base import GenomeCatalogueBase
         from ..models.m_gnify_genome_download_file import MGnifyGenomeDownloadFile
+
         d = dict(src_dict)
         accession = d.pop("accession")
 
@@ -367,16 +355,18 @@ class GenomeDetail:
                 return data
             return cast(None | str, data)
 
-        ena_genome_accession = _parse_ena_genome_accession(d.pop("ena_genome_accession"))
-
+        ena_genome_accession = _parse_ena_genome_accession(
+            d.pop("ena_genome_accession")
+        )
 
         def _parse_ena_sample_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        ena_sample_accession = _parse_ena_sample_accession(d.pop("ena_sample_accession"))
-
+        ena_sample_accession = _parse_ena_sample_accession(
+            d.pop("ena_sample_accession")
+        )
 
         def _parse_ena_study_accession(data: object) -> None | str:
             if data is None:
@@ -385,38 +375,41 @@ class GenomeDetail:
 
         ena_study_accession = _parse_ena_study_accession(d.pop("ena_study_accession"))
 
-
         def _parse_ncbi_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        ncbi_genome_accession = _parse_ncbi_genome_accession(d.pop("ncbi_genome_accession"))
-
+        ncbi_genome_accession = _parse_ncbi_genome_accession(
+            d.pop("ncbi_genome_accession")
+        )
 
         def _parse_ncbi_study_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        ncbi_study_accession = _parse_ncbi_study_accession(d.pop("ncbi_study_accession"))
-
+        ncbi_study_accession = _parse_ncbi_study_accession(
+            d.pop("ncbi_study_accession")
+        )
 
         def _parse_img_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        img_genome_accession = _parse_img_genome_accession(d.pop("img_genome_accession"))
-
+        img_genome_accession = _parse_img_genome_accession(
+            d.pop("img_genome_accession")
+        )
 
         def _parse_patric_genome_accession(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
-        patric_genome_accession = _parse_patric_genome_accession(d.pop("patric_genome_accession"))
-
+        patric_genome_accession = _parse_patric_genome_accession(
+            d.pop("patric_genome_accession")
+        )
 
         length = d.pop("length")
 
@@ -428,9 +421,6 @@ class GenomeDetail:
 
         type_ = GenomeType(d.pop("type"))
 
-
-
-
         completeness = d.pop("completeness")
 
         contamination = d.pop("contamination")
@@ -441,9 +431,6 @@ class GenomeDetail:
 
         updated_at = isoparse(d.pop("updated_at"))
 
-
-
-
         def _parse_geographic_origin(data: object) -> None | str:
             if data is None:
                 return data
@@ -451,16 +438,12 @@ class GenomeDetail:
 
         geographic_origin = _parse_geographic_origin(d.pop("geographic_origin"))
 
-
         downloads = []
         _downloads = d.pop("downloads")
-        for downloads_item_data in (_downloads):
+        for downloads_item_data in _downloads:
             downloads_item = MGnifyGenomeDownloadFile.from_dict(downloads_item_data)
 
-
-
             downloads.append(downloads_item)
-
 
         def _parse_num_genomes_total(data: object) -> int | None | Unset:
             if data is None:
@@ -470,7 +453,6 @@ class GenomeDetail:
             return cast(int | None | Unset, data)
 
         num_genomes_total = _parse_num_genomes_total(d.pop("num_genomes_total", UNSET))
-
 
         def _parse_geographic_range(data: object) -> list[str] | None | Unset:
             if data is None:
@@ -489,7 +471,6 @@ class GenomeDetail:
 
         geographic_range = _parse_geographic_range(d.pop("geographic_range", UNSET))
 
-
         def _parse_biome(data: object) -> Biome | None | Unset:
             if data is None:
                 return data
@@ -500,15 +481,12 @@ class GenomeDetail:
                     raise TypeError()
                 biome_type_0 = Biome.from_dict(data)
 
-
-
                 return biome_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(Biome | None | Unset, data)
 
         biome = _parse_biome(d.pop("biome", UNSET))
-
 
         def _parse_rna_5s(data: object) -> float | None | Unset:
             if data is None:
@@ -519,7 +497,6 @@ class GenomeDetail:
 
         rna_5s = _parse_rna_5s(d.pop("rna_5s", UNSET))
 
-
         def _parse_rna_5_8s(data: object) -> float | None | Unset:
             if data is None:
                 return data
@@ -528,7 +505,6 @@ class GenomeDetail:
             return cast(float | None | Unset, data)
 
         rna_5_8s = _parse_rna_5_8s(d.pop("rna_5_8s", UNSET))
-
 
         def _parse_rna_16s(data: object) -> float | None | Unset:
             if data is None:
@@ -539,7 +515,6 @@ class GenomeDetail:
 
         rna_16s = _parse_rna_16s(d.pop("rna_16s", UNSET))
 
-
         def _parse_rna_18s(data: object) -> float | None | Unset:
             if data is None:
                 return data
@@ -548,7 +523,6 @@ class GenomeDetail:
             return cast(float | None | Unset, data)
 
         rna_18s = _parse_rna_18s(d.pop("rna_18s", UNSET))
-
 
         def _parse_rna_23s(data: object) -> float | None | Unset:
             if data is None:
@@ -559,7 +533,6 @@ class GenomeDetail:
 
         rna_23s = _parse_rna_23s(d.pop("rna_23s", UNSET))
 
-
         def _parse_rna_28s(data: object) -> float | None | Unset:
             if data is None:
                 return data
@@ -568,7 +541,6 @@ class GenomeDetail:
             return cast(float | None | Unset, data)
 
         rna_28s = _parse_rna_28s(d.pop("rna_28s", UNSET))
-
 
         def _parse_trnas(data: object) -> float | None | Unset:
             if data is None:
@@ -579,7 +551,6 @@ class GenomeDetail:
 
         trnas = _parse_trnas(d.pop("trnas", UNSET))
 
-
         def _parse_nc_rnas(data: object) -> float | None | Unset:
             if data is None:
                 return data
@@ -588,7 +559,6 @@ class GenomeDetail:
             return cast(float | None | Unset, data)
 
         nc_rnas = _parse_nc_rnas(d.pop("nc_rnas", UNSET))
-
 
         def _parse_eggnog_coverage(data: object) -> float | None | Unset:
             if data is None:
@@ -599,7 +569,6 @@ class GenomeDetail:
 
         eggnog_coverage = _parse_eggnog_coverage(d.pop("eggnog_coverage", UNSET))
 
-
         def _parse_ipr_coverage(data: object) -> float | None | Unset:
             if data is None:
                 return data
@@ -608,7 +577,6 @@ class GenomeDetail:
             return cast(float | None | Unset, data)
 
         ipr_coverage = _parse_ipr_coverage(d.pop("ipr_coverage", UNSET))
-
 
         def _parse_num_proteins(data: object) -> int | None | Unset:
             if data is None:
@@ -619,7 +587,6 @@ class GenomeDetail:
 
         num_proteins = _parse_num_proteins(d.pop("num_proteins", UNSET))
 
-
         def _parse_pangenome_size(data: object) -> int | None | Unset:
             if data is None:
                 return data
@@ -629,7 +596,6 @@ class GenomeDetail:
 
         pangenome_size = _parse_pangenome_size(d.pop("pangenome_size", UNSET))
 
-
         def _parse_pangenome_core_size(data: object) -> int | None | Unset:
             if data is None:
                 return data
@@ -637,8 +603,9 @@ class GenomeDetail:
                 return data
             return cast(int | None | Unset, data)
 
-        pangenome_core_size = _parse_pangenome_core_size(d.pop("pangenome_core_size", UNSET))
-
+        pangenome_core_size = _parse_pangenome_core_size(
+            d.pop("pangenome_core_size", UNSET)
+        )
 
         def _parse_pangenome_accessory_size(data: object) -> int | None | Unset:
             if data is None:
@@ -647,8 +614,9 @@ class GenomeDetail:
                 return data
             return cast(int | None | Unset, data)
 
-        pangenome_accessory_size = _parse_pangenome_accessory_size(d.pop("pangenome_accessory_size", UNSET))
-
+        pangenome_accessory_size = _parse_pangenome_accessory_size(
+            d.pop("pangenome_accessory_size", UNSET)
+        )
 
         def _parse_catalogue(data: object) -> GenomeCatalogueBase | None | Unset:
             if data is None:
@@ -660,15 +628,12 @@ class GenomeDetail:
                     raise TypeError()
                 catalogue_type_0 = GenomeCatalogueBase.from_dict(data)
 
-
-
                 return catalogue_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(GenomeCatalogueBase | None | Unset, data)
 
         catalogue = _parse_catalogue(d.pop("catalogue", UNSET))
-
 
         genome_detail = cls(
             accession=accession,
@@ -710,7 +675,6 @@ class GenomeDetail:
             pangenome_accessory_size=pangenome_accessory_size,
             catalogue=catalogue,
         )
-
 
         genome_detail.additional_properties = d
         return genome_detail
