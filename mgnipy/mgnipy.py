@@ -209,34 +209,14 @@ class MGnipy(ClientManagerMixin):
         if SupportedEndpoints.is_valid(name):
             # otherwise endpoint attrs
             endpoint = SupportedEndpoints.validate(name)
-            # if list endpoint, return list proxy instance
-            if endpoint in V2_ENDPOINT_LIST_PROXIES:
-                list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
-                return list_cls(
-                    config=self.config,
-                    client=self.client,
-                    resolve_auth=False,
-                    interactive_auth=self.interactive_auth,
-                )
-            # if detail endpoint, return a callable that returns a detail proxy instance
-            if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
-                detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
 
-                # Return a callable so required args like accession/biome_lineage
-                # are provided when user calls MG.study(...), MG.biome(...), etc.
-                def _detail_factory(id: Optional[str] = None, **kwargs):
-                    return detail_cls(
-                        id=id,
-                        config=self.config,
-                        client=self.client,
-                        resolve_auth=False,
-                        interactive_auth=self.interactive_auth,
-                        **kwargs,
-                    )
-
-                return _detail_factory
-
-            raise ValueError(f"{type(self).__name__} has no endpoint {name!r}")
+            the_cls = V2_ALL_PROXIES[endpoint]
+            return the_cls(
+                config=self.config,
+                client=self.client,
+                resolve_auth=False,
+                interactive_auth=self.interactive_auth,
+            )
 
         if name == "mgnetizer":
             return MGnetizer(
@@ -265,7 +245,8 @@ class MGnipy(ClientManagerMixin):
         raise KeyError(f"{type(self).__name__} has no endpoint {key!r}")
 
     def __str__(self):
-        return f"MGnipy(config={self.config}) \n status: {self.status}"
+        return f"MGnipy(config={self.config})"
 
     def __repr__(self):
-        return f"MGnipy(config={self.config}) \n status: {self.status}"
+        self.status()
+        return f"MGnipy(config={self.config})"
