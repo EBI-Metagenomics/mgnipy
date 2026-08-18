@@ -1100,7 +1100,11 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         logger.debug("Initializing client once for all downloads")
 
-        with self.httpx_client:
+        with (
+            init_httpx_client(self.config).get_httpx_client()
+            if self.httpx_client.is_closed
+            else self.httpx_client
+        ):
             aliases = list(self.url_dict.keys())
 
             for alias in tqdm_sync(
@@ -1111,6 +1115,17 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                 disable=hide_progress,
             ):
                 try:
+                    self.download(
+                        to_dir=to_dir,
+                        alias=alias,
+                        hide_progress=hide_progress,
+                        overwrite=overwrite,
+                    )
+                except RuntimeError as re:
+                    logger.error(
+                        f"Runtime error occurred while downloading {alias}: {re}. Attempting to renew_client and retry"
+                    )
+                    self.renew_client()
                     self.download(
                         to_dir=to_dir,
                         alias=alias,
@@ -1158,7 +1173,11 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         """
 
-        async with self.async_httpx_client:
+        async with (
+            init_httpx_client(self.config).get_async_httpx_client()
+            if self.async_httpx_client.is_closed
+            else self.async_httpx_client
+        ):
 
             # create tasks for each download
             tasks = [
@@ -1179,6 +1198,12 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                 disable=hide_progress,
             ):
                 try:
+                    await f
+                except RuntimeError as re:
+                    logger.error(
+                        f"Runtime error occurred while downloading {f}: {re}. Attempting to renew_client and retry"
+                    )
+                    self.renew_client()
                     await f
                 except httpx.ConnectError as ce:
                     # flag and continue with downloads
