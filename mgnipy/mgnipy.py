@@ -15,7 +15,7 @@ from mgnipy.V2.mixins import ClientManagerMixin
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
 from mgnipy.V2.collect import MGnetizer, BioSampler
-from mgnipy.V2.datasets import MGazine
+from mgnipy.V2.datasets import MTG, MGazine
 
 V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 
@@ -228,6 +228,9 @@ class MGnipy(ClientManagerMixin):
 
         if name == "mgazine":
             return MGazine(downloads=[], config=self.config, client=self.client)
+
+        if name == "mtg":
+            return MTG(dataset=None)
 
         if name == "taxonomic":
             return TaxaMGazine(downloads=[], config=self.config, client=self.client)

@@ -7,8 +7,8 @@ from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 logger = logging.getLogger(__name__)
 from pathlib import Path
 from pprint import pformat
-from typing import Any, Optional
-
+from typing import Any, Optional, Literal
+import anndata as ad
 import aiofiles
 import httpx
 import pandas as pd
@@ -24,7 +24,249 @@ from mgnipy.V2.mixins import (
     ClientManagerMixin,
     StreamMixin,
 )
-from mgnipy.V2.datasets.annotate import MetadataSettersMixin
+from mgnipy.V2.datasets.annotate import MetadataSettersMixin, UNIQUE_RUN_ID_COL_NAME
+
+METADATA_SETS = [
+    "mgnify_runs",
+    "mgnify_assemblies",
+    "mgnify_samples",
+    "mgnify_studies",
+    "mgnify_analyses",
+    "biosamples_metadata",
+    "obs",
+]
+
+
+class MTG(MetadataSettersMixin):
+    """MGic the Gatherer combines a MGnify dataset with its metadata.
+
+    The MGic gatherer (MTG) takes a dataset as pandas or polars dataframe and MGnify or BioSamples metadata and combines them into a single object. MTG can be used to enrich the dataset with metadata, and to convert the dataset into different formats such as pandas, polars, or anndata.
+
+
+    Parameters
+    ----------
+    dataset : pandas.DataFrame or polars.DataFrame
+        The dataset to be combined with metadata. This can be a pandas or polars dataframe.
+    var_cols : list of str, optional
+        A list of column names in the dataset that are considered variable columns. These columns will be in var_metadata() and excluded from obs_metadata()
+    mgnify_[studies|analyses|runs|samples|assemblies] : list of dict, optional
+        Lists of dictionaries containing metadata for each respective MGnify dataset.
+    biosamples_metadata : list of dict, optional
+        A list of dictionaries containing metadata for BioSamples.
+
+    Attributes
+    ----------
+    runs_accessions : list
+        A list of all run accessions in the dataset. This is derived from the columns of the dataset that are not in var_cols.
+    """
+
+    def __init__(
+        self,
+        dataset: pd.DataFrame | pl.DataFrame,
+        *,
+        var_cols: list[str] | None = None,
+        var_index: str | None = None,
+        obs_index: str = UNIQUE_RUN_ID_COL_NAME,
+        mgnify_studies: list[dict[str, Any]] | None = None,
+        mgnify_analyses: list[dict[str, Any]] | None = None,
+        mgnify_runs: list[dict[str, Any]] | None = None,
+        mgnify_samples: list[dict[str, Any]] | None = None,
+        mgnify_assemblies: list[dict[str, Any]] | None = None,
+        biosamples_metadata: list[dict[str, Any]] | None = None,
+        obs: list[dict[str, Any]] | None = None,
+    ):
+        self.dataset = dataset
+        self.var_cols = var_cols or []
+        if var_index is None:
+            # add row "index" if dataset isnt None
+            if isinstance(self.dataset, pl.DataFrame):
+                self.dataset = self.dataset.with_row_index()
+            if isinstance(self.dataset, pd.DataFrame):
+                self.dataset = self.dataset.reset_index(drop=False)
+            self.var_index = "index"
+        else:
+            self.var_index = var_index
+        self.obs_index = obs_index
+        self._mgnify_studies: list[dict[str, Any]] | None = mgnify_studies
+        self._mgnify_analyses: list[dict[str, Any]] | None = mgnify_analyses
+        self._mgnify_runs: list[dict[str, Any]] | None = mgnify_runs
+        self._mgnify_samples: list[dict[str, Any]] | None = mgnify_samples
+        self._mgnify_assemblies: list[dict[str, Any]] | None = mgnify_assemblies
+        self._biosamples_metadata: list[dict[str, Any]] | None = biosamples_metadata
+        self._obs: list[dict[str, Any]] | None = obs
+
+    def __call__(
+        self,
+        dataset,
+        *,
+        var_cols: list[str] | None = None,
+        var_index: str | None = None,
+        obs_index: str = UNIQUE_RUN_ID_COL_NAME,
+        mgnify_studies: list[dict[str, Any]] | None = None,
+        mgnify_analyses: list[dict[str, Any]] | None = None,
+        mgnify_runs: list[dict[str, Any]] | None = None,
+        mgnify_samples: list[dict[str, Any]] | None = None,
+        mgnify_assemblies: list[dict[str, Any]] | None = None,
+        biosamples_metadata: list[dict[str, Any]] | None = None,
+        obs: list[dict[str, Any]] | None = None,
+    ) -> "MGazine":
+        """
+        Creates a new instance of MGnetizer with the specified resource, :meth:`all_ids`, :meth:`mgnify_metadata`, and detail_proxy. This allows for creating a new MGnetizer instance with different parameters without modifying the existing instance.
+        """
+        return self.__class__(
+            dataset,
+            var_cols=var_cols or self.var_cols,
+            var_index=var_index or self.var_index,
+            obs_index=obs_index or self.obs_index,
+            mgnify_studies=mgnify_studies or self._mgnify_studies,
+            mgnify_analyses=mgnify_analyses or self._mgnify_analyses,
+            mgnify_runs=mgnify_runs or self._mgnify_runs,
+            mgnify_samples=mgnify_samples or self._mgnify_samples,
+            mgnify_assemblies=mgnify_assemblies or self._mgnify_assemblies,
+            biosamples_metadata=biosamples_metadata or self._biosamples_metadata,
+            obs=obs or self._obs,
+        )
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(dataset is {type(self.dataset)}, var_cols={self.var_cols}, var_index={self.var_index}, obs_index={self.obs_index}, available_metadata_sets={self.available_metadata_sets})"
+
+    def __str__(self):
+        return (
+            f"{self.__class__.__name__} containing:\n"
+            f"- Dataset type: {type(self.dataset)}\n"
+            f"- var_cols: {self.var_cols}\n"
+            f"- var_index: '{self.var_index}'\n"
+            f"- obs_index: '{self.obs_index}'\n"
+            f"- Nonempty metadata sets: {', '.join([f'.{m}' for m in self.available_metadata_sets])}\n"
+        )
+
+    def to_pandas(self) -> pd.DataFrame:
+        if isinstance(self.dataset, pl.DataFrame):
+            return self.dataset.to_pandas().set_index(self.var_index)
+        elif isinstance(self.dataset, pd.DataFrame):
+            return self.dataset.set_index(self.var_index)
+        elif self.dataset is None:
+            raise ValueError("No dataset is loaded in the MTG.")
+
+    def to_polars(self) -> pl.DataFrame:
+        if isinstance(self.dataset, pl.DataFrame):
+            return self.dataset  # .select(pl.exclude(self.var_cols))
+        elif isinstance(self.dataset, pd.DataFrame):
+            return pl.from_pandas(
+                self.dataset  # .drop(columns=self.var_cols, errors="ignore")
+            )
+        elif self.dataset is None:
+            raise ValueError("No dataset is loaded in the MTG.")
+
+    def X(
+        self, df_engine: Literal["polars", "pandas"] = "pandas"
+    ) -> pl.DataFrame | pd.DataFrame:
+        """Gets the feature matrix (X) from the dataset.
+
+        Basically transposes.
+
+        Parameters
+        ----------
+        df_engine : Literal["polars", "pandas"], optional
+            The DataFrame engine to use for the output.
+            If "polars" is specified, a :class:`polars.DataFrame` is returned;
+            if "pandas" is specified, a :class:`pandas.DataFrame` is returned.
+
+        Returns
+        -------
+        pl.DataFrame or pd.DataFrame
+            The feature matrix (X) containing the non-var columns from the dataset
+        """
+
+        df_pl = (
+            self.to_polars()
+            .select(pl.exclude(self.var_cols))
+            .transpose(
+                include_header=True,
+                header_name=self.obs_index,
+                column_names=self.var_index,
+            )
+        )
+        # sort columns
+        df_pl = df_pl.select(self.obs_index, *sorted(df_pl.columns[1:]))
+
+        if df_engine == "pandas":
+            return df_pl.to_pandas().set_index(self.obs_index)
+        elif df_engine == "polars":
+            return df_pl
+        else:
+            raise ValueError(
+                f"Invalid df_engine: {df_engine}. Must be 'polars' or 'pandas'."
+            )
+
+    @property
+    def available_metadata_sets(self) -> list[str]:
+        """Return a list of available metadata sets in the MTG.
+
+        This property checks which metadata sets (e.g., studies, analyses, runs, samples, assemblies, biosamples) are non-empty and returns their names as a list.
+
+        Returns
+        -------
+        list of str
+            A list of names of non-empty metadata sets available in the MTG.
+
+        """
+        return [f for f in METADATA_SETS if len(getattr(self, f)) > 0]
+
+    @property
+    def runs_accessions(self) -> list:
+        return [x for x in self.to_polars().columns if x not in self.var_cols]
+
+    def var_metadata(
+        self,
+        df_engine: Literal["polars", "pandas"] = "pandas",
+    ) -> pl.DataFrame | pd.DataFrame:
+        """Return the variable metadata as a dataframe.
+
+        Parameters
+        ----------
+        df_engine : str, optional
+            The dataframe engine to use. Can be "polars" or "pandas". Default is "pandas".
+
+        Returns
+        -------
+        pd.DataFrame or pl.DataFrame
+            A dataframe containing the variable metadata.
+        """
+        if df_engine == "polars":
+            return self.to_polars().select([self.var_index] + self.var_cols)
+        elif df_engine == "pandas":
+            return self.to_pandas()[self.var_cols].copy()
+        else:
+            raise ValueError(
+                f"Invalid df_engine: {df_engine}. Must be 'polars' or 'pandas'."
+            )
+
+    def obs_metadata(self, *args, **kwargs) -> pl.DataFrame | pd.DataFrame:
+        return super().obs_metadata(*args, **kwargs, index_col_name=self.obs_index)
+
+    def to_anndata(self, drop_duplicates: bool = True, **anndata_kwargs) -> ad.AnnData:
+        if len(self.X()) == len(self.obs_metadata(drop_duplicates=drop_duplicates)):
+            return ad.AnnData(
+                self.X()[sorted(self.X().columns)].sort_index(),
+                var=self.var_metadata().sort_index(),
+                obs=self.obs_metadata(drop_duplicates=drop_duplicates).sort_index(),
+                **anndata_kwargs,
+            )
+        elif len(self.X()) != len(self.obs_metadata(drop_duplicates=drop_duplicates)):
+            intersection = list(
+                set(self.X().index).intersection(
+                    self.obs_metadata(drop_duplicates=drop_duplicates).index
+                )
+            )
+            return ad.AnnData(
+                self.X().loc[intersection, sorted(self.X().columns)].sort_index(),
+                var=self.var_metadata().sort_index(),
+                obs=self.obs_metadata(drop_duplicates=drop_duplicates)
+                .loc[intersection]
+                .sort_index(),
+                **anndata_kwargs,
+            )
 
 
 class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
@@ -310,16 +552,8 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         >>> mg.available_metadata_sets # doctest: +SKIP
         ['mgnify_studies', 'mgnify_analyses', 'mgnify_runs']
         """
-        metadata_sets = [
-            "mgnify_runs",
-            "mgnify_assemblies",
-            "mgnify_samples",
-            "mgnify_studies",
-            "mgnify_analyses",
-            "biosamples_metadata",
-            "obs",
-        ]
-        return [f for f in metadata_sets if len(getattr(self, f)) > 0]
+
+        return [f for f in METADATA_SETS if len(getattr(self, f)) > 0]
 
     @property
     def aliases(self) -> list[str]:
@@ -992,7 +1226,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         if aliases:
             self._lazy_merged = pl.concat(
                 [
-                    self.stream(alias=alias, chunksize=1000, dataframe_engine="polars")
+                    self.stream(alias=alias, chunksize=1000, df_engine="polars")
                     for alias in aliases
                 ],
                 how=how,
@@ -1002,7 +1236,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         if urls:
             self._lazy_merged = pl.concat(
                 [
-                    self.stream(url=url, chunksize=1000, dataframe_engine="polars")
+                    self.stream(url=url, chunksize=1000, df_engine="polars")
                     for url in urls
                 ],
                 how=how,

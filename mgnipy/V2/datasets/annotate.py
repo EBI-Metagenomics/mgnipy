@@ -117,7 +117,15 @@ class MetadataSettersMixin:
             return pl.DataFrame() if df_engine == "polars" else pd.DataFrame()
         # getting run accessions as sorted_index
         sorted_index = sorted(
-            [x for x in self.to_polars().columns if x not in EXCLUDE_FROM_INDEX]
+            [
+                x
+                for x in self.to_polars().columns
+                if x
+                not in EXCLUDE_FROM_INDEX
+                + getattr(self, "var_cols", [])
+                + ([self.var_index] if getattr(self, "var_index", None) else [])
+                + ([self.obs_index] if getattr(self, "obs_index", None) else [])
+            ]
         )
 
         # creating base dataframe with index
@@ -149,7 +157,7 @@ class MetadataSettersMixin:
                 pl_runs,
                 how=how,
                 coalesce=coalesce,
-                left_on=UNIQUE_RUN_ID_COL_NAME,
+                left_on=index_col_name,
                 right_on=ID_PARAM[SupportedEndpoints.RUNS],
                 suffix="__mgnify_runs",
             )
@@ -177,7 +185,7 @@ class MetadataSettersMixin:
                 pl_biosamples,
                 how=how,
                 coalesce=coalesce,
-                left_on=UNIQUE_RUN_ID_COL_NAME,
+                left_on=index_col_name,
                 right_on=BIOSAMPLES_RUN_ID,
                 suffix="__biosamples_metadata",
             )
@@ -197,7 +205,7 @@ class MetadataSettersMixin:
                 pl_runs,
                 how=how,
                 coalesce=coalesce,
-                left_on=UNIQUE_RUN_ID_COL_NAME,
+                left_on=index_col_name,
                 right_on=ID_PARAM[SupportedEndpoints.RUNS],
                 suffix="__mgnify_runs",
             )
