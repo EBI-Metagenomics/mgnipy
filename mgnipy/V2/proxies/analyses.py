@@ -35,7 +35,7 @@ class Analyses(MGnifyList):
         if self.mgnify_details:
             return super().downloads
 
-        return self.metadata.downloads
+        return self.search_results.downloads
 
     @property
     def datasets(self):
@@ -49,7 +49,7 @@ class Analyses(MGnifyList):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
-            mgnify_analyses=self.metadata.to_list(),
+            mgnify_analyses=self.search_results.to_list(),
         )
 
 

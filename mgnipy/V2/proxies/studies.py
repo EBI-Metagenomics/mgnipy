@@ -29,7 +29,7 @@ class Studies(MGnifyList):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
-            mgnify_studies=self.detailed_metadata.to_list(),
+            mgnify_studies=self.metadata.to_list(),
         )
 
 
@@ -84,5 +84,5 @@ class PrivateStudies(MGnifyList):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
-            mgnify_studies=self.detailed_metadata.to_list(),
+            mgnify_studies=self.metadata.to_list(),
         )
