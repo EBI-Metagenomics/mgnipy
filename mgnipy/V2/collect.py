@@ -1,5 +1,7 @@
 import logging
 
+logger = logging.getLogger(__name__)
+
 from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.mixins import CheckpointMixin, ClientManagerMixin
 from mgnipy._shared_helpers.biosamples_helper import (
@@ -10,9 +12,6 @@ from mgnipy._shared_helpers.biosamples_helper import (
     SAMPLE_ID as BIOSAMPLES_SAMPLE_ID,
     GIVEN_ID as BIOSAMPLES_GIVEN_ID,
 )
-
-logger = logging.getLogger(__name__)
-
 import asyncio
 import pandas as pd
 from tqdm import tqdm as tqdm_sync
@@ -21,9 +20,9 @@ from typing import (
     Any,
     Optional,
 )
-
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, DetailResourceStr
 from mgnipy.V2.mgnifier.metadata import MGnifyMetadata
+from mgnipy.V2.mgnifier.endpoints import PARENT_CHILD_RESOURCES
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy._models.config import MGnipyConfig
 from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
@@ -83,7 +82,11 @@ class MGnetizer(CheckpointMixin, ClientManagerMixin):
             self._resource = SupportedEndpoints(resource)
             # Set the appropriate detail proxy based on the resource type, if not provided
             self.detail_proxy: MGnifyDetail = (
-                detail_proxy or V2_ENDPOINT_DETAIL_PROXIES.get(self._resource)
+                detail_proxy
+                or V2_ENDPOINT_DETAIL_PROXIES.get(self._resource)
+                or V2_ENDPOINT_DETAIL_PROXIES.get(
+                    PARENT_CHILD_RESOURCES.get(self._resource)
+                )  # e.g. if plural 'runs' get 'run'
             )
         else:
             # If no resource is provided, set to None
@@ -129,6 +132,10 @@ class MGnetizer(CheckpointMixin, ClientManagerMixin):
             f"Detail proxy: {self.detail_proxy.__name__ if self.detail_proxy else None} \n"
             f"Cache directory: {self.cache_path} \n"
         )
+
+    def explain(self):
+        for i in self.all_ids:
+            self.detail_proxy(id=i, config=self.config).explain()
 
     @property
     def mgnify_metadata(self) -> MGnifyMetadata:
@@ -463,7 +470,7 @@ class BioSampler(CheckpointMixin, ClientManagerMixin):
             An optional integer to limit the number of biosamples to enrich. If set to None, there will be no limit on the number of biosamples enriched.
         hide_progress : bool, default=False
             Whether to hide the progress bar during enrichment.
-        incl_ena : bool, default=True
+        incl_ena : bool, default=False
             Whether to include an API call to ENA prior to the BioSamples requeßst. If set to False, only sample accessions will return BioSamples metadata.
         skip_failed : bool, default=True
             Whether to skip failed enrichments. If set to True, failed enrichments will be logged and skipped, and a placeholder with the GivenID will be appended to the results (appear as completed in :meth:`.ResultsHandler.get_ids`). If set to False, any failed enrichments will not be appended to the results (appear as still left to do).
