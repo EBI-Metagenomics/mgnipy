@@ -333,7 +333,7 @@ class TaxaMGazine(MGazine):
 
         # lazyframes for given short_desc
         lazyframes = [
-            self.stream(url=u, chunksize=1000, dataframe_engine="polars").rename(
+            self.stream(url=u, chunksize=1000, df_engine="polars").rename(
                 {"#SampleID": "taxonomy"}, strict=False
             )
             for u in self.url_list

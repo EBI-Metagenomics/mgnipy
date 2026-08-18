@@ -169,7 +169,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         self.try_load_cache()
         self.exec._set_counts()
 
-        completed: int = len(self.metadata.pages)
+        completed: int = len(self.search_results.pages)
         total: int = len(self.build_queries().keys())
         percent: float = completed / total if total > 0 else 0
         # dummy bar for fun
@@ -181,7 +181,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         print(progress_str)
 
     @property
-    def metadata(self) -> MGnifyMetadata:
+    def search_results(self) -> MGnifyMetadata:
         """Get the retrieved metadata results, if available.
 
         Returns
@@ -416,7 +416,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         self.try_load_cache()
         self.exec._set_counts()
         # compute pages we still need to fetch
-        return [x for x in self.build_queries() if x not in self.metadata.pages]
+        return [x for x in self.build_queries() if x not in self.search_results.pages]
 
     def get_all(
         self,
@@ -445,7 +445,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         for p in tqdm(
             iterable=pages[:limit],
             total=len(self.build_queries()),
-            initial=len(self.metadata.pages),
+            initial=len(self.search_results.pages),
             desc=f"Retrieving {self.resource} pages",
             disable=hide_progress,
         ):
@@ -485,7 +485,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         for done in tqdm_asyncio.as_completed(
             tasks,
             total=len(self.build_queries()),
-            initial=len(self.metadata.pages),
+            initial=len(self.search_results.pages),
             desc=f"(async)Retrieving {self.resource} pages",
             disable=hide_progress,
         ):
@@ -590,7 +590,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         """
 
         first = self.first()
-        return self.metadata.to_pandas(first)
+        return self.search_results.to_pandas(first)
 
     def list_supported_params(self) -> list[str]:
         """Get the valid query filter parameters for this resource.
