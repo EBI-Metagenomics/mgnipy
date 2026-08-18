@@ -443,9 +443,7 @@ class StreamMixin:
             except IncompleteRead:
                 self._handle_incomplete_read(url)
             except Exception as err:
-                raise RuntimeError(
-                    f"Error reading file from {url} with skiprows={skip}"
-                ) from err
+                raise err
         raise pd.errors.ParserError(
             f"Failed to parse {url} after skipping up to {max_skip} rows."
         )
@@ -516,9 +514,7 @@ class StreamMixin:
             except IncompleteRead:
                 self._handle_incomplete_read(url)
             except Exception as err:
-                raise RuntimeError(
-                    f"Error reading file from {url} with skip_rows_after_header={skip}"
-                ) from err
+                raise err
         raise pl.exceptions.PolarsError(
             f"Failed to parse {url} after skipping up to {max_skip} rows."
         )
@@ -754,14 +750,14 @@ class StreamMixin:
             Literal["records", "split", "index", "columns", "values", "table"]
         ] = None,
         chunksize: Optional[int] = None,
-        dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
+        df_engine: Optional[Literal["pandas", "polars"]] = "pandas",
         **df_kwargs,
     ) -> dict:
-        if dataframe_engine == "pandas":
+        if df_engine == "pandas":
             return pd.read_json(
                 url, orient=orient, lines=True, chunksize=chunksize, **df_kwargs
             )
-        elif dataframe_engine == "polars":
+        elif df_engine == "polars":
             if chunksize is None:
                 return pl.read_ndjson(url, infer_schema_length=10000, **df_kwargs)
             else:
@@ -830,7 +826,7 @@ class StreamMixin:
         url: Optional[HttpUrl] = None,
         chunksize: int = 1000,
         max_skip: int = 5,
-        dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
+        df_engine: Optional[Literal["pandas", "polars"]] = "pandas",
         low_memory: bool = False,
         **kwargs,
     ):
@@ -838,7 +834,7 @@ class StreamMixin:
         _alias, _url = self._prioritize_alias(alias, url, required=True)
         file_type = self._get_type_by_alias(_alias)
 
-        if dataframe_engine == "polars" and file_type == "tsv":
+        if df_engine == "polars" and file_type == "tsv":
             return self.stream_polars(
                 _url,
                 sep="\t",
@@ -848,7 +844,7 @@ class StreamMixin:
                 **kwargs,
             )
 
-        if dataframe_engine == "polars" and file_type == "csv":
+        if df_engine == "polars" and file_type == "csv":
             return self.stream_polars(
                 _url,
                 sep=",",
@@ -918,7 +914,7 @@ class StreamMixin:
                 _url,
                 orient="records",
                 chunksize=chunksize,
-                dataframe_engine=dataframe_engine,
+                df_engine=df_engine,
                 low_memory=low_memory,
                 **kwargs,
             )
@@ -1010,7 +1006,7 @@ class BiomesTreeMixin:
 
     @property
     def lineages(self) -> list[str]:
-        mgnify_metadata = self.metadata
+        mgnify_metadata = self.search_results
         return mgnify_metadata.ids
 
     @property
@@ -1158,23 +1154,23 @@ class BioSamplesMetadataMixin:
         self, incl_ena: bool = True
     ) -> dict[str, pd.DataFrame] | bool:
 
-        if self.detailed_metadata.ids is None:
+        if self.metadata.ids is None:
             logger.warning(
                 "No ids found in detailed metadata, skipping BioSamples metadata fetch."
             )
             return
 
         logger.debug(
-            f"Proceeding to fetch BioSamples metadata for ids {self.detailed_metadata.ids}, incl_ena={incl_ena}"
+            f"Proceeding to fetch BioSamples metadata for ids {self.metadata.ids}, incl_ena={incl_ena}"
         )
         if incl_ena:
             self._cache_biosamples_details_w_ena = get_all_biosample_metadata(
-                self.detailed_metadata.ids,
+                self.metadata.ids,
                 incl_ena=incl_ena,
             )
         else:
             self._cache_biosamples_details_no_ena = get_all_biosample_metadata(
-                self.detailed_metadata.ids,
+                self.metadata.ids,
                 incl_ena=incl_ena,
             )
 
@@ -1182,23 +1178,23 @@ class BioSamplesMetadataMixin:
         self, incl_ena: bool = True
     ) -> dict[str, pd.DataFrame] | bool:
 
-        if self.detailed_metadata.ids is None:
+        if self.metadata.ids is None:
             logger.warning(
                 "No ids found in detailed metadata, skipping BioSamples metadata fetch."
             )
             return
 
         logger.debug(
-            f"Proceeding to fetch BioSamples metadata for ids {self.detailed_metadata.ids}, incl_ena={incl_ena}"
+            f"Proceeding to fetch BioSamples metadata for ids {self.metadata.ids}, incl_ena={incl_ena}"
         )
         if incl_ena:
             self._cache_biosamples_details_w_ena = await aget_all_biosample_metadata(
-                self.detailed_metadata.ids,
+                self.metadata.ids,
                 incl_ena=incl_ena,
             )
         else:
             self._cache_biosamples_details_no_ena = await aget_all_biosample_metadata(
-                self.detailed_metadata.ids,
+                self.metadata.ids,
                 incl_ena=incl_ena,
             )
 
@@ -1236,11 +1232,11 @@ class BioSamplesMetadataMixin:
         if getattr(self, "identifier", None) is not None:
             self._one_detail(incl_ena=incl_ena)
         # if list endpoint
-        elif getattr(self, "detailed_metadata", None) is not None:
+        elif getattr(self, "metadata", None) is not None:
             self._all_list_details(incl_ena=incl_ena)
         else:
             logger.warning(
-                "Neither identifier nor detailed_metadata with ids found, cannot fetch BioSamples metadata."
+                "Neither identifier nor metadata with ids found, cannot fetch BioSamples metadata."
             )
 
     async def aenrich_biosamples(
@@ -1277,11 +1273,11 @@ class BioSamplesMetadataMixin:
         if getattr(self, "identifier", None) is not None:
             self._one_detail(incl_ena=incl_ena)
         # if list endpoint
-        elif getattr(self, "detailed_metadata", None) is not None:
+        elif getattr(self, "metadata", None) is not None:
             await self._async_all_list_details(incl_ena=incl_ena)
         else:
             logger.warning(
-                "Neither identifier nor detailed_metadata with ids found, cannot fetch BioSamples metadata."
+                "Neither identifier nor metadata with ids found, cannot fetch BioSamples metadata."
             )
 
 
