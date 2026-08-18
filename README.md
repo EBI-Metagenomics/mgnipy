@@ -112,8 +112,8 @@ for _ in range(3)
 for i in range(4,7):
     studies.page(i)
 
-# OR potentially all at once in large batches (also async option .abulk_fetch())
-studies.bulk_fetch()
+# OR potentially all at once in large batches (also async option .aget_all())
+studies.get_all()
 
 # then can enrich with detailed metadata
 studies.enrich_details()

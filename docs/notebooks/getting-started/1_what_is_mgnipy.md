@@ -61,7 +61,7 @@ with MG: # client context manager
     filtered_studies.get_all() # populates list of studies
     filtered_studies.enrich_details() # gets all studies details
 
-# access the metadata and view as pandas df
+# access the detailed metadata and view as pandas df
 filtered_studies.metadata.to_pandas()
 ```
 ### 3. Receive a `MGazine` of MGnify datasets
