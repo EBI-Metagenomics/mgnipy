@@ -134,6 +134,18 @@ class ResultsHandler:
         """
         return len(list(self.data or []))
 
+    def __call__(
+        self,
+        data: Optional[dict[int, list[dict]]] = None,
+        expand_nested_dicts: Optional[list[str] | bool] = False,
+        rename_columns: Optional[dict[str, str]] = None,
+        drop_duplicates: bool = False,
+        **kwargs,
+    ) -> pd.DataFrame:
+        return self.to_pandas(
+            data, expand_nested_dicts, rename_columns, drop_duplicates, **kwargs
+        )
+
     @property
     def data(self) -> list[dict[str, Any]]:
         """
@@ -618,7 +630,7 @@ class MGnifyMetadata(ResultsHandler):
         >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies")  # doctest: +SKIP
         >>> query.get()  # doctest: +SKIP
-        >>> ids = query.metadata.ids  # doctest: +SKIP
+        >>> ids = query.search_results.ids  # doctest: +SKIP
         """
         # make sure data is updated from results
         self._sync_data()
