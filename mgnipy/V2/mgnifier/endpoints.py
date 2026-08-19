@@ -8,7 +8,10 @@ Ideally, only this endpoints.py file (and mgnipy._models.constants.CONSTANTS) sh
 if any endpoints added or removed from the API and emgapi_v2_client re-installed via ./autogen_clients.sh.
 """
 
+from __future__ import annotations
+
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+from mgnipy._shared_helpers._custom_endpoint import custom_endpoint
 from mgnipy.emgapi_v2_client.api.analyses import (
     get_mgnify_analysis,
     list_mgnify_analyses,
@@ -40,8 +43,8 @@ from mgnipy.emgapi_v2_client.api.runs import (
 from mgnipy.emgapi_v2_client.api.samples import (
     get_mgnify_sample,
     list_mgnify_samples,
-    list_sample_runs,
     list_sample_assemblies,
+    list_sample_runs,
 )
 from mgnipy.emgapi_v2_client.api.studies import (
     get_mgnify_study,
@@ -50,7 +53,6 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_publications,
     list_mgnify_study_samples,
 )
-from mgnipy._shared_helpers._custom_endpoint import custom_endpoint
 
 CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
     SupportedEndpoints._CUSTOM_ENDPOINT: custom_endpoint,
@@ -145,7 +147,7 @@ BETWEEN_RESOURCE_RELATIONSHIPS: dict[
 
 ALL_SUPPORTED_RELATIONSHIPS: dict[
     SupportedEndpoints, dict[SupportedEndpoints, callable]
-] = (WITHIN_RESOURCE_RELATIONSHIPS | BETWEEN_RESOURCE_RELATIONSHIPS)
+] = WITHIN_RESOURCE_RELATIONSHIPS | BETWEEN_RESOURCE_RELATIONSHIPS
 
 PRIVATE_ENDPOINTS: set[SupportedEndpoints] = {
     SupportedEndpoints.PRIVATE_STUDIES,

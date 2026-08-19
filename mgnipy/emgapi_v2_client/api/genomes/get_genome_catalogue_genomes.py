@@ -1,18 +1,20 @@
+from __future__ import annotations
+
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
-from ...models.get_genome_catalogue_genomes_order_type_0 import GetGenomeCatalogueGenomesOrderType0
-from ...models.ninja_pagination_response_schema_genome_list import NinjaPaginationResponseSchemaGenomeList
-from ...types import UNSET, Unset
-from typing import cast
-
+from ...client import AuthenticatedClient, Client
+from ...models.get_genome_catalogue_genomes_order_type_0 import (
+    GetGenomeCatalogueGenomesOrderType0,
+)
+from ...models.ninja_pagination_response_schema_genome_list import (
+    NinjaPaginationResponseSchemaGenomeList,
+)
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
@@ -23,11 +25,7 @@ def _get_kwargs(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> dict[str, Any]:
-    
-
-    
 
     params: dict[str, Any] = {}
 
@@ -63,26 +61,26 @@ def _get_kwargs(
         json_page_size = page_size
     params["page_size"] = json_page_size
 
-
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/genomes/catalogues/{catalogue_id}/genomes/".format(catalogue_id=quote(str(catalogue_id), safe=""),),
+        "url": "/metagenomics/api/v2/genomes/catalogues/{catalogue_id}/genomes/".format(
+            catalogue_id=quote(str(catalogue_id), safe=""),
+        ),
         "params": params,
     }
-
 
     return _kwargs
 
 
-
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> NinjaPaginationResponseSchemaGenomeList | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> NinjaPaginationResponseSchemaGenomeList | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaGenomeList.from_dict(response.json())
-
-
+        response_200 = NinjaPaginationResponseSchemaGenomeList.from_dict(
+            response.json()
+        )
 
         return response_200
 
@@ -92,7 +90,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[NinjaPaginationResponseSchemaGenomeList]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[NinjaPaginationResponseSchemaGenomeList]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -110,9 +110,8 @@ def sync_detailed(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaGenomeList]:
-    """ Get genomes within the genome catalogue
+    """Get genomes within the genome catalogue
 
     Args:
         catalogue_id (str):
@@ -128,17 +127,15 @@ def sync_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaGenomeList]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         catalogue_id=catalogue_id,
-order=order,
-biome_lineage=biome_lineage,
-search=search,
-page=page,
-page_size=page_size,
-
+        order=order,
+        biome_lineage=biome_lineage,
+        search=search,
+        page=page,
+        page_size=page_size,
     )
 
     response = client.get_httpx_client().request(
@@ -146,6 +143,7 @@ page_size=page_size,
     )
 
     return _build_response(client=client, response=response)
+
 
 def sync(
     catalogue_id: str,
@@ -156,9 +154,8 @@ def sync(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaGenomeList | None:
-    """ Get genomes within the genome catalogue
+    """Get genomes within the genome catalogue
 
     Args:
         catalogue_id (str):
@@ -174,19 +171,18 @@ def sync(
 
     Returns:
         NinjaPaginationResponseSchemaGenomeList
-     """
-
+    """
 
     return sync_detailed(
         catalogue_id=catalogue_id,
-client=client,
-order=order,
-biome_lineage=biome_lineage,
-search=search,
-page=page,
-page_size=page_size,
-
+        client=client,
+        order=order,
+        biome_lineage=biome_lineage,
+        search=search,
+        page=page,
+        page_size=page_size,
     ).parsed
+
 
 async def asyncio_detailed(
     catalogue_id: str,
@@ -197,9 +193,8 @@ async def asyncio_detailed(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaGenomeList]:
-    """ Get genomes within the genome catalogue
+    """Get genomes within the genome catalogue
 
     Args:
         catalogue_id (str):
@@ -215,24 +210,21 @@ async def asyncio_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaGenomeList]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         catalogue_id=catalogue_id,
-order=order,
-biome_lineage=biome_lineage,
-search=search,
-page=page,
-page_size=page_size,
-
+        order=order,
+        biome_lineage=biome_lineage,
+        search=search,
+        page=page,
+        page_size=page_size,
     )
 
-    response = await client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
+
 
 async def asyncio(
     catalogue_id: str,
@@ -243,9 +235,8 @@ async def asyncio(
     search: None | str | Unset = UNSET,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaGenomeList | None:
-    """ Get genomes within the genome catalogue
+    """Get genomes within the genome catalogue
 
     Args:
         catalogue_id (str):
@@ -261,16 +252,16 @@ async def asyncio(
 
     Returns:
         NinjaPaginationResponseSchemaGenomeList
-     """
+    """
 
-
-    return (await asyncio_detailed(
-        catalogue_id=catalogue_id,
-client=client,
-order=order,
-biome_lineage=biome_lineage,
-search=search,
-page=page,
-page_size=page_size,
-
-    )).parsed
+    return (
+        await asyncio_detailed(
+            catalogue_id=catalogue_id,
+            client=client,
+            order=order,
+            biome_lineage=biome_lineage,
+            search=search,
+            page=page,
+            page_size=page_size,
+        )
+    ).parsed

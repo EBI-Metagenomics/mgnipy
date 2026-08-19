@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from enum import Enum
+
 
 class ListMgnifyPublicationsOrderType0(str, Enum):
     PUBLISHED_YEAR = "published_year"

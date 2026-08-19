@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import pytest
 
-import mgnipy.mgnipy as mgnipy_module
 from mgnipy import MGnipy
 from mgnipy._models.config import MGnipyConfig
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+import mgnipy.mgnipy as mgnipy_module
 
 
 class FakeListProxy:
@@ -47,28 +49,28 @@ def test_mgnipy_exposes_cache_dir_and_endpoint_dispatch(tmp_path, monkeypatch):
 
     client = MGnipy(cache_dir=tmp_path)
 
-    assert (
-        client.cache_dir == tmp_path
-    ), "The cache_dir shortcut should expose the configured cache path."
+    assert client.cache_dir == tmp_path, (
+        "The cache_dir shortcut should expose the configured cache path."
+    )
 
     studies = client.studies
-    assert isinstance(
-        studies, FakeListProxy
-    ), "List endpoint access should return the configured list proxy."
-    assert isinstance(
-        studies.config, MGnipyConfig
-    ), "List proxy should receive the active MGnipyConfig instance."
+    assert isinstance(studies, FakeListProxy), (
+        "List endpoint access should return the configured list proxy."
+    )
+    assert isinstance(studies.config, MGnipyConfig), (
+        "List proxy should receive the active MGnipyConfig instance."
+    )
 
     study = client.study("ABC123")
-    assert isinstance(
-        study, FakeDetailProxy
-    ), "Detail endpoint access should return the configured detail proxy factory."
-    assert (
-        study.id == "ABC123"
-    ), "Detail endpoint access should forward the accession to the proxy."
-    assert (
-        study.config == studies.config
-    ), "Detail proxies should reuse the same config object as list proxies."
+    assert isinstance(study, FakeDetailProxy), (
+        "Detail endpoint access should return the configured detail proxy factory."
+    )
+    assert study.id == "ABC123", (
+        "Detail endpoint access should forward the accession to the proxy."
+    )
+    assert study.config == studies.config, (
+        "Detail proxies should reuse the same config object as list proxies."
+    )
 
     with pytest.raises(ValueError, match="Invalid SupportedEndpoints: not_a_resource"):
         _ = client.not_a_resource
@@ -90,9 +92,9 @@ def test_describe_resource_delegates_and_rejects_invalid_resources(
         "as_dict": True,
         "response": tmp_path,
     }, "Describing a supported resource should delegate to the proxy handler."
-    assert (
-        client.describe_resource("does-not-exist") is None
-    ), "Unsupported resources should return None instead of raising."
+    assert client.describe_resource("does-not-exist") is None, (
+        "Unsupported resources should return None instead of raising."
+    )
 
 
 def test_clear_subcaches_removes_only_expected_cache_entries(tmp_path):
@@ -108,7 +110,7 @@ def test_clear_subcaches_removes_only_expected_cache_entries(tmp_path):
     client = MGnipy(cache_dir=tmp_path)
     client.clear_subcaches()
 
-    assert (
-        not cache_dir.exists()
-    ), "Valid cache subdirectories should be deleted during cache clearing."
+    assert not cache_dir.exists(), (
+        "Valid cache subdirectories should be deleted during cache clearing."
+    )
     assert keep_file.exists(), "Non-directory cache entries should be preserved."

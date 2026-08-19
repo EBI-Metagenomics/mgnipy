@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from enum import Enum
+
 
 class GetGenomeCatalogueGenomesOrderType0(str, Enum):
     ACCESSION = "accession"

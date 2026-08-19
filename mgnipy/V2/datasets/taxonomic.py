@@ -1,16 +1,18 @@
 from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 import functools as ft
 import logging
-
-from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 from typing import Any, Literal, Optional
+
 import anndata as ad
 import pandas as pd
 import polars as pl
+
+from mgnipy._models.config import MGnipyConfig
 from mgnipy._models.constants.tax_ranks import (
     MOTUS_TAX_RANKS,
     PR2_TAX_RANKS,
@@ -19,7 +21,7 @@ from mgnipy._models.constants.tax_ranks import (
     SHORT_SILVA_TAX_RANKS,
     SILVA_TAX_RANKS,
 )
-from mgnipy._models.config import MGnipyConfig
+from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.datasets.annotate import UNIQUE_RUN_ID_COL_NAME
 
@@ -72,7 +74,8 @@ def prep_obs(
             .struct.rename_fields(list(long_short_mapping.keys()))
             # alias and unnest
             .alias("taxonomy_split")
-        ).unnest("taxonomy_split")
+        )
+        .unnest("taxonomy_split")
         # select only these new columns
         .select(tax_col, *list(long_short_mapping.keys()))
     )
@@ -86,7 +89,8 @@ def prep_obs(
             # strip short prefix e.g., d__
             .str.strip_chars_start(f"{long_short_mapping[col_name]}__")
             # fill empty strings / nulls
-            .replace("", fill_na).fill_null(fill_na)
+            .replace("", fill_na)
+            .fill_null(fill_na)
             for col_name in long_short_mapping
         ],
     )

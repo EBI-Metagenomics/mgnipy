@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 
 from mgnipy.V2.mgnifier.metadata import ResultsHandler
@@ -37,9 +39,9 @@ def test_results_handler_to_pandas_renames_and_expands_nested_columns():
         "sample__accession",
         "sample__study",
     ], "The DataFrame should rename lineage and expand the nested sample field."
-    assert (
-        df.iloc[0]["biome_lineage"] == "root"
-    ), "The lineage column should be renamed to biome_lineage."
-    assert (
-        df.iloc[0]["sample__accession"] == "S1"
-    ), "The nested sample accession should be expanded into a flat column."
+    assert df.iloc[0]["biome_lineage"] == "root", (
+        "The lineage column should be renamed to biome_lineage."
+    )
+    assert df.iloc[0]["sample__accession"] == "S1", (
+        "The nested sample accession should be expanded into a flat column."
+    )

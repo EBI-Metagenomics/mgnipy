@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from types import SimpleNamespace
 
 import polars as pl
@@ -57,9 +59,9 @@ def test_mgazine_basic_properties_and_grouping():
         "reads.tsv",
         "summary.tsv",
     ], "Aliases should preserve the order from the downloads list."
-    assert (
-        mgazine.url_dict["reads.tsv"] == "https://example.org/reads.tsv"
-    ), "url_dict should map each alias to its URL."
+    assert mgazine.url_dict["reads.tsv"] == "https://example.org/reads.tsv", (
+        "url_dict should map each alias to its URL."
+    )
     assert mgazine.url_list == [
         "https://example.org/reads.tsv",
         "https://example.org/summary.tsv",
@@ -100,20 +102,20 @@ def test_mgazine_selector_helpers_return_filtered_instances():
     mgazine = MGazine(downloads)
 
     v4 = mgazine.v4_1
-    assert isinstance(
-        v4, MGazine
-    ), "Pipeline-version attribute access should return a new MGazine instance."
-    assert v4.aliases == [
-        "reads.tsv"
-    ], "The pipeline-version selector should filter to the matching download only."
+    assert isinstance(v4, MGazine), (
+        "Pipeline-version attribute access should return a new MGazine instance."
+    )
+    assert v4.aliases == ["reads.tsv"], (
+        "The pipeline-version selector should filter to the matching download only."
+    )
 
     summary = mgazine["summary"]
-    assert isinstance(
-        summary, MGazine
-    ), "Non-taxonomic item access should return a narrowed MGazine."
-    assert summary.aliases == [
-        "summary.tsv"
-    ], "The short-description selector should filter to the matching download only."
+    assert isinstance(summary, MGazine), (
+        "Non-taxonomic item access should return a narrowed MGazine."
+    )
+    assert summary.aliases == ["summary.tsv"], (
+        "The short-description selector should filter to the matching download only."
+    )
 
 
 def test_mgazine_item_access_selects_curators(monkeypatch):
@@ -148,20 +150,20 @@ def test_mgazine_item_access_selects_curators(monkeypatch):
     dwc = MGazine(dwc_downloads)
 
     taxa_curator = taxonomic["silva-taxonomy"]
-    assert isinstance(
-        taxa_curator, FakeTaxaMGazine
-    ), "Taxonomic downloads should dispatch to TaxaMGazine."
-    assert taxa_curator.mgazine.aliases == [
-        "taxonomy.tsv"
-    ], "The curator should receive the filtered MGazine subset."
+    assert isinstance(taxa_curator, FakeTaxaMGazine), (
+        "Taxonomic downloads should dispatch to TaxaMGazine."
+    )
+    assert taxa_curator.mgazine.aliases == ["taxonomy.tsv"], (
+        "The curator should receive the filtered MGazine subset."
+    )
 
     dwc_curator = dwc["dwc-ready-taxonomy"]
-    assert isinstance(
-        dwc_curator, FakeDwCTaxaMGazine
-    ), "DwC-ready taxonomic downloads should dispatch to DWCTaxaMGazine."
-    assert dwc_curator.mgazine.aliases == [
-        "dwc.tsv"
-    ], "The DwC curator should receive the filtered MGazine subset."
+    assert isinstance(dwc_curator, FakeDwCTaxaMGazine), (
+        "DwC-ready taxonomic downloads should dispatch to DWCTaxaMGazine."
+    )
+    assert dwc_curator.mgazine.aliases == ["dwc.tsv"], (
+        "The DwC curator should receive the filtered MGazine subset."
+    )
 
 
 def test_mgazine_mgnifier_helper_passes_download_url_and_disables_cache(
@@ -189,22 +191,20 @@ def test_mgazine_mgnifier_helper_passes_download_url_and_disables_cache(
         url="https://example.org/reads.tsv", cache_dir=None
     )
 
-    assert (
-        helper.resource == "_custom_endpoint"
-    ), "The helper should target the internal custom endpoint."
-    assert (
-        helper.url == "https://example.org/reads.tsv"
-    ), "The helper should forward the requested download URL."
-    assert (
-        helper.config.cache_dir is None
-    ), "Download helpers should disable the cache directory."
+    assert helper.resource == "_custom_endpoint", (
+        "The helper should target the internal custom endpoint."
+    )
+    assert helper.url == "https://example.org/reads.tsv", (
+        "The helper should forward the requested download URL."
+    )
+    assert helper.config.cache_dir is None, (
+        "Download helpers should disable the cache directory."
+    )
 
 
 def test_taxa_curator_builds_metadata_from_taxonomy_column(monkeypatch):
     # Avoid the cache bootstrap path so we can focus on the metadata transformation logic.
-    monkeypatch.setattr(
-        TaxaMGazine, "_init_cache_handler_state", lambda self: None
-    )
+    monkeypatch.setattr(TaxaMGazine, "_init_cache_handler_state", lambda self: None)
 
     mgazine = MGazine(
         [
@@ -232,12 +232,12 @@ def test_taxa_curator_builds_metadata_from_taxonomy_column(monkeypatch):
         }
     ).lazy()
 
-    assert curator.runs_accessions == [
-        "run_1"
-    ], "run columns should exclude the taxonomic metadata columns."
-    assert curator._iter_runs() == [
-        "run_1"
-    ], "Without run results, every run accession should be considered pending."
+    assert curator.runs_accessions == ["run_1"], (
+        "run columns should exclude the taxonomic metadata columns."
+    )
+    assert curator._iter_runs() == ["run_1"], (
+        "Without run results, every run accession should be considered pending."
+    )
 
     metadata = curator.taxonomic_metadata(df_engine="polars")
 
@@ -245,19 +245,17 @@ def test_taxa_curator_builds_metadata_from_taxonomy_column(monkeypatch):
         "kingdom",
         "phylum",
     ], "Taxonomy strings should be expanded into the configured rank columns."
-    assert (
-        metadata[0, "kingdom"] == "Bacteria"
-    ), "The kingdom prefix should be stripped from the taxonomy string."
-    assert (
-        metadata[0, "phylum"] == "Firmicutes"
-    ), "The phylum prefix should be stripped from the taxonomy string."
+    assert metadata[0, "kingdom"] == "Bacteria", (
+        "The kingdom prefix should be stripped from the taxonomy string."
+    )
+    assert metadata[0, "phylum"] == "Firmicutes", (
+        "The phylum prefix should be stripped from the taxonomy string."
+    )
 
 
 def test_taxa_curator_inherits_mgazine_download_helpers(monkeypatch):
     # Keep the constructor lightweight and verify the curator still behaves like a MGazine.
-    monkeypatch.setattr(
-        TaxaMGazine, "_init_cache_handler_state", lambda self: None
-    )
+    monkeypatch.setattr(TaxaMGazine, "_init_cache_handler_state", lambda self: None)
 
     mgazine = MGazine(
         [
@@ -275,9 +273,9 @@ def test_taxa_curator_inherits_mgazine_download_helpers(monkeypatch):
 
     curator = TaxaMGazine(mgazine=mgazine)
 
-    assert isinstance(
-        curator, MGazine
-    ), "TaxaMGazine should expose the same public MGazine interface."
+    assert isinstance(curator, MGazine), (
+        "TaxaMGazine should expose the same public MGazine interface."
+    )
     assert curator.url_list == mgazine.url_list
     assert curator.aliases == mgazine.aliases
     assert hasattr(curator, "download")

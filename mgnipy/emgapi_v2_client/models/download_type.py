@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from enum import Enum
+
 
 class DownloadType(str, Enum):
     ANALYSIS_RO_CRATE = "Analysis RO Crate"

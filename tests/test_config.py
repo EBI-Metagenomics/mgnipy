@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import hashlib
 import json
+from pathlib import Path
+
 import pytest
+
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import SupportedApiVersions
-from pathlib import Path
 
 ## Constants
 
@@ -71,17 +75,17 @@ def test_MGnifyConfig_token_cache_dir(
     Even if cache_dir is None, the token should be cached somewhere. If cache_dir==None then in cwd
     """
 
-    assert (
-        config_with_cache_dir._token_cache_dir == tmp_path
-    ), "The token cache directory should be set to the provided path."
+    assert config_with_cache_dir._token_cache_dir == tmp_path, (
+        "The token cache directory should be set to the provided path."
+    )
 
     # If no cache_dir is provided, the token cache directory should default to a non-None value.
-    assert (
-        config_without_cache_dir._token_cache_dir is not None
-    ), "If no cache_dir is provided, the token cache directory should not be None"
-    assert (
-        config_without_cache_dir._token_cache_dir == Path.cwd()
-    ), "If no cache_dir is provided, the token cache directory should default to the current working directory."
+    assert config_without_cache_dir._token_cache_dir is not None, (
+        "If no cache_dir is provided, the token cache directory should not be None"
+    )
+    assert config_without_cache_dir._token_cache_dir == Path.cwd(), (
+        "If no cache_dir is provided, the token cache directory should default to the current working directory."
+    )
 
 
 def test_MGnifyConfig_token_file(
@@ -96,17 +100,17 @@ def test_MGnifyConfig_token_file(
     config2 = config_with_cache_dir
     expected_token_file_with_cache = config2.cache_dir / token_basename
 
-    assert (
-        config._token_file == expected_token_file_without_cache
-    ), "The token file path and hash should be correctly computed based on the base URL and user"
+    assert config._token_file == expected_token_file_without_cache, (
+        "The token file path and hash should be correctly computed based on the base URL and user"
+    )
 
-    assert (
-        config2._token_file == expected_token_file_with_cache
-    ), "The token file path and hash should be correctly computed based on the base URL and user, even when a cache_dir is provided."
+    assert config2._token_file == expected_token_file_with_cache, (
+        "The token file path and hash should be correctly computed based on the base URL and user, even when a cache_dir is provided."
+    )
 
-    assert (
-        config._token_file.name == config2._token_file.name
-    ), "The token file name should be the same regardless of cache_dir."
+    assert config._token_file.name == config2._token_file.name, (
+        "The token file name should be the same regardless of cache_dir."
+    )
 
 
 def test_MGnipyConfig_load_cached_token(
@@ -123,9 +127,9 @@ def test_MGnipyConfig_load_cached_token(
     # load the cached token
     loaded_token = config._load_cached_token()
 
-    assert (
-        loaded_token == TOKEN_CONTENT["auth_token"]
-    ), "The loaded token should match the content of the cached token file."
+    assert loaded_token == TOKEN_CONTENT["auth_token"], (
+        "The loaded token should match the content of the cached token file."
+    )
 
     # tidy up
     token_filepath.unlink()
@@ -147,20 +151,20 @@ def test_to_mgnipy_config_accepts_dict_or_MGnipyConfig(tmp_path, config_with_cac
 
     config = to_mgnipy_config(config_dict)
 
-    assert isinstance(
-        config, MGnipyConfig
-    ), "Dictionary input should be converted into an MGnipyConfig instance."
-    assert config.api_version is SupportedApiVersions(
-        API_VER
-    ), "The api_version field should be normalized to the enum value."
-    assert (
-        str(config.base_url) == BASE_URL
-    ), "The base URL should stay intact during config normalization."
-    assert (
-        config.cache_dir == tmp_path
-    ), "The configured cache directory should be preserved."
+    assert isinstance(config, MGnipyConfig), (
+        "Dictionary input should be converted into an MGnipyConfig instance."
+    )
+    assert config.api_version is SupportedApiVersions(API_VER), (
+        "The api_version field should be normalized to the enum value."
+    )
+    assert str(config.base_url) == BASE_URL, (
+        "The base URL should stay intact during config normalization."
+    )
+    assert config.cache_dir == tmp_path, (
+        "The configured cache directory should be preserved."
+    )
 
     same_config = to_mgnipy_config(config)
-    assert (
-        same_config is config
-    ), "Passing an MGnipyConfig instance should return the same object unchanged."
+    assert same_config is config, (
+        "Passing an MGnipyConfig instance should return the same object unchanged."
+    )

@@ -1,18 +1,20 @@
+from __future__ import annotations
+
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
-from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType
-from ...models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation
-from ...types import UNSET, Unset
-from typing import cast
-
+from ...client import AuthenticatedClient, Client
+from ...models.analysis_get_mgnify_analysis_with_annotations_of_type_m_gnify_functional_analysis_annotation_type import (
+    AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
+)
+from ...models.ninja_pagination_response_schema_m_gnify_analysis_typed_annotation import (
+    NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation,
+)
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
@@ -21,11 +23,7 @@ def _get_kwargs(
     *,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> dict[str, Any]:
-    
-
-    
 
     params: dict[str, Any] = {}
 
@@ -38,26 +36,29 @@ def _get_kwargs(
         json_page_size = page_size
     params["page_size"] = json_page_size
 
-
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/metagenomics/api/v2/analyses/{accession}/annotations/{annotation_type}".format(accession=quote(str(accession), safe=""),annotation_type=quote(str(annotation_type), safe=""),),
+        "url": "/metagenomics/api/v2/analyses/{accession}/annotations/{annotation_type}".format(
+            accession=quote(str(accession), safe=""),
+            annotation_type=quote(str(annotation_type), safe=""),
+        ),
         "params": params,
     }
-
 
     return _kwargs
 
 
-
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
     if response.status_code == 200:
-        response_200 = NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation.from_dict(response.json())
-
-
+        response_200 = (
+            NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation.from_dict(
+                response.json()
+            )
+        )
 
         return response_200
 
@@ -67,7 +68,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -83,9 +86,8 @@ def sync_detailed(
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]:
-    """ Get a named set of annotations for a MGnify analysis by accession.
+    """Get a named set of annotations for a MGnify analysis by accession.
 
      List the annotations of a given type for a MGnify analysis referred to by its accession.
 
@@ -102,15 +104,13 @@ def sync_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         accession=accession,
-annotation_type=annotation_type,
-page=page,
-page_size=page_size,
-
+        annotation_type=annotation_type,
+        page=page,
+        page_size=page_size,
     )
 
     response = client.get_httpx_client().request(
@@ -119,6 +119,7 @@ page_size=page_size,
 
     return _build_response(client=client, response=response)
 
+
 def sync(
     accession: str,
     annotation_type: AnalysisGetMgnifyAnalysisWithAnnotationsOfTypeMGnifyFunctionalAnalysisAnnotationType,
@@ -126,9 +127,8 @@ def sync(
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
-    """ Get a named set of annotations for a MGnify analysis by accession.
+    """Get a named set of annotations for a MGnify analysis by accession.
 
      List the annotations of a given type for a MGnify analysis referred to by its accession.
 
@@ -145,17 +145,16 @@ def sync(
 
     Returns:
         NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation
-     """
-
+    """
 
     return sync_detailed(
         accession=accession,
-annotation_type=annotation_type,
-client=client,
-page=page,
-page_size=page_size,
-
+        annotation_type=annotation_type,
+        client=client,
+        page=page,
+        page_size=page_size,
     ).parsed
+
 
 async def asyncio_detailed(
     accession: str,
@@ -164,9 +163,8 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]:
-    """ Get a named set of annotations for a MGnify analysis by accession.
+    """Get a named set of annotations for a MGnify analysis by accession.
 
      List the annotations of a given type for a MGnify analysis referred to by its accession.
 
@@ -183,22 +181,19 @@ async def asyncio_detailed(
 
     Returns:
         Response[NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation]
-     """
-
+    """
 
     kwargs = _get_kwargs(
         accession=accession,
-annotation_type=annotation_type,
-page=page,
-page_size=page_size,
-
+        annotation_type=annotation_type,
+        page=page,
+        page_size=page_size,
     )
 
-    response = await client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
+
 
 async def asyncio(
     accession: str,
@@ -207,9 +202,8 @@ async def asyncio(
     client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
-
 ) -> NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation | None:
-    """ Get a named set of annotations for a MGnify analysis by accession.
+    """Get a named set of annotations for a MGnify analysis by accession.
 
      List the annotations of a given type for a MGnify analysis referred to by its accession.
 
@@ -226,14 +220,14 @@ async def asyncio(
 
     Returns:
         NinjaPaginationResponseSchemaMGnifyAnalysisTypedAnnotation
-     """
+    """
 
-
-    return (await asyncio_detailed(
-        accession=accession,
-annotation_type=annotation_type,
-client=client,
-page=page,
-page_size=page_size,
-
-    )).parsed
+    return (
+        await asyncio_detailed(
+            accession=accession,
+            annotation_type=annotation_type,
+            client=client,
+            page=page,
+            page_size=page_size,
+        )
+    ).parsed

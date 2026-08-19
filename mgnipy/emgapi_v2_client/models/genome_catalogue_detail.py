@@ -1,20 +1,20 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
+from dateutil.parser import isoparse
 
 from ..models.genome_catalogue_detail_catalogue_type import (
     GenomeCatalogueDetailCatalogueType,
 )
 from ..models.genome_catalogue_detail_status import GenomeCatalogueDetailStatus
-from dateutil.parser import isoparse
-from typing import cast
-import datetime
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -75,10 +75,10 @@ class GenomeCatalogueDetail:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.biome import Biome
         from ..models.genome_catalogue_detail_other_stats_type_0 import (
             GenomeCatalogueDetailOtherStatsType0,
         )
-        from ..models.biome import Biome
 
         catalogue_id = self.catalogue_id
 
