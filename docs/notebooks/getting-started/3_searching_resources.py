@@ -57,7 +57,7 @@ print(MG)
 
 # %%
 # to list all avail resources
-MG.list_resources()
+print(MG.list_resources())
 
 # %% [markdown]
 #

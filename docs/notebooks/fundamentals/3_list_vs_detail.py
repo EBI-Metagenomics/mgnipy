@@ -71,7 +71,7 @@ display(a_study_detail.search_results.to_pandas())
 #
 # After getting a list of records from a list endpoint, one can beef up the list with additional metadata by using the "child" detail endpoint: e.g. `samples` to `sample`, `assemblies` to `assembly`, etc
 #
-# there is a method `.enrich_details()` for MGnifyList's that help with this
+# there is a method `.enrich_details()` for MGnifyList's that help with this which will iteratively get the list of MGnifyDetails. 
 
 # %%
 # populating the list 
@@ -82,17 +82,46 @@ with MG:
 studies_list.metadata.to_pandas(expand_nested_dicts=True)
 
 # %% [markdown]
+# For the enriched studies we can get their MGnifyDetail object via indexing:
+
+# %%
+# e.g. int
+a_study_detail = studies_list[0]
+
+# or by accession/id
+a_study_detail = studies_list['MGYS00006805']
+print(a_study_detail)
+
+# %% [markdown]
+# or get all of the details as a dict:
+
+# %%
+studies_list.mgnify_details
+
+# %% [markdown]
 # ## from detail to lists
 #
-# PICK UP HERE
+# If you noticed from the prints of the `StudyDetail`s above there are "Supported relationships" which link to other MGnifyLists. 
 #
-# there are supported relationships
+# This means that from a study you can get their collection of samples for example. 
 
 # %%
+a_study_detail.list_relationships()
+
+# %% [markdown]
+# when we access the relationship, we will automatically `get` the MGnifyList of `.search_results`
+#
+# However, if we want to enrich with even more detailed `.metadata` we still do the `.enrich_details`
 
 # %%
+with MG: #context manager
+    # access the samples list for a given study
+    a_study_samples = a_study_detail.samples 
+    # enrich the samples list further with details
+    a_study_samples.enrich_details(limit=4) #can set limit to None to get all
 
-# %%
+# look at detailed samples list so far
+a_study_samples.metadata.to_pandas(expand_nested_dicts=True)
 
 # %% [markdown]
 #

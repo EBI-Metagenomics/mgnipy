@@ -45,9 +45,9 @@
 #
 # ## The `proxies` subpackage
 #
-# Each of the different proxies (e.g., `mgnipy.V2.proxies.studies.StudyDetail`, `mgnipy.V2.proxies.analyses.Analyses`) are basically an API endpoint-specific `MGnifier` instance. 
+# Each of the different proxies (e.g., `mgnipy.proxies.StudyDetail`, `mgnipy.proxies.Analyses`) are basically an API endpoint-specific `MGnifier` instance. 
 #
-# e.g., `mgnipy.MGnipy().studies` is the same as `mgnipy.V2.proxies.studies.Studies()` which is `mgnipy.MGnifier(resource="studies")` plus added functionality that is specific to the studies endpoint!!
+# e.g., `mgnipy.MGnipy().studies` is the same as `mgnipy.proxies.Studies()` which is `mgnipy.MGnifier(resource="studies")` plus added functionality that is specific to the studies endpoint!!
 #
 
 # %% [markdown]
@@ -58,7 +58,7 @@
 # 1. **List proxies** (e.g. `Studies`, `Samples`, `Analyses`) which represent collection resources/list endpoints (e.g. `/studies/`, `/samples/`).
 # 2. **Detail proxies** (e.g. `StudyDetail`, `SampleDetail`, `AnalysisDetail`) are used to fetch singleton resources (by accession or id) e.g. `/studies/<studyId>`
 #
-# These proxies live in the `mgnipy.V2.proxies` subpackage and mirror the API surface documented at https://www.ebi.ac.uk/metagenomics/api/v2/.
+# These proxies live in the `mgnipy.proxies` subpackage and mirror the API surface documented at https://www.ebi.ac.uk/metagenomics/api/v2/.
 #
 # #### Brief mapping (proxy → endpoint):
 # - `Studies` → GET `/studies` (list). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_studies
@@ -106,7 +106,7 @@ studies.explain()
 # #### ≈ starting from `proxies` subpackage
 
 # %%
-from mgnipy.V2.proxies.studies import Studies
+from mgnipy.proxies import Studies
 
 # init 
 studies2 = Studies(
@@ -149,7 +149,7 @@ study.explain()
 # #### ≈ starting from `proxies` subpackage
 
 # %%
-from mgnipy.V2.proxies.studies import StudyDetail
+from mgnipy.proxies import StudyDetail
 
 # init 
 study2 = StudyDetail(
@@ -177,9 +177,9 @@ study3.explain()
 # %% [markdown]
 # From the 2 examples above we demonstrated 
 #
-# 1. `mgnipy.MGnipy().studies` is the exact same as `mgnipy.V2.proxies.studies.Studies()` which is just a `mgnipy.MGnifier(resource="studies")` with added `studies`-specific functions.
+# 1. `mgnipy.MGnipy().studies` is the exact same as `mgnipy.proxies.Studies()` which is just a `mgnipy.MGnifier(resource="studies")` with added `studies`-specific functions.
 #
-# 2. `mgnipy.MGnipy().study` is the exact same as `mgnipy.V2.proxies.studies.StudyDetail()` which is just a `mgnipy.MGnifier(resource="study")` with added `study`-specific functions.
+# 2. `mgnipy.MGnipy().study` is the exact same as `mgnipy.proxies.StudyDetail()` which is just a `mgnipy.MGnifier(resource="study")` with added `study`-specific functions.
 #
 # ... 
 #
@@ -190,7 +190,7 @@ study3.explain()
 #
 # > **TLDR; `mgnipy.MGnifier`s as API Resource `proxies`**
 # > 
-# > `mgnipy.MGnipy().studies` is the exact same as `mgnipy.V2.proxies.studies.Studies()` 
+# > `mgnipy.MGnipy().studies` is the exact same as `mgnipy.proxies.Studies()` 
 # > 
 # > which is just a `mgnipy.MGnifier(resource="studies")` with added studies-specific functions.
 #

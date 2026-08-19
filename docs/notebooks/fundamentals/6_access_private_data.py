@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: .venv (3.11.7.final.0)
 #     language: python
 #     name: python3
 # ---
@@ -67,7 +67,7 @@ MG = MGnipy()  # will automatically look for .env file and load credentials if f
 # Or if you prefer an env file name with a different filename then .env
 # 1. you can manually load your given file by passing its path to `dotenv.load_dotenv`
 # 2. and then use `os.getenv` to get out your MGnify user and pass variables
-# 3. initiate `mgnipy.MGnipy` or resource-specific `MGnifier` instances (e.g., `mgnipy.V2.proxies`) with those login credentials like above
+# 3. initiate `mgnipy.MGnipy` or resource-specific `MGnifier` instances (e.g., `mgnipy.proxies`) with those login credentials like above
 
 # %%
 from dotenv import load_dotenv
@@ -85,7 +85,7 @@ config = MGnipyConfig(
 # pass config to MGnipy
 MG = MGnipy(config=config)
 # or directly to proxy
-from mgnipy.V2.proxies import Biomes
+from mgnipy.proxies import Biomes
 biomes = Biomes(config=config)
 
 # %% [markdown]

@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: .venv (3.11.7.final.0)
 #     language: python
 #     name: python3
 # ---
@@ -105,7 +105,7 @@ config
 
 # %%
 from mgnipy import MGnipy
-from mgnipy.V2.proxies import Samples
+from mgnipy.proxies import Samples
 
 MG = MGnipy(cache_dir=None)
 
