@@ -46,7 +46,7 @@ class Analyses(MGnifyList):
             return MGazine(
                 downloads=self.downloads,
                 config=self.config,
-                mgnify_analyses=self.mgnify_details.to_list(),
+                mgnify_analyses=self.metadata.to_list(),
             )
         return MGazine(
             downloads=self.downloads,
