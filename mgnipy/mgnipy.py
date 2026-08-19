@@ -1,21 +1,24 @@
+from __future__ import annotations
+
 import logging
 
-from mgnipy.V2.datasets.taxonomic import DWCTaxaMGazine, TaxaMGazine
-
 logger = logging.getLogger(__name__)
+
 from typing import Optional
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, DetailResourceStr
+from mgnipy._models.constants.CONSTANTS import DetailResourceStr, SupportedEndpoints
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
+from mgnipy.V2.collect.biosampler import BioSampler
+from mgnipy.V2.collect.mgnetizer import MGnetizer
+from mgnipy.V2.datasets import MTG, MGazine
+from mgnipy.V2.datasets.taxonomic import DWCTaxaMGazine, TaxaMGazine
+from mgnipy.V2.mixins import ClientManagerMixin
 from mgnipy.V2.proxies import (
     V2_ENDPOINT_DETAIL_PROXIES,
     V2_ENDPOINT_LIST_PROXIES,
 )
-from mgnipy.V2.mixins import ClientManagerMixin
-from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
-from mgnipy.emgapi_v2_client.client import Client, AuthenticatedClient
-from mgnipy.V2.collect import MGnetizer, BioSampler
-from mgnipy.V2.datasets import MTG, MGazine
 
 V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 
@@ -148,7 +151,6 @@ class MGnipy(ClientManagerMixin):
             return
 
         if self.cache_dir.exists():
-
             logger.warning(f"Clearing ALL cache subdirectories in {self.cache_dir}")
             # for each cache subdir
             for cache_key in self.cache_dir.iterdir():
