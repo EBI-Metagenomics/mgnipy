@@ -42,11 +42,12 @@ def _add_single_pipe_ver(item_dict: dict[str, Any]):
 
     for each_download in item_dict.get("downloads", []):
         # if pipeline in download_group, use that instead
-        v_group = re.search(
+        match = re.search(
             r"\.v(\d+(?:\.\d+)?)",
             each_download.get("download_group", ""),
             re.IGNORECASE,
-        ).group(1)
+        )
+        v_group = match.group(1) if match else None
         # priority to ver in download_group
         pipe = v_group or a_pipe
 
