@@ -7,9 +7,10 @@ from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 logger = logging.getLogger(__name__)
 from pathlib import Path
 from pprint import pformat
-from typing import Any, Optional, Literal
-import anndata as ad
+from typing import Any, Literal, Optional
+
 import aiofiles
+import anndata as ad
 import httpx
 import pandas as pd
 import polars as pl
@@ -20,11 +21,11 @@ from tqdm.asyncio import tqdm_asyncio
 from mgnipy._models.config import MGnipyConfig
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy.V2.datasets.annotate import UNIQUE_RUN_ID_COL_NAME, MetadataSettersMixin
 from mgnipy.V2.mixins import (
     ClientManagerMixin,
     StreamMixin,
 )
-from mgnipy.V2.datasets.annotate import MetadataSettersMixin, UNIQUE_RUN_ID_COL_NAME
 
 METADATA_SETS = [
     "mgnify_runs",
@@ -438,7 +439,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         mg.taxonomic_dwc_ready # doctest: +SKIP
         """
         if name.startswith("taxonomic"):
-
             # get all downloads with "taxonom" in the download_type
             taxonom_downloads = []
             for k, v in self.by_downloads_col("download_type").items():
@@ -1178,7 +1178,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             if self.async_httpx_client.is_closed
             else self.async_httpx_client
         ):
-
             # create tasks for each download
             tasks = [
                 self.adownload(

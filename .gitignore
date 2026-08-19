@@ -62,3 +62,4 @@ reference/*
 *.ignoreme
 docs/tutorials/demos/cache/
 docs/tutorials/demos/downloads/
+*.h5ad

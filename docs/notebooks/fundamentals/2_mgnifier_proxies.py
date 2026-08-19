@@ -115,6 +115,8 @@
 # ✨ Recommended ✨ Using the high-level `mgnipy.MGnipy` client:
 
 # %%
+from __future__ import annotations
+
 from mgnipy import MGnipy
 
 # init client w/o caching

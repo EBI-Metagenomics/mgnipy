@@ -54,6 +54,8 @@
 # In this demonstration we will get the `MGazine` of a single study, but this would be the same for a multi-study collection of `proxies.Studies`
 
 # %% tags=["hide-output"]
+from __future__ import annotations
+
 from mgnipy import MGnipy
 
 # 1. init with default config
@@ -61,7 +63,7 @@ MG = MGnipy()
 
 # 2. search up a study/analysis detail or a list of studies/analyses and get their details
 study = MG.study("MGYS00010442")
-with MG: 
+with MG:
     study.get()
 
 # %% [markdown]
@@ -85,7 +87,7 @@ print(mz)
 
 # %%
 # above we saw that v6 is the only one so this will return the same basically
-ssu = mz['v6']["Summary of SILVA-SSU taxonomies"]
+ssu = mz["v6"]["Summary of SILVA-SSU taxonomies"]
 
 print(ssu)
 # also checking out downloads detials as df

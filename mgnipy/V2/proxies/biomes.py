@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Any,
     ClassVar,
@@ -5,9 +7,8 @@ from typing import (
     Optional,
 )
 
-from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
-
 from mgnipy.V2.mixins import BiomesTreeMixin
+from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
 class Biomes(BiomesTreeMixin, MGnifyList):

@@ -1,16 +1,19 @@
+from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
 
-import re
 from itertools import chain
+import re
+from typing import Any, Optional
+
 import numpy as np
 import pandas as pd
 import polars as pl
-from typing import Any, Optional
 
-from mgnipy.V2.mgnifier.endpoints import ID_PARAM
 from mgnipy._models.constants.CONSTANTS import PipelineVersions
+from mgnipy.V2.mgnifier.endpoints import ID_PARAM
 
 
 def _add_single_pipe_ver(item_dict: dict[str, Any]):
@@ -38,7 +41,6 @@ def _add_single_pipe_ver(item_dict: dict[str, Any]):
         a_pipe = None
 
     for each_download in item_dict.get("downloads", []):
-
         # if pipeline in download_group, use that instead
         v_group = re.search(
             r"\.v(\d+(?:\.\d+)?)",
@@ -446,7 +448,6 @@ class ResultsHandler:
 
 
 class MGnifyMetadata(ResultsHandler):
-
     def __init__(
         self,
         data: dict[int, list[dict]] | None = None,
@@ -712,7 +713,6 @@ class MGnifyMetadata(ResultsHandler):
         for record in self.records:
             downloads = record.get("downloads")
             if downloads is not None:
-
                 resource_type = getattr(self, "resource", None)
                 idid = ID_PARAM.get(resource_type, "accession")
 

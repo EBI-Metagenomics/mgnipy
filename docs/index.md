@@ -20,7 +20,6 @@ notebooks/getting-started/*
 notebooks/fundamentals/*
 ```
 
-
 ```{toctree}
 :caption: "Demos"
 :glob:
@@ -36,7 +35,7 @@ notebooks/demos/*
 :hidden:
 reference/mgnipy.mgnipy
 reference/mgnipy.V2.proxies
-reference/mgnipy.V2.core
+reference/mgnipy.V2.mgnifier
 reference/mgnipy.V2.datasets
 reference/mgnipy.V2.query_executor
 reference/mgnipy.V2.query_set

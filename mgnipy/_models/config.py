@@ -1,13 +1,10 @@
+from __future__ import annotations
+
 import hashlib
 import json
 import logging
 
 logger = logging.getLogger(__name__)
-from mgnipy.emgapi_v2_client.client import Client
-from mgnipy.emgapi_v2_client.models.webin_token_response import (
-    WebinTokenResponse,
-)
-
 from getpass import getpass
 from pathlib import Path
 from time import time
@@ -23,6 +20,7 @@ from mgnipy.emgapi_v2_client.api.authentication import (
     token_refresh_sliding,
     token_verify,
 )
+from mgnipy.emgapi_v2_client.client import Client
 from mgnipy.emgapi_v2_client.models.token_verify_input_schema import (
     TokenVerifyInputSchema,
 )
@@ -30,6 +28,9 @@ from mgnipy.emgapi_v2_client.models.webin_token_refresh_request import (
     WebinTokenRefreshRequest,
 )
 from mgnipy.emgapi_v2_client.models.webin_token_request import WebinTokenRequest
+from mgnipy.emgapi_v2_client.models.webin_token_response import (
+    WebinTokenResponse,
+)
 
 APPNAME = "mgnipy"
 APPAUTHOR = "MGnify"
@@ -37,7 +38,6 @@ CACHE_DIR = user_cache_dir(APPNAME, APPAUTHOR)
 
 
 class BaseMGnipyConfig(BaseSettings):
-
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -230,7 +230,7 @@ class MGnipyConfig(BaseMGnipyConfig):
 
         if not self.mg_user or not self.mg_password:
             logger.info(
-                "Username/password not provided. " "Proceeding without authentication."
+                "Username/password not provided. Proceeding without authentication."
             )
         return self.mg_user, self.mg_password
 

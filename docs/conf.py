@@ -3,8 +3,8 @@
 import logging
 
 logging.basicConfig(level=logging.WARNING, force=True)
-import os
 from importlib import metadata
+import os
 
 # compatibility with plotly6
 os.environ["PLOTLY_RENDERER"] = "notebook"

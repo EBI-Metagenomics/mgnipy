@@ -13,12 +13,12 @@
 # ---
 
 # %% [markdown]
-# # The `emgapi_v2_client` 
+# # The `emgapi_v2_client`
 #
 # For developing or in case you want to work with the `mgnipy.emgapi_v2_client` sub-package directly.
 #
 # ---
-# ## What is it?  
+# ## What is it?
 # `mgnipy.emgapi_v2_client` is a python sub-package in MGni.py that was created from the [openapi.json spec](ttps://www.ebi.ac.uk/metagenomics/api/v2/openapi.json) using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client).
 #
 # It serves as the initial HTTP client to remove the complexity of direct HTTP requests to version 2 of the MGnify API while maintaining type safety through `attrs`-based models.
@@ -28,12 +28,12 @@
 #
 # See [readme-openapi-python-client.md](readme-openapi-python-client.md) for more information on [openapi-python-client](https://github.com/openapi-generators/openapi-python-client)
 #
-# ## How does it work? 
+# ## How does it work?
 #
 # ### Each MGnify API endpoint has its own module in emgapi_v2_client
 # - Every MGnify API v2 endpoint (e.g., [list_all_biomes](https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes), [get_mgnify_analysis](https://www.ebi.ac.uk/metagenomics/api/v2/#/Analyses/get_mgnify_analysis)) has their own module in emgapi_v2_client (e.g., `mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes`, `mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis`)
 #
-# - Within the emgapi_v2_client, the endpoint modules are in the `api` directory: 
+# - Within the emgapi_v2_client, the endpoint modules are in the `api` directory:
 #
 # ```bash
 #             emgapi_v2_client/
@@ -91,14 +91,16 @@
 # %%
 # at minimum need
 # 1. the path
-from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
 # 2. the client
+from __future__ import annotations
+
 from mgnipy.emgapi_v2_client import Client
+from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
 
 # extra nice to have annotations but not required for usage
 # 3. the models
 from mgnipy.emgapi_v2_client.models import NinjaPaginationResponseSchemaBiome
-from mgnipy.emgapi_v2_client.types import UNSET, Response
+from mgnipy.emgapi_v2_client.types import Response
 
 # %% [markdown]
 # ### Initiate the client
@@ -122,10 +124,10 @@ print(example_client)
 #                     client=client, page_size=10
 #                 )
 # ```
-# the API will respond with the first page of 10 items from the list_mgnify_biomes endpoint. 
+# the API will respond with the first page of 10 items from the list_mgnify_biomes endpoint.
 #
 #
-# #### 🎪 *A peak behind the curtain* 🎪 
+# #### 🎪 *A peak behind the curtain* 🎪
 # The order of the methods within `list_mgnify_biomes.py` when the above is executed would be:
 # 1. `_get_kwargs` to prepare the query params, ensuring that the kwarg exists e.g. that `page_size` is an acceptable kwarg
 # 2. the httpx request is made with the kwargs
@@ -138,14 +140,16 @@ print(example_client)
 # prep our search
 params = {
     "biome_lineage": "root:Host-associated:Plants",
-    "page_size": 25,#the default
+    "page_size": 25,  # the default
     "max_depth": 6,
 }
 
 # make the sync call and store respone
 with example_client as client:
-    # adding type annotation for the response is optional 
-    response: Response[NinjaPaginationResponseSchemaBiome] = list_mgnify_biomes.sync_detailed(client=client, **params)
+    # adding type annotation for the response is optional
+    response: Response[NinjaPaginationResponseSchemaBiome] = (
+        list_mgnify_biomes.sync_detailed(client=client, **params)
+    )
 
 # check
 response.status_code
@@ -170,16 +174,15 @@ response.parsed.to_dict().keys()
 response.parsed.to_dict()
 
 # %% [markdown]
-# ## Async requests support 
+# ## Async requests support
 
 # %%
-import asyncio 
 
 example_client = Client(base_url="https://www.ebi.ac.uk")
 
-async with example_client as client: 
+async with example_client as client:
     parsed_response = await list_mgnify_biomes.asyncio(
-        client=client, 
+        client=client,
         biome_lineage="root:Host-associated",
         max_depth=6,
         page_size=5,

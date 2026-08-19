@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import io
-import json
 import asyncio
 import hashlib
+import io
+import json
 import logging
 
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
@@ -12,16 +12,16 @@ logger = logging.getLogger(__name__)
 from http.client import IncompleteRead
 from pathlib import Path
 from typing import Any, Generator, Literal, Optional
-import zlib
 import webbrowser
+import zlib
 
 from bigtree import Tree
-from pydantic import HttpUrl
-from skbio.io import read
 import httpx
 import ijson
 import pandas as pd
 import polars as pl
+from pydantic import HttpUrl
+from skbio.io import read
 
 from mgnipy._shared_helpers.writers import atomic_write_bytes, atomic_write_json
 

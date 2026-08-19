@@ -21,7 +21,7 @@
 # ## Intro to the MGnify RESTful API
 #
 # ### The "resources" vs. "endpoints"?
-# - In REST (REpresentational State Transfer) styling, data are modelled as **"resources"** which can either be a singleton (e.g., `study`) or collection (collection of singletons e.g. `studies`) resource. More on RESTful APIs [here](https://restfulapi.net/resource-naming/). 
+# - In REST (REpresentational State Transfer) styling, data are modelled as **"resources"** which can either be a singleton (e.g., `study`) or collection (collection of singletons e.g. `studies`) resource. More on RESTful APIs [here](https://restfulapi.net/resource-naming/).
 #
 # - As explained in its [docs](https://www.ebi.ac.uk/metagenomics/api/v2/): In MGnigy API v2, collection resources are accessed via **"list" endpoints** e.g.
 #     - `https://www.ebi.ac.uk/metagenomics/api/v2/studies/` or `.../analyses/`
@@ -33,11 +33,11 @@
 # ### Querying a resource
 # - Many of the list endpoints can be further queried/filtered :) the acceptable query parameters are clearly documented in the [docs](https://www.ebi.ac.uk/metagenomics/api/v2/) again e.g. [`/studies/` example](https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/list_mgnify_studies)
 # - typically the query parameters will appear in the url after a `?` as key-value pairs combined via `&`s
-# - together the resulting http request url would look something like e.g. 
-#     - [`https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1`](https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1) 
-#     - which requests from the `studies` collection resource, the first page of `study` singleton resources with "tomato" in their title 
+# - together the resulting http request url would look something like e.g.
+#     - [`https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1`](https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1)
+#     - which requests from the `studies` collection resource, the first page of `study` singleton resources with "tomato" in their title
 #
-# ### Where are the results or MGnify datasets? 
+# ### Where are the results or MGnify datasets?
 # - The resulting datasets such as taxonomic and functional annotation datasets from MGnify pipeline analyses can be downloaded via FTP urls
 # - These ftp urls are provided in the `downloads` field of detail endpoints such as `/analyses/<analysisId>` and `/studies/<studyId>`
 #
@@ -45,7 +45,7 @@
 #
 # ## The `proxies` subpackage
 #
-# Each of the different proxies (e.g., `mgnipy.proxies.StudyDetail`, `mgnipy.proxies.Analyses`) are basically an API endpoint-specific `MGnifier` instance. 
+# Each of the different proxies (e.g., `mgnipy.proxies.StudyDetail`, `mgnipy.proxies.Analyses`) are basically an API endpoint-specific `MGnifier` instance.
 #
 # e.g., `mgnipy.MGnipy().studies` is the same as `mgnipy.proxies.Studies()` which is `mgnipy.MGnifier(resource="studies")` plus added functionality that is specific to the studies endpoint!!
 #
@@ -77,7 +77,7 @@
 # ## Example equivalents
 #
 # ```{margin}
-# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder. 
+# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
 # ```
 # <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
 #
@@ -91,6 +91,8 @@
 # ✨ Recommended ✨ Using the high-level `mgnipy.MGnipy` client:
 
 # %%
+from __future__ import annotations
+
 from mgnipy import MGnipy
 
 # init client w/o caching
@@ -108,11 +110,8 @@ studies.explain()
 # %%
 from mgnipy.proxies import Studies
 
-# init 
-studies2 = Studies(
-    config=dict(cache_dir="temp_example"),
-    search="tomato"
-)
+# init
+studies2 = Studies(config=dict(cache_dir="temp_example"), search="tomato")
 
 # we can see same query set as above
 studies2.explain()
@@ -123,11 +122,9 @@ studies2.explain()
 # %%
 from mgnipy import MGnifier
 
-# init 
+# init
 studies3 = MGnifier(
-    resource="studies",
-    config=dict(cache_dir="temp_example"),
-    search="tomato"
+    resource="studies", config=dict(cache_dir="temp_example"), search="tomato"
 )
 
 # we can see same query set as above
@@ -141,7 +138,7 @@ studies3.explain()
 # ✨ Recommended ✨ Using the high-level `mgnipy.MGnipy` client:
 
 # %%
-# using the MGnipy inited above 
+# using the MGnipy inited above
 study = MG.study("MGYS00010257")
 study.explain()
 
@@ -151,11 +148,8 @@ study.explain()
 # %%
 from mgnipy.proxies import StudyDetail
 
-# init 
-study2 = StudyDetail(
-    config=dict(cache_dir="temp_example"),
-    accession="MGYS00010257"
-)
+# init
+study2 = StudyDetail(config=dict(cache_dir="temp_example"), accession="MGYS00010257")
 
 # we can see same query set as above
 study2.explain()
@@ -164,36 +158,34 @@ study2.explain()
 # #### ≈ starting from `MGnifier`
 
 # %%
-# init 
+# init
 study3 = MGnifier(
-    resource="study",
-    config=dict(cache_dir="temp_example"),
-    accession="MGYS00010257"
+    resource="study", config=dict(cache_dir="temp_example"), accession="MGYS00010257"
 )
 
 # we can see same query set as above
 study3.explain()
 
 # %% [markdown]
-# From the 2 examples above we demonstrated 
+# From the 2 examples above we demonstrated
 #
 # 1. `mgnipy.MGnipy().studies` is the exact same as `mgnipy.proxies.Studies()` which is just a `mgnipy.MGnifier(resource="studies")` with added `studies`-specific functions.
 #
 # 2. `mgnipy.MGnipy().study` is the exact same as `mgnipy.proxies.StudyDetail()` which is just a `mgnipy.MGnifier(resource="study")` with added `study`-specific functions.
 #
-# ... 
+# ...
 #
-# And this is the same for the other proxies in mgnipy. 
+# And this is the same for the other proxies in mgnipy.
 
 # %% [markdown]
 # ---
 #
 # > **TLDR; `mgnipy.MGnifier`s as API Resource `proxies`**
-# > 
-# > `mgnipy.MGnipy().studies` is the exact same as `mgnipy.proxies.Studies()` 
-# > 
+# >
+# > `mgnipy.MGnipy().studies` is the exact same as `mgnipy.proxies.Studies()`
+# >
 # > which is just a `mgnipy.MGnifier(resource="studies")` with added studies-specific functions.
 #
-# And this is the same for all of the resource proxies (analyses, analysis, study, samples, etc.) not just "studies" in the above example. 
+# And this is the same for all of the resource proxies (analyses, analysis, study, samples, etc.) not just "studies" in the above example.
 #
 # ---

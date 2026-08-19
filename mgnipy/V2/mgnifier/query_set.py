@@ -1,11 +1,14 @@
+from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
 from copy import deepcopy
-from typing import Any, Optional
 from types import ModuleType
+from typing import Any, Optional
+
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.constants.CONSTANTS import SupportedEndpoints, ResourceStr
+from mgnipy._models.constants.CONSTANTS import ResourceStr, SupportedEndpoints
 from mgnipy._shared_helpers.validators import validate_ge_int
 from mgnipy.V2.mgnifier.describe import DescribeEmgapiModule
 from mgnipy.V2.mgnifier.endpoints import RESOURCES_ALL_ENDPOINTS

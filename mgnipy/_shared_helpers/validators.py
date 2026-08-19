@@ -1,14 +1,14 @@
-import logging
+from __future__ import annotations
 
+import logging
+from typing import Optional
+
+import httpx
 from pydantic import (
     TypeAdapter,
     ValidationError,
     conint,
 )
-
-from typing import Optional
-
-import httpx
 
 int_gt_adapter = TypeAdapter(conint(gt=0))
 

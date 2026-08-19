@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
 from typing import Optional
 
-from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 from mgnipy._models.config import MGnipyConfig
+from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 
 
 def init_httpx_client(

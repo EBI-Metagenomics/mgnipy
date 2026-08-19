@@ -17,23 +17,25 @@
 # original version downloaded from: https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit/blob/595e5bb04a08d6dab5b04e1f4c3afaca1c6a17b2/mgnify_pipelines_toolkit/analysis/shared/dwc_summary_generator.py#L267
 # downloaded on: 22-May-2026
 # modified for Biosamples metadata and to fit MGnipy codebase
+from __future__ import annotations
 
 import logging
 
 logger = logging.getLogger(__name__)
+import asyncio
 from typing import Any
 
-import pandas as pd
-from mgnipy._shared_helpers.ena import (
-    get_ena_metadata_from_run_acc,
-    aget_ena_metadata_from_run_acc,
-)
-from mgnipy._shared_helpers.validators import validate_status_code
-from mgnipy._shared_helpers.async_helpers import get_semaphore
-import asyncio
 import httpx
+import pandas as pd
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
+
+from mgnipy._shared_helpers.async_helpers import get_semaphore
+from mgnipy._shared_helpers.ena import (
+    aget_ena_metadata_from_run_acc,
+    get_ena_metadata_from_run_acc,
+)
+from mgnipy._shared_helpers.validators import validate_status_code
 
 URL = "https://www.ebi.ac.uk/biosamples/samples"
 HEADERS = {"Accept": "application/json"}

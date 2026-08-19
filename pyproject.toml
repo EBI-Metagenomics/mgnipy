@@ -77,19 +77,17 @@ docs = [
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/tutorial/#rule-selection
 extend-select = ["E", "W", "F", "B", "I"]
-ignore = ["E501", "E402", "E902"]
+ignore = ["E501", "E402"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["mgnipy"]
-length-sort-straight = true
-required-imports = ["from __future__ import annotations"]
 force-sort-within-sections = true
 combine-as-imports = true
 force-wrap-aliases= true
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-testpaths = ["tests", "mgnipy/_shared_helpers", "mgnipy/mgnipy.py"]
+testpaths = ["tests", "mgnipy"]
 doctest_optionflags = [
   "ELLIPSIS",
   "NORMALIZE_WHITESPACE",

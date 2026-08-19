@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, ClassVar, Literal, Optional
 
 import pandas as pd
@@ -7,7 +9,6 @@ from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
 class Studies(MGnifyList):
-
     RESOURCE: ClassVar[Literal["studies"]] = "studies"
 
     def __init__(
@@ -62,7 +63,6 @@ class StudyDetail(MGnifyDetail):
 
 
 class PrivateStudies(MGnifyList):
-
     RESOURCE: ClassVar[Literal["private_studies"]] = "private_studies"
 
     def __init__(

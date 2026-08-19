@@ -13,9 +13,9 @@ from typing import (
     Optional,
 )
 
+import pandas as pd
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
-import pandas as pd
 
 from mgnipy._models.config import MGnipyConfig
 from mgnipy._models.constants.CONSTANTS import (

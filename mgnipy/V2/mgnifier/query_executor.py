@@ -5,13 +5,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 from typing import TYPE_CHECKING, Any, Optional
-from mgnipy._shared_helpers.validators import validate_status_code
+
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy._shared_helpers.validators import validate_status_code
 
 if TYPE_CHECKING:
+    from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
     from mgnipy.emgapi_v2_client.types import Response as mpy_Response
     from mgnipy.V2.mgnifier.query_set import QuerySet
-    from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
 
 
 class QueryExecutor:

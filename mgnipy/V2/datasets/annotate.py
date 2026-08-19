@@ -1,19 +1,21 @@
+from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
 
-import pandas as pd
-import polars as pl
 from typing import Any, Literal, Optional
 
-from mgnipy.V2.mgnifier.endpoints import ID_PARAM
-from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
-from mgnipy.V2.mgnifier.metadata import MGnifyMetadata, ResultsHandler
+import pandas as pd
+import polars as pl
 
+from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 from mgnipy._shared_helpers.biosamples_helper import (
-    SAMPLE_ID as BIOSAMPLES_SAMPLE_ID,
     RUN_ID as BIOSAMPLES_RUN_ID,
+    SAMPLE_ID as BIOSAMPLES_SAMPLE_ID,
 )
+from mgnipy.V2.mgnifier.endpoints import ID_PARAM
+from mgnipy.V2.mgnifier.metadata import MGnifyMetadata, ResultsHandler
 
 UNIQUE_RUN_ID_COL_NAME = "_mgnipy_runs_accs"
 EXCLUDE_FROM_INDEX = [
@@ -25,7 +27,6 @@ EXCLUDE_FROM_INDEX = [
 
 
 class MetadataSettersMixin:
-
     def _set_cached_list(self, field: str, value: list[dict[str, Any]]) -> None:
         setattr(self, f"_{field}", value)
 
@@ -299,7 +300,6 @@ class MetadataSettersMixin:
     ) -> pl.DataFrame | pd.DataFrame:
 
         if self._obs is None:
-
             return self._merge_meta(
                 df_engine=df_engine,
                 expand_nested_dicts=expand_nested_dicts,

@@ -1,19 +1,21 @@
+from __future__ import annotations
+
 import inspect
 import logging
 
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 
 logger = logging.getLogger(__name__)
-import os
 from copy import deepcopy
 from math import ceil
+import os
 from types import ModuleType
 from typing import Any, Optional
 from urllib.parse import urlencode
 
-from mgnipy._shared_helpers.parsers import get_docstring, parse_docstring
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
-from mgnipy.V2.mgnifier.endpoints import ALL_LIST_ENDPOINTS, PRIVATE_ENDPOINTS, ID_PARAM
+from mgnipy._shared_helpers.parsers import get_docstring, parse_docstring
+from mgnipy.V2.mgnifier.endpoints import ALL_LIST_ENDPOINTS, ID_PARAM, PRIVATE_ENDPOINTS
 
 
 class DescribeEmgapiModule:

@@ -16,6 +16,7 @@
 
 # original version downloaded from: https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit/blob/595e5bb04a08d6dab5b04e1f4c3afaca1c6a17b2/mgnify_pipelines_toolkit/constants/tax_ranks.py
 # downloaded on: 09-Jun-2026
+from __future__ import annotations
 
 SILVA_TAX_RANKS = [
     "Superkingdom",

@@ -4,8 +4,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from typing import Any, Optional
 import asyncio
+from typing import Any, Optional
 
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio

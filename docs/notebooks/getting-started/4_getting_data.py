@@ -35,9 +35,9 @@
 # Recall the typical workflow (from [What is MGni.Py?](https://mgnipy.mgnify.org/notebooks/getting-started/1_what_is_mgnipy.html)):
 #
 # > 1. Start up a `mgnipy.MGnipy` client with your desired configuration
-# > 
+# >
 # > 2. Search in MGnify resources using a MGnifier glass
-# > 
+# >
 # > 3. Receive a MGazine of MGnify datasets
 #
 # which we will follow in this notebook
@@ -46,25 +46,22 @@
 # ## 1. `mgnipy.MGnipy` to init session
 
 # %%
+from __future__ import annotations
+
 from mgnipy import MGnipy
 
-MG = MGnipy(
-    cache_dir=None
-)
+MG = MGnipy(cache_dir=None)
 
 # %% [markdown]
 # ## 2. `MGnifier` to query MGnify
 #
-# for this example we will search MGnify `.studies` for a list of pea studies. 
+# for this example we will search MGnify `.studies` for a list of pea studies.
 #
 # After we `.get()` the list we will populate each of the study's details / metadata using `.enrich_details()`
 
 # %%
 # access studies MGnifier and pass search params (build query set)
-pea_studies = MG.studies(
-    biome_lineage="root:Host-associated:Plants", 
-    search="pea"
-)
+pea_studies = MG.studies(biome_lineage="root:Host-associated:Plants", search="pea")
 
 # check out the request url
 pea_studies.explain()
@@ -75,14 +72,14 @@ pea_studies.explain()
 
 # %%
 # MG as client context manager
-with MG: 
+with MG:
     # get a page of pea study list
     pea_studies.get()
     # now filling with metadata
     pea_studies.enrich_details()
 
 # %% [markdown]
-# We can access the detailed metadata via `.metadata` attribute which will return a [`MGnifyMetadata`](TODO) instance that allows you to view as a list, polars or pandas dataframe. 
+# We can access the detailed metadata via `.metadata` attribute which will return a [`MGnifyMetadata`](TODO) instance that allows you to view as a list, polars or pandas dataframe.
 
 # %% tags=["hide-output"]
 # accessing metadata
@@ -96,7 +93,7 @@ meta.to_pandas(expand_nested_dicts=True)
 #
 # To access the study's mgazine use `.datasets`
 #
-# - Notice how in study details printed above there is a "downloads" field with information about the data. 
+# - Notice how in study details printed above there is a "downloads" field with information about the data.
 #
 # - this "downloads" information is used by [`mgnipy.MGazine`](TODO) to allow us to download or read them into our notebook.
 #
@@ -122,8 +119,8 @@ alias = "ERP014435_GO-slim_abundances_v3.0.tsv"
 # reading in above file
 df_go = MZ.stream(
     alias=alias,
-    chunksize=None, # default to read in all, set int for chunked reading
-    df_engine="pandas", # or polars
+    chunksize=None,  # default to read in all, set int for chunked reading
+    df_engine="pandas",  # or polars
 )
 
 df_go.head()
@@ -131,7 +128,7 @@ df_go.head()
 # %%
 # run accessions as a list
 run_ids = df_go.columns[3:].to_list()
-#check it out
+# check it out
 print(run_ids)
 
 # %% [markdown]
@@ -153,4 +150,4 @@ MZ.download(alias=alias, to_dir="downloads")
 #
 # 3. ✅ Accessing the resulting `MGazine` of MGnify datasets
 #
-# **Next** we will see how we can collect even more metadata for the above list of `run_ids` using  mgnipy's `MGnetizer` and `BioSampler` helpers. 
+# **Next** we will see how we can collect even more metadata for the above list of `run_ids` using  mgnipy's `MGnetizer` and `BioSampler` helpers.

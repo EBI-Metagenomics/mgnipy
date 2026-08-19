@@ -15,14 +15,13 @@ A [Pydantic-based settings object](https://pydantic.dev/docs/validation/latest/c
 - **`api_version`**: Which API version to target (Should be: v2).
 - **`base_url`**: Base MGnify URL. Should be: `https://www.ebi.ac.uk/`.
 
-
 ## Authentication
 
-`mgnipy.MGnipyConfig` takes care of 
+`mgnipy.MGnipyConfig` takes care of
 
 1. Checking for cached [sliding JSON Web Tokens (JWT)](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/token_types.html#sliding-tokens) which comprises a shorter-lived Access token and a longer Refresh token.
 
-2. Verifying the validity of Access tokens using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint 
+2. Verifying the validity of Access tokens using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint
 
 3. Refreshing access, getting a new Access token if the Refresh token is at least still valid using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding)
 
@@ -35,6 +34,4 @@ A [Pydantic-based settings object](https://pydantic.dev/docs/validation/latest/c
 - Cached tokens are stored per base URL + username (hashed) to avoid collisions when using multiple endpoints/accounts.
 ```
 
-See [accessing private data page](https://mgnipy.mgnify.org/notebooks/fundamentals/6_access_private_data.html) on how to configure for private data. 
-
-
+See [accessing private data page](https://mgnipy.mgnify.org/notebooks/fundamentals/6_access_private_data.html) on how to configure for private data.

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ..emgapi_v2_client.client import AuthenticatedClient, Client
 from .mgnifier import MGnifier
 from .proxies.analyses import Analyses

@@ -1,28 +1,29 @@
 """MGnifier: A class for querying the MGnify API with support for caching, pagination, and metadata retrieval."""
 
+from __future__ import annotations
+
 import asyncio
 import logging
 from pathlib import Path
 
-from mgnipy.V2.mgnifier.metadata import MGnifyMetadata
 from mgnipy._shared_helpers.async_helpers import get_semaphore
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
+from mgnipy.V2.mgnifier.metadata import MGnifyMetadata
 
 logger = logging.getLogger(__name__)
 from typing import Any, Optional
 
 import pandas as pd
-
 from tqdm import tqdm
 from tqdm.asyncio import tqdm_asyncio
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import ResourceStr
 from mgnipy.V2.mgnifier.endpoints import ALL_SUPPORTED_RELATIONSHIPS
-from mgnipy.V2.mixins import CheckpointMixin, ClientManagerMixin
 from mgnipy.V2.mgnifier.query_executor import QueryExecutor
 from mgnipy.V2.mgnifier.query_set import QuerySet
+from mgnipy.V2.mixins import CheckpointMixin, ClientManagerMixin
 
 
 class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
