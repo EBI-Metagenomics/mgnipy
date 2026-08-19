@@ -30,6 +30,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: astral-sh/ruff-action@v3
         with:
+          args: check --select E,W,F,B,I --ignore E501,E402
           src: "./mgnipy"
 
   test:
@@ -52,7 +53,7 @@ jobs:
           uv sync --locked --dev
 
       - name: Run tests
-        run: uv run pytest mgnipy/_shared_helpers mgnipy/mgnipy.py tests
+        run: uv run pytest mgnipy tests
 
   build_source_dist:
     name: Build source distribution
