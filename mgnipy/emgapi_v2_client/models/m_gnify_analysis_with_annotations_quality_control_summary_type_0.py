@@ -29,7 +29,9 @@ class MGnifyAnalysisWithAnnotationsQualityControlSummaryType0:
         d = dict(src_dict)
         m_gnify_analysis_with_annotations_quality_control_summary_type_0 = cls()
 
-        m_gnify_analysis_with_annotations_quality_control_summary_type_0.additional_properties = d
+        m_gnify_analysis_with_annotations_quality_control_summary_type_0.additional_properties = (
+            d
+        )
         return m_gnify_analysis_with_annotations_quality_control_summary_type_0
 
     @property

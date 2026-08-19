@@ -92,7 +92,9 @@ class OrderByFilterLiteralaccessionAccessionLengthLengthCompletenessCompleteness
             order=order,
         )
 
-        order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total.additional_properties = d
+        order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total.additional_properties = (
+            d
+        )
         return order_by_filter_literalaccession_accession_length_length_completeness_completeness_contamination_contamination_num_genomes_total_num_genomes_total
 
     @property

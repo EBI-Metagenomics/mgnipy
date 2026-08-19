@@ -88,7 +88,9 @@ class OrderByFilterLiteralsampleTitleSampleTitleUpdatedAtUpdatedAt:
             order=order,
         )
 
-        order_by_filter_literalsample_title_sample_title_updated_at_updated_at.additional_properties = d
+        order_by_filter_literalsample_title_sample_title_updated_at_updated_at.additional_properties = (
+            d
+        )
         return order_by_filter_literalsample_title_sample_title_updated_at_updated_at
 
     @property

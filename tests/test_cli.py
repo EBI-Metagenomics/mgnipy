@@ -36,12 +36,12 @@ def test_build_parser_includes_supported_resource_choices():
     parser = _build_parser()
     get_parser = parser._subparsers._group_actions[0].choices["get"]
 
-    assert "studies" in get_parser._actions[1].choices, (
-        "The get command should accept common public resources."
-    )
-    assert "_custom_endpoint" in get_parser._actions[1].choices, (
-        "The CLI currently exposes the internal custom endpoint choice."
-    )
+    assert (
+        "studies" in get_parser._actions[1].choices
+    ), "The get command should accept common public resources."
+    assert (
+        "_custom_endpoint" in get_parser._actions[1].choices
+    ), "The CLI currently exposes the internal custom endpoint choice."
 
 
 def test_main_list_resources_uses_client(monkeypatch, capsys):
@@ -66,9 +66,9 @@ def test_main_get_prints_requested_records(monkeypatch, capsys):
 
     output_lines = capsys.readouterr().out.strip().splitlines()
 
-    assert output_lines[0] == "<class 'int'>", (
-        "The CLI currently prints the type of the parsed limit argument for debugging."
-    )
+    assert (
+        output_lines[0] == "<class 'int'>"
+    ), "The CLI currently prints the type of the parsed limit argument for debugging."
     assert json.loads("\n".join(output_lines[1:])) == [
         {"id": 1},
         {"id": 2},

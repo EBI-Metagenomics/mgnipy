@@ -65,7 +65,9 @@ class NinjaPaginationResponseSchemaGenomeAssemblyLinkSchema:
             items=items,
         )
 
-        ninja_pagination_response_schema_genome_assembly_link_schema.additional_properties = d
+        ninja_pagination_response_schema_genome_assembly_link_schema.additional_properties = (
+            d
+        )
         return ninja_pagination_response_schema_genome_assembly_link_schema
 
     @property

@@ -65,7 +65,9 @@ class NinjaPaginationResponseSchemaMGnifyAnalysisDetail:
             items=items,
         )
 
-        ninja_pagination_response_schema_m_gnify_analysis_detail.additional_properties = d
+        ninja_pagination_response_schema_m_gnify_analysis_detail.additional_properties = (
+            d
+        )
         return ninja_pagination_response_schema_m_gnify_analysis_detail
 
     @property

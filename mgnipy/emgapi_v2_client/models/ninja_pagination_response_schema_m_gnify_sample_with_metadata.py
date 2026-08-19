@@ -65,7 +65,9 @@ class NinjaPaginationResponseSchemaMGnifySampleWithMetadata:
             items=items,
         )
 
-        ninja_pagination_response_schema_m_gnify_sample_with_metadata.additional_properties = d
+        ninja_pagination_response_schema_m_gnify_sample_with_metadata.additional_properties = (
+            d
+        )
         return ninja_pagination_response_schema_m_gnify_sample_with_metadata
 
     @property

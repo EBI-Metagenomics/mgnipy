@@ -69,7 +69,9 @@ class NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema:
             items=items,
         )
 
-        ninja_pagination_response_schema_additional_contained_genome_schema.additional_properties = d
+        ninja_pagination_response_schema_additional_contained_genome_schema.additional_properties = (
+            d
+        )
         return ninja_pagination_response_schema_additional_contained_genome_schema
 
     @property

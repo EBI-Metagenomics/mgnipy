@@ -86,7 +86,9 @@ class MGnifyAnalysisWithAnnotationsAnnotationsAdditionalPropertyType1:
 
             additional_properties[prop_name] = additional_property
 
-        m_gnify_analysis_with_annotations_annotations_additional_property_type_1.additional_properties = additional_properties
+        m_gnify_analysis_with_annotations_annotations_additional_property_type_1.additional_properties = (
+            additional_properties
+        )
         return m_gnify_analysis_with_annotations_annotations_additional_property_type_1
 
     @property

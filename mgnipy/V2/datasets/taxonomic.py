@@ -74,8 +74,7 @@ def prep_obs(
             .struct.rename_fields(list(long_short_mapping.keys()))
             # alias and unnest
             .alias("taxonomy_split")
-        )
-        .unnest("taxonomy_split")
+        ).unnest("taxonomy_split")
         # select only these new columns
         .select(tax_col, *list(long_short_mapping.keys()))
     )
@@ -89,8 +88,7 @@ def prep_obs(
             # strip short prefix e.g., d__
             .str.strip_chars_start(f"{long_short_mapping[col_name]}__")
             # fill empty strings / nulls
-            .replace("", fill_na)
-            .fill_null(fill_na)
+            .replace("", fill_na).fill_null(fill_na)
             for col_name in long_short_mapping
         ],
     )
