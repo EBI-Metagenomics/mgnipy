@@ -4,11 +4,12 @@ authors = [
   { name = "Angel L. P." },
   { name = "chrisAta" },
   { name = "MGS-sails" },
+  { name = "Maria Barranco-Altirriba" },
+  { name = "Sebastian Ayala Ruano" },
   { name = "mberacochea" },
   { name = "SandyRogers" },
-  { name = "Sebastian Ayala Ruano" },
-  { name = "Alberto Santos" },
   { name = "Robert Finn" },
+  { name = "Alberto Santos" },
   { name = "MGnify" }
 ]
 description = "MGni.py: A Python Wrapper for the MGnify API"
@@ -75,12 +76,11 @@ docs = [
 
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/tutorial/#rule-selection
-extend-select = ["E", "W", "F", "B"]
-ignore = ["E501", "E402"]
+extend-select = ["E", "W", "F", "B", "I"]
+ignore = ["E501", "E402", "E902"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["mgnipy"]
-known-local-folder = ["mgnipy"]
 length-sort-straight = true
 required-imports = ["from __future__ import annotations"]
 force-sort-within-sections = true
