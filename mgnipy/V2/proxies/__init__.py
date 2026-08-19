@@ -4,27 +4,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import pandas as pd
-from tqdm import tqdm as tqdm_sync
-from tqdm.asyncio import tqdm_asyncio
-
-from mgnipy.V2.mgnifier.metadata import (
-    MGnifyMetadata,
-    add_pipeline_version_field,
-    add_id_param_field,
-)
-
-from mgnipy._models.constants.CONSTANTS import (
-    SupportedEndpoints,
-    ListResourceStr,
-    DetailResourceStr,
-)
-from mgnipy.V2.mgnifier.endpoints import (
-    BETWEEN_RESOURCE_RELATIONSHIPS,
-    PARENT_CHILD_RESOURCES,
-    WITHIN_RESOURCE_RELATIONSHIPS,
-    ID_PARAM,
-)
 from typing import (
     Any,
     AsyncIterator,
@@ -34,8 +13,28 @@ from typing import (
     Optional,
 )
 
+from tqdm import tqdm as tqdm_sync
+from tqdm.asyncio import tqdm_asyncio
+import pandas as pd
+
 from mgnipy._models.config import MGnipyConfig
+from mgnipy._models.constants.CONSTANTS import (
+    DetailResourceStr,
+    ListResourceStr,
+    SupportedEndpoints,
+)
 from mgnipy.V2.mgnifier import MGnifier
+from mgnipy.V2.mgnifier.endpoints import (
+    BETWEEN_RESOURCE_RELATIONSHIPS,
+    ID_PARAM,
+    PARENT_CHILD_RESOURCES,
+    WITHIN_RESOURCE_RELATIONSHIPS,
+)
+from mgnipy.V2.mgnifier.metadata import (
+    MGnifyMetadata,
+    add_id_param_field,
+    add_pipeline_version_field,
+)
 
 
 class MGnifyList(MGnifier):
@@ -80,6 +79,21 @@ class MGnifyList(MGnifier):
 
         self._collected_details: dict[str, "MGnifyDetail"] = {}
         self._collected_details_metadata: dict[str, dict] = {}
+
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__} resource={str(self.resource)!r}, "
+            f"endpoint={self.endpoint_module.__name__!r}, params={self.params!r}, "
+            f"child_resource={str(self.child_resource)!r}>"
+        )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__} for {str(self.resource)!r} resource\n"
+            f"- Endpoint: {self.endpoint_module.__name__!r}\n"
+            f"- Params: {self.params!r}\n"
+            f"- Child resource: {str(self.child_resource)!r} "
+        )
 
     def __len__(self) -> int:
         """Return the number of child details based on results.
@@ -527,6 +541,19 @@ class MGnifyDetail(MGnifier):
             config=config,
             **kwargs,
             **{id_param_key: id},
+        )
+
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__} resource={str(self.resource)!r}, "
+            f"id={self.identifier!r}>"
+        )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__} for {self.identifier!r}\n"
+            f"- Endpoint: {self.endpoint_module.__name__!r}\n"
+            f"- Supported relationships: {self.list_relationships()} "
         )
 
     def _clone(self, **param_overrides) -> "MGnifyDetail":
