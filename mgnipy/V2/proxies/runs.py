@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Any,
     ClassVar,
@@ -5,12 +7,11 @@ from typing import (
     Optional,
 )
 
-from mgnipy.V2.mixins import BioSamplesMetadataMixin
+from mgnipy.V2.collect.biosampler import BioSampler
 from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
-class Runs(MGnifyList, BioSamplesMetadataMixin):
-
+class Runs(MGnifyList):
     RESOURCE: ClassVar[Literal["runs"]] = "runs"
 
     def __init__(
@@ -20,11 +21,20 @@ class Runs(MGnifyList, BioSamplesMetadataMixin):
         config: Optional[dict] = None,
         **kwargs,
     ):
-        self._init_biosamples_cache()
         super().__init__(params=params, config=config, **kwargs)
+        self._biosampler = None
+
+    @property
+    def biosampler(self):
+        if self._biosampler is None:
+            # init it
+            self._biosampler = BioSampler(
+                sample_ids=self.search_results.ids, config=self.config
+            )
+        return self._biosampler
 
 
-class RunDetail(MGnifyDetail, BioSamplesMetadataMixin):
+class RunDetail(MGnifyDetail):
     RESOURCE: ClassVar[Literal["run"]] = "run"
 
     def __init__(
@@ -35,9 +45,19 @@ class RunDetail(MGnifyDetail, BioSamplesMetadataMixin):
         config: Optional[dict] = None,
         **kwargs,
     ):
-        self._init_biosamples_cache()
         super().__init__(
             id=id or accession,
             config=config,
             **kwargs,
         )
+
+        self._biosampler = None
+
+    @property
+    def biosampler(self):
+        if self._biosampler is None:
+            # init it
+            self._biosampler = BioSampler(
+                sample_id=[self.identifier], config=self.config
+            )
+        return self._biosampler
