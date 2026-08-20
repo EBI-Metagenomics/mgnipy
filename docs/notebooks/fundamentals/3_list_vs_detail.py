@@ -15,27 +15,25 @@
 # %% [markdown]
 # # MGnify List vs. Detail endpoints
 #
-# The [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2) has 2 types of endpoints:
+# The [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2) has 2 types of endpoints: 
 #
 # 1. **list** endpoints which return a (paginated) list of records (dicts) in brief from a MGnify resource
 # 2. **detail** endpoints which return a single record (dict) in lots of detail
 #
-# The list endpoints can accept different search params to filter down the list (e.g., "search", "biome_lineage", "page_size"). In contrast, the detail endpoints only accept a single accession/id.
+# The list endpoints can accept different search params to filter down the list (e.g., "search", "biome_lineage", "page_size"). In contrast, the detail endpoints only accept a single accession/id. 
 #
-# In MGni.py, the MGnifier's that correspond to
+# In MGni.py, the MGnifier's that correspond to 
 # 1. list endpoints are plural e.g. `MG.samples`
 # 2. detail endpoints are singular e.g. `MG.sample`
 #
 # ```{margin}
-# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
+# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder. 
 # ```
 # <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
 #
 # ---
 
 # %%
-from __future__ import annotations
-
 from mgnipy import MGnipy
 
 # init client
@@ -45,7 +43,7 @@ MG = MGnipy(cache_dir=None)
 print(MG.list_resources())
 
 # %% [markdown]
-# From `list_resources()` we see plural vs. singular terms e.g. `analyses` vs. `analysis`.
+# From `list_resources()` we see plural vs. singular terms e.g. `analyses` vs. `analysis`. 
 #
 # The plural attributes are list and singular are detail endpoints:
 
@@ -73,7 +71,7 @@ display(a_study_detail.search_results.to_pandas())
 #
 # After getting a list of records from a list endpoint, one can beef up the list with additional metadata by using the "child" detail endpoint: e.g. `samples` to `sample`, `assemblies` to `assembly`, etc
 #
-# there is a method `.enrich_details()` for MGnifyList's that help with this which will iteratively get the list of MGnifyDetails.
+# there is a method `.enrich_details()` for MGnifyList's that help with this which will iteratively get the list of MGnifyDetails. 
 
 # %%
 # populating the list
@@ -103,9 +101,9 @@ studies_list.mgnify_details
 # %% [markdown]
 # ## from detail to lists
 #
-# If you noticed from the prints of the `StudyDetail`s above there are "Supported relationships" which link to other MGnifyLists.
+# If you noticed from the prints of the `StudyDetail`s above there are "Supported relationships" which link to other MGnifyLists. 
 #
-# This means that from a study you can get their collection of samples for example.
+# This means that from a study you can get their collection of samples for example. 
 
 # %%
 a_study_detail.list_relationships()

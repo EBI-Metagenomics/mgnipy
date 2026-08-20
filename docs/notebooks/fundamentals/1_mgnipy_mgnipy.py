@@ -45,8 +45,6 @@
 # You can create a single `MGnipy()` instance and then access resource proxies from it. Those resource proxies aka resource endpoint-specific `MGnifier()`s would then share the same configuration of `MGnipy()`
 
 # %%
-from __future__ import annotations
-
 from mgnipy import MGnipy
 
 # Create a default client (will pick up .env if present)

@@ -19,10 +19,10 @@
 #
 # 1. **Discover** what resources are available
 # 2. **Inspect** what query parameters each resource accepts
-# 3. **Build** a set of queries
+# 3. **Build** a set of queries 
 #
 # ```{margin}
-# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
+# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder. 
 # ```
 # <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
 #
@@ -34,13 +34,11 @@
 
 # %% [markdown]
 #
-# ## Starting up a `mgnipy.MGnipy` client
+# ## Starting up a `mgnipy.MGnipy` client 
 #
 # For more details on configuring mgnipy and the default configuration go to the [config info page](TODO)
 
 # %%
-from __future__ import annotations
-
 from mgnipy import MGnipy
 
 # init
@@ -63,25 +61,25 @@ print(MG.list_resources())
 
 # %% [markdown]
 #
-# - the plural resources (e.g. `analyses`, `studies`) represent collection/list endpoints from the API
-#
-#     e.g.
+# - the plural resources (e.g. `analyses`, `studies`) represent collection/list endpoints from the API 
+#     
+#     e.g. 
 #     - **Studies**: Lists of MGnify studies
 #     - **Analyses**: Lists of MGnify pipeline analyses
 #
 #     Usually we use `MGnifyList` endpoints to search or filter for a list of the resource
 #
-# - the singular (e.g. `analysis`, `study`) represent a detail endpoint (i.e., getting the details of a single study, analysis, etc)
+# - the singular (e.g. `analysis`, `study`) represent a detail endpoint (i.e., getting the details of a single study, analysis, etc) 
+#     
+#     e.g. 
+#     - **Study**: Detailed metadata for a study given its study accession id 
+#     - **Analysis**: Detailed metadata for a MGnify Analysis given its MGnify analysis accession id 
 #
-#     e.g.
-#     - **Study**: Detailed metadata for a study given its study accession id
-#     - **Analysis**: Detailed metadata for a MGnify Analysis given its MGnify analysis accession id
-#
-#     `MGnifyDetail` endpoints are used to get the metadata for a given item.
+#     `MGnifyDetail` endpoints are used to get the metadata for a given item. 
 #
 
 # %% [markdown]
-# A description of the resource and corresponding API endpoint can be viewed using the helper methods `.describe_resource()` for a given one or `.describe_resources()` to see all.
+# A description of the resource and corresponding API endpoint can be viewed using the helper methods `.describe_resource()` for a given one or `.describe_resources()` to see all. 
 
 # %%
 print("studies list endpoint:")
@@ -118,9 +116,9 @@ studies.describe_endpoint()
 # %% [markdown]
 # ## Building a query set
 #
-# Using the supported params we can refine our query of the resource. For example, for `Studies` list we can `.filter` by `search` and `has_analyses_from_pipeline`
+# Using the supported params we can refine our query of the resource. For example, for `Studies` list we can `.filter` by `search` and `has_analyses_from_pipeline` 
 #
-# We can pass our search params:
+# We can pass our search params: 
 # 1. when calling the resource e.g. `MG.studies(<param>=<value>)` or by
 # 2. using `.filter(<param>=<value>)` after
 
@@ -156,7 +154,7 @@ study.explain()
 # %% [markdown]
 # ---
 #
-# ## Wrap Up:
+# ## Wrap Up: 
 #
 # This page was a quick start demonstration of:
 #

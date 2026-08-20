@@ -20,6 +20,15 @@
 # ```
 # <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
 #
+# ---
+#
+
+# %%
+# uncomment below if colab
+# #!pip install mgnipy
+
+# %% [markdown]
+#
 # ## What is a `mgnipy.MGazine`?
 #
 # Study and Analysis details include **'downloads'** fields which contain information such as types, short descriptions, urls etc about the datasets outputed from MGnify pipelines.
@@ -54,8 +63,6 @@
 # In this demonstration we will get the `MGazine` of a single study, but this would be the same for a multi-study collection of `proxies.Studies`
 
 # %% tags=["hide-output"]
-from __future__ import annotations
-
 from mgnipy import MGnipy
 
 # 1. init with default config

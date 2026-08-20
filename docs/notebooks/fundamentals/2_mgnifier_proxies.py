@@ -115,8 +115,10 @@
 # ✨ Recommended ✨ Using the high-level `mgnipy.MGnipy` client:
 
 # %%
-from __future__ import annotations
+# uncomment below if colab
+# #!pip install mgnipy
 
+# %%
 from mgnipy import MGnipy
 
 # init client w/o caching

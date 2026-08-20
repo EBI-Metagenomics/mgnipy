@@ -13,12 +13,12 @@
 # ---
 
 # %% [markdown]
-# # The `emgapi_v2_client`
+# # The `emgapi_v2_client` 
 #
 # For developing or in case you want to work with the `mgnipy.emgapi_v2_client` sub-package directly.
 #
 # ---
-# ## What is it?
+# ## What is it?  
 # `mgnipy.emgapi_v2_client` is a python sub-package in MGni.py that was created from the [openapi.json spec](ttps://www.ebi.ac.uk/metagenomics/api/v2/openapi.json) using [openapi-python-client](https://github.com/openapi-generators/openapi-python-client).
 #
 # It serves as the initial HTTP client to remove the complexity of direct HTTP requests to version 2 of the MGnify API while maintaining type safety through `attrs`-based models.
@@ -28,12 +28,12 @@
 #
 # See [readme-openapi-python-client.md](readme-openapi-python-client.md) for more information on [openapi-python-client](https://github.com/openapi-generators/openapi-python-client)
 #
-# ## How does it work?
+# ## How does it work? 
 #
 # ### Each MGnify API endpoint has its own module in emgapi_v2_client
 # - Every MGnify API v2 endpoint (e.g., [list_all_biomes](https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes), [get_mgnify_analysis](https://www.ebi.ac.uk/metagenomics/api/v2/#/Analyses/get_mgnify_analysis)) has their own module in emgapi_v2_client (e.g., `mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes`, `mgnipy.emgapi_v2_client.api.analyses.get_mgnify_analysis`)
 #
-# - Within the emgapi_v2_client, the endpoint modules are in the `api` directory:
+# - Within the emgapi_v2_client, the endpoint modules are in the `api` directory: 
 #
 # ```bash
 #             emgapi_v2_client/
@@ -92,8 +92,6 @@
 # at minimum need
 # 1. the path
 # 2. the client
-from __future__ import annotations
-
 from mgnipy.emgapi_v2_client import Client
 from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
 
@@ -124,10 +122,10 @@ print(example_client)
 #                     client=client, page_size=10
 #                 )
 # ```
-# the API will respond with the first page of 10 items from the list_mgnify_biomes endpoint.
+# the API will respond with the first page of 10 items from the list_mgnify_biomes endpoint. 
 #
 #
-# #### 🎪 *A peak behind the curtain* 🎪
+# #### 🎪 *A peak behind the curtain* 🎪 
 # The order of the methods within `list_mgnify_biomes.py` when the above is executed would be:
 # 1. `_get_kwargs` to prepare the query params, ensuring that the kwarg exists e.g. that `page_size` is an acceptable kwarg
 # 2. the httpx request is made with the kwargs
@@ -170,14 +168,13 @@ response.parsed.to_dict().keys()
 #
 # Let's take a closer look at the response
 
-# %%
+# %% tags=["hide-output"]
 response.parsed.to_dict()
 
 # %% [markdown]
-# ## Async requests support
+# ## Async requests support 
 
 # %%
-
 example_client = Client(base_url="https://www.ebi.ac.uk")
 
 async with example_client as client:

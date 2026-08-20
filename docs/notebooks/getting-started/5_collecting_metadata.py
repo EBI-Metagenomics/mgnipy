@@ -15,13 +15,13 @@
 # %% [markdown]
 # # Collecting more metadata
 #
-# In MGni.py there are helpers for collecting metdata from [MGnify](https://www.ebi.ac.uk/metagenomics/) or [BioSamples](https://www.ebi.ac.uk/biosamples/) for a list of MGnify accessions.
+# In MGni.py there are helpers for collecting metdata from [MGnify](https://www.ebi.ac.uk/metagenomics/) or [BioSamples](https://www.ebi.ac.uk/biosamples/) for a list of MGnify accessions. 
 #
-# On this page we will learn how to:
+# On this page we will learn how to: 
 # - **Collect metadata** from MGnify using `mgnipy.collect.MGnetizer`
 # - **Collect metadata** from BioSamples using `mgnipy.collect.BioSampler`
 #
-# This is especially useful if you already know the list of MGnify items that you would like the detailed metadata for such as a list of study accessions. Additionally, when you already have a MGnify dataset of samples and would like to get more metadata starting from the Run accessions which we will demonstrate below.
+# This is especially useful if you already know the list of MGnify items that you would like the detailed metadata for such as a list of study accessions. Additionally, when you already have a MGnify dataset of samples and would like to get more metadata starting from the Run accessions which we will demonstrate below. 
 #
 # ```{margin}
 # After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
@@ -35,11 +35,9 @@
 # #!pip install mgnipy
 
 # %% [markdown]
-# We'll pick up from the previous page where we had downloaded the "ERP014435_GO-slim_abundances_v3.0.tsv" dataset from MGnify.
+# We'll pick up from the previous page where we had downloaded the "ERP014435_GO-slim_abundances_v3.0.tsv" dataset from MGnify. 
 
 # %% tags=["hide-output"]
-from __future__ import annotations
-
 import pandas as pd
 
 # read in GO-slim abundances file
@@ -100,7 +98,7 @@ print(bios)
 # %% [markdown]
 # Note: if wanting to pass runs accessions above instead (e.g., `MG.biosampler(sample_ids=run_ids)`) then `.enrich(incl_ena=True)`
 #
-# now that we have built the queries we can execute them
+# now that we have built the queries we can execute them 
 
 # %%
 with bios:
@@ -110,14 +108,14 @@ with bios:
 bios.metadata.to_pandas(expand_nested_dicts=False).head()
 
 # %% [markdown]
-# From here of course you can take over to merge the sets of MGnify metadata and Biosamples metadata.
+# From here of course you can take over to merge the sets of MGnify metadata and Biosamples metadata. 
 #
 # However mgnipy has a helper class that combines a MGnify dataset with its metadata:
 #
 # ---
 #
 # ## `MTG` MGic (the) Gatherer
-# The MGic gatherer (MTG) takes a dataset as pandas or polars dataframe and MGnify or BioSamples metadata and combines them into a single object.
+# The MGic gatherer (MTG) takes a dataset as pandas or polars dataframe and MGnify or BioSamples metadata and combines them into a single object. 
 #
 # MTG can be used to enrich the dataset with metadata, and to convert the dataset into different formats such as pandas, polars, or anndata.
 #
@@ -193,7 +191,7 @@ back
 #
 # ## Wrap Up:
 #
-# We started with only a MGnify dataset that included a list of run accessions.
+# We started with only a MGnify dataset that included a list of run accessions. 
 #
 # This page was a quick start demonstration of:
 #

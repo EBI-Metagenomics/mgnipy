@@ -31,8 +31,8 @@
 #     <h1></h1>
 #
 #     - `mgnipy.MGnipyConfig` takes care of obtaining a sliding token (JWT) from the [token_obtain_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding) endpoint of the MGnify API using your username/password
-#     - Sliding JWT includes an Access token, shorter expiry, and Refresh token, longer expiry.
-#     - The Access token is checked for validity using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint
+#     - Sliding JWT includes an Access token, shorter expiry, and Refresh token, longer expiry. 
+#     - The Access token is checked for validity using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint 
 #     - If the Access token is expired but the Refresh token has not then a new Access token can be obtained using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding)
 #     - The high-level methods within `mgnipy.MGnipyConfig` involved are `obtain_auth_token`, `verify_auth_token`, `refresh_auth_token`, and `resolve_auth_token`.
 #     - The resolved token is stored in `MGnipyConfig.auth_token` for the session and used for authenticated API requests.
@@ -57,8 +57,6 @@
 
 # %%
 # if .env files then can just proceed as normal, for example in a notebook:
-from __future__ import annotations
-
 from mgnipy import MGnipy
 
 MG = MGnipy()  # will automatically look for .env file and load credentials if found

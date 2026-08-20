@@ -92,8 +92,6 @@
 
 # %%
 # if using MGnipyConfig directly
-from __future__ import annotations
-
 from mgnipy import MGnipyConfig
 
 config = MGnipyConfig(cache_dir="temp_example")

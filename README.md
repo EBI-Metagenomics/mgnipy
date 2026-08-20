@@ -104,44 +104,36 @@ studies.explain()
 
 #### Executing the queries
 ```python
-# get page by page via .get(), getting 3 pages
-for _ in range(3)
+# client context manager
+with MG: 
+
+    # get page by page via .get()
     studies.get()
+    # or via .page(), getting a specific pg num 
+    studies.page(2)
+    # OR potentially all at once in large batches (also async option .aget_all())
+    studies.get_all()
 
-# or via .page(), getting another 3 pages
-for i in range(4,7):
-    studies.page(i)
-
-# OR potentially all at once in large batches (also async option .aget_all())
-studies.get_all()
-
-# then can enrich with detailed metadata
-studies.enrich_details()
+    # then can enrich list with detailed metadata
+    studies.enrich_details()
 ```
 
-#### Viewing the metadata
+#### Viewing the search results
 ```python
-# basic metadata 
-study_metadata = studies.metadata
+# the mgnify list (without details)
+study_list = studies.search_results
 # detailed metadata, e.g. with enriched details
-detailed_study_metadata = studies.detailed_metadata
+detailed_study_list = studies.metadata
 
-# read a summary
-print(study_metadata)
-# or
-print(detailed_study_metadata)
-
-# As dataframes
+# e.g. as dataframes
 pl_metadata = detailed_study_metadata.to_polars()
 pd_metadata = detailed_study_metadata.to_pandas()
 
-# as json
+# e.g. as json
 json_metadata = detailed_study_metadata.to_json()
-
 ```
 
-### 🗃️ 3. Explore a `mgnipy.MGzine` of datasets
-
+### 🗃️ 3. Explore a `mgnipy.MGazine` of datasets
 ```python
 # accessing the mgazine of datasets
 mgazine = studies.datasets
@@ -150,19 +142,25 @@ mgazine = studies.datasets
 print(mgazine)
 ```
 
-### Downloading the data
+### Downloading datasets from MGnify
 ```python
 # download file by file 
-mgazine.download(to_dir="downloads_folder", alias="mgnify_file_alias.fasta.gz")
+mgazine.download(
+    alias="mgnify_file_alias.fasta.gz", 
+    to_dir="downloads_folder"
+)
 
 # or download all 
 mgazine.download_all(to_dir="downloads_folder")
 ```
 
-### Reading in the data
+### Reading in datasets from MGnify
 ```python
 # support for tsv, csv, txt, jsonl
-taxa_table = mgazine.stream(alias="mgnify_file_alias.tsv", df_engine="polars")
+taxa_table = mgazine.stream(
+    alias="mgnify_file_alias.tsv", 
+    df_engine="polars"
+)
 
 # support for fasta, gff, biom via skbio
 skbio_fasta = mgazine.stream(alias="mgnify_file_alias.fasta.gz")
