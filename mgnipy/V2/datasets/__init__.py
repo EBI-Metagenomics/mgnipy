@@ -344,8 +344,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         self.downloads = downloads
         self.config = config or MGnipyConfig()
         self.client = client or init_httpx_client(self.config)
-        self.httpx_client = self.client.get_httpx_client()
-        self.async_httpx_client = self.client.get_async_httpx_client()
         self.semaphore = get_semaphore()
 
         self._mgnify_studies: list[dict[str, Any]] | None = mgnify_studies
@@ -880,7 +878,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         filename: Optional[str] = None,
         overwrite: bool = False,
         hide_progress: bool = False,
-        httpx_client: Optional[Client] = None,
     ):
         """Download a file by its alias or URL.
 
@@ -950,17 +947,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             f"Starting download: alias={_alias} url={_url} dest={filepath} overwrite={overwrite} client={self.client}",
         )
 
-        if httpx_client:
-            _client = httpx_client
-        else:
-            _client = self.httpx_client
-
-        if _client.is_closed:
-            logger.debug("HTTPX client is closed, reinitializing")
-            self.renew_client()
-            _client = self.httpx_client
-
-        with _client.stream("GET", _url) as response:
+        with self.httpx_client.stream("GET", _url) as response:
             # http errors raise here
             response.raise_for_status()
             # for progress bar, get total size from headers if available
@@ -988,7 +975,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         filename: Optional[str] = None,
         overwrite: bool = False,
         hide_progress: bool = False,
-        httpx_aclient: Optional[httpx.AsyncClient] = None,
     ):
         """
         Asynchronously download a file from an alias or URL.
@@ -1058,21 +1044,11 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                 f"File already exists but overwrite is True, will overwrite: {filepath}"
             )
 
-        if httpx_aclient:
-            _client = httpx_aclient
-        else:
-            _client = self.async_httpx_client
-
-        if _client.is_closed:
-            logger.debug("HTTPX async client is closed, reinitializing")
-            self.renew_client()
-            _client = self.async_httpx_client
-
         # semaphore to limit concurrent downloads, can be adjusted in config
         async with self.semaphore:
             # If caller provided an async client, use it (don't re-enter context).
 
-            async with _client.stream("GET", _url) as response:
+            async with self.async_httpx_client.stream("GET", _url) as response:
                 response.raise_for_status()
                 total = int(response.headers.get("content-length", 0))
                 with tqdm_sync(
@@ -1122,45 +1098,39 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         logger.debug("Initializing client once for all downloads")
 
-        if self.httpx_client.is_closed:
-            logger.debug("HTTPX client is closed, reinitializing")
-            self.renew_client()
+        aliases = list(self.url_dict.keys())
 
-        with self.httpx_client:
-            aliases = list(self.url_dict.keys())
-
-            for alias in tqdm_sync(
-                aliases,
-                total=len(aliases),
-                desc="Overall Progress",
-                ascii=" >=",
-                disable=hide_progress,
-            ):
-                try:
-                    self.download(
-                        to_dir=to_dir,
-                        alias=alias,
-                        hide_progress=hide_progress,
-                        overwrite=overwrite,
-                        httpx_client=self.httpx_client,
-                    )
-                except RuntimeError as re:
-                    logger.error(
-                        f"Runtime error occurred while downloading {alias}: {re}. Attempting to renew_client and retry"
-                    )
-                    self.renew_client()
-                    self.download(
-                        to_dir=to_dir,
-                        alias=alias,
-                        hide_progress=hide_progress,
-                        overwrite=overwrite,
-                    )
-                except httpx.ConnectError as ce:
-                    logger.error(
-                        f"Connection error occurred while downloading {alias}: {ce}"
-                    )
-                except Exception as e:
-                    logger.error(f"Error occurred while downloading {alias}: {e}")
+        for alias in tqdm_sync(
+            aliases,
+            total=len(aliases),
+            desc="Overall Progress",
+            ascii=" >=",
+            disable=hide_progress,
+        ):
+            try:
+                self.download(
+                    to_dir=to_dir,
+                    alias=alias,
+                    hide_progress=hide_progress,
+                    overwrite=overwrite,
+                )
+            except RuntimeError as re:
+                logger.error(
+                    f"Runtime error occurred while downloading {alias}: {re}. Attempting to renew_client and retry"
+                )
+                self.renew_client()
+                self.download(
+                    to_dir=to_dir,
+                    alias=alias,
+                    hide_progress=hide_progress,
+                    overwrite=overwrite,
+                )
+            except httpx.ConnectError as ce:
+                logger.error(
+                    f"Connection error occurred while downloading {alias}: {ce}"
+                )
+            except Exception as e:
+                logger.error(f"Error occurred while downloading {alias}: {e}")
 
     async def adownload_all(
         self,
@@ -1196,46 +1166,38 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         """
 
-        if self.async_httpx_client.is_closed:
-            logger.debug("HTTPX async client is closed, reinitializing")
-            self.renew_client()
-
-        async with self.async_httpx_client:
-            # create tasks for each download
-            tasks = [
-                self.adownload(
-                    to_dir=to_dir,
-                    alias=a,
-                    overwrite=overwrite,
-                    hide_progress=hide_progress,
-                    httpx_aclient=self.async_httpx_client,
+        # create tasks for each download
+        tasks = [
+            self.adownload(
+                to_dir=to_dir,
+                alias=a,
+                overwrite=overwrite,
+                hide_progress=hide_progress,
+            )
+            for a in self.url_dict
+        ]
+        # Overall progress bar
+        for f in tqdm_asyncio.as_completed(
+            tasks,
+            total=len(tasks),
+            desc="Overall Progress",
+            ascii=" >=",
+            disable=hide_progress,
+        ):
+            try:
+                await f
+            except RuntimeError as re:
+                logger.error(
+                    f"Runtime error occurred while downloading {f}: {re}. Attempting to renew_client and retry"
                 )
-                for a in self.url_dict
-            ]
-            # Overall progress bar
-            for f in tqdm_asyncio.as_completed(
-                tasks,
-                total=len(tasks),
-                desc="Overall Progress",
-                ascii=" >=",
-                disable=hide_progress,
-            ):
-                try:
-                    await f
-                except RuntimeError as re:
-                    logger.error(
-                        f"Runtime error occurred while downloading {f}: {re}. Attempting to renew_client and retry"
-                    )
-                    self.renew_client()
-                    await f
-                except httpx.ConnectError as ce:
-                    # flag and continue with downloads
-                    logger.error(
-                        f"Connection error occurred while downloading {f}: {ce}"
-                    )
-                except Exception as e:
-                    # flag and continue with downloads ..
-                    logger.error(f"Error occurred while downloading {f}: {e}")
+                self.renew_client()
+                await f
+            except httpx.ConnectError as ce:
+                # flag and continue with downloads
+                logger.error(f"Connection error occurred while downloading {f}: {ce}")
+            except Exception as e:
+                # flag and continue with downloads ..
+                logger.error(f"Error occurred while downloading {f}: {e}")
 
     # streaming to combine
     def lazy_concat(
@@ -1320,13 +1282,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             )
             return pl.DataFrame()
         return self.lazy_merged.collect()
-
-    def renew_client(self):
-        """Overwrite of the renew_client method in ClientManagerMixin"""
-
-        self.client = init_httpx_client(self.config)
-        self.httpx_client = self.client.get_httpx_client()
-        self.async_httpx_client = self.client.get_async_httpx_client()
 
 
 from .taxonomic import DWCTaxaMGazine, TaxaMGazine

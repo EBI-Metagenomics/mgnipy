@@ -1146,3 +1146,51 @@ class ClientManagerMixin:
         logger.info(f"Renewing HTTP client instance. Old: {self.client}")
         self.client = init_httpx_client(self.config)
         logger.info(f"HTTP client refreshed. Now: {self.client}")
+
+    @property
+    def httpx_client(self) -> httpx.Client:
+        """
+        Get the synchronous httpx client instance from the AuthenticatedClient.
+
+        Returns
+        -------
+        httpx.Client
+            The synchronous httpx client instance.
+        """
+        if self.client is None:
+            logger.info("Client is None; initializing a new client instance.")
+            self.renew_client()
+        elif self.client._client is None:
+            logger.info(
+                "Synchronous httpx Client._client is None. Getting httpx client"
+            )
+        elif self.client._client.is_closed:
+            logger.info("Synchronous httpx Client._client is closed; renewing client.")
+            self.renew_client()
+        self.client.get_httpx_client()
+        return self.client._client
+
+    @property
+    def async_httpx_client(self) -> httpx.AsyncClient:
+        """
+        Get the asynchronous httpx client instance from the AuthenticatedClient.
+
+        Returns
+        -------
+        httpx.AsyncClient
+            The asynchronous httpx client instance.
+        """
+        if self.client is None:
+            logger.info("Client is None; initializing a new client instance.")
+            self.renew_client()
+        elif self.client._async_client is None:
+            logger.info(
+                "Asynchronous httpx Client._async_client is None. Getting async httpx client"
+            )
+        elif self.client._async_client.is_closed:
+            logger.info(
+                "Asynchronous httpx Client._async_client is closed; renewing client."
+            )
+            self.renew_client()
+        self.client.get_httpx_async_client()
+        return self.client._async_client
