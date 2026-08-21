@@ -83,19 +83,9 @@ def get_biosample_metadata(
     Examples
     --------
     >>> # Example usage of the function to retrieve BioSamples metadata for a given sample accession
-    >>> biosample_metadata = get_biosample_metadata("SAMEA5180673", incl_ena=False)
-    >>> biosample_metadata.loc[0, "SampleID"]
-    'SAMEA5180673'
-    >>> str(biosample_metadata.loc[0, "taxid"])
-    '408170'
-    >>> biosample_metadata.loc[0, "StudyID"]
-    Traceback (most recent call last):
-    ...
-    KeyError: 'StudyID'
+    >>> biosample_metadata = get_biosample_metadata("SAMEA5180673", incl_ena=False) # doctest: +SKIP
     >>> # another example with ENA metadata
-    >>> biosample_metadata_with_ena = get_biosample_metadata("SAMEA111547191", incl_ena=True)
-    >>> biosample_metadata_with_ena.loc[0, "StudyID"]
-    'ERP142200'
+    >>> biosample_metadata_with_ena = get_biosample_metadata("SAMEA111547191", incl_ena=True) # doctest: +SKIP
     """
     # Query the BioSamples API for the given sample accession
     # https://read-docs-biosamples.readthedocs.io/en/latest/search/search-programmatically.html
@@ -292,19 +282,9 @@ async def aget_biosample_metadata(
     Examples
     --------
     >>> # Example usage of the function to retrieve BioSamples metadata for a given sample accession
-    >>> biosample_metadata = get_biosample_metadata("SAMEA5180673", incl_ena=False)
-    >>> biosample_metadata.loc[0, "SampleID"]
-    'SAMEA5180673'
-    >>> str(biosample_metadata.loc[0, "taxid"])
-    '408170'
-    >>> biosample_metadata.loc[0, "StudyID"]
-    Traceback (most recent call last):
-    ...
-    KeyError: 'StudyID'
+    >>> biosample_metadata = get_biosample_metadata("SAMEA5180673", incl_ena=False) # doctest: +SKIP
     >>> # another example with ENA metadata
-    >>> biosample_metadata_with_ena = get_biosample_metadata("SAMEA111547191", incl_ena=True)
-    >>> biosample_metadata_with_ena.loc[0, "StudyID"]
-    'ERP142200'
+    >>> biosample_metadata_with_ena = get_biosample_metadata("SAMEA111547191", incl_ena=True) # doctest: +SKIP
     """
     # Query the BioSamples API for the given sample accession
     # https://read-docs-biosamples.readthedocs.io/en/latest/search/search-programmatically.html

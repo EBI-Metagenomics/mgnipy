@@ -23,9 +23,7 @@ def init_httpx_client(
 
     Example
     -------
-    >>> # Initialize an http client (doctest skipped)
-    >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-    >>> executor._init_client()  # doctest: +SKIP
+    >>> client = init_httpx_client()  # doctest: +SKIP
     """
 
     if config is None:

@@ -474,12 +474,6 @@ class MGnifyMetadata(ResultsHandler):
         -------
         str
             Summary including resource, URL, parameters, and endpoint info.
-
-        Examples
-        --------
-        >>> from mgnipy.V2.mgnifier import MGnifyMetadata  # doctest: +SKIP
-        >>> metadata = MGnifyMetadata("studies")  # doctest: +SKIP
-        >>> print(metadata)  # doctest: +SKIP
         """
 
         return (
@@ -653,13 +647,6 @@ class MGnifyMetadata(ResultsHandler):
         -------
         dict
             Dictionary with the identifier parameter key and its value.
-
-        Examples
-        --------
-        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
-        >>> query = MGnifier("studies")  # doctest: +SKIP
-        >>> query.get()  # doctest: +SKIP
-        >>> param_dict = query._resolve_id_param(0)  # doctest: +SKIP
         """
 
         if not param_name:

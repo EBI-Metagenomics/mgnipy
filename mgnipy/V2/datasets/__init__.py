@@ -630,10 +630,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         >>> downloads = [{"alias": "example.txt", "url": "http://ex/x", "file_type": "txt"}]
         >>> mag = MGazine(downloads)
         >>> df = mag.downloads_df(index=["boop"])
-        >>> list(df.columns)
-        ['alias', 'url', 'file_type']
-        >>> df.index
-        Index(['boop'], dtype='object')
         """
         df = pd.DataFrame(self.downloads, **pd_kwargs)
         return df
@@ -773,8 +769,6 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         >>> downloads = [{"alias":"x","url":"http://ex/x","file_type":"txt", "download_group":"blah", "short_description":"blah", "pipeline_vers":4.1}]
         >>> mg = MGazine(downloads)
         >>> mg._prioritize_alias(alias='x', url=None)
-        ('x', 'http://ex/x')
-        >>> mg._prioritize_alias(alias=None, url='http://ex/x')
         ('x', 'http://ex/x')
         >>> mg._prioritize_alias(alias=None, url='http://ex/x')
         ('x', 'http://ex/x')

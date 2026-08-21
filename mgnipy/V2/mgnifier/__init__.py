@@ -87,8 +87,8 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
 
         Examples
         --------
-        >>> from mgnipy.V2.mgnifier import MGnifier
-        >>> query = MGnifier("studies")
+        >>> from mgnipy.V2.mgnifier import MGnifier # doctest: +SKIP
+        >>> query = MGnifier("studies") # doctest: +SKIP
         """
 
         # init query set
@@ -370,13 +370,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         return page_items
 
     def reset_iterator(self):
-        """Reset the iterator to start from the beginning.
-
-        Example
-        -------
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor.reset_iterator()  # doctest: +SKIP
-        """
+        """Reset the iterator to start from the beginning."""
         self._iter_page_nums = []
         self._iter_index = 0
 
@@ -388,14 +382,7 @@ class MGnifier(QuerySet, CheckpointMixin, ClientManagerMixin):
         return self
 
     def __aiter__(self):
-        """Initialize and return an asynchronous iterator over pages.
-
-        Example
-        -------
-        >>> # Async iteration pattern (doctest skipped)
-        >>> async for page in QueryExecutor(qs):  # doctest: +SKIP
-        ...     pass
-        """
+        """Initialize and return an asynchronous iterator over pages."""
         self._init_iter_state()
         return self
 

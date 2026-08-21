@@ -287,10 +287,6 @@ class MGnifyList(MGnifier):
         -------
         MGnifyDetail
             A proxy for the child/detail for the given key
-
-        Examples
-        -------
-        sample = samples._single_detail(id="MGYS00001234")})
         """
 
         # get the child detail class e.g. SampleDetail for "samples" list resource
@@ -323,10 +319,6 @@ class MGnifyList(MGnifier):
         ----------
         key : int | str
             The identifier for the detail resource, or an integer index to look up the identifier from `.search_results.ids`.
-
-        Examples
-        -------
-        sample = await samples._asingle_detail({"accession": "MGYS00001234"})
         """
         detail_cls = self._detail_cls
         custom_id_param_key = detail_cls._id_label
@@ -678,10 +670,6 @@ class MGnifyDetail(MGnifier):
         -------
         MGnifyList
             A proxy for the next resource.
-
-        Examples
-        -------
-        samples = study.get_list("samples", fetch=False)
         """
 
         # get related MGnifyList class for the resource, e.g. Samples for "samples"
@@ -740,10 +728,6 @@ class MGnifyDetail(MGnifier):
         -------
         MGnifyList
             A proxy for the next resource.
-
-        Examples
-        -------
-        samples = await study.aget_list("samples", fetch=False)
         """
 
         logger.debug(

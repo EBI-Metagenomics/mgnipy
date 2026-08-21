@@ -60,12 +60,6 @@ class QueryExecutor:
         Optional[dict[int, list[dict]]]
             A dictionary containing the metadata from the specified page of results,
             or None if the page is not found.
-
-        Examples
-        --------
-        >>> # Fetch a single page (doctest skipped)
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor.page(1)  # doctest: +SKIP
         """
         self._set_counts()
 
@@ -99,14 +93,7 @@ class QueryExecutor:
         self,
         page_num: int,
     ) -> Optional[dict[int, list[dict]]]:
-        """Async fetch for a single page.
-
-        Example
-        -------
-        >>> import asyncio
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> asyncio.run(executor.apage(1))  # doctest: +SKIP
-        """
+        """Async fetch for a single page."""
         self._set_counts()
         if self.qs._is_in_results(page_num):
             logger.info(f"Page {page_num} already retrieved.")
@@ -261,14 +248,7 @@ class QueryExecutor:
             return response.parsed.to_dict()
 
     def _page_items(self, response: "mpy_Response") -> Optional[list[dict[str, Any]]]:
-        """Extract the 'items' from the API response.
-
-        Example
-        -------
-        >>> # Parse items from response dict
-        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
-        >>> executor._page_items({'items': [1,2,3]})  # doctest: +SKIP
-        """
+        """Extract the 'items' from the API response."""
         if response is None:
             logger.warning("No response received from API.")
             return None
