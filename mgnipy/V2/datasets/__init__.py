@@ -880,6 +880,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         filename: Optional[str] = None,
         overwrite: bool = False,
         hide_progress: bool = False,
+        httpx_client: Optional[Client] = None,
     ):
         """Download a file by its alias or URL.
 
@@ -949,7 +950,17 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             f"Starting download: alias={_alias} url={_url} dest={filepath} overwrite={overwrite} client={self.client}",
         )
 
-        with self.httpx_client.stream("GET", _url) as response:
+        if httpx_client:
+            _client = httpx_client
+        else:
+            _client = self.httpx_client
+
+        if _client.is_closed:
+            logger.debug("HTTPX client is closed, reinitializing")
+            self.renew_client()
+            _client = self.httpx_client
+
+        with _client.stream("GET", _url) as response:
             # http errors raise here
             response.raise_for_status()
             # for progress bar, get total size from headers if available
@@ -977,6 +988,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         filename: Optional[str] = None,
         overwrite: bool = False,
         hide_progress: bool = False,
+        httpx_aclient: Optional[httpx.AsyncClient] = None,
     ):
         """
         Asynchronously download a file from an alias or URL.
@@ -1046,11 +1058,21 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                 f"File already exists but overwrite is True, will overwrite: {filepath}"
             )
 
+        if httpx_aclient:
+            _client = httpx_aclient
+        else:
+            _client = self.async_httpx_client
+
+        if _client.is_closed:
+            logger.debug("HTTPX async client is closed, reinitializing")
+            self.renew_client()
+            _client = self.async_httpx_client
+
         # semaphore to limit concurrent downloads, can be adjusted in config
         async with self.semaphore:
             # If caller provided an async client, use it (don't re-enter context).
 
-            async with self.async_httpx_client.stream("GET", _url) as response:
+            async with _client.stream("GET", _url) as response:
                 response.raise_for_status()
                 total = int(response.headers.get("content-length", 0))
                 with tqdm_sync(
@@ -1100,11 +1122,11 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         logger.debug("Initializing client once for all downloads")
 
-        with (
-            init_httpx_client(self.config).get_httpx_client()
-            if self.httpx_client.is_closed
-            else self.httpx_client
-        ):
+        if self.httpx_client.is_closed:
+            logger.debug("HTTPX client is closed, reinitializing")
+            self.renew_client()
+
+        with self.httpx_client:
             aliases = list(self.url_dict.keys())
 
             for alias in tqdm_sync(
@@ -1120,6 +1142,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                         alias=alias,
                         hide_progress=hide_progress,
                         overwrite=overwrite,
+                        httpx_client=self.httpx_client,
                     )
                 except RuntimeError as re:
                     logger.error(
@@ -1173,11 +1196,11 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
 
         """
 
-        async with (
-            init_httpx_client(self.config).get_async_httpx_client()
-            if self.async_httpx_client.is_closed
-            else self.async_httpx_client
-        ):
+        if self.async_httpx_client.is_closed:
+            logger.debug("HTTPX async client is closed, reinitializing")
+            self.renew_client()
+
+        async with self.async_httpx_client:
             # create tasks for each download
             tasks = [
                 self.adownload(
@@ -1185,6 +1208,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     alias=a,
                     overwrite=overwrite,
                     hide_progress=hide_progress,
+                    httpx_aclient=self.async_httpx_client,
                 )
                 for a in self.url_dict
             ]
