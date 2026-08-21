@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.datasets.taxonomic module &#8212; mgnipy 0.2.0 documentation</title>
+    <title>mgnipy.V2.datasets.taxonomic module &#8212; mgnipy 0.2.1 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=06af8975"></script>
+    <script src="../_static/documentation_options.js?v=f16a97c0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.0 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -959,10 +959,6 @@ instance’s downloads list.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">downloads</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="s2">&quot;example.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://ex/x&quot;</span><span class="p">,</span> <span class="s2">&quot;file_type&quot;</span><span class="p">:</span> <span class="s2">&quot;txt&quot;</span><span class="p">}]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mag</span> <span class="o">=</span> <span class="n">MGazine</span><span class="p">(</span><span class="n">downloads</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">mag</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;boop&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-<span class="go">[&#39;alias&#39;, &#39;url&#39;, &#39;file_type&#39;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
-<span class="go">Index([&#39;boop&#39;], dtype=&#39;object&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2002,10 +1998,6 @@ instance’s downloads list.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">downloads</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="s2">&quot;example.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://ex/x&quot;</span><span class="p">,</span> <span class="s2">&quot;file_type&quot;</span><span class="p">:</span> <span class="s2">&quot;txt&quot;</span><span class="p">}]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mag</span> <span class="o">=</span> <span class="n">MGazine</span><span class="p">(</span><span class="n">downloads</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">mag</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;boop&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-<span class="go">[&#39;alias&#39;, &#39;url&#39;, &#39;file_type&#39;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
-<span class="go">Index([&#39;boop&#39;], dtype=&#39;object&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>

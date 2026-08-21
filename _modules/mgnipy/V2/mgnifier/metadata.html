@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.mgnifier.metadata &#8212; mgnipy 0.2.0 documentation</title>
+    <title>mgnipy.V2.mgnifier.metadata &#8212; mgnipy 0.2.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=06af8975"></script>
+    <script src="../../../../_static/documentation_options.js?v=f16a97c0"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -151,8 +151,8 @@
       
     
     
-    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.0 documentation - Home"/>
-    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.0 documentation - Home"/>`);</script>
+    <img src="../../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.1 documentation - Home"/>
+    <script>document.write(`<img src="../../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -857,12 +857,6 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            Summary including resource, URL, parameters, and endpoint info.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from mgnipy.V2.mgnifier import MGnifyMetadata  # doctest: +SKIP</span>
-<span class="sd">        &gt;&gt;&gt; metadata = MGnifyMetadata(&quot;studies&quot;)  # doctest: +SKIP</span>
-<span class="sd">        &gt;&gt;&gt; print(metadata)  # doctest: +SKIP</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">(</span>
@@ -1039,13 +1033,6 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
 <span class="sd">            Dictionary with the identifier parameter key and its value.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP</span>
-<span class="sd">        &gt;&gt;&gt; query = MGnifier(&quot;studies&quot;)  # doctest: +SKIP</span>
-<span class="sd">        &gt;&gt;&gt; query.get()  # doctest: +SKIP</span>
-<span class="sd">        &gt;&gt;&gt; param_dict = query._resolve_id_param(0)  # doctest: +SKIP</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">param_name</span><span class="p">:</span>

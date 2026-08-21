@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.proxies &#8212; mgnipy 0.2.0 documentation</title>
+    <title>mgnipy.V2.proxies &#8212; mgnipy 0.2.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=06af8975"></script>
+    <script src="../../../_static/documentation_options.js?v=f16a97c0"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -151,8 +151,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.0 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.0 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.1 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -652,10 +652,6 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        MGnifyDetail</span>
 <span class="sd">            A proxy for the child/detail for the given key</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        -------</span>
-<span class="sd">        sample = samples._single_detail(id=&quot;MGYS00001234&quot;)})</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># get the child detail class e.g. SampleDetail for &quot;samples&quot; list resource</span>
@@ -688,10 +684,6 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        key : int | str</span>
 <span class="sd">            The identifier for the detail resource, or an integer index to look up the identifier from `.search_results.ids`.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        -------</span>
-<span class="sd">        sample = await samples._asingle_detail({&quot;accession&quot;: &quot;MGYS00001234&quot;})</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">detail_cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detail_cls</span>
         <span class="n">custom_id_param_key</span> <span class="o">=</span> <span class="n">detail_cls</span><span class="o">.</span><span class="n">_id_label</span>
@@ -1057,10 +1049,6 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        MGnifyList</span>
 <span class="sd">            A proxy for the next resource.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        -------</span>
-<span class="sd">        samples = study.get_list(&quot;samples&quot;, fetch=False)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># get related MGnifyList class for the resource, e.g. Samples for &quot;samples&quot;</span>
@@ -1122,10 +1110,6 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        MGnifyList</span>
 <span class="sd">            A proxy for the next resource.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        -------</span>
-<span class="sd">        samples = await study.aget_list(&quot;samples&quot;, fetch=False)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>

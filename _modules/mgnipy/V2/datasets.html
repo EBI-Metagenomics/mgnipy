@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.datasets &#8212; mgnipy 0.2.0 documentation</title>
+    <title>mgnipy.V2.datasets &#8212; mgnipy 0.2.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=06af8975"></script>
+    <script src="../../../_static/documentation_options.js?v=f16a97c0"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -151,8 +151,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.0 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.0 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.1 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -1012,10 +1012,6 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; downloads = [{&quot;alias&quot;: &quot;example.txt&quot;, &quot;url&quot;: &quot;http://ex/x&quot;, &quot;file_type&quot;: &quot;txt&quot;}]</span>
 <span class="sd">        &gt;&gt;&gt; mag = MGazine(downloads)</span>
 <span class="sd">        &gt;&gt;&gt; df = mag.downloads_df(index=[&quot;boop&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; list(df.columns)</span>
-<span class="sd">        [&#39;alias&#39;, &#39;url&#39;, &#39;file_type&#39;]</span>
-<span class="sd">        &gt;&gt;&gt; df.index</span>
-<span class="sd">        Index([&#39;boop&#39;], dtype=&#39;object&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="p">,</span> <span class="o">**</span><span class="n">pd_kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">df</span></div>
@@ -1159,8 +1155,6 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; downloads = [{&quot;alias&quot;:&quot;x&quot;,&quot;url&quot;:&quot;http://ex/x&quot;,&quot;file_type&quot;:&quot;txt&quot;, &quot;download_group&quot;:&quot;blah&quot;, &quot;short_description&quot;:&quot;blah&quot;, &quot;pipeline_vers&quot;:4.1}]</span>
 <span class="sd">        &gt;&gt;&gt; mg = MGazine(downloads)</span>
 <span class="sd">        &gt;&gt;&gt; mg._prioritize_alias(alias=&#39;x&#39;, url=None)</span>
-<span class="sd">        (&#39;x&#39;, &#39;http://ex/x&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; mg._prioritize_alias(alias=None, url=&#39;http://ex/x&#39;)</span>
 <span class="sd">        (&#39;x&#39;, &#39;http://ex/x&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; mg._prioritize_alias(alias=None, url=&#39;http://ex/x&#39;)</span>
 <span class="sd">        (&#39;x&#39;, &#39;http://ex/x&#39;)</span>

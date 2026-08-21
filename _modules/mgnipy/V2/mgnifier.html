@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mgnipy.V2.mgnifier &#8212; mgnipy 0.2.0 documentation</title>
+    <title>mgnipy.V2.mgnifier &#8212; mgnipy 0.2.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=06af8975"></script>
+    <script src="../../../_static/documentation_options.js?v=f16a97c0"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -151,8 +151,8 @@
       
     
     
-    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.0 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.0 documentation - Home"/>`);</script>
+    <img src="../../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.1 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -446,8 +446,8 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from mgnipy.V2.mgnifier import MGnifier</span>
-<span class="sd">        &gt;&gt;&gt; query = MGnifier(&quot;studies&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; from mgnipy.V2.mgnifier import MGnifier # doctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; query = MGnifier(&quot;studies&quot;) # doctest: +SKIP</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># init query set</span>
@@ -743,13 +743,7 @@ document.write(`
 <div class="viewcode-block" id="MGnifier.reset_iterator">
 <a class="viewcode-back" href="../../../reference/mgnipy.V2.mgnifier.html#mgnipy.MGnifier.reset_iterator">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the iterator to start from the beginning.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; executor = QueryExecutor(qs)  # doctest: +SKIP</span>
-<span class="sd">        &gt;&gt;&gt; executor.reset_iterator()  # doctest: +SKIP</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the iterator to start from the beginning.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iter_page_nums</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iter_index</span> <span class="o">=</span> <span class="mi">0</span></div>
 
@@ -762,14 +756,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__aiter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize and return an asynchronous iterator over pages.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; # Async iteration pattern (doctest skipped)</span>
-<span class="sd">        &gt;&gt;&gt; async for page in QueryExecutor(qs):  # doctest: +SKIP</span>
-<span class="sd">        ...     pass</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize and return an asynchronous iterator over pages.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_iter_state</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 

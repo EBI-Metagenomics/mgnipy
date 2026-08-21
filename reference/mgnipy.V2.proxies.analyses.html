@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.proxies.analyses module &#8212; mgnipy 0.2.0 documentation</title>
+    <title>mgnipy.V2.proxies.analyses module &#8212; mgnipy 0.2.1 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=06af8975"></script>
+    <script src="../_static/documentation_options.js?v=f16a97c0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.0 documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -1332,11 +1332,6 @@ retrieving all pages.</p>
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.Analyses.reset_iterator">
 <span class="sig-name descname"><span class="pre">reset_iterator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.Analyses.reset_iterator" title="Link to this definition">#</a></dt>
 <dd><p>Reset the iterator to start from the beginning.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">executor</span> <span class="o">=</span> <span class="n">QueryExecutor</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">executor</span><span class="o">.</span><span class="n">reset_iterator</span><span class="p">()</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py property">
@@ -1488,8 +1483,6 @@ next_page = await mg.aget()  # doctest: +SKIP</p>
 <dd class="field-odd"><p><a class="reference internal" href="mgnipy.V2.proxies.html#mgnipy.V2.proxies.MGnifyList" title="mgnipy.V2.proxies.MGnifyList">MGnifyList</a></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>samples = await study.aget_list(“samples”, fetch=False)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1850,8 +1843,6 @@ such as “samples” for a study detail, or “analyses” for a run detail.</p
 <dd class="field-odd"><p><a class="reference internal" href="mgnipy.V2.proxies.html#mgnipy.V2.proxies.MGnifyList" title="mgnipy.V2.proxies.MGnifyList">MGnifyList</a></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>samples = study.get_list(“samples”, fetch=False)</p>
 </dd></dl>
 
 <dl class="py property">
@@ -2087,11 +2078,6 @@ retrieving all pages.</p>
 <dt class="sig sig-object py" id="mgnipy.V2.proxies.analyses.AnalysisDetail.reset_iterator">
 <span class="sig-name descname"><span class="pre">reset_iterator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.V2.proxies.analyses.AnalysisDetail.reset_iterator" title="Link to this definition">#</a></dt>
 <dd><p>Reset the iterator to start from the beginning.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">executor</span> <span class="o">=</span> <span class="n">QueryExecutor</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">executor</span><span class="o">.</span><span class="n">reset_iterator</span><span class="p">()</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py property">
