@@ -11,4 +11,4 @@ sphinx-apidoc --force \
     -d 1 -o reference ../mgnipy
 
 # build the docs
-sphinx-build --keep-going --fresh-env --builder html ./ ./_build/
+sphinx-build -vvv --show-traceback --keep-going --fresh-env --builder html ./ ./_build/
