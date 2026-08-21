@@ -1,14 +1,15 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response
 from ... import errors
-
+from ...client import AuthenticatedClient, Client
 from ...models.genome_catalogue_detail import GenomeCatalogueDetail
+from ...types import Response
 
 
 def _get_kwargs(
@@ -53,7 +54,7 @@ def _build_response(
 def sync_detailed(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
 ) -> Response[GenomeCatalogueDetail]:
     """Get genome catalogue by ID
 
@@ -82,7 +83,7 @@ def sync_detailed(
 def sync(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
 ) -> GenomeCatalogueDetail | None:
     """Get genome catalogue by ID
 
@@ -106,7 +107,7 @@ def sync(
 async def asyncio_detailed(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
 ) -> Response[GenomeCatalogueDetail]:
     """Get genome catalogue by ID
 
@@ -133,7 +134,7 @@ async def asyncio_detailed(
 async def asyncio(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
 ) -> GenomeCatalogueDetail | None:
     """Get genome catalogue by ID
 

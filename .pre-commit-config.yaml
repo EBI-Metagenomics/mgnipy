@@ -4,35 +4,38 @@ repos:
     rev: 0.9.26
     hooks:
       - id: uv-lock # update lock
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.1.0"
-    hooks:
-      - id: prettier
-        files: '^(mgnipy|tests)/.*\.py$'
-        additional_dependencies:
-          - prettier@3.6.2
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        files: '^(mgnipy|tests)/.*\.py$'
+        files: ^(mgnipy|tests)/
+        exclude: ^docs/_build/
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
-        files: '^(mgnipy|tests)/.*\.py$'
-        types: [python]
+        files: ^(mgnipy|tests)/
+        exclude: ^docs/_build/
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.7
     hooks:
-      - id: ruff # Fixes issues (including unused imports)
-        args: ["--fix", "--extend-ignore", "E402"]
-        files: '^(mgnipy|tests)/.*\.py$'
-        types: [python]
+      - id: ruff-check
+        args: ["--fix"]
+        files: ^(mgnipy|tests)/
+      # - id: ruff-format
+      #   files: ^(mgnipy|tests)/
 
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
       - id: black
-        files: '^(mgnipy|tests)/.*\.py$'
+        files: ^(mgnipy|tests)/
         types: [python]
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        files: ^(docs|mgnipy|tests)/.*\.(md|json|yaml|yml|ipynb)$
+        additional_dependencies:
+          - prettier@3.6.2

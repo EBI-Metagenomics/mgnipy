@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: .venv (3.11.7.final.0)
 #     language: python
 #     name: python3
 # ---
@@ -30,13 +30,12 @@
 #     </summary>
 #     <h1></h1>
 #
-#     - `mgnipy.MGnipyConfig` takes care of obtaining an authentication token from the [token_obtain_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding) endpoint of the MGnify API using your username/password
-#     - The auth token is verified using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint and, if valid, refreshed using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding) when needed.
-#         - The high-level methods within `mgnipy.MGnipyConfig` involved are `obtain_auth_token`, `verify_auth_token`, `refresh_auth_token`, and `resolve_auth_token`.
+#     - `mgnipy.MGnipyConfig` takes care of obtaining a sliding token (JWT) from the [token_obtain_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding) endpoint of the MGnify API using your username/password
+#     - Sliding JWT includes an Access token, shorter expiry, and Refresh token, longer expiry. 
+#     - The Access token is checked for validity using the [token_verify](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_verify) endpoint 
+#     - If the Access token is expired but the Refresh token has not then a new Access token can be obtained using [token_refresh_sliding](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_refresh_sliding)
+#     - The high-level methods within `mgnipy.MGnipyConfig` involved are `obtain_auth_token`, `verify_auth_token`, `refresh_auth_token`, and `resolve_auth_token`.
 #     - The resolved token is stored in `MGnipyConfig.auth_token` for the session and used for authenticated API requests.
-#     - By default the token is cached on disk under a platform-appropriate cache dir (via `platformdirs`) in a file named auth_<hash>.json.
-#         - You can disable disk caching by setting `cache_dir=None` on MGnipyConfig.
-#     - On success `resolve_auth_token()` will confirm authentication, it prints `"Authenticated successfully."`
 #
 #     <h1></h1>
 #     </details>
@@ -68,11 +67,13 @@ MG = MGnipy()  # will automatically look for .env file and load credentials if f
 # Or if you prefer an env file name with a different filename then .env
 # 1. you can manually load your given file by passing its path to `dotenv.load_dotenv`
 # 2. and then use `os.getenv` to get out your MGnify user and pass variables
-# 3. initiate `mgnipy.MGnipy` or resource-specific `MGnifier` instances (e.g., `mgnipy.V2.proxies`) with those login credentials like above
+# 3. initiate `mgnipy.MGnipy` or resource-specific `MGnifier` instances (e.g., `mgnipy.proxies`) with those login credentials like above
 
 # %%
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
+
 from mgnipy import MGnipyConfig
 
 # load env variables from specific filename
@@ -86,7 +87,8 @@ config = MGnipyConfig(
 # pass config to MGnipy
 MG = MGnipy(config=config)
 # or directly to proxy
-from mgnipy.V2.proxies import Biomes
+from mgnipy.proxies import Biomes
+
 biomes = Biomes(config=config)
 
 # %% [markdown]

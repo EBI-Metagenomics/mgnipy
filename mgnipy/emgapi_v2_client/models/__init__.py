@@ -1,5 +1,7 @@
 """Contains all the data models used in inputs/outputs"""
 
+from __future__ import annotations
+
 from .additional_contained_genome_schema import AdditionalContainedGenomeSchema
 from .analysed_run import AnalysedRun
 from .analysed_run_detail import AnalysedRunDetail
@@ -29,14 +31,17 @@ from .genome_assembly_link_schema import GenomeAssemblyLinkSchema
 from .genome_catalogue_base import GenomeCatalogueBase
 from .genome_catalogue_base_catalogue_type import GenomeCatalogueBaseCatalogueType
 from .genome_catalogue_base_other_stats_type_0 import GenomeCatalogueBaseOtherStatsType0
+from .genome_catalogue_base_status import GenomeCatalogueBaseStatus
 from .genome_catalogue_detail import GenomeCatalogueDetail
 from .genome_catalogue_detail_catalogue_type import GenomeCatalogueDetailCatalogueType
 from .genome_catalogue_detail_other_stats_type_0 import (
     GenomeCatalogueDetailOtherStatsType0,
 )
+from .genome_catalogue_detail_status import GenomeCatalogueDetailStatus
 from .genome_catalogue_list import GenomeCatalogueList
 from .genome_catalogue_list_catalogue_type import GenomeCatalogueListCatalogueType
 from .genome_catalogue_list_other_stats_type_0 import GenomeCatalogueListOtherStatsType0
+from .genome_catalogue_list_status import GenomeCatalogueListStatus
 from .genome_detail import GenomeDetail
 from .genome_filters import GenomeFilters
 from .genome_fragment_search_out import GenomeFragmentSearchOut
@@ -94,9 +99,11 @@ from .m_gnify_sample_detail_metadata import MGnifySampleDetailMetadata
 from .m_gnify_sample_with_metadata import MGnifySampleWithMetadata
 from .m_gnify_sample_with_metadata_metadata import MGnifySampleWithMetadataMetadata
 from .m_gnify_study import MGnifyStudy
+from .m_gnify_study_accession_lookup import MGnifyStudyAccessionLookup
 from .m_gnify_study_detail import MGnifyStudyDetail
 from .m_gnify_study_detail_metadata import MGnifyStudyDetailMetadata
 from .m_gnify_study_download_file import MGnifyStudyDownloadFile
+from .m_gnify_study_metadata import MGnifyStudyMetadata
 from .ninja_pagination_response_schema_additional_contained_genome_schema import (
     NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema,
 )
@@ -209,12 +216,15 @@ __all__ = (
     "GenomeCatalogueBase",
     "GenomeCatalogueBaseCatalogueType",
     "GenomeCatalogueBaseOtherStatsType0",
+    "GenomeCatalogueBaseStatus",
     "GenomeCatalogueDetail",
     "GenomeCatalogueDetailCatalogueType",
     "GenomeCatalogueDetailOtherStatsType0",
+    "GenomeCatalogueDetailStatus",
     "GenomeCatalogueList",
     "GenomeCatalogueListCatalogueType",
     "GenomeCatalogueListOtherStatsType0",
+    "GenomeCatalogueListStatus",
     "GenomeDetail",
     "GenomeFilters",
     "GenomeFragmentSearchOut",
@@ -256,9 +266,11 @@ __all__ = (
     "MGnifySampleWithMetadata",
     "MGnifySampleWithMetadataMetadata",
     "MGnifyStudy",
+    "MGnifyStudyAccessionLookup",
     "MGnifyStudyDetail",
     "MGnifyStudyDetailMetadata",
     "MGnifyStudyDownloadFile",
+    "MGnifyStudyMetadata",
     "NinjaPaginationResponseSchemaAdditionalContainedGenomeSchema",
     "NinjaPaginationResponseSchemaAnalysedRun",
     "NinjaPaginationResponseSchemaAssembly",

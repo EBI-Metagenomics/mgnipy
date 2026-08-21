@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
 
 
@@ -12,7 +14,7 @@ def test_supported_endpoints_list_excludes_private_members():
         "analysis" in resources
     ), "Expected analysis to be exposed as a public endpoint."
     assert (
-        "_downloads" not in resources
+        "_custom_endpoint" not in resources
     ), "Private helper endpoints should not appear in the public list."
 
 

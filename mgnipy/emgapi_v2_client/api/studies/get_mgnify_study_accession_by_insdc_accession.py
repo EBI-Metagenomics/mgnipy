@@ -1,23 +1,26 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 
-from mgnipy.emgapi_v2_client import errors
-from mgnipy.emgapi_v2_client.client import (
-    AuthenticatedClient,
-    Client,
-)
-from mgnipy.emgapi_v2_client.types import Response
+from ... import errors
+from ...client import AuthenticatedClient, Client
+from ...models.m_gnify_study_accession_lookup import MGnifyStudyAccessionLookup
+from ...types import Response
 
 
 def _get_kwargs(
-    url: str,
+    accession: str,
 ) -> dict[str, Any]:
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": url,
+        "url": "/metagenomics/api/v2/studies/insdc/{accession}".format(
+            accession=quote(str(accession), safe=""),
+        ),
     }
 
     return _kwargs
@@ -25,9 +28,11 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> bytes | None:
-    if response.is_success:
-        return response.content
+) -> MGnifyStudyAccessionLookup | None:
+    if response.status_code == 200:
+        response_200 = MGnifyStudyAccessionLookup.from_dict(response.json())
+
+        return response_200
 
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -37,7 +42,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[bytes]:
+) -> Response[MGnifyStudyAccessionLookup]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -47,30 +52,27 @@ def _build_response(
 
 
 def sync_detailed(
-    url: str,
+    accession: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[bytes]:
-    """
-    Download raw content from a custom absolute URL.
+) -> Response[MGnifyStudyAccessionLookup]:
+    """Find a MGnify study by its corresponding INSDC study/project accession
 
-    Parameters
-    ----------
-    url : str
-        Fully-qualified URL (e.g. https://ftp.ebi.ac.uk/...fasta.gz).
+     Returns the MGnify study accession corresponding to an INSDC study/project accession.
 
-    Returns
-    -------
-        Response[bytes]
+    Args:
+        accession (str):
 
-    Raises
-    ------
+    Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[MGnifyStudyAccessionLookup]
     """
 
     kwargs = _get_kwargs(
-        url=url,
+        accession=accession,
     )
 
     response = client.get_httpx_client().request(
@@ -81,61 +83,53 @@ def sync_detailed(
 
 
 def sync(
-    url: str,
+    accession: str,
     *,
     client: AuthenticatedClient | Client,
-) -> bytes | None:
-    """
-    Custom Endpoint
+) -> MGnifyStudyAccessionLookup | None:
+    """Find a MGnify study by its corresponding INSDC study/project accession
 
-    Download raw content from a custom absolute URL.
+     Returns the MGnify study accession corresponding to an INSDC study/project accession.
 
-    Parameters
-    ----------
-    url : str
-        Fully-qualified URL (e.g. https://ftp.ebi.ac.uk/...fasta.gz).
+    Args:
+        accession (str):
 
-    Returns
-    -------
-        Response[bytes]
-
-    Raises
-    ------
+    Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        MGnifyStudyAccessionLookup
     """
 
     return sync_detailed(
-        url=url,
+        accession=accession,
         client=client,
     ).parsed
 
 
 async def asyncio_detailed(
-    url: str,
+    accession: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[bytes]:
-    """
-    Download raw content asynchronously from a custom absolute URL.
+) -> Response[MGnifyStudyAccessionLookup]:
+    """Find a MGnify study by its corresponding INSDC study/project accession
 
-    Parameters
-    ----------
-    url : str
-        Fully-qualified URL (e.g. https://ftp.ebi.ac.uk/...fasta.gz).
+     Returns the MGnify study accession corresponding to an INSDC study/project accession.
 
-    Returns
-    -------
-        Response[bytes]
+    Args:
+        accession (str):
 
-    Raises
-    ------
+    Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[MGnifyStudyAccessionLookup]
     """
 
     kwargs = _get_kwargs(
-        url=url,
+        accession=accession,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -144,31 +138,28 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-    url: str,
+    accession: str,
     *,
     client: AuthenticatedClient | Client,
-) -> bytes | None:
-    """
-    Download raw content asynchronously from a custom absolute URL.
+) -> MGnifyStudyAccessionLookup | None:
+    """Find a MGnify study by its corresponding INSDC study/project accession
 
-    Parameters
-    ----------
-    url : str
-        Fully-qualified URL (e.g. https://ftp.ebi.ac.uk/...fasta.gz).
+     Returns the MGnify study accession corresponding to an INSDC study/project accession.
 
-    Returns
-    -------
-        Response[bytes]
+    Args:
+        accession (str):
 
-    Raises
-    ------
+    Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        MGnifyStudyAccessionLookup
     """
 
     return (
         await asyncio_detailed(
-            url=url,
+            accession=accession,
             client=client,
         )
     ).parsed

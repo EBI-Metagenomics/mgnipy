@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
+from dateutil.parser import isoparse
 
 from ..models.genome_type import GenomeType
-from dateutil.parser import isoparse
-from typing import cast
-import datetime
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -43,7 +43,7 @@ class GenomeList:
         taxon_lineage (str):
         updated_at (datetime.datetime):
         geographic_origin (None | str):
-        num_genomes_total (int | Unset):
+        num_genomes_total (int | None | Unset):
         geographic_range (list[str] | None | Unset):
         biome (Biome | None | Unset):
     """
@@ -67,7 +67,7 @@ class GenomeList:
     taxon_lineage: str
     updated_at: datetime.datetime
     geographic_origin: None | str
-    num_genomes_total: int | Unset = UNSET
+    num_genomes_total: int | None | Unset = UNSET
     geographic_range: list[str] | None | Unset = UNSET
     biome: Biome | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -121,7 +121,11 @@ class GenomeList:
         geographic_origin: None | str
         geographic_origin = self.geographic_origin
 
-        num_genomes_total = self.num_genomes_total
+        num_genomes_total: int | None | Unset
+        if isinstance(self.num_genomes_total, Unset):
+            num_genomes_total = UNSET
+        else:
+            num_genomes_total = self.num_genomes_total
 
         geographic_range: list[str] | None | Unset
         if isinstance(self.geographic_range, Unset):
@@ -269,7 +273,14 @@ class GenomeList:
 
         geographic_origin = _parse_geographic_origin(d.pop("geographic_origin"))
 
-        num_genomes_total = d.pop("num_genomes_total", UNSET)
+        def _parse_num_genomes_total(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        num_genomes_total = _parse_num_genomes_total(d.pop("num_genomes_total", UNSET))
 
         def _parse_geographic_range(data: object) -> list[str] | None | Unset:
             if data is None:

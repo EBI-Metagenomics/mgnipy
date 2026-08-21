@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, ClassVar, Literal, Optional
 
 import pandas as pd
@@ -20,15 +22,36 @@ class Analyses(MGnifyList):
         super().__init__(params=params, config=config, **kwargs)
 
     def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads, **pd_kwargs)
+        return pd.DataFrame(self.downloads, **pd_kwargs)
+
+    @property
+    def downloads(self) -> list[dict[str, Any]] | None:
+        """
+        Get a list of all download links from the detailed metadata.
+
+        Returns
+        -------
+        list[dict[str, Any]] or None
+            A list of dictionaries containing download information, or None if no details are available.
+        """
+        if self.mgnify_details:
+            return super().downloads
+
+        return self.search_results.downloads
 
     @property
     def datasets(self):
         """A property that returns an MGazine instance containing the downloads information for the study."""
+        if self.mgnify_details:
+            return MGazine(
+                downloads=self.downloads,
+                config=self.config,
+                mgnify_analyses=self.metadata.to_list(),
+            )
         return MGazine(
-            downloads=self.details_downloads,
+            downloads=self.downloads,
             config=self.config,
-            analyses_details=self.details_results,
+            mgnify_analyses=self.search_results.to_list(),
         )
 
 
@@ -57,5 +80,5 @@ class AnalysisDetail(MGnifyDetail):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
-            analyses_details=self._results.get(1, None),
+            mgnify_analyses=self._results.get(1, None),
         )

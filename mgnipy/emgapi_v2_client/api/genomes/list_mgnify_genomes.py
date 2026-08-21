@@ -1,17 +1,17 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
+from ...client import AuthenticatedClient, Client
 from ...models.list_mgnify_genomes_order_type_0 import ListMgnifyGenomesOrderType0
 from ...models.ninja_pagination_response_schema_genome_list import (
     NinjaPaginationResponseSchemaGenomeList,
 )
-from ...types import Unset
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(

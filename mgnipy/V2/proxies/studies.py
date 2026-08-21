@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, ClassVar, Literal, Optional
 
 import pandas as pd
@@ -7,7 +9,6 @@ from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
 class Studies(MGnifyList):
-
     RESOURCE: ClassVar[Literal["studies"]] = "studies"
 
     def __init__(
@@ -21,15 +22,15 @@ class Studies(MGnifyList):
         super().__init__(params=params, config=config, **kwargs)
 
     def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads, **pd_kwargs)
+        return pd.DataFrame(self.downloads, **pd_kwargs)
 
     @property
     def datasets(self):
         """A property that returns an MGazine instance containing the downloads information for the study."""
         return MGazine(
-            downloads=self.details_downloads,
+            downloads=self.downloads,
             config=self.config,
-            studies_details=self.details_results,
+            mgnify_studies=self.metadata.to_list(),
         )
 
 
@@ -57,12 +58,11 @@ class StudyDetail(MGnifyDetail):
         return MGazine(
             downloads=self.downloads,
             config=self.config,
-            studies_details=self._results.get(1, None),
+            mgnify_studies=self._results.get(1, None),
         )
 
 
 class PrivateStudies(MGnifyList):
-
     RESOURCE: ClassVar[Literal["private_studies"]] = "private_studies"
 
     def __init__(
@@ -76,13 +76,13 @@ class PrivateStudies(MGnifyList):
         super().__init__(params=params, config=config, **kwargs)
 
     def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
-        return pd.DataFrame(self.details_downloads, **pd_kwargs)
+        return pd.DataFrame(self.downloads, **pd_kwargs)
 
     @property
     def datasets(self):
         """A property that returns an MGazine instance containing the downloads information for the study."""
         return MGazine(
-            downloads=self.details_downloads,
+            downloads=self.downloads,
             config=self.config,
-            studies_details=self.details_results,
+            mgnify_studies=self.metadata.to_list(),
         )

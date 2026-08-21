@@ -1,14 +1,15 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response
 from ... import errors
-
+from ...client import AuthenticatedClient, Client
 from ...models.schema import Schema
 from ...models.token_verify_input_schema import TokenVerifyInputSchema
+from ...types import Response
 
 
 def _get_kwargs(

@@ -1,0 +1,288 @@
+from __future__ import annotations
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+from typing import TYPE_CHECKING, Any, Optional
+
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy._shared_helpers.validators import validate_status_code
+
+if TYPE_CHECKING:
+    from mgnipy.emgapi_v2_client import AuthenticatedClient, Client
+    from mgnipy.emgapi_v2_client.types import Response as mpy_Response
+    from mgnipy.V2.mgnifier.query_set import QuerySet
+
+
+class QueryExecutor:
+    """
+    Responsible for executing the queries defined in a `QuerySet`, handling pagination, concurrency limits, and result caching.
+
+    This class provides both synchronous and asynchronous methods to retrieve metadata pages from the MGnify API, with built-in support for concurrency control to protect the server. It also tracks successful page retrievals and allows for resuming or continuing iterations based on previously retrieved pages.
+
+    The QueryExecutor is designed to work closely with a QuerySet, using its query definitions and caching mechanisms to efficiently retrieve and store results. It includes helper methods for initializing API clients, parsing responses, and managing iteration state.
+    """
+
+    def __init__(
+        self,
+        query_set: "QuerySet",
+        client: Optional[Client | AuthenticatedClient] = None,
+    ):
+        self.qs: "QuerySet" = query_set
+        self._endpoint_str: str = self.qs.emgapi_handler.endpoint_module.__name__.split(
+            "."
+        )[-1]
+
+        self.client = client or init_httpx_client(self.qs.config)
+
+    def __getattr__(self, name: str):
+        if name == "httpx_client":
+            return self.client.get_httpx_client()
+        if name == "httpx_aclient":
+            return self.client.get_async_httpx_client()
+        if name == "api_version":
+            print(self.config.api_version)
+
+    def request_page(self, page_num: int) -> Optional[dict[int, list[dict]]]:
+        """
+        Retrieve a specific page of metadata for the current resource and parameters.
+        This method allows the user to retrieve metadata one page at a time,
+        which can be useful for previewing data or for manual pagination control.
+
+        Parameters
+        ----------
+        page_num : int
+            The page number to retrieve (1-based index).
+
+        Returns
+        -------
+        Optional[dict[int, list[dict]]]
+            A dictionary containing the metadata from the specified page of results,
+            or None if the page is not found.
+
+        Examples
+        --------
+        >>> # Fetch a single page (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor.page(1)  # doctest: +SKIP
+        """
+        self._set_counts()
+
+        # check if alrady in results first
+        if self.qs._is_in_results(page_num):
+            logger.debug(f"Page {page_num} already retrieved.")
+            return self.qs._results.get(page_num, None)
+
+        logger.info(f"Page {page_num} not in results")
+
+        if self._query_setups(page_num) is None:
+            logger.error(
+                f"Page {page_num} is not a valid request number for the current query setup: {self._query_setups()}."
+            )
+            return []
+
+        # otherwise get page
+        # getting params from qs
+        params = self._query_setups(page_num).get("params", None)
+        logger.info(f"Fetching request num {page_num} with params: {params}")
+        response = self._single_request(
+            params=params,
+        )
+        # get out items
+        page_items = self._page_items(response)
+        # add to results
+        self.qs._results.update({page_num: page_items})
+        return page_items
+
+    async def arequest_page(
+        self,
+        page_num: int,
+    ) -> Optional[dict[int, list[dict]]]:
+        """Async fetch for a single page.
+
+        Example
+        -------
+        >>> import asyncio
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> asyncio.run(executor.apage(1))  # doctest: +SKIP
+        """
+        self._set_counts()
+        if self.qs._is_in_results(page_num):
+            logger.info(f"Page {page_num} already retrieved.")
+            return self.qs._results.get(page_num, None)
+
+        logger.info(f"Page {page_num} not in results")
+
+        if self._query_setups(page_num) is None:
+            logger.error(
+                f"Page {page_num} is not a valid request number for the current query setup: {self._query_setups()}."
+            )
+            return []
+
+        params = self._query_setups(page_num).get("params", None)
+        logger.info(f"Fetching page {page_num} with params={params}")
+        response = await self._asingle_request(params=params)
+        page_items = self._page_items(response)
+        self.qs._results.update({page_num: page_items})
+        return page_items
+
+    def _set_counts(self):
+        """
+        Helper method to set the count and num_requests attributes
+        based on the current parameters and endpoint.
+
+        Example
+        -------
+        >>> # Populate qs.count and qs.num_requests (doctest skipped)
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor._set_counts()  # doctest: +SKIP
+        """
+        if self.qs.count is not None and self.qs.num_requests is not None:
+            logger.debug(
+                f"Using cached count and num_requests vals: {self.qs.count}, {self.qs.num_requests}"
+            )
+        else:
+            self.qs.count = self.qs.emgapi_handler.get_num_items(params=self.qs.params)
+            self.qs.num_requests = self.qs.emgapi_handler.get_num_pages(
+                self.qs.count, page_size=self.qs.params.get("page_size", None)
+            )
+            logger.debug(
+                f"Computed count and num_requests: {self.qs.count}, {self.qs.num_requests}"
+            )
+
+        # also init results dict if not already for tracking pages results
+        if self.qs._results is None:
+            self.qs._results = {}
+
+    def _single_request(
+        self,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> Optional[dict]:
+        """
+        Retrieve a single get using the synchronous API client.
+        Handles pagination and not.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        params : dict, optional
+            Parameters for the API call.
+
+        Returns
+        -------
+        dict or None
+            Parsed response from the API, or None if the request failed.
+        """
+        # prep params
+        request_params = {**(params or self.qs.params), **kwargs}
+        # request
+        response = self.qs.endpoint_module.sync_detailed(
+            client=self.client,
+            **request_params,
+        )
+        return self._parse_response(response)
+
+    async def _asingle_request(
+        self,
+        params: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> Optional[dict]:
+        """
+        Retrieve a single get asynchronously using the asynchronous API client.
+
+        Parameters
+        ----------
+        client : Client
+            MGnify API client instance.
+        params : dict, optional
+            Parameters for the API call.
+        **kwargs
+            Additional keyword arguments for the API call.
+
+        Returns
+        -------
+        dict or None
+            Parsed response from the API, or None if the request failed.
+        """
+        # prep params
+        request_params = {**(params or self.qs.params), **kwargs}
+        # request
+        response = await self.qs.endpoint_module.asyncio_detailed(
+            client=self.client,
+            **request_params,
+        )
+
+        return self._parse_response(response)
+
+    def _query_setups(
+        self, request_num: Optional[int] = None, **httpx_kwargs
+    ) -> dict[dict[str, Any]]:
+        """
+        A helper method to get the query parameters for a given request number (page).
+
+        Parameters
+        ----------
+        request_num : int, optional
+            The request number (page) to retrieve. If None, returns the full query setup.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the query parameters for the specified request number, or the full query setup if request_num is None.
+        """
+        if request_num is None:
+            return self.qs.build_queries(**httpx_kwargs)
+        return self.qs.build_queries(**httpx_kwargs).get(request_num, None)
+
+    def _parse_response(self, response: mpy_Response) -> Optional[Any]:
+        """
+        Parse the response from the MGnify API, validating the status code and returning the parsed content.
+        """
+        logger.info(f"Response status code: {response.status_code}")
+
+        if not validate_status_code(
+            response,
+            logger=logger,
+            db="MGnify",
+            acc=getattr(self.qs, "identifier", ""),
+            raise_error=False,
+        ):
+            logging.warning(
+                f"Response validation failed for {self._endpoint_str} endpoint. Status code: {response.status_code}"
+            )
+            return None
+
+        if isinstance(response.parsed, (bytes, bytearray)):
+            return bytes(response.parsed)
+        else:
+            return response.parsed.to_dict()
+
+    def _page_items(self, response: "mpy_Response") -> Optional[list[dict[str, Any]]]:
+        """Extract the 'items' from the API response.
+
+        Example
+        -------
+        >>> # Parse items from response dict
+        >>> executor = QueryExecutor(qs)  # doctest: +SKIP
+        >>> executor._page_items({'items': [1,2,3]})  # doctest: +SKIP
+        """
+        if response is None:
+            logger.warning("No response received from API.")
+            return None
+
+        if isinstance(response, (bytes, bytearray)):
+            return bytes(response)
+
+        if self.qs.emgapi_handler.is_list_endpoint:
+            return response.get("items")
+        else:
+            logger.debug(
+                "Endpoint is not a list endpoint, returning full response as items."
+            )
+            try:
+                return response["items"]  # only because of biomes -_-
+            except Exception:
+                return [response]

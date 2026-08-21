@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import ssl
 from typing import Any
 
-from attrs import define, field, evolve
+from attrs import define, evolve, field
 import httpx
 
 

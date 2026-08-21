@@ -6,295 +6,61 @@ import io
 import json
 import logging
 
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+
 logger = logging.getLogger(__name__)
+from http.client import IncompleteRead
+from pathlib import Path
+from typing import Any, Generator, Literal, Optional
 import webbrowser
 import zlib
-from http.client import IncompleteRead
-from itertools import chain
-from pathlib import Path
-from typing import Any, Callable, Generator, Literal, Optional
 
+from bigtree import Tree
 import httpx
 import ijson
 import pandas as pd
 import polars as pl
-from bigtree import Tree
 from pydantic import HttpUrl
 from skbio.io import read
 
-from mgnipy._models.config import MGnipyConfig
-from mgnipy._shared_helpers.biosamples_helper import (
-    get_biosample_metadata_from_acc,
-    aget_biosample_metadata_from_acc,
-    aget_all_biosample_metadata_from_acc,
-    get_all_biosample_metadata_from_acc,
-)
 from mgnipy._shared_helpers.writers import atomic_write_bytes, atomic_write_json
 
 
-class ResultsHandler:
-
-    def __init__(self, data: Optional[chain[dict[str, Any]]] = None):
-        logger.debug("Initializing ResultsHandler")
-        self._data = data
-
-    @property
-    def data(self) -> chain[dict[str, Any]]:
-        """
-        results based on the current resource.
-        """
-        if self._data is None:
-            return getattr(self, "records", []) or []
-        return self._data
-
-    # helpers
-    def _df_expand_nested(
-        self, df: pd.DataFrame, cols: list[str] = None
-    ) -> pd.DataFrame:
-        """
-        Expand nested structures in the DataFrame into separate columns.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            The DataFrame to expand.
-        cols : list of str
-            List of column names to expand.
-
-        Returns
-        -------
-        pd.DataFrame
-            The expanded DataFrame.
-        """
-
-        cols = cols or [
-            "metadata",
-            "sample",
-            "study",
-            "biome",
-            "run",
-            "assembly",
-            "read_run",
-        ]
-
-        new_df = df.copy()
-        for c in cols:
-            if c in new_df.columns:
-                # expand the nested dict in column c into separate columns
-                attr_df = pd.json_normalize(new_df[c])
-                # rename the new columns to include the original column name as a prefix
-                attr_df.columns = [f"{c}__{subcol}" for subcol in attr_df.columns]
-                # drop c and concat new cols
-                new_df = pd.concat([new_df.drop(columns=[c]), attr_df], axis=1)
-        return new_df
-
-    # viewing the retrieved
-    def to_df(
-        self,
-        data: Optional[dict[int, list[dict]]] = None,
-        expand_nested_dicts: Optional[list[str] | bool] = False,
-        rename_columns: Optional[dict[str, str]] = None,
-        **kwargs,
-    ) -> pd.DataFrame:
-        """
-        Convert the current or provided metadata to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list of dict, optional
-            List of records to convert. If ``None``, uses :pyattr:`data`.
-        expand_nested_dicts : list of str or bool, optional
-            List of keys to expand into separate columns, or ``True`` to
-            expand defaults.
-        rename_columns : dict of str to str, optional
-            A dictionary mapping old column names to new column names.
-        **kwargs
-            Additional keyword arguments passed to ``pd.DataFrame``.
-
-        Returns
-        -------
-        pd.DataFrame or None
-            DataFrame containing the metadata or ``None`` when no data is
-            available.
-
-        Examples
-        --------
-        >>> handler = ResultsHandler(data=[{"a": 1, "b": 2}])
-        >>> df = handler.to_df()
-        >>> list(df.columns)
-        ['a', 'b']
-        >>> df.iloc[0]['a']
-        np.int64(1)
-        """
-
-        logger.debug(
-            "Converting results to pandas DataFrame; expand_nested_dicts=%s",
-            expand_nested_dicts,
-        )
-
-        _data = data or self.data
-        if _data == [] or _data is None:
-            logger.debug("No data available for pandas DataFrame conversion")
-            return None
-
-        _rename_columns = rename_columns or {"lineage": "biome_lineage"}
-        as_pandas = pd.DataFrame(_data, **kwargs).rename(columns=_rename_columns)
-
-        if expand_nested_dicts is None or expand_nested_dicts is False:
-            return as_pandas
-
-        if isinstance(expand_nested_dicts, list):
-            return self._df_expand_nested(
-                as_pandas,
-                cols=expand_nested_dicts,
-            )
-        if expand_nested_dicts is True:  # TODO
-            return self._df_expand_nested(as_pandas)
-
-        logger.debug("Returning pandas DataFrame without nested expansion")
-
-    def to_list(self, data: Optional[chain] = None) -> list[Any]:
-        """
-        Convert the current or provided metadata to a list of dictionaries.
-
-        Parameters
-        ----------
-        data : optional
-            The paginated data to convert. If ``None``, uses :pyattr:`data`.
-
-        Returns
-        -------
-        list
-            A list of metadata records as dictionaries, or ``None`` if no
-            data is available.
-
-        Examples
-        --------
-        >>> handler = ResultsHandler(data=[{"x": 10}])
-        >>> handler.to_list()
-        [{'x': 10}]
-        """
-        logger.debug("Converting results to list")
-        _data = data or self.data
-
-        if _data == [] or _data is None:
-            logger.debug("No data available for list conversion")
-            return None
-
-        return list(_data)
-
-    def to_json(
-        self,
-        data: Optional[chain] = None,
-        orient: str = "records",
-        lines: bool = True,
-        **json_kwargs,
-    ) -> str:
-        """
-        Convert the current metadata to a JSON string or save it to a file.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self.qs._results.
-        **json_kwargs
-            Additional keyword arguments passed to the JSON serialization function.
-
-        Returns
-        -------
-        str or None
-            The JSON string representation of the metadata, or None if no data is available.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-        logger.debug(
-            "Converting results to JSON; orient=%s lines=%s",
-            orient,
-            lines,
-        )
-        return self.to_df(data, expand_nested_dicts=False).to_json(
-            orient=orient, lines=lines, **json_kwargs
-        )
-
-    def to_polars(
-        self,
-        data: Optional[chain] = None,
-        expand_nested_dicts: Optional[list[str] | bool] = False,
-        rename_columns: Optional[dict[str, str]] = None,
-        **polars_kwargs,
-    ) -> pl.DataFrame:
-        """
-        Convert the current metadata to a Polars DataFrame.
-
-        Parameters
-        ----------
-        data : dict of int to list of dict, optional
-            The paginated data to convert. If None, uses self.qs._results.
-        **polars_kwargs
-            Additional keyword arguments passed to pl.DataFrame.
-
-        Returns
-        -------
-        pl.DataFrame
-            A Polars DataFrame containing the metadata.
-
-        Raises
-        ------
-        RuntimeError
-            If no data is available to convert.
-        """
-
-        logger.debug("Converting results to Polars DataFrame")
-
-        _data = data or self.data
-
-        if _data == [] or _data is None:
-            logger.debug("No data available for Polars DataFrame conversion")
-            return None
-
-        # first convert to pandas and then to polars to leverage the nested dict expansion and column renaming already implemented in to_df
-        df_pd = self.to_df(
-            data=_data,
-            expand_nested_dicts=expand_nested_dicts,
-            rename_columns=rename_columns,
-        )
-
-        return pl.from_pandas(df_pd, **polars_kwargs)
-
-
-class DiskCheckpointer:
+class CheckpointMixin:
     """
     Checkpoint manager for request-makers.
+
+    This mixin provides methods to write paginated results to disk as they are retrieved, and to load them back into memory on subsequent runs. It generates a unique cache key based on the query parameters and resource type, and organizes cached pages in a directory structure under a specified cache root.
+
+    The mixin assumes the host class has the following attributes:
+    - `self.params`: A dictionary of query parameters for the current request.
+    - `self.config`: An instance of `MGnipyConfig` containing configuration settings, including the cache directory.
+    - `self.resource`: A string representing the type of resource being queried (e.g., "samples", "runs").
+    - `self._results`: A dictionary mapping page numbers to lists of dictionaries containing the query results.
+    - `self.count`: An integer representing the total number of records for the current query.
+    - `self.num_requests`: An integer representing the total number of paginated requests needed for the current query.
+    which is the case for: QuerySets, MGnifier, proxies
+
+    Example
+    -------
+    >>> from mgnipy.V2.mgnifier.query_set import QuerySet
+    >>> from mgnipy.V2.mixins import CheckpointMixin
+    >>> # Creating a class that uses mixin
+    >>> class MyQuerySet(QuerySet, CheckpointMixin):
+    ...     # Initialize QuerySet (not mixin)
+    ...     def __init__(self, *args, **kwargs):
+    ...         super().__init__(*args, **kwargs)
+    >>> # init
+    >>> qs = MyQuerySet(resource="studies") # default config is w/ cache enabled
+    >>> # now can use checkpoint methods, e.g.
+    >>> qs.cache_key # print the unique cache key
+    '...'
+    >>> qs.load_cache()
+    []
     """
 
-    def __init__(
-        self,
-        *,
-        params_getter: Callable[[], dict],
-        resource_str: str,
-        config: MGnipyConfig,
-        results_store: Optional[dict] = None,
-        count: Optional[Callable[[], int]] = None,
-        num_requests: Optional[Callable[[], int]] = None,
-    ):
-        """Initialize with explicit dependencies."""
-        logger.debug("Initializing DiskCheckpointer for %s", resource_str)
-        self._params_getter = params_getter
-        self._resource_val = resource_str
-        self.config = config
-        self._results = results_store or {}
-        self._total_records = count
-        self._total_requests = num_requests
-
     @property
-    def _cache_root(self) -> Optional[Path]:
-        return self.config.cache_dir
-
-    @property
-    def _cache_key(self) -> str:
+    def cache_key(self) -> str:
         """
         Generate deterministic hash from resource + params.
 
@@ -308,70 +74,62 @@ class DiskCheckpointer:
 
         Example
         -------
-        >>> # Imports
-        >>> from mgnipy.V2.mixins import DiskCheckpointer
+        >>> from mgnipy.V2.mixins import CheckpointMixin
         >>> from mgnipy import MGnipyConfig
         >>> # Prepare parameters and config
         >>> params = {'lineage': 'root:Environmental:Terrestrial'}
         >>> resource = 'biome'
         >>> config = MGnipyConfig(cache_dir="/path/to/cache")
-        >>> # Create DiskCheckpointer instance and compute cache key
-        >>> cache_handler = DiskCheckpointer(params_getter=lambda: params, resource_str=resource, config=config)
-        >>> cache_handler._cache_key
+        >>> # Create CheckpointMixin instance and compute cache key
+        >>> cache_handler = CheckpointMixin()
+        >>> cache_handler.params = params
+        >>> cache_handler.resource = resource
+        >>> cache_handler.config = config
+        >>> cache_handler.cache_key
         '1eb56ddf5a2e7d60d8155c8bbe01f032f959a2519d43e99f31f533abffa3166f'
         """
-        params = self._params_getter().copy()
-        serial = json.dumps(
-            {"resource": self._resource_val, "params": params},
+        params: dict = self.params.copy()
+        serial: str = json.dumps(
+            {"resource": str(self.resource), "params": params},
             sort_keys=True,
             default=str,
         )
-        cache_key = hashlib.sha256(serial.encode("utf-8")).hexdigest()
-        logger.debug("Computed cache key for %s: %s", self._resource_val, cache_key)
+        cache_key: str = hashlib.sha256(serial.encode("utf-8")).hexdigest()
         return cache_key
 
     @property
-    def _cache_dir(self) -> Optional[Path]:
+    def cache_path(self) -> Optional[Path]:
         """Directory for this query's cached pages."""
-        root = self._cache_root
-        if root is None:
+        if self.config.cache_dir is None:
             return None
-        return root / self._cache_key
+        return self.config.cache_dir / self.cache_key
 
     @property
-    def _manifest_path(self) -> Optional[Path]:
+    def manifest_path(self) -> Optional[Path]:
         """Path to mgnipy_manifest.json storing metadata."""
-        cache_dir = self._cache_dir
-        if cache_dir is None:
+        if self.cache_path is None:
             return None
-        return cache_dir / "mgnipy_manifest.json"
+        return self.cache_path / "mgnipy_manifest.json"
 
-    def write_results(self, request_num: int, items: Any) -> None:
+    def write_results(
+        self,
+        request_num: int,
+        items: Any,
+        include_manifest: bool = True,
+    ) -> None:
         """Auto atomic write to disk."""
-        save_to = self._cache_dir
+        save_to = self.cache_path
         if save_to is None:
-            logger.debug(
-                "Skipping cache write for %s page %s because cache is disabled",
-                self._resource_val,
-                request_num,
-            )
+            logger.debug(f"Cache disabled: Skipping cache write for page {request_num}")
             return
 
-        logger.info("Writing cached results for page %s", request_num)
+        logger.debug(f"Creating cache dir if not exists: {save_to}")
         save_to.mkdir(parents=True, exist_ok=True)
 
+        # prep filenames/paths
         filepath = save_to / f"mgnipy_page_{request_num}.json"
-        manifest_path = self._manifest_path
-        logger.info(
-            f"Writing page {request_num} to {filepath} and manifest to {manifest_path}"
-        )
-        manifest = {
-            "resource": self._resource_val,
-            "params": self._params_getter(),
-            "count": self._total_records,
-            "total_pages": self._total_requests,
-        }
-
+        logger.info(f"Writing page {request_num} to {filepath}")
+        # now actually writing the response results:
         # Write bytes (binary downloads) using atomic_write_bytes, otherwise JSON
         try:
             if isinstance(items, (bytes, bytearray)):
@@ -380,35 +138,82 @@ class DiskCheckpointer:
             else:
                 atomic_write_json(filepath, items)
         except Exception:
-            logger.warning(f"Failed to write cache file for page {request_num}")
-        if manifest_path is not None:
-            atomic_write_json(manifest_path, manifest)
+            logger.error(f"Failed to write cache file for page {request_num}")
+
+        if include_manifest:
+            manifest_path = self.manifest_path
+            logger.info(f"Writing manifest to {manifest_path}")
+            manifest = {
+                "resource": str(self.resource),
+                "params": self.params,
+                "count": self.count,
+                "total_pages": self.num_requests,
+            }
+
+            if manifest_path is not None:
+                atomic_write_json(manifest_path, manifest)
+        else:
+            logger.debug("Skipping manifest write for this page")
 
     async def awrite_results(self, request_num: int, items: Any) -> None:
         """Async wrapper for write_results."""
-        logger.debug("Asynchronously writing cached results for page %s", request_num)
+        logger.debug(f"Asynchronously writing cached results for page {request_num}")
         await asyncio.to_thread(self.write_results, request_num, items)
 
     def load_cache_results(self) -> list[int]:
-        """Load cached pages into self._results. Returns count loaded."""
-        load_from = self._cache_dir
+        """
+        Load cached pages/request nums into results.
+
+        Loads cached pages from disk into the in-memory results dictionary (self._results), if available.
+
+        Returns
+        -------
+        list of int
+            A list of request numbers (page numbers) that were successfully loaded from the cache.
+        """
+        # where to load from (or not)
+        load_from = self.cache_path
         if load_from is None:
             logger.debug(
-                "Skipping cache load for %s because cache is disabled",
-                self._resource_val,
+                f"Cache disabled: Skipping cache load for {str(self.resource)}."
             )
             return []
 
         logger.info(f"Loading cached pages from {load_from}")
         if not load_from.exists():
-            logger.info(f"No cache directory found at {load_from}")
+            logger.info(f"No cache to load yet from {load_from}")
             return []
 
+        # initialize stores
+        if self._results is None:
+            logger.debug("Initializing self._results as empty dict for cache load")
+            self._results = {}
+
         pages_loaded = []
-        for cache_file in sorted(load_from.glob("mgnipy_page_*.*")):
+
+        possible_pages = sorted(load_from.glob("mgnipy_page_*.*"))
+
+        logger.debug(f"Possible pages: {possible_pages}")
+        # load each page file
+        for cache_file in possible_pages:
             if cache_file.suffix not in {".json", ".bin"}:
+                logger.info(f"Skipping {cache_file}")
                 continue
-            logger.info(f"Loading cached page from {cache_file}")
+
+            # Extract page number from filename
+            try:
+                request_num = int(cache_file.stem.split("_")[-1])
+            except Exception as e:
+                logger.error(f"Failed to extract page number from {cache_file}: {e}")
+                continue
+
+            if request_num in self._results:
+                logger.debug(
+                    f"Page {request_num} already loaded in memory; skipping {cache_file}"
+                )
+                continue
+
+            logger.info(f"Loading {cache_file}")
             try:
                 if cache_file.suffix == ".bin":
                     with cache_file.open("rb") as fh:
@@ -416,20 +221,31 @@ class DiskCheckpointer:
                 else:
                     with cache_file.open("r", encoding="utf-8") as fh:
                         data = json.load(fh)
-                # Extract page number from filename
-                request_num = int(cache_file.stem.split("_")[-1])
-                # load page if avail in cache
+                        # logger.debug(f"Loaded JSON data for page {request_num}: {data}")
+
+                # load page to results
                 self._results[request_num] = data
+                logger.debug(f"Loaded page {request_num} to self._results")
+
                 # tracking
                 pages_loaded.append(request_num)
-            except Exception:
-                logger.warning(f"Failed to load cache file: {cache_file}")
+                logger.debug(f"Pages loaded so far: {pages_loaded}")
+            except Exception as e:
+                logger.warning(f"Failed to load cache file: {cache_file}. Error: {e}")
 
         return pages_loaded
 
     def load_cache_manifest(self) -> dict:
+        """
+        Load the cache manifest file if present, and update total records and total requests.
+
+        Returns
+        -------
+        dict
+            The contents of the manifest file, or an empty dictionary if the manifest is not found or fails to load.
+        """
         # Load manifest if present
-        mpath = self._manifest_path
+        mpath = self.manifest_path
         if mpath is None:
             return {}
         if mpath.exists():
@@ -437,8 +253,8 @@ class DiskCheckpointer:
             try:
                 with mpath.open("r", encoding="utf-8") as fh:
                     manifest = json.load(fh)
-                    self._total_records = manifest.get("count")
-                    self._total_requests = manifest.get("total_pages")
+                    self.count = manifest.get("count")
+                    self.num_requests = manifest.get("total_pages")
             except Exception:
                 logger.warning(f"Failed to load manifest file: {mpath}")
                 manifest = {}
@@ -446,32 +262,40 @@ class DiskCheckpointer:
             manifest = {}
         return manifest
 
-    def load_cache(self) -> int:
-        load_from = self._cache_dir
+    def load_cache(self) -> list[int]:
+        """
+        Pick up where you left off. Loads cached results and manifest into memory.
+
+        Returns
+        -------
+        list of int
+            A list of request numbers (page numbers) that were successfully loaded from the cache.
+        """
+        load_from = self.cache_path
         if load_from is None:
-            logger.debug(
-                "Skipping cache load for %s because cache is disabled",
-                self._resource_val,
-            )
+            logger.debug("Skipping cache load because cache is disabled")
             return []
 
-        logger.info(f"Loading cache for {self._resource_val} from {self._cache_dir}")
+        logger.info(f"Loading cache from {self.cache_path}")
         pages_loaded = self.load_cache_results()
-        self.load_cache_manifest()
-        logger.info(f"Loaded {len(pages_loaded)} cached pages")
+        mani = self.load_cache_manifest()
+        logger.info(f"Loaded {len(pages_loaded)} cached pages and manifest: {mani}")
         return pages_loaded
 
-    async def aload_cache(self) -> int:
+    async def aload_cache(self) -> list[int]:
         """Async wrapper for load_cache."""
         return await asyncio.to_thread(self.load_cache)
 
     def clear_cache(self) -> None:
-        """Remove all cached pages for this query."""
-        load_from = self._cache_dir
+        """Remove all cached pages for this set of queries."""
+        load_from = self.cache_path
+
         if load_from is None:
+            logger.info("Cache is disabled; skipping cache clearing")
             return
+
         if load_from.exists():
-            logger.info("Clearing cache directory %s", load_from)
+            logger.info(f"Clearing cache directory {load_from}")
             for cache_file in load_from.iterdir():
                 # extra check just in case
                 if cache_file.name == "mgnipy_manifest.json" or (
@@ -479,7 +303,7 @@ class DiskCheckpointer:
                     and cache_file.suffix in {".json", ".bin"}
                 ):
                     try:
-                        logger.debug("Deleting cache file %s", cache_file)
+                        logger.debug(f"Deleting cache file {cache_file}")
                         cache_file.unlink()
                     except Exception:
                         logger.warning(f"Failed to delete cache file: {cache_file}")
@@ -487,6 +311,46 @@ class DiskCheckpointer:
                 load_from.rmdir()
             except Exception:
                 logger.warning(f"Failed to delete cache directory: {load_from}")
+        # reset loaded cache state
+        self._pages_from_cache = []
+        self._cached_manifest = {}
+
+    def try_load_cache(self) -> None:
+        """
+        Attempt to load cached results and manifest into memory if not already loaded.
+        This method checks if the cache has already been loaded to avoid redundant operations.
+        If the cache has not been loaded, it will attempt to load it and set the `_cache_loaded` attribute accordingly.
+
+        Notes
+        -----
+        - This method is intended to be called internally before accessing cached results.
+        - If cache_dir is None then _cache_loaded will be True after initial attempt.
+        - If an error occurs during cache loading, it will be logged, and `_cache_loaded` will be set to False.
+        - Dependent on `.mixins.CheckpointMixin`
+        """
+
+        if getattr(self, "_cache_loaded", False):
+            logger.debug(
+                f"Cache already loaded; skipping load attempt. "
+                f"Pages loaded: {self._pages_from_cache}"
+                f"Manifest: {self._cached_manifest}"
+            )
+            return
+        try:
+            # load results
+            self._pages_from_cache = self.load_cache_results()
+            # load manifest
+            self._cached_manifest = self.load_cache_manifest()
+            # update counts from manifest
+            self.count = self._cached_manifest.get("count", None)
+            self.num_requests = self._cached_manifest.get("total_pages", None)
+            # set flag
+            self._cache_loaded = True
+        except Exception as e:
+            logger.error(f"Error occurred while loading cache: {e}")
+            self._cache_loaded = (
+                False  # Q: Or should this be set to True to avoid repeated attempts?
+            )
 
 
 class StreamMixin:
@@ -495,7 +359,6 @@ class StreamMixin:
 
     # TODO remove below dependencies on mgnifier
     This mixin assumes the host class provides the following helpers/properties:
-    - `_mgnifier_helper(url, cache_dir=None)` returning an object with
       `.exec.httpx_client` and `.exec.httpx_aclient` attributes
     - `_get_type_by_alias(alias)` to resolve file types
     - `downloads_df` when needed for examples/tests
@@ -504,13 +367,7 @@ class StreamMixin:
     on :class:`MGazine` so they can be reused by other classes.
     """
 
-    def __init__(self, mgnifier_helper=None):
-        self._mgnifier_helper = mgnifier_helper or getattr(
-            self, "_mgnifier_helper", None
-        )
-
     def _handle_incomplete_read(self, url: str):
-        # self._download_helper = DownloadMixin(self._mgnifier_helper)
         # TODO
         logger.warning(
             f"You can also download the file {url} using the 'download' method instead of streaming and then read it into memory from disk, which may be more reliable for unstable connections."
@@ -580,9 +437,7 @@ class StreamMixin:
             except IncompleteRead:
                 self._handle_incomplete_read(url)
             except Exception as err:
-                raise RuntimeError(
-                    f"Error reading file from {url} with skiprows={skip}"
-                ) from err
+                raise err
         raise pd.errors.ParserError(
             f"Failed to parse {url} after skipping up to {max_skip} rows."
         )
@@ -595,7 +450,7 @@ class StreamMixin:
         max_skip: int = 5,
         low_memory: bool = False,
         **pl_kwargs,
-    ):
+    ) -> pl.DataFrame | pl.LazyFrame:
         """
         Read a TSV from a URL or local file into a Polars DataFrame with resilient header handling.
 
@@ -653,9 +508,7 @@ class StreamMixin:
             except IncompleteRead:
                 self._handle_incomplete_read(url)
             except Exception as err:
-                raise RuntimeError(
-                    f"Error reading file from {url} with skip_rows_after_header={skip}"
-                ) from err
+                raise err
         raise pl.exceptions.PolarsError(
             f"Failed to parse {url} after skipping up to {max_skip} rows."
         )
@@ -683,7 +536,6 @@ class StreamMixin:
         self,
         url: str,
         chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
         **httpx_kwargs,
     ) -> str | Generator:
         """
@@ -708,16 +560,14 @@ class StreamMixin:
             The full text as a string if chunksize is None, or a generator yielding lists of lines if chunksize is an integer.
         """
 
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
-
         if chunksize is None:
             # load as whole
-            with client.get(url, **httpx_kwargs) as response:
+            with self.httpx_client.get(url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 return response.text
         elif isinstance(chunksize, int) and chunksize > 0:
             # load in chunks
-            with client.stream("GET", url, **httpx_kwargs) as response:
+            with self.httpx_client.stream("GET", url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 chunk = []
                 for line in response.iter_text():
@@ -788,7 +638,6 @@ class StreamMixin:
         self,
         url: str,
         chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
         decode: bool = False,
         encoding: str = "utf-8",
         errors: str = "replace",
@@ -801,7 +650,6 @@ class StreamMixin:
         streaming file-like object is returned.
         """
 
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
         logger.debug(
             "stream_gzipped called url=%s chunksize=%s decode=%s",
             url,
@@ -811,7 +659,7 @@ class StreamMixin:
 
         if chunksize is None:
             logger.debug("Using full-download mode (chunksize=None)")
-            r = client.get(url, timeout=None, **httpx_kwargs)
+            r = self.httpx_client.get(url, timeout=None, **httpx_kwargs)
             r.raise_for_status()
             decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
             data = decompressor.decompress(r.content) + decompressor.flush()
@@ -827,7 +675,9 @@ class StreamMixin:
 
         class _HTTPGzipRaw(io.RawIOBase):
             def __init__(self):
-                self._cm = client.stream("GET", url, timeout=None, **httpx_kwargs)
+                self._cm = self.httpx_client.stream(
+                    "GET", url, timeout=None, **httpx_kwargs
+                )
                 self._resp = self._cm.__enter__()
                 self._resp.raise_for_status()
                 self._iter = self._resp.iter_raw(chunk_size=chunksize)
@@ -894,14 +744,14 @@ class StreamMixin:
             Literal["records", "split", "index", "columns", "values", "table"]
         ] = None,
         chunksize: Optional[int] = None,
-        dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
+        df_engine: Optional[Literal["pandas", "polars"]] = "pandas",
         **df_kwargs,
     ) -> dict:
-        if dataframe_engine == "pandas":
+        if df_engine == "pandas":
             return pd.read_json(
                 url, orient=orient, lines=True, chunksize=chunksize, **df_kwargs
             )
-        elif dataframe_engine == "polars":
+        elif df_engine == "polars":
             if chunksize is None:
                 return pl.read_ndjson(url, infer_schema_length=10000, **df_kwargs)
             else:
@@ -911,19 +761,17 @@ class StreamMixin:
         self,
         url: str,
         chunksize: Optional[int] = None,
-        httpx_client: Optional[httpx.Client] = None,
         **httpx_kwargs,
     ) -> dict | Generator:
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         if chunksize is None and not (url.endswith(".gz") or url.endswith(".gzip")):
-            with client.get(url, **httpx_kwargs) as response:
+            with self.httpx_client.get(url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 return response.json()
         elif chunksize is not None and not (
             url.endswith(".gz") or url.endswith(".gzip")
         ):
-            with client.stream("GET", url, **httpx_kwargs) as response:
+            with self.httpx_client.stream("GET", url, **httpx_kwargs) as response:
                 response.raise_for_status()
                 for entry in ijson.kvitems(response.iter_text(), ""):
                     yield entry
@@ -931,7 +779,6 @@ class StreamMixin:
             with self.stream_gzipped(
                 url,
                 chunksize=chunksize,
-                httpx_client=client,
                 decode=True,
                 **httpx_kwargs,
             ) as gzipped_stream:
@@ -972,18 +819,16 @@ class StreamMixin:
         alias: Optional[str] = None,
         url: Optional[HttpUrl] = None,
         chunksize: int = 1000,
-        httpx_client: Optional[httpx.Client] = None,
         max_skip: int = 5,
-        dataframe_engine: Optional[Literal["pandas", "polars"]] = "pandas",
+        df_engine: Optional[Literal["pandas", "polars"]] = "pandas",
         low_memory: bool = False,
         **kwargs,
     ):
-        client = httpx_client or self._mgnifier_helper().exec.httpx_client
 
         _alias, _url = self._prioritize_alias(alias, url, required=True)
         file_type = self._get_type_by_alias(_alias)
 
-        if dataframe_engine == "polars" and file_type == "tsv":
+        if df_engine == "polars" and file_type == "tsv":
             return self.stream_polars(
                 _url,
                 sep="\t",
@@ -993,7 +838,7 @@ class StreamMixin:
                 **kwargs,
             )
 
-        if dataframe_engine == "polars" and file_type == "csv":
+        if df_engine == "polars" and file_type == "csv":
             return self.stream_polars(
                 _url,
                 sep=",",
@@ -1048,9 +893,7 @@ class StreamMixin:
             return lambda: self.stream_html(_url, **kwargs)
 
         if file_type == "txt":
-            return self.stream_txt(
-                _url, chunksize=chunksize, httpx_client=client, **kwargs
-            )
+            return self.stream_txt(_url, chunksize=chunksize, **kwargs)
 
         if file_type == "gff":
             return self.stream_gff(_url, **kwargs)
@@ -1065,15 +908,13 @@ class StreamMixin:
                 _url,
                 orient="records",
                 chunksize=chunksize,
-                dataframe_engine=dataframe_engine,
+                df_engine=df_engine,
                 low_memory=low_memory,
                 **kwargs,
             )
         if file_type == "other" and ".json" in _url:
             if _url.endswith("json.gz") or _url.endswith("json.gzip"):
-                return self.stream_json(
-                    _url, chunksize=chunksize, httpx_client=client, **kwargs
-                )
+                return self.stream_json(_url, chunksize=chunksize, **kwargs)
 
             logger.info(
                 f"{_alias} is only available for download (e.g., `.download({_alias}))`"
@@ -1140,7 +981,6 @@ class StreamMixin:
         _alias, _url = self._prioritize_alias(alias, url, required=True)
 
         # return a single streamer result, not a dict of all streams
-        client = self._mgnifier_helper().exec.httpx_client
         logger.info("Setting up stream for alias=%s url=%s", _alias, _url)
 
         try:
@@ -1148,7 +988,6 @@ class StreamMixin:
                 alias=_alias,
                 url=_url,
                 chunksize=chunksize,
-                httpx_client=client,
                 max_skip=max_skip,
                 **kwargs,
             )
@@ -1158,10 +997,10 @@ class StreamMixin:
 
 
 class BiomesTreeMixin:
-
     @property
     def lineages(self) -> list[str]:
-        return getattr(self, "results_ids", []) or []
+        mgnify_metadata = self.search_results
+        return mgnify_metadata.ids
 
     @property
     def tree(self) -> Tree:
@@ -1232,263 +1071,126 @@ class BiomesTreeMixin:
                             record["biome_lineage"] = record.pop("lineage")
 
 
-class BioSamplesMetadataMixin:
+class ClientManagerMixin:
     """
-    Mixin providing properties to access BioSamples metadata for samples in the list.
+    Context manager mixin for managing the lifecycle of an HTTP client (synchronous or asynchronous) within a class. This mixin provides methods to enter and exit the context, ensuring that the client is properly initialized and closed, and handles cases where the client may have been closed or is not available.
+
+    Requirements
+    ------------
+    - `self.client` must be an instance of a class that implements the context manager protocol (i.e., has `__enter__` and `__exit__` methods for synchronous clients, and `__aenter__` and `__aexit__` methods for asynchronous clients).
+    - `self.config` must be a configuration object or dictionary that can be used to initialize a new HTTP client instance if the existing client is closed or unavailable.
     """
 
-    def __init__(self):
-        self._init_biosamples_cache()
+    def __enter__(self):
+        try:
+            self.client.__enter__()
+        except RuntimeError as e:
+            logger.warning(f"Opening a new client instance due to: {e}")
+            self.client = init_httpx_client(self.config)
+            self.client.__enter__()
+        return self
 
-    def _init_biosamples_cache(self) -> None:
-        self._cache_biosamples_w_ena: pd.DataFrame | None = None
-        self._cache_biosamples_no_ena: pd.DataFrame | None = None
-        self._cache_biosamples_details_w_ena: pd.DataFrame | None = None
-        self._cache_biosamples_details_no_ena: pd.DataFrame | None = None
+    def __exit__(self, *args, **kwargs):
+        if not getattr(self, "_owns_client", True):
+            logger.debug("Client is not owned by this instance; skipping __exit__().")
+            return False
+        self.client.__exit__(*args, **kwargs)
+        self.close()
+        logger.debug(f"Closing client: {self.client._client}")
+        return False
 
-    def biosamples(self, incl_ena: bool = False) -> pd.DataFrame:
+    async def __aenter__(self):
+        try:
+            await self.client.__aenter__()
+        except RuntimeError as e:
+            logger.warning(f"Opening a new async client instance due to: {e}")
+            self.client = init_httpx_client(self.config)
+            await self.client.__aenter__()
+        return self
+
+    async def __aexit__(self, *args, **kwargs):
+        if not getattr(self, "_owns_client", True):
+            logger.debug("Client is not owned by this instance; skipping __aexit__().")
+            return False
+        await self.client.__aexit__(*args, **kwargs)
+        await self.aclose()
+        logger.debug(f"Closing async client: {self.client._async_client}")
+        return False
+
+    def close(self):
+        if self.client is not None and self.client._client is not None:
+            if not self.client._client.is_closed:
+                self.client._client.close()
+            self.client._client = None
+
+    async def aclose(self):
+        if self.client is not None and self.client._async_client is not None:
+            if not self.client._async_client.is_closed:
+                await self.client._async_client.aclose()
+            self.client._async_client = None
+
+    def status(self) -> None:
         """
-        A DataFrame containing the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The DataFrame includes columns such as 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the sample.
+        Print the status of the MGnipy client, including the type of client and whether the synchronous and asynchronous httpx client sessions are open.
         """
-        if incl_ena and self._cache_biosamples_w_ena is not None:
-            return self._cache_biosamples_w_ena
-        if not incl_ena and self._cache_biosamples_no_ena is not None:
-            return self._cache_biosamples_no_ena
+        print(
+            f"Client or AuthenticatedClient type: {type(self.client).__name__}\n"
+            f"HTTP client open: {self.client._client is not None and not self.client._client.is_closed}\n"
+            f"Async client open: {self.client._async_client is not None and not self.client._async_client.is_closed}\n"
+        )
 
-    def details_biosamples(self, incl_ena: bool = True) -> pd.DataFrame:
+    def renew_client(self):
         """
-        A DataFrame containing the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the samples.
+        Init a new client instance and replace the existing one. This is useful if the current client has been closed or is no longer valid, allowing for a fresh start with a new HTTP client session.
+        """
+        logger.info(f"Renewing HTTP client instance. Old: {self.client}")
+        self.client = init_httpx_client(self.config)
+        logger.info(f"HTTP client refreshed. Now: {self.client}")
 
-        Parameters
-        ----------
-        incl_ena : bool, optional
-            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.
+    @property
+    def httpx_client(self) -> httpx.Client:
+        """
+        Get the synchronous httpx client instance from the AuthenticatedClient.
 
         Returns
         -------
-        pd.DataFrame
-            A DataFrame containing the BioSamples metadata for all samples in the list.
-
-        Notes
-        -----
-        - Relies on the `biosample_metadata` property of each `SampleDetail` instance, which retrieves the BioSamples metadata for each sample accession.
-        - The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.
+        httpx.Client
+            The synchronous httpx client instance.
         """
-        if incl_ena and self._cache_biosamples_details_w_ena is not None:
-            return pd.concat(
-                [df for df in self._cache_biosamples_details_w_ena.values()]
+        if self.client is None:
+            logger.info("Client is None; initializing a new client instance.")
+            self.renew_client()
+        elif self.client._client is None:
+            logger.info(
+                "Synchronous httpx Client._client is None. Getting httpx client"
             )
-        if not incl_ena and self._cache_biosamples_details_no_ena is not None:
-            return pd.concat(
-                [df for df in self._cache_biosamples_details_no_ena.values()]
-            )
-        return pd.DataFrame()  # Return empty DataFrame if no cache is available
+        elif self.client._client.is_closed:
+            logger.info("Synchronous httpx Client._client is closed; renewing client.")
+            self.renew_client()
+        self.client.get_httpx_client()
+        return self.client._client
 
-    def enrich_biosamples(
-        self, incl_ena: bool = False, overwrite: bool = False
-    ) -> None:
+    @property
+    def async_httpx_client(self) -> httpx.AsyncClient:
         """
-        Fetch and cache the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the `biosamplesdata` property.
-
-        Parameters
-        ----------
-        incl_ena : bool, optional
-            Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.
-        overwrite : bool, optional
-            Whether to overwrite the cached metadata if it already exists. Defaults to False.
-
-        Notes
-        -----
-        - This property retrieves the BioSamples metadata for the sample accession using the `get_biosample_metadata_from_acc` function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.
-        - The resulting DataFrame will have a single row corresponding to the sample accession, and columns for 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the sample, with missing values filled as 'NA'.
-        """
-        if incl_ena and self._cache_biosamples_w_ena is not None and not overwrite:
-            logger.debug(
-                f"Using cached BioSamples metadata with ENA fields for {self.identifier}"
-            )
-            return
-
-        if not incl_ena and self._cache_biosamples_no_ena is not None and not overwrite:
-            logger.debug(
-                f"Using cached BioSamples metadata without ENA fields for {self.identifier}"
-            )
-            return
-
-        if incl_ena:
-            logger.debug(
-                f"Fetching BioSamples metadata with ENA fields for {self.identifier}"
-            )
-            self._cache_biosamples_w_ena = get_biosample_metadata_from_acc(
-                self.identifier,
-                incl_ena=incl_ena,
-            )
-
-        else:
-            logger.debug(
-                f"Fetching BioSamples metadata without ENA fields for {self.identifier}"
-            )
-            self._cache_biosamples_no_ena = get_biosample_metadata_from_acc(
-                self.identifier,
-                incl_ena=incl_ena,
-            )
-
-    async def aenrich_biosamples(
-        self, incl_ena: bool = False, overwrite: bool = False
-    ) -> None:
-        """
-        Asynchronously fetch and cache the BioSamples metadata for the sample associated with this `SampleDetail` instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the `abiosamplesdata` property.
-
-        Parameters
-        ----------
-        incl_ena : bool, optional
-            Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.
-        overwrite : bool, optional
-            Whether to overwrite the cached metadata if it already exists. Defaults to False.
-
-        Notes
-        -----
-        - This property retrieves the BioSamples metadata for the sample accession using the `aget_biosample_metadata_from_acc` function, which asynchronously queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.
-        - The resulting DataFrame will have a single row corresponding to the sample accession, and columns for 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the sample, with missing values filled as 'NA'.
-        """
-        if incl_ena and self._cache_biosamples_w_ena is not None and not overwrite:
-            logger.debug(
-                f"Using cached BioSamples metadata with ENA fields for {self.identifier}"
-            )
-            return
-
-        if not incl_ena and self._cache_biosamples_no_ena is not None and not overwrite:
-            logger.debug(
-                f"Using cached BioSamples metadata without ENA fields for {self.identifier}"
-            )
-            return
-
-        if incl_ena:
-            logger.debug(
-                f"Asynchronously fetching BioSamples metadata with ENA fields for {self.identifier}"
-            )
-            self._cache_biosamples_w_ena = await aget_biosample_metadata_from_acc(
-                self.identifier,
-                incl_ena=incl_ena,
-            )
-
-        else:
-            logger.debug(
-                f"Asynchronously fetching BioSamples metadata without ENA fields for {self.identifier}"
-            )
-            self._cache_biosamples_no_ena = await aget_biosample_metadata_from_acc(
-                self.identifier,
-                incl_ena=incl_ena,
-            )
-
-    def enrich_biosamples_details(
-        self, incl_ena: bool = True, overwrite: bool = False
-    ) -> None:
-        """
-        Fetch and cache the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the samples. The metadata is stored in the cache properties for later retrieval by the `details_biosamplesdata` property.
-
-        Parameters
-        ----------
-        incl_ena : bool, optional
-            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.
-        overwrite : bool, optional
-            Whether to overwrite the cached DataFrame if it already exists. Defaults to False.
-
-        Notes
-        -----
-        - Relies on the `biosample_metadata` property of each `SampleDetail` instance, which retrieves the BioSamples metadata for each sample accession.
-        - The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.
-        """
-
-        if (
-            incl_ena
-            and self._cache_biosamples_details_w_ena is not None
-            and not overwrite
-        ):
-            logger.debug("Using cached BioSamples metadata with ENA fields for details")
-            return
-
-        if (
-            not incl_ena
-            and self._cache_biosamples_details_no_ena is not None
-            and not overwrite
-        ):
-            logger.debug(
-                "Using cached BioSamples metadata without ENA fields for details"
-            )
-            return
-
-        if incl_ena:
-            logger.debug("Fetching BioSamples metadata with ENA fields for details")
-            self._cache_biosamples_details_w_ena = get_all_biosample_metadata_from_acc(
-                self.details_ids,
-                incl_ena=incl_ena,
-            )
-        else:
-            logger.debug("Fetching BioSamples metadata without ENA fields for details")
-            self._cache_biosamples_details_no_ena = get_all_biosample_metadata_from_acc(
-                self.details_ids,
-                incl_ena=incl_ena,
-            )
-
-    async def aenrich_biosamples_details(
-        self, incl_ena: bool = False, overwrite: bool = False
-    ) -> None:
-        """
-        Asynchronously retrieve the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include 'SampleID', 'SRA accession', 'taxid', and any characteristics available for the samples.
-
-        Parameters
-        ----------
-        incl_ena : bool, optional
-            Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to False.
-        overwrite : bool, optional
-            Whether to overwrite the cached DataFrame if it already exists. Defaults to False.
+        Get the asynchronous httpx client instance from the AuthenticatedClient.
 
         Returns
         -------
-        None
-            This method does not return a value, but it caches the BioSamples metadata for later retrieval.
-
-        Notes
-        -----
-        - Relies on the `abiosample_metadata` property of each `SampleDetail` instance, which asynchronously retrieves the BioSamples metadata for each sample accession.
-        - The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.
+        httpx.AsyncClient
+            The asynchronous httpx client instance.
         """
-
-        if (
-            incl_ena
-            and self._cache_biosamples_details_w_ena is not None
-            and not overwrite
-        ):
-            logger.debug("Using cached BioSamples metadata with ENA fields for details")
-            return
-
-        if (
-            not incl_ena
-            and self._cache_biosamples_details_no_ena is not None
-            and not overwrite
-        ):
-            logger.debug(
-                "Using cached BioSamples metadata without ENA fields for details"
+        if self.client is None:
+            logger.info("Client is None; initializing a new client instance.")
+            self.renew_client()
+        elif self.client._async_client is None:
+            logger.info(
+                "Asynchronous httpx Client._async_client is None. Getting async httpx client"
             )
-            return
-
-        if incl_ena:
-            logger.debug(
-                "Asynchronously fetching BioSamples metadata with ENA fields for details"
+        elif self.client._async_client.is_closed:
+            logger.info(
+                "Asynchronous httpx Client._async_client is closed; renewing client."
             )
-            self._cache_biosamples_details_w_ena = (
-                await aget_all_biosample_metadata_from_acc(
-                    self.details_ids,
-                    incl_ena=incl_ena,
-                )
-            )
-        else:
-            logger.debug(
-                "Asynchronously fetching BioSamples metadata without ENA fields for details"
-            )
-            self._cache_biosamples_details_no_ena = (
-                await aget_all_biosample_metadata_from_acc(
-                    self.details_ids,
-                    incl_ena=incl_ena,
-                )
-            )
+            self.renew_client()
+        self.client.get_httpx_async_client()
+        return self.client._async_client

@@ -1,20 +1,20 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
+from ...client import AuthenticatedClient, Client
 from ...models.get_genome_catalogue_genomes_order_type_0 import (
     GetGenomeCatalogueGenomesOrderType0,
 )
 from ...models.ninja_pagination_response_schema_genome_list import (
     NinjaPaginationResponseSchemaGenomeList,
 )
-from ...types import Unset
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
@@ -104,7 +104,7 @@ def _build_response(
 def sync_detailed(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
     biome_lineage: None | str | Unset = UNSET,
     search: None | str | Unset = UNSET,
@@ -148,7 +148,7 @@ def sync_detailed(
 def sync(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
     biome_lineage: None | str | Unset = UNSET,
     search: None | str | Unset = UNSET,
@@ -187,7 +187,7 @@ def sync(
 async def asyncio_detailed(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
     biome_lineage: None | str | Unset = UNSET,
     search: None | str | Unset = UNSET,
@@ -229,7 +229,7 @@ async def asyncio_detailed(
 async def asyncio(
     catalogue_id: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     order: GetGenomeCatalogueGenomesOrderType0 | None | Unset = UNSET,
     biome_lineage: None | str | Unset = UNSET,
     search: None | str | Unset = UNSET,

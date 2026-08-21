@@ -1,25 +1,40 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response
 from ... import errors
-
+from ...client import AuthenticatedClient, Client
 from ...models.genome_with_annotations import GenomeWithAnnotations
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     accession: str,
+    *,
+    catalogue_id: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
+
+    params: dict[str, Any] = {}
+
+    json_catalogue_id: None | str | Unset
+    if isinstance(catalogue_id, Unset):
+        json_catalogue_id = UNSET
+    else:
+        json_catalogue_id = catalogue_id
+    params["catalogue_id"] = json_catalogue_id
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/metagenomics/api/v2/genomes/{accession}/annotations".format(
             accession=quote(str(accession), safe=""),
         ),
+        "params": params,
     }
 
     return _kwargs
@@ -53,7 +68,8 @@ def _build_response(
 def sync_detailed(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+    catalogue_id: None | str | Unset = UNSET,
 ) -> Response[GenomeWithAnnotations]:
     """Get the annotations for a single MGnify Genome
 
@@ -61,6 +77,7 @@ def sync_detailed(
 
     Args:
         accession (str):
+        catalogue_id (None | str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -72,6 +89,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         accession=accession,
+        catalogue_id=catalogue_id,
     )
 
     response = client.get_httpx_client().request(
@@ -84,7 +102,8 @@ def sync_detailed(
 def sync(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+    catalogue_id: None | str | Unset = UNSET,
 ) -> GenomeWithAnnotations | None:
     """Get the annotations for a single MGnify Genome
 
@@ -92,6 +111,7 @@ def sync(
 
     Args:
         accession (str):
+        catalogue_id (None | str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -104,13 +124,15 @@ def sync(
     return sync_detailed(
         accession=accession,
         client=client,
+        catalogue_id=catalogue_id,
     ).parsed
 
 
 async def asyncio_detailed(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+    catalogue_id: None | str | Unset = UNSET,
 ) -> Response[GenomeWithAnnotations]:
     """Get the annotations for a single MGnify Genome
 
@@ -118,6 +140,7 @@ async def asyncio_detailed(
 
     Args:
         accession (str):
+        catalogue_id (None | str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -129,6 +152,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         accession=accession,
+        catalogue_id=catalogue_id,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -139,7 +163,8 @@ async def asyncio_detailed(
 async def asyncio(
     accession: str,
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
+    catalogue_id: None | str | Unset = UNSET,
 ) -> GenomeWithAnnotations | None:
     """Get the annotations for a single MGnify Genome
 
@@ -147,6 +172,7 @@ async def asyncio(
 
     Args:
         accession (str):
+        catalogue_id (None | str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -160,5 +186,6 @@ async def asyncio(
         await asyncio_detailed(
             accession=accession,
             client=client,
+            catalogue_id=catalogue_id,
         )
     ).parsed

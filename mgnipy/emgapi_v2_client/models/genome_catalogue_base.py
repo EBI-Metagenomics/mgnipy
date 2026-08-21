@@ -1,19 +1,20 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
+from dateutil.parser import isoparse
 
 from ..models.genome_catalogue_base_catalogue_type import (
     GenomeCatalogueBaseCatalogueType,
 )
-from dateutil.parser import isoparse
-from typing import cast
-import datetime
+from ..models.genome_catalogue_base_status import GenomeCatalogueBaseStatus
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -35,6 +36,7 @@ class GenomeCatalogueBase:
         catalogue_id (str):
         version (str):
         name (str):
+        status (GenomeCatalogueBaseStatus):
         description (None | str):
         protein_catalogue_description (None | str):
         updated_at (datetime.datetime):
@@ -55,6 +57,7 @@ class GenomeCatalogueBase:
     catalogue_id: str
     version: str
     name: str
+    status: GenomeCatalogueBaseStatus
     description: None | str
     protein_catalogue_description: None | str
     updated_at: datetime.datetime
@@ -82,6 +85,8 @@ class GenomeCatalogueBase:
         version = self.version
 
         name = self.name
+
+        status = self.status.value
 
         description: None | str
         description = self.description
@@ -143,6 +148,7 @@ class GenomeCatalogueBase:
                 "catalogue_id": catalogue_id,
                 "version": version,
                 "name": name,
+                "status": status,
                 "description": description,
                 "protein_catalogue_description": protein_catalogue_description,
                 "updated_at": updated_at,
@@ -181,6 +187,8 @@ class GenomeCatalogueBase:
         version = d.pop("version")
 
         name = d.pop("name")
+
+        status = GenomeCatalogueBaseStatus(d.pop("status"))
 
         def _parse_description(data: object) -> None | str:
             if data is None:
@@ -291,6 +299,7 @@ class GenomeCatalogueBase:
             catalogue_id=catalogue_id,
             version=version,
             name=name,
+            status=status,
             description=description,
             protein_catalogue_description=protein_catalogue_description,
             updated_at=updated_at,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 import re
 from typing import Optional
@@ -312,7 +314,7 @@ def mirror_api(source):
     >>> target_function.__doc__
     'This is the source function documentation.'
     >>> str(inspect.signature(target_function))
-    '(x: int) -> int'
+    "(x: 'int') -> 'int'"
     """
 
     def decorator(target):

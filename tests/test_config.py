@@ -1,16 +1,151 @@
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+import pytest
+
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
 from mgnipy._models.constants.CONSTANTS import SupportedApiVersions
 
+## Constants
 
-def test_to_mgnipy_config_accepts_dict_and_existing_instance(tmp_path):
+
+USER = "myuser"
+PASSWORD = "mypassword"
+BASE_URL = "https://www.ebi.ac.uk/"
+API_VER = "v2"
+TOKEN_CONTENT = {"auth_token": "this-is-a-fake-token", "ts": 1234567890}
+
+
+## Fixtures
+
+
+@pytest.fixture
+def config_with_cache_dir(tmp_path):
+    return MGnipyConfig(
+        api_version=API_VER,
+        base_url=BASE_URL,
+        mg_user=USER,
+        mg_password=PASSWORD,
+        cache_dir=tmp_path,
+    )
+
+
+@pytest.fixture
+def config_without_cache_dir():
+    return MGnipyConfig(
+        api_version=API_VER,
+        base_url=BASE_URL,
+        mg_user=USER,
+        mg_password=PASSWORD,
+        cache_dir=None,
+    )
+
+
+@pytest.fixture
+def token_basename():
+    hash: str = hashlib.sha256(f"{BASE_URL}|{USER}".encode()).hexdigest()
+    return f"auth_{hash}.json"
+
+
+@pytest.fixture
+def tmp_file_cached_token(tmp_path, token_basename):
+
+    # prep
+    token_file = tmp_path / token_basename
+
+    # making folder
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    # and now the token file
+    token_file.write_text(json.dumps(TOKEN_CONTENT))
+
+    # for clean up
+    return token_file
+
+
+## MGnipyConfig Tests
+
+
+def test_MGnifyConfig_token_cache_dir(
+    config_with_cache_dir, config_without_cache_dir, tmp_path
+):
     """
-    The to_mgnipy_config function should convert a plain dictionary into an MGnipyConfig instance, normalizing fields as needed. If an MGnipyConfig instance is passed in, it should return the same instance without modification.
+    Even if cache_dir is None, the token should be cached somewhere. If cache_dir==None then in cwd
+    """
+
+    assert (
+        config_with_cache_dir._token_cache_dir == tmp_path
+    ), "The token cache directory should be set to the provided path."
+
+    # If no cache_dir is provided, the token cache directory should default to a non-None value.
+    assert (
+        config_without_cache_dir._token_cache_dir is not None
+    ), "If no cache_dir is provided, the token cache directory should not be None"
+    assert (
+        config_without_cache_dir._token_cache_dir == Path.cwd()
+    ), "If no cache_dir is provided, the token cache directory should default to the current working directory."
+
+
+def test_MGnifyConfig_token_file(
+    config_without_cache_dir, config_with_cache_dir, token_basename
+):
+    """"""
+
+    # first when no cache_dir
+    config = config_without_cache_dir
+    expected_token_file_without_cache = Path.cwd() / token_basename
+    # now when cache_dir is provided
+    config2 = config_with_cache_dir
+    expected_token_file_with_cache = config2.cache_dir / token_basename
+
+    assert (
+        config._token_file == expected_token_file_without_cache
+    ), "The token file path and hash should be correctly computed based on the base URL and user"
+
+    assert (
+        config2._token_file == expected_token_file_with_cache
+    ), "The token file path and hash should be correctly computed based on the base URL and user, even when a cache_dir is provided."
+
+    assert (
+        config._token_file.name == config2._token_file.name
+    ), "The token file name should be the same regardless of cache_dir."
+
+
+def test_MGnipyConfig_load_cached_token(
+    tmp_file_cached_token, config_with_cache_dir, tmp_path
+):
+    """
+    The MGnipyConfig should be able to load a cached token from the expected location.
+    """
+    # prep
+    # make temp dir and token file
+    token_filepath = tmp_file_cached_token
+    config = config_with_cache_dir
+
+    # load the cached token
+    loaded_token = config._load_cached_token()
+
+    assert (
+        loaded_token == TOKEN_CONTENT["auth_token"]
+    ), "The loaded token should match the content of the cached token file."
+
+    # tidy up
+    token_filepath.unlink()
+    tmp_path.rmdir()
+
+
+def test_to_mgnipy_config_accepts_dict_or_MGnipyConfig(tmp_path, config_with_cache_dir):
+    """
+    The to_mgnipy_config function should convert a plain dictionary into an MGnipyConfig instance, normalizing fields as needed.
+    If an MGnipyConfig instance is passed in, it should return the same instance without modification.
     """
     config_dict = {
-        "api_version": "v2",
-        "base_url": "https://www.ebi.ac.uk/",
-        "mg_user": "myuser",
-        "mg_password": "mypassword",
+        "api_version": API_VER,
+        "base_url": BASE_URL,
+        "mg_user": USER,
+        "mg_password": PASSWORD,
         "cache_dir": tmp_path,
     }
 
@@ -19,11 +154,11 @@ def test_to_mgnipy_config_accepts_dict_and_existing_instance(tmp_path):
     assert isinstance(
         config, MGnipyConfig
     ), "Dictionary input should be converted into an MGnipyConfig instance."
-    assert (
-        config.api_version is SupportedApiVersions.V2
+    assert config.api_version is SupportedApiVersions(
+        API_VER
     ), "The api_version field should be normalized to the enum value."
     assert (
-        str(config.base_url) == "https://www.ebi.ac.uk/"
+        str(config.base_url) == BASE_URL
     ), "The base URL should stay intact during config normalization."
     assert (
         config.cache_dir == tmp_path
@@ -33,37 +168,3 @@ def test_to_mgnipy_config_accepts_dict_and_existing_instance(tmp_path):
     assert (
         same_config is config
     ), "Passing an MGnipyConfig instance should return the same object unchanged."
-
-
-def test_token_cache_round_trip(tmp_path):
-    """
-    Token helpers should use a deterministic cache file derived from user and base URL.
-    Saving a token should create the cache file, and loading it immediately after should return the same token. Clearing the cache should remove the file.
-    """
-    config = MGnipyConfig(cache_dir=tmp_path, mg_user="myuser")
-
-    token_path = config._token_cache_path()
-
-    assert (
-        token_path is not None
-    ), "A cache path should be created when cache_dir is configured."
-    assert (
-        token_path.parent == tmp_path
-    ), "The token cache should live inside the configured cache directory."
-    assert token_path.name.startswith(
-        "auth_"
-    ), "The token cache file name should use the auth_ prefix."
-    assert token_path.suffix == ".json", "The token cache should be written as JSON."
-
-    config._save_cached_token("secret-token")
-
-    assert token_path.exists(), "Saving a token should create the token cache file."
-    assert (
-        config._load_cached_token() == "secret-token"
-    ), "Loading immediately after save should recover the same token."
-
-    config._clear_cached_token()
-
-    assert (
-        not token_path.exists()
-    ), "Clearing the token cache should remove the cache file."

@@ -91,14 +91,14 @@
 # %%
 # at minimum need
 # 1. the path
-from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
 # 2. the client
 from mgnipy.emgapi_v2_client import Client
+from mgnipy.emgapi_v2_client.api.miscellaneous import list_mgnify_biomes
 
 # extra nice to have annotations but not required for usage
 # 3. the models
 from mgnipy.emgapi_v2_client.models import NinjaPaginationResponseSchemaBiome
-from mgnipy.emgapi_v2_client.types import UNSET, Response
+from mgnipy.emgapi_v2_client.types import Response
 
 # %% [markdown]
 # ### Initiate the client
@@ -138,14 +138,16 @@ print(example_client)
 # prep our search
 params = {
     "biome_lineage": "root:Host-associated:Plants",
-    "page_size": 25,#the default
+    "page_size": 25,  # the default
     "max_depth": 6,
 }
 
 # make the sync call and store respone
 with example_client as client:
-    # adding type annotation for the response is optional 
-    response: Response[NinjaPaginationResponseSchemaBiome] = list_mgnify_biomes.sync_detailed(client=client, **params)
+    # adding type annotation for the response is optional
+    response: Response[NinjaPaginationResponseSchemaBiome] = (
+        list_mgnify_biomes.sync_detailed(client=client, **params)
+    )
 
 # check
 response.status_code
@@ -166,20 +168,18 @@ response.parsed.to_dict().keys()
 #
 # Let's take a closer look at the response
 
-# %%
+# %% tags=["hide-output"]
 response.parsed.to_dict()
 
 # %% [markdown]
 # ## Async requests support 
 
 # %%
-import asyncio 
-
 example_client = Client(base_url="https://www.ebi.ac.uk")
 
-async with example_client as client: 
+async with example_client as client:
     parsed_response = await list_mgnify_biomes.asyncio(
-        client=client, 
+        client=client,
         biome_lineage="root:Host-associated",
         max_depth=6,
         page_size=5,

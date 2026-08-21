@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, TypeVar
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
 
 if TYPE_CHECKING:
     from ..models.m_gnify_analysis_typed_annotation import MGnifyAnalysisTypedAnnotation
@@ -30,7 +32,6 @@ class MGnifyAnalysisWithAnnotationsAnnotations:
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
-
             if isinstance(prop, list):
                 field_dict[prop_name] = []
                 for additional_property_type_0_item_data in prop:

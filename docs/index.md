@@ -20,28 +20,23 @@ notebooks/getting-started/*
 notebooks/fundamentals/*
 ```
 
-
 ```{toctree}
 :caption: "Demos"
 :glob:
 :hidden:
 notebooks/demos/*
-<!-- tutorials/demos/get_all_analyses_for_study -->
-<!-- tutorials/demo/MOFAR -->
-<!-- tutorials/demo/SpeSpeNet -->
 ```
 
 ```{toctree}
 :caption: "Reference"
 :hidden:
 reference/mgnipy.mgnipy
-reference/mgnipy.V2.proxies
-reference/mgnipy.V2.core
+reference/mgnipy.V2.mgnifier
 reference/mgnipy.V2.datasets
-reference/mgnipy.V2.query_executor
-reference/mgnipy.V2.query_set
+reference/mgnipy.V2.collect.mgnetizer
+reference/mgnipy.V2.collect.biosampler
+reference/mgnipy.V2.proxies
 reference/mgnipy.V2.mixins
-reference/mgnipy.V2.describe
 reference/mgnipy.emgapi_v2_client.client
 reference/mgnipy.emgapi_v2_client.api
 ```

@@ -1,16 +1,16 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
 from ... import errors
-
+from ...client import AuthenticatedClient, Client
 from ...models.ninja_pagination_response_schema_genome_catalogue_list import (
     NinjaPaginationResponseSchemaGenomeCatalogueList,
 )
-from ...types import Unset
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
@@ -70,7 +70,7 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> Response[NinjaPaginationResponseSchemaGenomeCatalogueList]:
@@ -104,7 +104,7 @@ def sync_detailed(
 
 def sync(
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> NinjaPaginationResponseSchemaGenomeCatalogueList | None:
@@ -133,7 +133,7 @@ def sync(
 
 async def asyncio_detailed(
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> Response[NinjaPaginationResponseSchemaGenomeCatalogueList]:
@@ -165,7 +165,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: AuthenticatedClient | Client,
+    client: AuthenticatedClient,
     page: int | Unset = 1,
     page_size: int | None | Unset = UNSET,
 ) -> NinjaPaginationResponseSchemaGenomeCatalogueList | None:

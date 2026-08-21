@@ -3,12 +3,11 @@
 import logging
 
 logging.basicConfig(level=logging.WARNING, force=True)
-import os
 from importlib import metadata
+import os
 
 # compatibility with plotly6
 os.environ["PLOTLY_RENDERER"] = "notebook"
-os.environ["MGNIPY_AUTHENTICATION_OFF"] = "1"
 
 # -- Project information -----------------------------------------------------
 
@@ -33,6 +32,7 @@ extensions = [
     "sphinx_copybutton",  # add copy button to code blocks
     "sphinx.ext.autosummary",
     "sphinx_thebe",
+    "sphinx_togglebutton",
 ]
 
 exclude_patterns = [
@@ -90,6 +90,7 @@ autosummary_generate = True
 
 ## autodoc options
 autodoc_typehints = "description"
+add_module_names = False
 
 ## sphinx_new_tab_link
 new_tab_link_show_external_link_icon = True
@@ -101,9 +102,7 @@ myst_enable_extensions = ["dollarmath", "amsmath"]
 #  https://myst-nb.readthedocs.io/en/latest/computation/execute.html
 nb_execution_mode = "auto"
 nb_execution_timeout = -1  # -1 means no timeout
-nb_execution_raise_on_error = (
-    True  # fail the build if a notebook cell raises an error
-)
+nb_execution_raise_on_error = True  # fail the build if a notebook cell raises an error
 # Rendering
 nb_merge_streams = True
 nb_scroll_outputs = True
@@ -116,3 +115,7 @@ intersphinx_mapping = {
     "anndata": ("https://anndata.readthedocs.io/en/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
 }
+
+## togglebutton
+togglebutton_hint = "Click to open. More Info:"
+togglebutton_hint_hide = "Click to Hide. More Info:"

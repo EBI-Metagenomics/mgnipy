@@ -1,19 +1,20 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
+from dateutil.parser import isoparse
 
 from ..models.genome_catalogue_detail_catalogue_type import (
     GenomeCatalogueDetailCatalogueType,
 )
-from dateutil.parser import isoparse
-from typing import cast
-import datetime
+from ..models.genome_catalogue_detail_status import GenomeCatalogueDetailStatus
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -35,6 +36,7 @@ class GenomeCatalogueDetail:
         catalogue_id (str):
         version (str):
         name (str):
+        status (GenomeCatalogueDetailStatus):
         description (None | str):
         protein_catalogue_description (None | str):
         updated_at (datetime.datetime):
@@ -55,6 +57,7 @@ class GenomeCatalogueDetail:
     catalogue_id: str
     version: str
     name: str
+    status: GenomeCatalogueDetailStatus
     description: None | str
     protein_catalogue_description: None | str
     updated_at: datetime.datetime
@@ -72,16 +75,18 @@ class GenomeCatalogueDetail:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.biome import Biome
         from ..models.genome_catalogue_detail_other_stats_type_0 import (
             GenomeCatalogueDetailOtherStatsType0,
         )
-        from ..models.biome import Biome
 
         catalogue_id = self.catalogue_id
 
         version = self.version
 
         name = self.name
+
+        status = self.status.value
 
         description: None | str
         description = self.description
@@ -143,6 +148,7 @@ class GenomeCatalogueDetail:
                 "catalogue_id": catalogue_id,
                 "version": version,
                 "name": name,
+                "status": status,
                 "description": description,
                 "protein_catalogue_description": protein_catalogue_description,
                 "updated_at": updated_at,
@@ -181,6 +187,8 @@ class GenomeCatalogueDetail:
         version = d.pop("version")
 
         name = d.pop("name")
+
+        status = GenomeCatalogueDetailStatus(d.pop("status"))
 
         def _parse_description(data: object) -> None | str:
             if data is None:
@@ -293,6 +301,7 @@ class GenomeCatalogueDetail:
             catalogue_id=catalogue_id,
             version=version,
             name=name,
+            status=status,
             description=description,
             protein_catalogue_description=protein_catalogue_description,
             updated_at=updated_at,

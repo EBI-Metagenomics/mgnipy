@@ -1,5 +1,8 @@
 # mainly Enum constants for pydantic models
+from __future__ import annotations
+
 from enum import Enum
+from typing import Literal, TypeAlias
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -157,11 +160,14 @@ class SupportedEndpoints(SpecialEnum):
     RUN = "run"
     BIOMES = "biomes"  # miscellaneous
     BIOME = "biome"
+    MISC = "miscellaneous"
     CATALOGUES = "catalogues"
     CATALOGUE = "catalogue"
     # ANNOTATIONS = "annotations"  # not really
     PRIVATE_STUDIES = "private_studies"
-    _DOWNLOADS = "_downloads"  # for internal use only, not an actual endpoint
+    _CUSTOM_ENDPOINT = (
+        "_custom_endpoint"  # for internal use only, not an actual endpoint
+    )
 
 
 class PipelineVersions(SpecialEnum):
@@ -173,3 +179,31 @@ class PipelineVersions(SpecialEnum):
     v5 = 5
     v6 = 6
     v6_1 = 6.1
+
+
+ListResourceStr: TypeAlias = Literal[
+    "biomes",
+    "studies",
+    "samples",
+    "runs",
+    "analyses",
+    "genomes",
+    "assemblies",
+    "publications",
+    "catalogues",
+    "private_studies",
+]
+
+DetailResourceStr: TypeAlias = Literal[
+    "biome",
+    "study",
+    "sample",
+    "run",
+    "analysis",
+    "genome",
+    "assembly",
+    "publication",
+    "catalogue",
+]
+
+ResourceStr: TypeAlias = ListResourceStr | DetailResourceStr

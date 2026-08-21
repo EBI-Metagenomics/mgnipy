@@ -1,18 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
-
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-
-from dateutil.parser import isoparse
-from typing import cast
 import datetime
+from typing import TYPE_CHECKING, Any, TypeVar, cast
+
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
+from dateutil.parser import isoparse
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
+    from ..models.m_gnify_study_metadata import MGnifyStudyMetadata
 
 
 T = TypeVar("T", bound="MGnifyStudy")
@@ -27,6 +27,7 @@ class MGnifyStudy:
         title (str):
         biome (Biome | None):
         updated_at (datetime.datetime):
+        metadata (MGnifyStudyMetadata): Metadata associated with the study, a partial copy of the ENA Study record.
     """
 
     accession: str
@@ -34,6 +35,7 @@ class MGnifyStudy:
     title: str
     biome: Biome | None
     updated_at: datetime.datetime
+    metadata: MGnifyStudyMetadata
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -53,6 +55,8 @@ class MGnifyStudy:
 
         updated_at = self.updated_at.isoformat()
 
+        metadata = self.metadata.to_dict()
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -62,6 +66,7 @@ class MGnifyStudy:
                 "title": title,
                 "biome": biome,
                 "updated_at": updated_at,
+                "metadata": metadata,
             }
         )
 
@@ -70,6 +75,7 @@ class MGnifyStudy:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.biome import Biome
+        from ..models.m_gnify_study_metadata import MGnifyStudyMetadata
 
         d = dict(src_dict)
         accession = d.pop("accession")
@@ -95,12 +101,15 @@ class MGnifyStudy:
 
         updated_at = isoparse(d.pop("updated_at"))
 
+        metadata = MGnifyStudyMetadata.from_dict(d.pop("metadata"))
+
         m_gnify_study = cls(
             accession=accession,
             ena_accessions=ena_accessions,
             title=title,
             biome=biome,
             updated_at=updated_at,
+            metadata=metadata,
         )
 
         m_gnify_study.additional_properties = d

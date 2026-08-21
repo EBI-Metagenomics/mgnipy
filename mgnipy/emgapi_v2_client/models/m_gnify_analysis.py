@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
 
 from ..models.pipeline_versions import PipelineVersions
-from typing import cast
 
 if TYPE_CHECKING:
     from ..models.analysed_run import AnalysedRun
@@ -43,9 +43,9 @@ class MGnifyAnalysis:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.m_gnify_sample import MGnifySample
-        from ..models.assembly import Assembly
         from ..models.analysed_run import AnalysedRun
+        from ..models.assembly import Assembly
+        from ..models.m_gnify_sample import MGnifySample
 
         experiment_type = self.experiment_type
 

@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
+from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
-
-from dateutil.parser import isoparse
-from typing import cast
-import datetime
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -30,9 +30,9 @@ class MGnifyStudyDetail:
         title (str):
         biome (Biome | None):
         updated_at (datetime.datetime):
-        downloads (list[MGnifyStudyDownloadFile]):
         metadata (MGnifyStudyDetailMetadata): Metadata associated with the study, a partial copy of the ENA Study
             record.
+        downloads (list[MGnifyStudyDownloadFile]):
         first_accession (None | str | Unset): Preferred ENA accession for the study (derived from ENA/INSDC accessions)
     """
 
@@ -41,8 +41,8 @@ class MGnifyStudyDetail:
     title: str
     biome: Biome | None
     updated_at: datetime.datetime
-    downloads: list[MGnifyStudyDownloadFile]
     metadata: MGnifyStudyDetailMetadata
+    downloads: list[MGnifyStudyDownloadFile]
     first_accession: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -63,12 +63,12 @@ class MGnifyStudyDetail:
 
         updated_at = self.updated_at.isoformat()
 
+        metadata = self.metadata.to_dict()
+
         downloads = []
         for downloads_item_data in self.downloads:
             downloads_item = downloads_item_data.to_dict()
             downloads.append(downloads_item)
-
-        metadata = self.metadata.to_dict()
 
         first_accession: None | str | Unset
         if isinstance(self.first_accession, Unset):
@@ -85,8 +85,8 @@ class MGnifyStudyDetail:
                 "title": title,
                 "biome": biome,
                 "updated_at": updated_at,
-                "downloads": downloads,
                 "metadata": metadata,
+                "downloads": downloads,
             }
         )
         if first_accession is not UNSET:
@@ -124,14 +124,14 @@ class MGnifyStudyDetail:
 
         updated_at = isoparse(d.pop("updated_at"))
 
+        metadata = MGnifyStudyDetailMetadata.from_dict(d.pop("metadata"))
+
         downloads = []
         _downloads = d.pop("downloads")
         for downloads_item_data in _downloads:
             downloads_item = MGnifyStudyDownloadFile.from_dict(downloads_item_data)
 
             downloads.append(downloads_item)
-
-        metadata = MGnifyStudyDetailMetadata.from_dict(d.pop("metadata"))
 
         def _parse_first_accession(data: object) -> None | str | Unset:
             if data is None:
@@ -148,8 +148,8 @@ class MGnifyStudyDetail:
             title=title,
             biome=biome,
             updated_at=updated_at,
-            downloads=downloads,
             metadata=metadata,
+            downloads=downloads,
             first_accession=first_accession,
         )
 

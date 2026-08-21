@@ -8,7 +8,10 @@ Ideally, only this endpoints.py file (and mgnipy._models.constants.CONSTANTS) sh
 if any endpoints added or removed from the API and emgapi_v2_client re-installed via ./autogen_clients.sh.
 """
 
+from __future__ import annotations
+
 from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+from mgnipy._shared_helpers._custom_endpoint import custom_endpoint
 from mgnipy.emgapi_v2_client.api.analyses import (
     get_mgnify_analysis,
     list_mgnify_analyses,
@@ -40,8 +43,8 @@ from mgnipy.emgapi_v2_client.api.runs import (
 from mgnipy.emgapi_v2_client.api.samples import (
     get_mgnify_sample,
     list_mgnify_samples,
-    list_sample_runs,
     list_sample_assemblies,
+    list_sample_runs,
 )
 from mgnipy.emgapi_v2_client.api.studies import (
     get_mgnify_study,
@@ -50,10 +53,9 @@ from mgnipy.emgapi_v2_client.api.studies import (
     list_mgnify_study_publications,
     list_mgnify_study_samples,
 )
-from mgnipy.V2 import custom_endpoint
 
 CUSTOM_ENDPOINTS: dict[SupportedEndpoints, callable] = {
-    SupportedEndpoints._DOWNLOADS: custom_endpoint,
+    SupportedEndpoints._CUSTOM_ENDPOINT: custom_endpoint,
 }
 
 RESOURCES_LIST_ENDPOINTS: dict[SupportedEndpoints, callable] = {
@@ -154,3 +156,26 @@ PRIVATE_ENDPOINTS: set[SupportedEndpoints] = {
 ALL_LIST_ENDPOINTS: list[callable] = list(RESOURCES_LIST_ENDPOINTS.values()) + [
     v for d in BETWEEN_RESOURCE_RELATIONSHIPS.values() for v in d.values()
 ]
+
+ID_PARAM = {
+    SupportedEndpoints.BIOMES: "biome_lineage",
+    SupportedEndpoints.BIOME: "biome_lineage",
+    SupportedEndpoints.MISC: "lineage",
+    SupportedEndpoints.STUDIES: "accession",
+    SupportedEndpoints.SAMPLES: "accession",
+    SupportedEndpoints.RUNS: "accession",
+    SupportedEndpoints.ANALYSES: "accession",
+    SupportedEndpoints.GENOMES: "accession",
+    SupportedEndpoints.ASSEMBLIES: "accession",
+    SupportedEndpoints.PUBLICATIONS: "pubmed_id",
+    SupportedEndpoints.CATALOGUES: "catalogue_id",
+    SupportedEndpoints.STUDY: "accession",
+    SupportedEndpoints.SAMPLE: "accession",
+    SupportedEndpoints.RUN: "accession",
+    SupportedEndpoints.ANALYSIS: "accession",
+    SupportedEndpoints.GENOME: "accession",
+    SupportedEndpoints.ASSEMBLY: "accession",
+    SupportedEndpoints.PUBLICATION: "pubmed_id",
+    SupportedEndpoints.CATALOGUE: "catalogue_id",
+    SupportedEndpoints._CUSTOM_ENDPOINT: "custom_id",
+}

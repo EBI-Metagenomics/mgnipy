@@ -1,10 +1,20 @@
+from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
+
 from typing import Optional
 
 from mgnipy._models.config import MGnipyConfig, to_mgnipy_config
-from mgnipy._models.constants.CONSTANTS import SupportedEndpoints
+from mgnipy._models.constants.CONSTANTS import DetailResourceStr, SupportedEndpoints
+from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
+from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
+from mgnipy.V2.collect.biosampler import BioSampler
+from mgnipy.V2.collect.mgnetizer import MGnetizer
+from mgnipy.V2.datasets import MTG, MGazine
+from mgnipy.V2.datasets.taxonomic import DWCTaxaMGazine, TaxaMGazine
+from mgnipy.V2.mixins import ClientManagerMixin
 from mgnipy.V2.proxies import (
     V2_ENDPOINT_DETAIL_PROXIES,
     V2_ENDPOINT_LIST_PROXIES,
@@ -13,9 +23,10 @@ from mgnipy.V2.proxies import (
 V2_ALL_PROXIES = V2_ENDPOINT_DETAIL_PROXIES | V2_ENDPOINT_LIST_PROXIES
 
 
-class MGnipy:
+class MGnipy(ClientManagerMixin):
     """
-    Main class for interacting with the MGnify API.
+    MGnipy is a Python client for interacting with the MGnify API (https://www.ebi.ac.uk/metagenomics/api/v2/).
+
     Provides methods to access different resources (e.g., studies, samples, analyses) and their details,
     as well as utility methods for listing resources and describing endpoints.
 
@@ -23,54 +34,42 @@ class MGnipy:
     ----------
     config : MGnipyConfig or dict, optional
         Configuration for MGnipy, either as an MGnipyConfig instance or a dictionary of configuration parameters (default is None).
+    interactive_auth : bool, optional
+        Whether to prompt for authentication interactively if needed (default is False).
     **config_kwargs
         Additional keyword arguments to pass to the MGnipyConfig constructor if config is not provided.
         For example, cache_dir can be specified as a keyword argument. e.g. MGnipy(cache_dir="/path/to/cache")
 
     Examples
     --------
-    >>> MG = MGnipy(cache_dir="/path/to/cache")
-    >>> print(MG.cache_dir)
-    /path/to/cache
+    >>> MG = MGnipy(cache_dir=None)  # or MGnipy(cache_dir="/path/to/cache")
+    >>> MG.cache_dir
+
     """
 
     def __init__(
         self,
         config: Optional[MGnipyConfig | dict] = None,
+        interactive_auth: bool = False,
         **config_kwargs,
     ):
 
-        self._config: MGnipyConfig = (
+        # init config
+        self.config: MGnipyConfig = (
             to_mgnipy_config(config) if config else MGnipyConfig(**config_kwargs)
         )
+        # and resolve auth token if needed
+        self.interactive_auth = interactive_auth
+        self.config.resolve_auth_token(interactive=self.interactive_auth)
 
-        self._endpoints = self.list_resources()
-
-    def __getattr__(self, name: str):
-
-        if name == "cache_dir":
-            return self._config.cache_dir
-
-        endpoint = SupportedEndpoints.validate(name)
-
-        if endpoint in V2_ENDPOINT_LIST_PROXIES:
-
-            list_cls = V2_ENDPOINT_LIST_PROXIES[endpoint]
-            return list_cls(config=self._config)
-
-        if endpoint in V2_ENDPOINT_DETAIL_PROXIES:
-            detail_cls = V2_ENDPOINT_DETAIL_PROXIES[endpoint]
-
-            # Return a callable so required args like accession/biome_lineage
-            # are provided when user calls MG.study(...), MG.biome(...), etc.
-            def _detail_factory(id: Optional[str] = None, **kwargs):
-                return detail_cls(id=id, config=self._config, **kwargs)
-
-            return _detail_factory
-
-        raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
+        # set up Auth or unauth client
+        self.client: Client | AuthenticatedClient = init_httpx_client(self.config)
+        self._owns_client = True
 
     def list_resources(self):
+        """
+        List all supported resources (endpoints) from MGnify API that are supported by mgnipy.
+        """
         return SupportedEndpoints.as_list()
 
     def describe_resource(
@@ -102,7 +101,7 @@ class MGnipy:
 
         proxy_cls = V2_ALL_PROXIES[endpoint]
         logger.debug(f"Using proxy class {proxy_cls} to describe resource '{resource}'")
-        proxy = proxy_cls(config=self._config)
+        proxy = proxy_cls(config=self.config)
         return proxy.emgapi_handler.describe_endpoint(as_dict=as_dict)
 
     def describe_resources(
@@ -146,10 +145,12 @@ class MGnipy:
         """
 
         if self.cache_dir is None:
+            logger.warning(
+                f"Cache directory is not set: {self.cache_dir}. Cannot clear cache. Please set cache_dir in MGnipyConfig."
+            )
             return
 
         if self.cache_dir.exists():
-
             logger.warning(f"Clearing ALL cache subdirectories in {self.cache_dir}")
             # for each cache subdir
             for cache_key in self.cache_dir.iterdir():
@@ -201,5 +202,56 @@ class MGnipy:
                 f"Cache directory {self.cache_dir} does not exist, nothing to clear."
             )
 
+    def __getattr__(self, name: str):
+
+        # for cache_dir attr
+        if name == "cache_dir":
+            return self.config.cache_dir
+
+        if SupportedEndpoints.is_valid(name):
+            # otherwise endpoint attrs
+            endpoint = SupportedEndpoints.validate(name)
+
+            the_cls = V2_ALL_PROXIES[endpoint]
+            return the_cls(
+                config=self.config,
+                client=self.client,
+                resolve_auth=False,
+                interactive_auth=self.interactive_auth,
+            )
+
+        if name == "mgnetizer":
+            return MGnetizer(
+                resource=None, all_ids=[], config=self.config, client=self.client
+            )
+
+        if name == "biosampler":
+            return BioSampler(sample_ids=[], config=self.config)
+
+        if name == "mgazine":
+            return MGazine(downloads=[], config=self.config, client=self.client)
+
+        if name == "mtg":
+            return MTG(dataset=None)
+
+        if name == "taxonomic":
+            return TaxaMGazine(downloads=[], config=self.config, client=self.client)
+
+        if name == "taxonomic_dwc_ready":
+            return DWCTaxaMGazine(downloads=[], config=self.config, client=self.client)
+
+        raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
+
+    def __getitem__(self, key: str):
+        if key in DetailResourceStr.__args__:
+            return MGnetizer(
+                resource=key, all_ids=[], config=self.config, client=self.client
+            )
+        raise KeyError(f"{type(self).__name__} has no endpoint {key!r}")
+
     def __str__(self):
-        return f"MGnipy(config={self._config})"
+        return f"MGnipy(config={self.config})"
+
+    def __repr__(self):
+        self.status()
+        return f"MGnipy(config={self.config})"

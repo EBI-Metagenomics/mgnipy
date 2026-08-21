@@ -1,14 +1,17 @@
+from __future__ import annotations
+
 from typing import (
     Any,
     ClassVar,
     Literal,
     Optional,
 )
-from mgnipy.V2.mixins import BioSamplesMetadataMixin
+
+from mgnipy.V2.collect.biosampler import BioSampler
 from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
-class Assemblies(MGnifyList, BioSamplesMetadataMixin):
+class Assemblies(MGnifyList):
     RESOURCE: ClassVar[Literal["assemblies"]] = "assemblies"
 
     def __init__(
@@ -18,11 +21,21 @@ class Assemblies(MGnifyList, BioSamplesMetadataMixin):
         config: Optional[dict] = None,
         **kwargs,
     ):
-        self._init_biosamples_cache()
         super().__init__(params=params, config=config, **kwargs)
 
+        self._biosampler = None
 
-class AssemblyDetail(MGnifyDetail, BioSamplesMetadataMixin):
+    @property
+    def biosampler(self):
+        if self._biosampler is None:
+            # init it
+            self._biosampler = BioSampler(
+                sample_ids=self.search_results.ids, config=self.config
+            )
+        return self._biosampler
+
+
+class AssemblyDetail(MGnifyDetail):
     RESOURCE: ClassVar[Literal["assembly"]] = "assembly"
 
     def __init__(
@@ -33,9 +46,19 @@ class AssemblyDetail(MGnifyDetail, BioSamplesMetadataMixin):
         config: Optional[dict] = None,
         **kwargs,
     ):
-        self._init_biosamples_cache()
         super().__init__(
             id=id or accession,
             config=config,
             **kwargs,
         )
+
+        self._biosampler = None
+
+    @property
+    def biosampler(self):
+        if self._biosampler is None:
+            # init it
+            self._biosampler = BioSampler(
+                sample_id=[self.identifier], config=self.config
+            )
+        return self._biosampler

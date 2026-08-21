@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
+from dateutil.parser import isoparse
 
 from ..models.genome_type import GenomeType
-from dateutil.parser import isoparse
-from typing import cast
-import datetime
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.biome import Biome
@@ -60,6 +60,9 @@ class GenomeDetail:
         eggnog_coverage (float | None | Unset):
         ipr_coverage (float | None | Unset):
         num_proteins (int | None | Unset):
+        pangenome_size (int | None | Unset):
+        pangenome_core_size (int | None | Unset):
+        pangenome_accessory_size (int | None | Unset):
         catalogue (GenomeCatalogueBase | None | Unset):
     """
 
@@ -97,6 +100,9 @@ class GenomeDetail:
     eggnog_coverage: float | None | Unset = UNSET
     ipr_coverage: float | None | Unset = UNSET
     num_proteins: int | None | Unset = UNSET
+    pangenome_size: int | None | Unset = UNSET
+    pangenome_core_size: int | None | Unset = UNSET
+    pangenome_accessory_size: int | None | Unset = UNSET
     catalogue: GenomeCatalogueBase | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -244,6 +250,24 @@ class GenomeDetail:
         else:
             num_proteins = self.num_proteins
 
+        pangenome_size: int | None | Unset
+        if isinstance(self.pangenome_size, Unset):
+            pangenome_size = UNSET
+        else:
+            pangenome_size = self.pangenome_size
+
+        pangenome_core_size: int | None | Unset
+        if isinstance(self.pangenome_core_size, Unset):
+            pangenome_core_size = UNSET
+        else:
+            pangenome_core_size = self.pangenome_core_size
+
+        pangenome_accessory_size: int | None | Unset
+        if isinstance(self.pangenome_accessory_size, Unset):
+            pangenome_accessory_size = UNSET
+        else:
+            pangenome_accessory_size = self.pangenome_accessory_size
+
         catalogue: dict[str, Any] | None | Unset
         if isinstance(self.catalogue, Unset):
             catalogue = UNSET
@@ -306,6 +330,12 @@ class GenomeDetail:
             field_dict["ipr_coverage"] = ipr_coverage
         if num_proteins is not UNSET:
             field_dict["num_proteins"] = num_proteins
+        if pangenome_size is not UNSET:
+            field_dict["pangenome_size"] = pangenome_size
+        if pangenome_core_size is not UNSET:
+            field_dict["pangenome_core_size"] = pangenome_core_size
+        if pangenome_accessory_size is not UNSET:
+            field_dict["pangenome_accessory_size"] = pangenome_accessory_size
         if catalogue is not UNSET:
             field_dict["catalogue"] = catalogue
 
@@ -557,6 +587,37 @@ class GenomeDetail:
 
         num_proteins = _parse_num_proteins(d.pop("num_proteins", UNSET))
 
+        def _parse_pangenome_size(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        pangenome_size = _parse_pangenome_size(d.pop("pangenome_size", UNSET))
+
+        def _parse_pangenome_core_size(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        pangenome_core_size = _parse_pangenome_core_size(
+            d.pop("pangenome_core_size", UNSET)
+        )
+
+        def _parse_pangenome_accessory_size(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        pangenome_accessory_size = _parse_pangenome_accessory_size(
+            d.pop("pangenome_accessory_size", UNSET)
+        )
+
         def _parse_catalogue(data: object) -> GenomeCatalogueBase | None | Unset:
             if data is None:
                 return data
@@ -609,6 +670,9 @@ class GenomeDetail:
             eggnog_coverage=eggnog_coverage,
             ipr_coverage=ipr_coverage,
             num_proteins=num_proteins,
+            pangenome_size=pangenome_size,
+            pangenome_core_size=pangenome_core_size,
+            pangenome_accessory_size=pangenome_accessory_size,
             catalogue=catalogue,
         )
 

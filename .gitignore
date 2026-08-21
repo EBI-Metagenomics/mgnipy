@@ -60,5 +60,5 @@ reference/*
 
 *.ignore
 *.ignoreme
-docs/tutorials/demos/cache/
-docs/tutorials/demos/downloads/
+*.h5ad
+docs/notebooks/**/*.json

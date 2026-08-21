@@ -1,4 +1,3 @@
-export MGNIPY_AUTHENTICATION_OFF=1
 export SPHINX_APIDOC_OPTIONS="members,undoc-members,inherited-members,show-inheritance"
 
 jupytext notebooks/**/*.ipynb --sync
@@ -12,4 +11,4 @@ sphinx-apidoc --force \
     -d 1 -o reference ../mgnipy
 
 # build the docs
-sphinx-build --keep-going --fresh-env --builder html ./ ./_build/
+sphinx-build -vvv --show-traceback --keep-going --fresh-env --builder html ./ ./_build/

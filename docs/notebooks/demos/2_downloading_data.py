@@ -7,19 +7,15 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: .venv (3.11.7.final.0)
 #     language: python
 #     name: python3
 # ---
 
 # %% [markdown]
-# # Downloading MGnify Study data
+# # Getting MGnify datasets
 #
-# The MGnify API provides access to study and analyses datasets for download. On this page we demonstrate how to:
-#
-# -  **Discover** what datasets are available
-# -  **Download** the datasets
-# -  **Stream** or read in the datasets
+# The [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2/) provides access to MGnify analyses datasets and important metadata such as biome, sample, study, run, analysis details. 
 #
 # ```{margin}
 # After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
@@ -49,42 +45,12 @@
 #
 # which we will follow in this notebook
 
-# %% [markdown]
-# ## 1. and 2. `mgnipy.MGnipy().studies`
-#
-# In the below cell we take care of
-# - ✅ 1. set up of our MGnipy instance and
-# - ✅ 2.a) preparing search for a list of tomato studies using the studies-specific `MGnifier` aka `mgnipy.V2.proxies.studies.Studies`
-# - ✅ 2.b) populating list of studies
-# - ✅ 2.c) retrieving details (i.e., ALL `StudyDetail`s) for every study in the list
-#
-
-# %% [markdown]
-#
-# ````{margin} What is happening behind the scenes of:
-# **2.b)** .bulk_fetch()
-# ```python
-# for _ in range(
-#     tomato_studies.num_requests
-# ):
-#     tomato_studies.get()
-# ```
-#
-# **2.c)** .enrich_details()
-# ```python
-# for _ in range(
-#     len(tomato_studies)
-# ):
-#     tomato_studies.get_detail()
-# ```
-# ````
-
-# %% tags=["hide-output"]
+# %%
 from mgnipy import MGnipy
 
 # 1. init with default config
 MG = MGnipy(
-    #cache_dir="downloads"
+    cache_dir="downloads"
 )
 
 # 2.a) setup studies mgnifier (build queries)
@@ -92,14 +58,17 @@ tomato_studies = MG.studies(
     biome_lineage="root:Host-associated:Plants:Rhizosphere", search="tomato"
 )
 
-# 2.b) execute the list query (get the study list)
-tomato_studies.bulk_fetch()
 
-# 2.c) get the study list (execute all detail queries)
-tomato_studies.enrich_details()
+# %% tags=["hide-output"]
+with MG: 
+    # 2.b) execute the list query (get the study list)
+    tomato_studies.get_all()
+
+    # 2.c) get the study list (execute all detail queries)
+    tomato_studies.enrich_details()
 
 # take a look at the studies details results as a pandas df
-tomato_studies.to_df(expand_nested_dicts=True)
+tomato_studies.metadata.to_pandas(expand_nested_dicts=True)
 
 # %% [markdown]
 # ## 3. Accessing the `MGazine` of datasets
@@ -123,51 +92,50 @@ print(MZ)
 MZ.downloads_df()
 
 # %% [markdown]
-# You can filter by short descriptioins by passing them as you would an index into square brackets i..e, __getitem__
+# You can read in whole or stream in chunks a dataset by passing its `alias` or `url` to `MGazine.stream()`
 
-# %% tags=["hide-output"]
-# we want the taxonomic assignments
-ssu = MZ["Taxonomic assignments SSU"]
-
-# checking out what it is
-print(type(ssu))
-print(ssu)
-
-# downloads_df again
-ssu.downloads_df()
+# %%
+MZ.stream(
+    alias = MZ.aliases[5],
+    chunksize=None, # default to read in all, set int for chunked reading
+).head()
 
 # %% [markdown]
-# - for more options over the filtering of mgazines see the [MGazine informtion page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html).
+# You can filter by short descriptioins by passing them as you would an index into square brackets i..e, __getitem__
+
+# %%
+ssu = MZ['Taxonomic assignments SSU']
+print(ssu)
+
+# now with additional taxonomic helpers
+tax = ssu.taxonomic
+
+# %% [markdown]
+# The [MGazine informtion page](https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html) also delves into how to download as well as other options for reading in the files
 #
-# - additionally the info page delves into how to downloads the files
-#
-# We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now. There are analysis type-specific mgazines, such as this TaxaMGazine
+# We will carry on with our filtered TaxaMGazine given [our goal](#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies) for now. 
 #
 # for example, we can also combine the taxonomic assignment results into one dataframe e.g. `.to_pandas()`, `.to_polars`, `.X()`
 
 # %% tags=["hide-output"]
 # first loading
-ssu.load()
+tax.load()
 
-ssu.to_pandas().head()
+# accessing the 5 datasets in one df
+tax.to_polars().head()
+
+# %%
+# also as an annotated dataframe (AnnData)
+tax.to_anndata()
 
 # %% [markdown]
-# There is also option to enrich with additional metadata!
+# We can see that only the `var` or features (taxonomy) are annotated. The `obs` or observations (runs/samples) are not yet annotated because we did not collect their metadata. 
 #
-# 1)  From *already* retrieved `MGnifier` results you can set to `runs_results`, `samples_results`, `studies_results` etc, or
-#
-# 2) use `.enrich_runs()` etc or `.enrich_biosamples` which will make the get requests for the additional metadata
-
-# %% tags=["hide-output"]
-ssu.enrich_runs(
-    limit=200#default
-)
+# From here we could use a `MGnetizer` to collect all the detailed metadata for the `.runs_accession` in our MGazine. See the following notebooks for more information
 
 # %%
-ssu.to_anndata()
-
-# %%
-ssu.clear_cache()
+# tidying up cache
+MG.clear_subcaches()
 
 # %% [markdown]
 # ---

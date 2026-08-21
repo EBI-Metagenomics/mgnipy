@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: .venv (3.11.7.final.0)
 #     language: python
 #     name: python3
 # ---
@@ -19,6 +19,15 @@
 # After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
 # ```
 # <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
+#
+# ---
+#
+
+# %%
+# uncomment below if colab
+# #!pip install mgnipy
+
+# %% [markdown]
 #
 # ## What is a `mgnipy.MGazine`?
 #
@@ -61,7 +70,8 @@ MG = MGnipy()
 
 # 2. search up a study/analysis detail or a list of studies/analyses and get their details
 study = MG.study("MGYS00010442")
-study.get()
+with MG:
+    study.get()
 
 # %% [markdown]
 # MGazines for a given study or analysis detail can be accessed via their `.datasets` attributes
@@ -80,27 +90,14 @@ print(mz)
 #
 # Built in to mgazine, you can filter the mgazine to a specific pipeline versions and short_descriptions which will return a mgazine again but filtered or a curated mgazine with additional functionalities if available ✨.
 #
-# FOr accessing a specific pipeline version you can call the veresion as an attribute:
+# You can filter by passing them as you would an index into square brackets i..e, __getitem__
 
 # %%
 # above we saw that v6 is the only one so this will return the same basically
-v6_data = mz.v6
+ssu = mz["v6"]["Summary of SILVA-SSU taxonomies"]
 
-# if we print again we will see the same info
-print(v6_data)
-
-# %% [markdown]
-# You can filter by short descriptioins by passing them as you would an index into square brackets i..e, __getitem__
-
-# %%
-# we want the taxonomic assignments
-ssu = v6_data["Summary of SILVA-SSU taxonomies"]
-
-# checking out what it is
-print(type(ssu))
 print(ssu)
-
-# also downloads_df
+# also checking out downloads detials as df
 ssu.downloads_df()
 
 # %% [markdown]
@@ -132,7 +129,7 @@ ssu.download_all(to_dir="downloads")
 # `.stream() `resolves a download alias or URL and returns the appropriate streaming handler for the file type. It supports returning either a full object (when `chunksize` is `None`) or an iterator of chunks when chunksize is provided.
 
 # %%
-df = ssu.stream(alias=one_alias, dataframe_engine="pandas")
+df = ssu.stream(alias=one_alias, df_engine="pandas")
 df.head()
 
 # %% [markdown]
@@ -140,23 +137,23 @@ df.head()
 #
 # There are analysis type-specific mgazines, such as this TaxaMGazine
 #
-# for example, we can also combine the taxonomic assignment results into one dataframe e.g. `.to_pandas()`, `.to_polars`, `.X()`
+# for example, we can also combine the taxonomic assignment results into one dataframe e.g. `.to_pandas()`, `.to_polars`, `.to_anndata()`
 
-# %%
-ssu.to_pandas()
+# %% tags=["hide-output"]
+taxo = ssu.taxonomic
+
+taxo.load()
+
+taxo.to_pandas().head()
 
 # %% [markdown]
-# There is also option to enrich with additional metadata!
-#
-# 1)  From *already* retrieved `MGnifier` results you can set to `runs_results`, `samples_results`, `studies_results` etc, or
-#
-# 2) use `.enrich_runs()` etc or `.enrich_biosamples` which will make the get requests for the additional metadata
+# also annotated dataframes
 
 # %%
-ssu.enrich_runs(limit=None)
+taxo.to_anndata()
+
+# %% [markdown]
+# tidy up
 
 # %%
-ssu.to_anndata()
-
-# %%
-ssu.clear_cache()
+MG.clear_subcaches()

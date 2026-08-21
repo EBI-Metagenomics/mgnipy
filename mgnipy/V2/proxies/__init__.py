@@ -3,135 +3,97 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-import re
+
 from typing import (
-    TYPE_CHECKING,
     Any,
     AsyncIterator,
     Callable,
     ClassVar,
     Iterator,
-    Literal,
     Optional,
 )
 
 import pandas as pd
 from tqdm import tqdm as tqdm_sync
 from tqdm.asyncio import tqdm_asyncio
+
+from mgnipy._models.config import MGnipyConfig
 from mgnipy._models.constants.CONSTANTS import (
-    PipelineVersions,
+    DetailResourceStr,
+    ListResourceStr,
     SupportedEndpoints,
 )
-from mgnipy.V2.core import ID_PARAM, MGnifier
-from mgnipy.V2.endpoints import (
+from mgnipy.V2.mgnifier import MGnifier
+from mgnipy.V2.mgnifier.endpoints import (
     BETWEEN_RESOURCE_RELATIONSHIPS,
+    ID_PARAM,
     PARENT_CHILD_RESOURCES,
     WITHIN_RESOURCE_RELATIONSHIPS,
 )
-from mgnipy.V2.mixins import ResultsHandler
-
-if TYPE_CHECKING:
-    from mgnipy.V2.query_set import QuerySet
-
-ListResource = Literal[
-    "biomes",
-    "studies",
-    "samples",
-    "runs",
-    "analyses",
-    "genomes",
-    "assemblies",
-    "publications",
-    "catalogues",
-    "private_studies",
-]
-
-DetailResource = Literal[
-    "biome",
-    "study",
-    "sample",
-    "run",
-    "analysis",
-    "genome",
-    "assembly",
-    "publication",
-    "catalogue",
-]
+from mgnipy.V2.mgnifier.metadata import (
+    MGnifyMetadata,
+    add_id_param_field,
+    add_pipeline_version_field,
+)
 
 
 class MGnifyList(MGnifier):
-    """Base class for MGnify list endpoints.
+    """
+    A proxy for a list resource in the MGnify API, such as studies, samples, or analyses.
 
-    Concrete subclasses bind a specific list resource such as studies, samples,
-    or analyses. Calling the proxy returns a new instance with merged filters.
+    This class provides methods to retrieve metadata, iterate over child details, and manage pagination and filtering for the list resource.
     """
 
-    RESOURCE: ClassVar[Optional[ListResource]] = None
+    RESOURCE: ClassVar[Optional[ListResourceStr]] = None
 
     def __init__(
         self,
         *,
-        config: Optional[dict] = None,
+        config: Optional[MGnipyConfig | dict] = None,
         params: Optional[dict[str, Any]] = None,
         **kwargs,
     ):
         # Accept accidental "resource" in kwargs, but do not expose it in signature
-        passed_resource = kwargs.pop("resource", None)
+        passed_resource: Optional[ListResourceStr] = kwargs.pop("resource", None)
         resolved_resource = self.RESOURCE or passed_resource
 
         if resolved_resource is None:
             raise TypeError(
-                "`resource` is required for base MGnifyList; "
-                "use a concrete subclass like Analyses/Runs/... "
-                f"or pass a resource param: {ListResource!r}"
+                "Use a proxy e.g. proxies.studies.Studies or "
+                "`resource` arg required: {ListResourceStr!r}"
             )
 
-        if self.RESOURCE is not None and passed_resource not in (
-            None,
-            self.RESOURCE,
-        ):
-            raise ValueError(
-                f"Conflicting resource: expected {self.RESOURCE!r}, got {passed_resource!r}"
-            )
-
+        logger.debug(
+            f"Initializing MGnifyList with: {resolved_resource!r}, "
+            f"params: {params}, config: {config}, also: {kwargs!r}"
+        )
         super().__init__(
             resource=resolved_resource,
-            params=params,
             config=config,
+            params=params,
             **kwargs,
         )
+        logger.debug(f"{self.resource!r} MGnifyList initialized.")
+
         self.child_resource: str = PARENT_CHILD_RESOURCES.get(self.resource, None)
 
         self._collected_details: dict[str, "MGnifyDetail"] = {}
-        self._collected_details_results: dict[str, dict] = {}
-        self._collected_details_downloads: dict[str, list[dict[str, Any]]] = {}
+        self._collected_details_metadata: dict[str, dict] = {}
 
-    def __call__(self, **kwargs) -> "MGnifyList":
-        """Return a cloned list proxy with updated parameters.
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__} resource={str(self.resource)!r}, "
+            f"endpoint={self.endpoint_module.__name__!r}, params={self.params!r}, "
+            f"child_resource={str(self.child_resource)!r}>"
+        )
 
-        Parameters
-        ----------
-        **kwargs
-            Query parameters to merge into the current parameter set. If
-            ``params`` is supplied, it replaces the current parameters before
-            the remaining keyword arguments are merged in.
-
-        Returns
-        -------
-        MGnifyList
-            A new proxy instance with the same resource and updated filters.
-
-        Examples
-        --------
-        >>> from mgnipy.V2.proxies import Studies
-        >>> studies = Studies(params={"search": "gut"}, config={})  # doctest: +SKIP
-        >>> studies(search="soil")  # doctest: +SKIP
-        """
-        params = kwargs.pop("params", None) or {}
-        # Merge with params, giving precedence to kwargs
-        params.update(kwargs)
-
-        return self.__class__(config=self.config, params=params)
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__} for {str(self.resource)!r} resource\n"
+            f"- Endpoint: {self.endpoint_module.__name__!r}\n"
+            f"- Params: {self.params!r}\n"
+            f"- Child resource: {str(self.child_resource)!r} "
+        )
 
     def __len__(self) -> int:
         """Return the number of child details based on results.
@@ -142,7 +104,7 @@ class MGnifyList(MGnifier):
         >>> studies = Studies(config={})  # doctest: +SKIP
         >>> len(studies)  # doctest: +SKIP
         """
-        return len(self.results_ids or [])
+        return len(self.search_results.ids or [])
 
     def _reset_detail_iterator(self) -> None:
         """
@@ -153,7 +115,7 @@ class MGnifyList(MGnifier):
         #         self.exec.first()
         #     except Exception:
         #         pass
-        self._detail_ids = list(self.results_ids or [])
+        self._detail_ids = list(self.search_results.ids or [])
         self._detail_index = 0
         self._last_successful_detail = None
 
@@ -173,7 +135,7 @@ class MGnifyList(MGnifier):
         -------
         >>> from mgnipy.V2.proxies import Studies  # doctest: +SKIP
         >>> studies = Studies(search="tomato")  # doctest: +SKIP
-        >>> studies.bulk_fetch()  # doctest: +SKIP
+        >>> studies.get_all()  # doctest: +SKIP
         >>> first_detail = studies.get_detail()  # doctest: +SKIP
         >>> second_detail = studies.get_detail()  # doctest: +SKIP
         """
@@ -218,63 +180,8 @@ class MGnifyList(MGnifier):
         self._last_successful_detail = self._detail_index - 1
         return await child.apage(1)
 
-    def continue_detail_iterator(
-        self, start_index: Optional[int] = None
-    ) -> "MGnifyList":
-        """
-        Continue iterating for MGnifyDetails from `start_index` or the next index after the last successful detail.
-
-        Parameters
-        ----------
-        start_index : int, optional
-             The index to continue from. If None, will continue from the next index after the last successful detail, or 0 if no successful detail yet.
-
-        Returns
-        -------
-        MGnifyList
-            The current instance with the detail iterator reset to the specified index.
-
-        """
-        # ensure the detail ids are initialized
-        if not hasattr(self, "_detail_ids"):
-            self._reset_detail_iterator()
-
-        # if start_index is not provided
-        if start_index is None:
-            # if no successful detail yet, start from the beginning
-            if getattr(self, "_last_successful_detail", None) is None:
-                start_index = 0
-            # otherwise continue from the next index after the last successful detail
-            else:
-                start_index = self._last_successful_detail + 1
-
-        # validate start_index
-        if not (0 <= start_index <= len(self._detail_ids)):
-            raise ValueError("start_index out of range")
-
-        self._detail_index = start_index
-        return self
-
-    def resume_detail_iterator(self) -> "MGnifyList":
-        """
-        Resume from the element after the last successful MGnifyDetail fetch.
-
-        Returns
-        -------
-        MGnifyList
-            The current instance with the detail iterator reset to the specified index.
-
-        Raises
-        ------
-        RuntimeError
-            If there is no last successful detail to resume from.
-        """
-        if getattr(self, "_last_successful_detail", None) is None:
-            raise RuntimeError("No last successful detail to resume from")
-        return self.continue_detail_iterator(self._last_successful_detail + 1)
-
     @property
-    def _detail_endpoint(self) -> Callable:
+    def _emgapi_detail_endpoint(self) -> Callable:
         """
         Return the endpoint module for the child/detail endpoint.
 
@@ -288,7 +195,7 @@ class MGnifyList(MGnifier):
         --------
         >>> from mgnipy.V2.proxies import Studies
         >>> studies = Studies()
-        >>> studies._detail_endpoint
+        >>> studies._emgapi_detail_endpoint
         <module 'mgnipy.emgapi_v2_client.api.studies.get_mgnify_study' from ...mgnipy/emgapi_v2_client/api/studies/get_mgnify_study.py'>
         """  # check
         if len(self.list_relationships()) == 0:
@@ -309,6 +216,29 @@ class MGnifyList(MGnifier):
         return detail_endpoint
 
     @property
+    def _detail_cls(self):
+        """
+        Get the detail class for the child resource.
+        e.g. SampleDetail for "samples" list resource
+
+        Returns
+        -------
+        MGnifyDetail subclass
+        """
+        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)
+        if not detail_cls:
+            raise ValueError(
+                f"Unsupported child resource for detail: {self.child_resource}"
+            )
+        return detail_cls(
+            config=self.config,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
+            semaphore=self.semaphore,
+        )
+
+    @property
     def iter_details(self) -> Iterator[dict]:
         """
         Yield MGnifyDetail results one by one.
@@ -324,7 +254,7 @@ class MGnifyList(MGnifier):
         >>> studies = Studies()  # doctest: +SKIP
         >>> result_dict = next(studies.iter_details)  # doctest: +SKIP
         """
-        for acc in self.results_ids or []:
+        for acc in self.search_results.ids or []:
             yield self._single_detail(acc).page(1)
 
     @property
@@ -337,7 +267,7 @@ class MGnifyList(MGnifier):
         AsyncIterator[dict]
             An async iterator that yields MGnifyDetail results one by one, fetched on demand.
         """
-        for acc in self.results_ids or []:
+        for acc in self.search_results.ids or []:
             child = await self._asingle_detail(acc)
             yield await child.apage(1)
 
@@ -351,7 +281,7 @@ class MGnifyList(MGnifier):
         Parameters
         ----------
         key : str | int
-            The identifier for the detail resource, or an integer index to look up the identifier from results_ids.
+            The identifier for the detail resource, or an integer index to look up the identifier from `.search_results.ids`.
 
         Returns
         -------
@@ -364,39 +294,27 @@ class MGnifyList(MGnifier):
         """
 
         # get the child detail class e.g. SampleDetail for "samples" list resource
-        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)(
-            config=self.config
-        )
-        if not detail_cls:
-            raise ValueError(
-                f"Unsupported child resource for detail: {self.child_resource}"
-            )
-        logger.debug(
-            f"Got detail class {detail_cls} for child resource {self.child_resource!r}"
-        )
-
+        detail_cls = self._detail_cls
         # prep id param for given resource e.g. {"accession": "MGYS00001234"} or {"biome_lineage": "root"}
-        custom_id_param_key = detail_cls.id_param_key
-        id_param = self._resolve_id_param(key, param_name=custom_id_param_key)
+        custom_id_param_key = detail_cls._id_label
+        id_param = self.search_results._resolve_id_param(
+            key, param_name=custom_id_param_key
+        )
         resolved_id = id_param[custom_id_param_key]
         logger.debug(f"Resolved id param for detail: {id_param}")
 
         # init detail proxy with id param
         child = detail_cls.filter(**id_param)
         logger.debug(f"Initialized detail proxy {child} with params {child.params!r}")
-        # set endpoint module (might not be necessary actually)
-        # child.endpoint_module = self._detail_endpoint
-
         # cache detail data mem
-        self._collected_details_results[resolved_id] = child.page(1)
+        self._collected_details_metadata[resolved_id] = child.page(1)
         self._collected_details[resolved_id] = child
-        self._collected_details_downloads[resolved_id] = child.downloads
         return child
 
     async def _asingle_detail(
         self,
         key: int | str,
-    ) -> "QuerySet":
+    ) -> "MGnifyDetail":
         """
         Async version of _single_detail.
         Get MGnifyDetail for a specific accession/pubmed_id/catalogue_id.
@@ -404,102 +322,64 @@ class MGnifyList(MGnifier):
         Parameters
         ----------
         key : int | str
-            The identifier for the detail resource, or an integer index to look up the identifier from results_ids.
+            The identifier for the detail resource, or an integer index to look up the identifier from `.search_results.ids`.
 
         Examples
         -------
         sample = await samples._asingle_detail({"accession": "MGYS00001234"})
         """
-        detail_cls = V2_ENDPOINT_DETAIL_PROXIES.get(self.child_resource)(
-            config=self.config
+        detail_cls = self._detail_cls
+        custom_id_param_key = detail_cls._id_label
+        logger.debug(f"Using custom ID param key: {custom_id_param_key}")
+        id_param = self.search_results._resolve_id_param(
+            key, param_name=custom_id_param_key
         )
-        logger.debug(
-            f"Got detail class {detail_cls} for child resource {self.child_resource!r}"
-        )
-        if not detail_cls:
-            raise ValueError(
-                f"Unsupported child resource for detail: {self.child_resource}"
-            )
-        custom_id_param_key = detail_cls.id_param_key
-        id_param = self._resolve_id_param(key, param_name=custom_id_param_key)
         resolved_id = id_param[custom_id_param_key]
         logger.debug(f"Resolved id param for detail: {id_param}")
         child = detail_cls.filter(**id_param)
-        child.endpoint_module = self._detail_endpoint
 
         # cache detail data mem
-        self._collected_details_results[resolved_id] = await child.apage(1)
+        self._collected_details_metadata[resolved_id] = await child.apage(1)
         self._collected_details[resolved_id] = child
-        self._collected_details_downloads[resolved_id] = child.downloads
 
         return child
 
     @property
-    def details(self) -> list[MGnifyDetail]:
+    def mgnify_details(self) -> list[MGnifyDetail]:
+        if len(self._collected_details) == 0:
+            logger.warning(
+                f"No {self.child_resource} details collected of total {len(self)}. Run `enrich_details()` first to populate details."
+            )
         return self._collected_details
 
     @property
-    def _details_handler(self) -> ResultsHandler:
-        """Internal property to get a ResultsHandler for the collected details results."""
-        return ResultsHandler(list(self._collected_details_results.values()))
+    def metadata(self) -> MGnifyMetadata:
+        if len(self._collected_details_metadata) == 0:
+            logger.warning(
+                f"No {self.child_resource} details collected of total {len(self)}. Run `enrich_details()` first to populate details."
+            )
+        return MGnifyMetadata(
+            data=self._collected_details_metadata,
+            id_label=self._detail_cls._id_label,
+        )
 
     @property
-    def details_results(self) -> list[dict[str, Any]]:
-        """A list of detail results dicts for the detail, extracted from the details results."""
-        return self._details_handler.to_list()
-
-    def details_df(self, *args, **kwargs) -> pd.DataFrame:
+    def downloads(self) -> list[dict[str, Any]] | None:
         """
-        Convert the current or provided metadata to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list of dict, optional
-            List of records to convert. If ``None``, uses :pyattr:`data`.
-        expand_nested_dicts : list of str or bool, optional
-            List of keys to expand into separate columns, or ``True`` to
-            expand defaults.
-        rename_columns : dict of str to str, optional
-            A dictionary mapping old column names to new column names.
-        **kwargs
-            Additional keyword arguments passed to ``pd.DataFrame``.
+        Get a list of all download links from the detailed metadata.
 
         Returns
         -------
-        pd.DataFrame or None
-            DataFrame containing the metadata or ``None`` when no data is
-            available.
+        list[dict[str, Any]] or None
+            A list of dictionaries containing download information, or None if no details are available.
         """
-        return self._details_handler.to_df(*args, **kwargs)
-
-    @property
-    def details_ids(self) -> list[str]:
-        """A list of detail identifiers (e.g. accessions) extracted from the details results."""
-        ids = list(self._collected_details.keys())
-
-        if len(ids) == 0:
-            logger.warning(
-                "Did you run `enrich_details`? No details collected yet; details_ids is empty."
-            )
-
-        return ids
-
-    @property
-    def details_downloads(self) -> list[dict[str, Any]] | None:
         return [
             item
-            for sublist in self._collected_details_downloads.values()
-            for item in sublist
+            for sublist in self.mgnify_details.values()
+            for item in sublist.downloads
         ]
 
-    def __getitem__(self, key: int | str) -> "MGnifyDetail":
-        """
-        Allow index or accession-based access to child details.
-        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
-        """
-        return self._single_detail(key)
-
-    def page_size(self, n: int) -> "QuerySet":
+    def page_size(self, n: int) -> "MGnifyList":
         """
         Set the page size for paginated API calls.
 
@@ -509,8 +389,8 @@ class MGnifyList(MGnifier):
 
         Returns
         -------
-        QuerySet
-            A new QuerySet instance with the updated page size parameter.
+        MGnifyList
+            A new MGnifyList instance with the updated page size parameter.
         """
         if not isinstance(n, int) or n <= 0:
             raise ValueError("Page size must be a positive integer.")
@@ -522,7 +402,7 @@ class MGnifyList(MGnifier):
     def enrich_details(self, limit: Optional[int] = 200, hide_progress: bool = False):
         """
         Gets the details for each mgnify list item.
-        Iterates through the accessions/ids (`.results_ids`) and retrieves their details using the corresponding detail proxy (e.g., `RunDetail` for `Runs`).
+        Iterates through the accessions/ids (`.search_results.ids`) and retrieves their details using the corresponding detail proxy (e.g., `RunDetail` for `Runs`).
 
         Parameters
         ----------
@@ -534,26 +414,30 @@ class MGnifyList(MGnifier):
         Returns
         -------
         None
-            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
+            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.metadata.results` with the details of each item.
         """
 
         logger.debug(
             f"Starting enrichment of {self.child_resource} details with limit {limit}."
         )
 
-        if self.results_ids is None:
-            logger.warning("No results_ids found to enrich details.")
+        if self.search_results.ids is None:
+            logger.warning("No metadata.ids found to enrich details.")
             return
 
         details_todo: list[str] = [
-            x for x in self.results_ids if x not in self._collected_details_results
+            x
+            for x in self.search_results.ids
+            if x not in self._collected_details_metadata
         ][:limit]
+
+        logger.debug(f"Number of details to enrich: {details_todo}")
 
         for count, detail_id in enumerate(
             tqdm_sync(
                 details_todo,
-                total=len(self.results_ids),
-                initial=len(self._collected_details_results),
+                total=len(self.search_results.ids),
+                initial=len(self._collected_details_metadata),
                 desc=f"Enriching {self.child_resource} details",
                 disable=hide_progress,
             )
@@ -578,19 +462,19 @@ class MGnifyList(MGnifier):
         Returns
         -------
         None
-            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.details_results` with the details of each item.
+            This method does not return anything. It updates the internal state of the MGnifyList instance by populating the `.details` `.details_df` and `.metadata.results` with the details of each item.
         """
         logger.debug(
             f"Starting async enrichment of {self.child_resource} details with limit {limit}."
         )
 
         details_todo: list[str] = [
-            x for x in self.results_ids if x not in self._collected_details_results
+            x
+            for x in self.search_results.ids
+            if x not in self._collected_details_metadata
         ][:limit]
 
-        logging.debug(
-            f"Number of details to enrich: {len(details_todo)}. First: {details_todo[0]}"
-        )
+        logging.debug(f"Number of details to enrich: {len(details_todo)}")
 
         logging.debug(
             f"Enriching details for {len(details_todo)} items asynchronously."
@@ -600,16 +484,23 @@ class MGnifyList(MGnifier):
 
         for done in tqdm_asyncio.as_completed(
             tasks,
-            total=len(self.results_ids),
-            initial=len(self._collected_details_results),
+            total=len(self.search_results.ids),
+            initial=len(self._collected_details_metadata),
             desc=f"Enriching {self.child_resource} details",
             disable=hide_progress,
         ):
             await done
 
+    def __getitem__(self, key: int | str) -> "MGnifyDetail":
+        """
+        Allow index or accession-based access to child details.
+        Default is not lazy and will fetch immediately, but can be configured to return proxies without fetching.
+        """
+        return self._single_detail(key)
+
 
 class MGnifyDetail(MGnifier):
-    RESOURCE: ClassVar[Optional[DetailResource]] = None
+    RESOURCE: ClassVar[Optional[DetailResourceStr]] = None
 
     def __init__(
         self,
@@ -625,7 +516,7 @@ class MGnifyDetail(MGnifier):
             raise TypeError(
                 "`resource` is required for base MGnifyDetail; "
                 "init a concrete subclass like Biome/Study/Sample... "
-                f"or pass as a resource param: {DetailResource!r}"
+                f"or pass as a resource param: {DetailResourceStr!r}"
             )
 
         if self.RESOURCE is not None and passed_resource not in (
@@ -651,8 +542,19 @@ class MGnifyDetail(MGnifier):
             **kwargs,
             **{id_param_key: id},
         )
-        # then add it to param
-        # self._params.update({self.id_param_key: id})
+
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__} resource={str(self.resource)!r}, "
+            f"id={self.identifier!r}>"
+        )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__} for {self.identifier!r}\n"
+            f"- Endpoint: {self.endpoint_module.__name__!r}\n"
+            f"- Supported relationships: {self.list_relationships()} "
+        )
 
     def _clone(self, **param_overrides) -> "MGnifyDetail":
         """
@@ -673,20 +575,54 @@ class MGnifyDetail(MGnifier):
         # rm resource if acci passed
         merged_params.pop("resource", None)
         # Extract id from params for detail resources
-        detail_id = merged_params.pop(self.id_param_key, None)
+        detail_id = merged_params.pop(self._id_label, None)
 
         new_qs = self.__class__(
             id=detail_id,
             config=self.config,
             params=merged_params,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
+            semaphore=self.semaphore,
         )
         new_qs.endpoint_module = self.endpoint_module
 
         return new_qs
 
+    def __call__(self, id: str | None = None, **param_overrides) -> "MGnifyDetail":
+        """
+        Allow the detail proxy to be called with an identifier to create a new instance for that specific detail.
+
+        Parameters
+        ----------
+        id : str
+            The identifier for the detail resource, e.g., an accession or pubmed_id.
+
+        Returns
+        -------
+        MGnifyDetail
+            A new instance of the same class for the specified identifier.
+        """
+        the_id = (
+            id or param_overrides.get(self._id_label) or self.params.get(self._id_label)
+        )
+        return self._clone(**{self._id_label: the_id})
+
     def _next_rel_module(self, name: str) -> SupportedEndpoints:
         """
         Get the next resource name based on the relationship name
+        e.g. for a study detail, "samples" -> "sample" detail endpoint module.
+
+        Parameters
+        ----------
+        name : str
+            The name of the relationship, e.g. "samples" for a study detail.
+
+        Returns
+        -------
+        SupportedEndpoints
+            The corresponding endpoint module for the related resource.
         """
         if name in self.list_relationships():
             return BETWEEN_RESOURCE_RELATIONSHIPS[self.resource][
@@ -694,86 +630,6 @@ class MGnifyDetail(MGnifier):
             ]
 
         raise AttributeError(f"{self.resource} does not have linked resource: {name!r}")
-
-    def __getattr__(self, name: str):
-        # if is a supported relationship
-        if name in self.list_relationships():
-            return self.get_list(
-                resource=name,
-                fetch=True,
-                explain=False,
-            )
-
-        # if not a supported attr then raise error
-        raise AttributeError(
-            f"{self.__class__.__name__} object has no attribute {name!r}."
-        )
-
-    @property
-    def downloads(self) -> list[dict[str, Any]]:
-        """
-        A list of download information dicts for the detail, extracted from the details results.
-
-        Each dict is updated with the identifier of the detail.
-        The identifier key is determined by the id_param_key of the detail class,
-        e.g. "accession" for studies, samples, runs, analyses, genomes, assemblies;
-        "biome_lineage" for biomes; "pubmed_id" for publications; "catalogue_id" for catalogues.
-        """
-
-        if not self.results:
-            logger.debug(
-                "No results found for detail; cannot extract downloads. Returning empty list."
-            )
-            return []
-
-        if "downloads" not in self.to_df().columns:
-            logger.debug(
-                "Details DataFrame does not have 'downloads' column. Returning empty list."
-            )
-            return []
-
-        logger.debug(
-            f"Updating download info with identifier {self.identifier!r} to id_param_key {self.id_param_key!r}"
-        )
-
-        # updates the dicts with the id from the index, maybe pipeline_version if available
-        for _, row in self.to_df().iterrows():
-            # get downloads list from row
-            downloads_list = row["downloads"]
-
-            # get pipeline_version from row if avail, i.e., analysisdetail
-            if "pipeline_version" in row and isinstance(row["pipeline_version"], str):
-                a_pipe = row["pipeline_version"].lower().strip("v")
-            else:
-                a_pipe = None
-
-            # for each downlaod dict, add id and pipeline_version
-            for each_download in downloads_list:
-                # keep id
-                each_download.update({self.id_param_key: self.identifier})
-
-                # now pipe from download_group?
-                v_group = re.search(
-                    r"\.v(\d+(?:\.\d+)?)",
-                    each_download.get("download_group", ""),
-                    re.IGNORECASE,
-                ).group(1)
-
-                pipe = v_group or a_pipe
-
-                if pipe is not None:
-                    try:
-                        pipe = PipelineVersions(float(pipe)).name
-                    except Exception as e:
-                        logger.debug(
-                            f"Could not parse pipeline version from {pipe!r} for download {each_download!r}: {e}"
-                        )
-
-                each_download.update({"pipeline_version": pipe})
-
-        return [
-            item for sublist in self.to_df()["downloads"].values for item in sublist
-        ]
 
     @property
     def identifier(self) -> Optional[str]:
@@ -788,20 +644,20 @@ class MGnifyDetail(MGnifier):
 
         Examples
         --------
-        >>> from mgnipy.V2.core import MGnifier  # doctest: +SKIP
+        >>> from mgnipy.V2.mgnifier import MGnifier  # doctest: +SKIP
         >>> query = MGnifier("studies", accession="MGYS000000001", config={})  # doctest: +SKIP
         >>> query.identifier  # doctest: +SKIP
         """
         try:
-            return self.params[self.id_param_key]
+            return self.params[self._id_label]
         except KeyError:
             raise AttributeError(
-                f"Identifier key '{self.id_param_key}' not found in parameters for resource '{self.resource}'."
+                f"Identifier key '{self._id_label}' not found in parameters for resource '{self.resource}'."
             ) from None
 
     def get_list(
         self,
-        resource: ListResource,
+        resource: ListResourceStr,
         *,
         fetch: bool = True,
         explain: bool = False,
@@ -833,15 +689,18 @@ class MGnifyDetail(MGnifier):
             f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
-            config=self.config
+            config=self.config,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
         )
         logger.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
 
         logger.debug(
-            f"Resolving id param for identifier {self.identifier!r} with id_param_key {self.id_param_key!r}"
+            f"Resolving id param for identifier {self.identifier!r} with id_param_key {self._id_label!r}"
         )
         # prep access param e.g. {"accession": "MGYS00001234"} or {"biome_lineage": "root"}
-        id_param = self._resolve_id_param(self.identifier)
+        id_param = self.search_results._resolve_id_param(self.identifier)
         logger.debug(f"Resolved access param for list proxy: {id_param}")
 
         # init list endpoint
@@ -855,12 +714,12 @@ class MGnifyDetail(MGnifier):
         if explain:
             list_endpoint.explain()
         if fetch:
-            list_endpoint.bulk_fetch()
+            list_endpoint.get_all()
         return list_endpoint
 
     async def aget_list(
         self,
-        resource: ListResource,
+        resource: ListResourceStr,
         *,
         fetch: bool = True,
         explain: bool = False,
@@ -891,14 +750,17 @@ class MGnifyDetail(MGnifier):
             f"Given resource: {resource}, {SupportedEndpoints.validate(resource)!r}"
         )
         proxy_cls = V2_ENDPOINT_LIST_PROXIES.get(SupportedEndpoints.validate(resource))(
-            config=self.config
+            config=self.config,
+            client=self.client,
+            resolve_auth=self.resolve_auth,
+            interactive_auth=self.interactive_auth,
         )
         logger.debug(f"Getting proxy class {proxy_cls!r} for resource {resource!r}")
 
         logger.debug(
-            f"Resolving id param for identifier {self.identifier!r} with id_param_key {self.id_param_key!r}"
+            f"Resolving id param for identifier {self.identifier!r} with id_param_key {self._id_label!r}"
         )
-        id_param = self._resolve_id_param(self.identifier)
+        id_param = self.search_results._resolve_id_param(self.identifier)
         logger.debug(f"Resolved access param for list proxy: {id_param}")
 
         # init list endpoint
@@ -911,8 +773,77 @@ class MGnifyDetail(MGnifier):
         if explain:
             list_endpoint.explain()
         if fetch:
-            await list_endpoint.abulk_fetch()
+            await list_endpoint.aget_all()
         return list_endpoint
+
+    @property
+    def downloads(self) -> list[dict[str, Any]]:
+        """
+        Get the list of downloads for this detail.
+        """
+
+        # no results, no downloads
+        if len(self.search_results) == 0:
+            return []
+
+        # checking column names
+        df = self.search_results.to_pandas()
+        logger.debug(f"Metadata columns: {df.columns.tolist()}")
+
+        if "downloads" not in df.columns:
+            logger.debug("No 'downloads' field. Returning empty list.")
+            return []
+
+        # combine all downloads lists into one list
+        _downloads = [item for sublist in df["downloads"] for item in sublist]
+
+        if not _downloads:
+            logger.debug("No downloads found in metadata. Returning empty list.")
+            return []
+
+        downloads_cols: list[str] = pd.DataFrame(_downloads).columns
+        logger.debug(f"downloads columns: {downloads_cols}")
+        if self._id_label not in downloads_cols:
+            logger.debug(
+                f"No '{self._id_label}' field in downloads. "
+                f"Attempting to add identifier info with id_param_key {self._id_label!r} and identifier {self.identifier!r}."
+            )
+            self._add_id_param_field(self.identifier)
+
+        if "pipeline_version" not in downloads_cols:
+            logger.debug(
+                "No 'pipeline_version' field in downloads. "
+                "Attempting to add pipeline version info."
+            )
+            self._add_pipeline_version_field()
+
+        return _downloads
+
+    def downloads_df(self, **pd_kwargs) -> Optional[pd.DataFrame]:
+        """
+        Looking for a "downloads" field in the metadata results and return as a DataFrame if found.
+        """
+        return pd.DataFrame(self.downloads, **pd_kwargs)
+
+    def _add_pipeline_version_field(self):
+        add_pipeline_version_field(self.search_results.records)
+
+    def _add_id_param_field(self, given_id: str):
+        add_id_param_field(given_id, self._id_label, self.search_results.records)
+
+    def __getattr__(self, name: str):
+        # if is a supported relationship
+        if name in self.list_relationships():
+            return self.get_list(
+                resource=name,
+                fetch=True,
+                explain=False,
+            )
+
+        # if not a supported attr then raise error
+        raise AttributeError(
+            f"{self.__class__.__name__} object has no attribute {name!r}."
+        )
 
 
 # import concrete proxy classes from sibling modules. These imports occur

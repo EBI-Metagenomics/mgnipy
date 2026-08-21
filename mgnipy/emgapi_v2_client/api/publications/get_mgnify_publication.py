@@ -1,14 +1,15 @@
+from __future__ import annotations
+
 from http import HTTPStatus
 from typing import Any
 from urllib.parse import quote
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
-from ...types import Response
 from ... import errors
-
+from ...client import AuthenticatedClient, Client
 from ...models.m_gnify_publication_detail import MGnifyPublicationDetail
+from ...types import Response
 
 
 def _get_kwargs(
