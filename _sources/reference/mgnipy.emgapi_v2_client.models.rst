@@ -40,12 +40,15 @@ Submodules
    mgnipy.emgapi_v2_client.models.genome_catalogue_base
    mgnipy.emgapi_v2_client.models.genome_catalogue_base_catalogue_type
    mgnipy.emgapi_v2_client.models.genome_catalogue_base_other_stats_type_0
+   mgnipy.emgapi_v2_client.models.genome_catalogue_base_status
    mgnipy.emgapi_v2_client.models.genome_catalogue_detail
    mgnipy.emgapi_v2_client.models.genome_catalogue_detail_catalogue_type
    mgnipy.emgapi_v2_client.models.genome_catalogue_detail_other_stats_type_0
+   mgnipy.emgapi_v2_client.models.genome_catalogue_detail_status
    mgnipy.emgapi_v2_client.models.genome_catalogue_list
    mgnipy.emgapi_v2_client.models.genome_catalogue_list_catalogue_type
    mgnipy.emgapi_v2_client.models.genome_catalogue_list_other_stats_type_0
+   mgnipy.emgapi_v2_client.models.genome_catalogue_list_status
    mgnipy.emgapi_v2_client.models.genome_detail
    mgnipy.emgapi_v2_client.models.genome_filters
    mgnipy.emgapi_v2_client.models.genome_fragment_search_out
@@ -87,9 +90,11 @@ Submodules
    mgnipy.emgapi_v2_client.models.m_gnify_sample_with_metadata
    mgnipy.emgapi_v2_client.models.m_gnify_sample_with_metadata_metadata
    mgnipy.emgapi_v2_client.models.m_gnify_study
+   mgnipy.emgapi_v2_client.models.m_gnify_study_accession_lookup
    mgnipy.emgapi_v2_client.models.m_gnify_study_detail
    mgnipy.emgapi_v2_client.models.m_gnify_study_detail_metadata
    mgnipy.emgapi_v2_client.models.m_gnify_study_download_file
+   mgnipy.emgapi_v2_client.models.m_gnify_study_metadata
    mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_additional_contained_genome_schema
    mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_analysed_run
    mgnipy.emgapi_v2_client.models.ninja_pagination_response_schema_assembly

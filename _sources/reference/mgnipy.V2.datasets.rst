@@ -13,4 +13,5 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   mgnipy.V2.datasets.annotate
    mgnipy.V2.datasets.taxonomic

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>MGazine of MGnify data &#8212; mgnipy 0.1.dev1+g579d6b3be documentation</title>
+    <title>MGazine of MGnify data &#8212; mgnipy 0.1.dev1+gd9719c25a documentation</title>
   
   
   
@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -40,12 +41,17 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=f2b3c440"></script>
+    <script src="../../_static/documentation_options.js?v=9d4b60d7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/fundamentals/7_mgazine';</script>
@@ -53,7 +59,7 @@
     <link rel="icon" href="../../_static/mgnipy.svg"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Finding Parkinson’s disease taxonomic analyses" href="../demos/demo-parkinson.html" />
+    <link rel="next" title="Get a MGnify List" href="../demos/1_mgnify_list_biomes.html" />
     <link rel="prev" title="Accessing your private data" href="6_access_private_data.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -146,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g579d6b3be documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g579d6b3be documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -190,15 +196,16 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Accessing MGnify API Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_downloading_data.html">Downloading MGnify Study data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_mgnifier_proxies.html"><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_mgnify_list_biomes.html">A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> of records</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_mgnifier_proxies.html">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_list_vs_detail.html">MGnify List vs. Detail endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_access_private_data.html">Accessing your private data</a></li>
@@ -206,24 +213,28 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/2_downloading_data.html">Getting MGnify datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
@@ -513,6 +524,15 @@ document.write(`
 <p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
 </aside>
 <p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install mgnipy</span>
+</pre></div>
+</div>
+</div>
+</div>
 <section id="what-is-a-mgnipy-mgazine">
 <h2>What is a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGazine</span></code>?<a class="headerlink" href="#what-is-a-mgnipy-mgazine" title="Link to this heading">#</a></h2>
 <p>Study and Analysis details include <strong>‘downloads’</strong> fields which contain information such as types, short descriptions, urls etc about the datasets outputed from MGnify pipelines.</p>
@@ -546,7 +566,7 @@ document.write(`
 </ul>
 <p>In this demonstration we will get the <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of a single study, but this would be the same for a multi-study collection of <code class="docutils literal notranslate"><span class="pre">proxies.Studies</span></code></p>
 <div class="cell tag_hide-output config_scroll_outputs docutils container">
-<div class="cell_input above-output-prompt docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
 
 <span class="c1"># 1. init with default config</span>
@@ -554,100 +574,11 @@ document.write(`
 
 <span class="c1"># 2. search up a study/analysis detail or a list of studies/analyses and get their details</span>
 <span class="n">study</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">study</span><span class="p">(</span><span class="s2">&quot;MGYS00010442&quot;</span><span class="p">)</span>
-<span class="n">study</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
+    <span class="n">study</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<details class="admonition hide below-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell output</p>
-<p class="expanded admonition-title">Hide code cell output</p>
-</summary>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;accession&#39;: &#39;MGYS00010442&#39;,
- &#39;ena_accessions&#39;: [&#39;PRJEB37289&#39;, &#39;ERP120598&#39;],
- &#39;title&#39;: &#39;TKI&#39;,
- &#39;biome&#39;: {&#39;biome_name&#39;: &#39;Digestive system&#39;,
-  &#39;lineage&#39;: &#39;root:Host-associated:Human:Digestive system&#39;},
- &#39;updated_at&#39;: &#39;2026-04-21T08:55:57.196000+00:00&#39;,
- &#39;downloads&#39;: [{&#39;file_type&#39;: &#39;tsv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;Summary of DADA2-PR2 taxonomies&#39;,
-   &#39;long_description&#39;: &#39;Summary of DADA2-PR2 taxonomic assignments, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_DADA2-PR2_16S-V3-V4_study_summary.tsv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-PR2_16S-V3-V4_study_summary.tsv&#39;},
-  {&#39;file_type&#39;: &#39;tsv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;Summary of PR2 taxonomies&#39;,
-   &#39;long_description&#39;: &#39;Summary of PR2 taxonomic assignments, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_PR2_study_summary.tsv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_PR2_study_summary.tsv&#39;},
-  {&#39;file_type&#39;: &#39;tsv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;Summary of DADA2-SILVA taxonomies&#39;,
-   &#39;long_description&#39;: &#39;Summary of DADA2-SILVA taxonomic assignments, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_DADA2-SILVA_16S-V3-V4_study_summary.tsv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-SILVA_16S-V3-V4_study_summary.tsv&#39;},
-  {&#39;file_type&#39;: &#39;tsv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;Summary of SILVA-SSU taxonomies&#39;,
-   &#39;long_description&#39;: &#39;Summary of SILVA-SSU taxonomic assignments, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_SILVA-SSU_study_summary.tsv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_SILVA-SSU_study_summary.tsv&#39;},
-  {&#39;file_type&#39;: &#39;csv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -PR2 as ref DB&#39;,
-   &#39;long_description&#39;: &#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -PR2 as ref DB, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-PR2_16S-V3-V4_dwcready.csv&#39;},
-  {&#39;file_type&#39;: &#39;csv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -SILVA as ref DB&#39;,
-   &#39;long_description&#39;: &#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -SILVA as ref DB, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_DADA2-SILVA_16S-V3-V4_dwcready.csv&#39;},
-  {&#39;file_type&#39;: &#39;csv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;DwC-Ready summary of closed-ref taxonomies using SILVA-SSU as ref DB&#39;,
-   &#39;long_description&#39;: &#39;DwC-Ready summary of closed-reference taxonomies using SILVA-SSU as ref DB, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_closedref_SILVA-SSU_dwcready.csv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_closedref_SILVA-SSU_dwcready.csv&#39;},
-  {&#39;file_type&#39;: &#39;csv&#39;,
-   &#39;download_type&#39;: &#39;Taxonomic analysis&#39;,
-   &#39;short_description&#39;: &#39;DwC-Ready summary of closed-ref taxonomies using PR2 as ref DB&#39;,
-   &#39;long_description&#39;: &#39;DwC-Ready summary of closed-reference taxonomies using PR2 as ref DB, across all runs in the study&#39;,
-   &#39;alias&#39;: &#39;ERP120598_closedref_PR2_dwcready.csv&#39;,
-   &#39;download_group&#39;: &#39;study_summary.v6.amplicon&#39;,
-   &#39;file_size_bytes&#39;: None,
-   &#39;index_files&#39;: None,
-   &#39;url&#39;: &#39;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP120/ERP120598/study-summaries/ERP120598_closedref_PR2_dwcready.csv&#39;}],
- &#39;metadata&#39;: {},
- &#39;first_accession&#39;: &#39;ERP120598&#39;}
-</pre></div>
-</div>
-</div>
-</details>
 </div>
 <p>MGazines for a given study or analysis detail can be accessed via their <code class="docutils literal notranslate"><span class="pre">.datasets</span></code> attributes</p>
 <div class="cell config_scroll_outputs docutils container">
@@ -672,6 +603,7 @@ document.write(`
  &#39;Summary of DADA2-SILVA taxonomies&#39;,
  &#39;Summary of PR2 taxonomies&#39;,
  &#39;Summary of SILVA-SSU taxonomies&#39;]
+- Nonempty metadata sets: .mgnify_studies
 </pre></div>
 </div>
 </div>
@@ -681,54 +613,24 @@ document.write(`
 <section id="navigating-and-filtering-a-mgazine">
 <h2>Navigating and filtering a <code class="docutils literal notranslate"><span class="pre">MGazine</span></code><a class="headerlink" href="#navigating-and-filtering-a-mgazine" title="Link to this heading">#</a></h2>
 <p>Built in to mgazine, you can filter the mgazine to a specific pipeline versions and short_descriptions which will return a mgazine again but filtered or a curated mgazine with additional functionalities if available ✨.</p>
-<p>FOr accessing a specific pipeline version you can call the veresion as an attribute:</p>
+<p>You can filter by passing them as you would an index into square brackets i..e, <strong>getitem</strong></p>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># above we saw that v6 is the only one so this will return the same basically</span>
-<span class="n">v6_data</span> <span class="o">=</span> <span class="n">mz</span><span class="o">.</span><span class="n">v6</span>
+<span class="n">ssu</span> <span class="o">=</span> <span class="n">mz</span><span class="p">[</span><span class="s2">&quot;v6&quot;</span><span class="p">][</span><span class="s2">&quot;Summary of SILVA-SSU taxonomies&quot;</span><span class="p">]</span>
 
-<span class="c1"># if we print again we will see the same info</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">v6_data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ssu</span><span class="p">)</span>
+<span class="c1"># also checking out downloads detials as df</span>
+<span class="n">ssu</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine containing:
 - MGnify pipeline versions: [&#39;v6&#39;]
-- Number of downloads: 8
-- Short descriptions: [&#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -PR2 as ref DB&#39;,
- &#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -SILVA as ref DB&#39;,
- &#39;DwC-Ready summary of closed-ref taxonomies using PR2 as ref DB&#39;,
- &#39;DwC-Ready summary of closed-ref taxonomies using SILVA-SSU as ref DB&#39;,
- &#39;Summary of DADA2-PR2 taxonomies&#39;,
- &#39;Summary of DADA2-SILVA taxonomies&#39;,
- &#39;Summary of PR2 taxonomies&#39;,
- &#39;Summary of SILVA-SSU taxonomies&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<p>You can filter by short descriptioins by passing them as you would an index into square brackets i..e, <strong>getitem</strong></p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># we want the taxonomic assignments</span>
-<span class="n">ssu</span> <span class="o">=</span> <span class="n">v6_data</span><span class="p">[</span><span class="s2">&quot;Summary of SILVA-SSU taxonomies&quot;</span><span class="p">]</span>
-
-<span class="c1"># checking out what it is</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ssu</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ssu</span><span class="p">)</span>
-
-<span class="c1"># also downloads_df</span>
-<span class="n">ssu</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;mgnipy.V2.datasets.taxonomic.TaxaMGazine&#39;&gt;
-MGazine Curation TaxaMGazine containing:
-- MGnify pipeline versions: [&#39;v6&#39;]
 - Number of downloads: 1
 - Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;]
+- Nonempty metadata sets: .mgnify_studies
 </pre></div>
 </div>
 <div class="output text_html"><div>
@@ -820,7 +722,7 @@ MGazine Curation TaxaMGazine containing:
 <p><code class="docutils literal notranslate"><span class="pre">.stream()</span> </code>resolves a download alias or URL and returns the appropriate streaming handler for the file type. It supports returning either a full object (when <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>) or an iterator of chunks when chunksize is provided.</p>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">ssu</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="n">one_alias</span><span class="p">,</span> <span class="n">dataframe_engine</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">ssu</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="n">one_alias</span><span class="p">,</span> <span class="n">df_engine</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -997,14 +899,32 @@ MGazine Curation TaxaMGazine containing:
 <section id="bonus-section-the-taxamgazine">
 <h2>✨ Bonus section: The <code class="docutils literal notranslate"><span class="pre">TaxaMGazine</span></code><a class="headerlink" href="#bonus-section-the-taxamgazine" title="Link to this heading">#</a></h2>
 <p>There are analysis type-specific mgazines, such as this TaxaMGazine</p>
-<p>for example, we can also combine the taxonomic assignment results into one dataframe e.g. <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code>, <code class="docutils literal notranslate"><span class="pre">.to_polars</span></code>, <code class="docutils literal notranslate"><span class="pre">.X()</span></code></p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<p>for example, we can also combine the taxonomic assignment results into one dataframe e.g. <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code>, <code class="docutils literal notranslate"><span class="pre">.to_polars</span></code>, <code class="docutils literal notranslate"><span class="pre">.to_anndata()</span></code></p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">taxo</span> <span class="o">=</span> <span class="n">ssu</span><span class="o">.</span><span class="n">taxonomic</span>
+
+<span class="n">taxo</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="n">taxo</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v6&#39;]
+- Number of downloads: 1
+- Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;]
+- Nonempty metadata sets: .mgnify_studies
+-----------------------
+Next steps: Use `.load()` to initialize.
+</pre></div>
+</div>
 <div class="output text_html"><div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1167,186 +1087,30 @@ MGazine Curation TaxaMGazine containing:
       <td>0</td>
       <td>0</td>
     </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>670</th>
-      <td>sk__Bacteria;k__;p__Verrucomicrobiota;c__Verru...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>8</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>5</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>671</th>
-      <td>sk__Bacteria;k__;p__Verrucomicrobiota;c__Verru...</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>31</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>10</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>672</th>
-      <td>sk__Bacteria;k__;p__Verrucomicrobiota;c__Verru...</td>
-      <td>32</td>
-      <td>1</td>
-      <td>1</td>
-      <td>1</td>
-      <td>8938</td>
-      <td>4</td>
-      <td>1</td>
-      <td>44</td>
-      <td>1</td>
-      <td>...</td>
-      <td>157</td>
-      <td>848</td>
-      <td>0</td>
-      <td>2</td>
-      <td>4</td>
-      <td>0</td>
-      <td>206</td>
-      <td>47</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>673</th>
-      <td>sk__Bacteria;k__;p__Verrucomicrobiota;c__Verru...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>32</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>3</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>674</th>
-      <td>sk__Eukaryota;k__Viridiplantae;p__Streptophyta...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
   </tbody>
 </table>
-<p>675 rows × 64 columns</p>
+<p>5 rows × 64 columns</p>
 </div></div></div>
+</details>
 </div>
-<p>There is also option to enrich with additional metadata!</p>
-<ol class="arabic simple">
-<li><p>From <em>already</em> retrieved <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> results you can set to <code class="docutils literal notranslate"><span class="pre">runs_results</span></code>, <code class="docutils literal notranslate"><span class="pre">samples_results</span></code>, <code class="docutils literal notranslate"><span class="pre">studies_results</span></code> etc, or</p></li>
-<li><p>use <code class="docutils literal notranslate"><span class="pre">.enrich_runs()</span></code> etc or <code class="docutils literal notranslate"><span class="pre">.enrich_biosamples</span></code> which will make the get requests for the additional metadata</p></li>
-</ol>
+<p>also annotated dataframes</p>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span><span class="o">.</span><span class="n">enrich_runs</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">taxo</span><span class="o">.</span><span class="n">to_anndata</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-</div>
-</div>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span><span class="o">.</span><span class="n">to_anndata</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 675 × 63
-    obs: &#39;Superkingdom&#39;, &#39;Kingdom&#39;, &#39;Phylum&#39;, &#39;Class&#39;, &#39;Order&#39;, &#39;Family&#39;, &#39;Genus&#39;, &#39;Species&#39;
-    var: &#39;experiment_type&#39;, &#39;instrument_model&#39;, &#39;instrument_platform&#39;, &#39;sample_accession&#39;, &#39;study_accession&#39;, &#39;sample__accession&#39;, &#39;sample__ena_accessions&#39;, &#39;sample__sample_title&#39;, &#39;sample__biome&#39;, &#39;sample__updated_at&#39;, &#39;study__accession&#39;, &#39;study__ena_accessions&#39;, &#39;study__title&#39;, &#39;study__updated_at&#39;, &#39;study__biome.biome_name&#39;, &#39;study__biome.lineage&#39;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 63 × 675
+    var: &#39;Superkingdom&#39;, &#39;Kingdom&#39;, &#39;Phylum&#39;, &#39;Class&#39;, &#39;Order&#39;, &#39;Family&#39;, &#39;Genus&#39;, &#39;Species&#39;
 </pre></div>
 </div>
 </div>
 </div>
+<p>tidy up</p>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MG</span><span class="o">.</span><span class="n">clear_subcaches</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1396,11 +1160,11 @@ MGazine Curation TaxaMGazine containing:
       </div>
     </a>
     <a class="right-next"
-       href="../demos/demo-parkinson.html"
+       href="../demos/1_mgnify_list_biomes.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Finding Parkinson’s disease taxonomic analyses</p>
+        <p class="prev-next-title">Get a MGnify List</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

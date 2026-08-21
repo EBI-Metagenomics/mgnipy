@@ -1,0 +1,1121 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MGnify List vs. Detail endpoints &#8212; mgnipy 0.1.dev1+gd9719c25a documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9d4b60d7"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/fundamentals/3_list_vs_detail';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Configuring MGnipyConfig" href="4_mgnipy_config.html" />
+    <link rel="prev" title="MGnify API Endpoint ≈ a mgnipy.MGnifier" href="2_mgnifier_proxies.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_mgnifier_proxies.html">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">MGnify List vs. Detail endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_access_private_data.html">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/2_downloading_data.html">Getting MGnify datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/fundamentals/3_list_vs_detail.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/fundamentals/3_list_vs_detail.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/fundamentals/3_list_vs_detail.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/fundamentals/3_list_vs_detail.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>MGnify List vs. Detail endpoints</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-list-to-detailed-list">From list to detailed list</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-detail-to-lists">from detail to lists</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="mgnify-list-vs-detail-endpoints">
+<h1>MGnify List vs. Detail endpoints<a class="headerlink" href="#mgnify-list-vs-detail-endpoints" title="Link to this heading">#</a></h1>
+<p>The <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2" rel="noreferrer" target="_blank">MGnify API <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> has 2 types of endpoints:</p>
+<ol class="arabic simple">
+<li><p><strong>list</strong> endpoints which return a (paginated) list of records (dicts) in brief from a MGnify resource</p></li>
+<li><p><strong>detail</strong> endpoints which return a single record (dict) in lots of detail</p></li>
+</ol>
+<p>The list endpoints can accept different search params to filter down the list (e.g., “search”, “biome_lineage”, “page_size”). In contrast, the detail endpoints only accept a single accession/id.</p>
+<p>In MGni.py, the MGnifier’s that correspond to</p>
+<ol class="arabic simple">
+<li><p>list endpoints are plural e.g. <code class="docutils literal notranslate"><span class="pre">MG.samples</span></code></p></li>
+<li><p>detail endpoints are singular e.g. <code class="docutils literal notranslate"><span class="pre">MG.sample</span></code></p></li>
+</ol>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="c1"># init client</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># check out the endpoints</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MG</span><span class="o">.</span><span class="n">list_resources</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;analyses&#39;, &#39;analysis&#39;, &#39;assemblies&#39;, &#39;assembly&#39;, &#39;genomes&#39;, &#39;genome&#39;, &#39;publications&#39;, &#39;publication&#39;, &#39;samples&#39;, &#39;sample&#39;, &#39;studies&#39;, &#39;study&#39;, &#39;runs&#39;, &#39;run&#39;, &#39;biomes&#39;, &#39;biome&#39;, &#39;miscellaneous&#39;, &#39;catalogues&#39;, &#39;catalogue&#39;, &#39;private_studies&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>From <code class="docutils literal notranslate"><span class="pre">list_resources()</span></code> we see plural vs. singular terms e.g. <code class="docutils literal notranslate"><span class="pre">analyses</span></code> vs. <code class="docutils literal notranslate"><span class="pre">analysis</span></code>.</p>
+<p>The plural attributes are list and singular are detail endpoints:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># accessing a list endpoint</span>
+<span class="n">studies_list</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">studies</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;diabetes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">studies_list</span><span class="p">)</span>
+<span class="c1"># now getting the list</span>
+<span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
+    <span class="n">studies_list</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># or .get_all()</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">studies_list</span><span class="o">.</span><span class="n">search_results</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># accessing a detail endpoint</span>
+<span class="n">a_study_detail</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">study</span><span class="p">(</span><span class="s2">&quot;MGYS00006805&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a_study_detail</span><span class="p">)</span>
+<span class="c1"># now getting the record</span>
+<span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
+    <span class="n">a_study_detail</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">a_study_detail</span><span class="o">.</span><span class="n">search_results</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;mgnipy.V2.proxies.studies.Studies&#39;&gt; for &#39;studies&#39; resource
+- Endpoint: &#39;mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies&#39;
+- Params: {&#39;search&#39;: &#39;diabetes&#39;}
+- Child resource: &#39;study&#39;
+&lt;class &#39;mgnipy.V2.proxies.studies.StudyDetail&#39;&gt; for &#39;MGYS00006805&#39;
+- Endpoint: &#39;mgnipy.emgapi_v2_client.api.studies.get_mgnify_study&#39;
+- Supported relationships: [&#39;samples&#39;, &#39;analyses&#39;, &#39;publications&#39;]
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+      <th>metadata</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00006805</td>
+      <td>[PRJEB63337, ERP148499]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJD...</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-05-01T19:06:56.381000+00:00</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00010387</td>
+      <td>[PRJDB9649, DRP008416]</td>
+      <td>Fecal microbiota transplantation alleviates di...</td>
+      <td>None</td>
+      <td>2026-05-28T15:46:48.985000+00:00</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00010379</td>
+      <td>[SRP387956, PRJNA862077]</td>
+      <td>gut metagenome and type-1 diabetes</td>
+      <td>None</td>
+      <td>2026-05-28T15:46:49.164000+00:00</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>MGYS00005377</td>
+      <td>[ERP114158, PRJEB31588]</td>
+      <td>EMG produced TPA metagenomics assembly of the ...</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-05-28T15:46:57.525000+00:00</td>
+      <td>{}</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MGYS00005378</td>
+      <td>[SRP056054, PRJNA231909]</td>
+      <td>A prospective, longitudinal analysis of the de...</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-05-28T15:46:57.527000+00:00</td>
+      <td>{}</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>biome</th>
+      <th>updated_at</th>
+      <th>metadata</th>
+      <th>downloads</th>
+      <th>first_accession</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00006805</td>
+      <td>[PRJEB63337, ERP148499]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJD...</td>
+      <td>{'biome_name': 'Fecal', 'lineage': 'root:Host-...</td>
+      <td>2026-05-01T19:06:56.381000+00:00</td>
+      <td>{}</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP148499</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<section id="from-list-to-detailed-list">
+<h2>From list to detailed list<a class="headerlink" href="#from-list-to-detailed-list" title="Link to this heading">#</a></h2>
+<p>After getting a list of records from a list endpoint, one can beef up the list with additional metadata by using the “child” detail endpoint: e.g. <code class="docutils literal notranslate"><span class="pre">samples</span></code> to <code class="docutils literal notranslate"><span class="pre">sample</span></code>, <code class="docutils literal notranslate"><span class="pre">assemblies</span></code> to <code class="docutils literal notranslate"><span class="pre">assembly</span></code>, etc</p>
+<p>there is a method <code class="docutils literal notranslate"><span class="pre">.enrich_details()</span></code> for MGnifyList’s that help with this which will iteratively get the list of MGnifyDetails.</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># populating the list</span>
+<span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
+    <span class="n">studies_list</span><span class="o">.</span><span class="n">enrich_details</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># can set to None to get all</span>
+
+<span class="c1"># checking out the detailed metdata</span>
+<span class="n">studies_list</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>updated_at</th>
+      <th>downloads</th>
+      <th>first_accession</th>
+      <th>biome__biome_name</th>
+      <th>biome__lineage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00006805</td>
+      <td>[PRJEB63337, ERP148499]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJD...</td>
+      <td>2026-05-01T19:06:56.381000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP148499</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00010387</td>
+      <td>[PRJDB9649, DRP008416]</td>
+      <td>Fecal microbiota transplantation alleviates di...</td>
+      <td>2026-05-28T15:46:48.985000+00:00</td>
+      <td>[]</td>
+      <td>DRP008416</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00010379</td>
+      <td>[SRP387956, PRJNA862077]</td>
+      <td>gut metagenome and type-1 diabetes</td>
+      <td>2026-05-28T15:46:49.164000+00:00</td>
+      <td>[]</td>
+      <td>SRP387956</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>For the enriched studies we can get their MGnifyDetail object via indexing:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g. int</span>
+<span class="n">a_study_detail</span> <span class="o">=</span> <span class="n">studies_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># or by accession/id</span>
+<span class="n">a_study_detail</span> <span class="o">=</span> <span class="n">studies_list</span><span class="p">[</span><span class="s2">&quot;MGYS00006805&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a_study_detail</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;mgnipy.V2.proxies.studies.StudyDetail&#39;&gt; for &#39;MGYS00006805&#39;
+- Endpoint: &#39;mgnipy.emgapi_v2_client.api.studies.get_mgnify_study&#39;
+- Supported relationships: [&#39;samples&#39;, &#39;analyses&#39;, &#39;publications&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>or get all of the details as a dict:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">studies_list</span><span class="o">.</span><span class="n">mgnify_details</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;MGYS00006805&#39;: &lt;&lt;class &#39;mgnipy.V2.proxies.studies.StudyDetail&#39;&gt; resource=&#39;study&#39;, id=&#39;MGYS00006805&#39;&gt;,
+ &#39;MGYS00010387&#39;: &lt;&lt;class &#39;mgnipy.V2.proxies.studies.StudyDetail&#39;&gt; resource=&#39;study&#39;, id=&#39;MGYS00010387&#39;&gt;,
+ &#39;MGYS00010379&#39;: &lt;&lt;class &#39;mgnipy.V2.proxies.studies.StudyDetail&#39;&gt; resource=&#39;study&#39;, id=&#39;MGYS00010379&#39;&gt;}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="from-detail-to-lists">
+<h2>from detail to lists<a class="headerlink" href="#from-detail-to-lists" title="Link to this heading">#</a></h2>
+<p>If you noticed from the prints of the <code class="docutils literal notranslate"><span class="pre">StudyDetail</span></code>s above there are “Supported relationships” which link to other MGnifyLists.</p>
+<p>This means that from a study you can get their collection of samples for example.</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a_study_detail</span><span class="o">.</span><span class="n">list_relationships</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;samples&#39;, &#39;analyses&#39;, &#39;publications&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>when we access the relationship, we will automatically <code class="docutils literal notranslate"><span class="pre">get</span></code> the MGnifyList of <code class="docutils literal notranslate"><span class="pre">.search_results</span></code></p>
+<p>However, if we want to enrich with even more detailed <code class="docutils literal notranslate"><span class="pre">.metadata</span></code> we still do the <code class="docutils literal notranslate"><span class="pre">.enrich_details</span></code></p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">MG</span><span class="p">:</span>  <span class="c1"># context manager</span>
+    <span class="c1"># access the samples list for a given study</span>
+    <span class="n">a_study_samples</span> <span class="o">=</span> <span class="n">a_study_detail</span><span class="o">.</span><span class="n">samples</span>
+    <span class="c1"># enrich the samples list further with details</span>
+    <span class="n">a_study_samples</span><span class="o">.</span><span class="n">enrich_details</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>  <span class="c1"># can set limit to None to get all</span>
+
+<span class="c1"># look at detailed samples list so far</span>
+<span class="n">a_study_samples</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>sample_title</th>
+      <th>updated_at</th>
+      <th>studies</th>
+      <th>metadata__ph</th>
+      <th>metadata__age</th>
+      <th>metadata__lat</th>
+      <th>metadata__lon</th>
+      <th>metadata__sex</th>
+      <th>...</th>
+      <th>metadata__collection_date_start</th>
+      <th>metadata__sample_capture_status</th>
+      <th>metadata__host_growth_conditions</th>
+      <th>metadata__ncbi_reporting_standard</th>
+      <th>metadata__related_sample_accession</th>
+      <th>metadata__taxonomic_classification</th>
+      <th>metadata__taxonomic_identity_marker</th>
+      <th>metadata__secondary_sample_accession</th>
+      <th>metadata__local_environmental_context</th>
+      <th>metadata__broad_scale_environmental_context</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>SAMD00218068</td>
+      <td>[SAMD00218068, DRS234959]</td>
+      <td>FMT12W-4H</td>
+      <td>2026-05-01T19:05:04.370000+00:00</td>
+      <td>[{'accession': 'MGYS00006805', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>24.7</td>
+      <td>113.6</td>
+      <td></td>
+      <td>...</td>
+      <td>2018-01-01</td>
+      <td></td>
+      <td></td>
+      <td>MIMS.me.human-gut</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>DRS234959</td>
+      <td>gut</td>
+      <td>human</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SAMD00218137</td>
+      <td>[SAMD00218137, DRS235028]</td>
+      <td>FMT4W-17H</td>
+      <td>2026-05-01T19:05:05.804000+00:00</td>
+      <td>[{'accession': 'MGYS00006805', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>24.7</td>
+      <td>113.6</td>
+      <td></td>
+      <td>...</td>
+      <td>2018-01-01</td>
+      <td></td>
+      <td></td>
+      <td>MIMS.me.human-gut</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>DRS235028</td>
+      <td>gut</td>
+      <td>human</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>SAMD00218113</td>
+      <td>[DRS235004, SAMD00218113]</td>
+      <td>FMTD0-8H</td>
+      <td>2026-05-01T19:05:07.034000+00:00</td>
+      <td>[{'accession': 'MGYS00006805', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>24.7</td>
+      <td>113.6</td>
+      <td></td>
+      <td>...</td>
+      <td>2018-01-01</td>
+      <td></td>
+      <td></td>
+      <td>MIMS.me.human-gut</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>DRS235004</td>
+      <td>gut</td>
+      <td>human</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SAMD00218093</td>
+      <td>[SAMD00218093, DRS234984]</td>
+      <td>FMT8W-19H</td>
+      <td>2026-05-01T19:05:08.126000+00:00</td>
+      <td>[{'accession': 'MGYS00006805', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>24.7</td>
+      <td>113.6</td>
+      <td></td>
+      <td>...</td>
+      <td>2018-01-01</td>
+      <td></td>
+      <td></td>
+      <td>MIMS.me.human-gut</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>DRS234984</td>
+      <td>gut</td>
+      <td>human</td>
+    </tr>
+  </tbody>
+</table>
+<p>4 rows × 106 columns</p>
+</div></div></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/fundamentals"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2_mgnifier_proxies.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4_mgnipy_config.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-list-to-detailed-list">From list to detailed list</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-detail-to-lists">from detail to lists</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

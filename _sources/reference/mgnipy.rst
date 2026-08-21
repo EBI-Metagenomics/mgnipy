@@ -15,6 +15,7 @@ Subpackages
 
    mgnipy.V2
    mgnipy.emgapi_v2_client
+   mgnipy.proxies
 
 Submodules
 ----------

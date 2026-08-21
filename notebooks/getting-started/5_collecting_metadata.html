@@ -1,0 +1,1765 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Collecting more metadata &#8212; mgnipy 0.1.dev1+gd9719c25a documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9d4b60d7"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/getting-started/5_collecting_metadata';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="The mgnipy.MGnipy() client" href="../fundamentals/1_mgnipy_mgnipy.html" />
+    <link rel="prev" title="Getting MGnify data" href="4_getting_data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/2_mgnifier_proxies.html">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/3_list_vs_detail.html">MGnify List vs. Detail endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/6_access_private_data.html">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/2_downloading_data.html">Getting MGnify datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/getting-started/5_collecting_metadata.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/getting-started/5_collecting_metadata.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/getting-started/5_collecting_metadata.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/getting-started/5_collecting_metadata.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Collecting more metadata</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mgnetizer">The <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-biosampler">The <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mtg-mgic-the-gatherer"><code class="docutils literal notranslate"><span class="pre">MTG</span></code> MGic (the) Gatherer</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-to-polars">Example 1. to <code class="docutils literal notranslate"><span class="pre">polars</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-to-anndata">Example 2. to <code class="docutils literal notranslate"><span class="pre">anndata</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wrap-up">Wrap Up:</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="collecting-more-metadata">
+<h1>Collecting more metadata<a class="headerlink" href="#collecting-more-metadata" title="Link to this heading">#</a></h1>
+<p>In MGni.py there are helpers for collecting metdata from <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/" rel="noreferrer" target="_blank">MGnify <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> or <a class="reference external" href="https://www.ebi.ac.uk/biosamples/" rel="noreferrer" target="_blank">BioSamples <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> for a list of MGnify accessions.</p>
+<p>On this page we will learn how to:</p>
+<ul class="simple">
+<li><p><strong>Collect metadata</strong> from MGnify using <code class="docutils literal notranslate"><span class="pre">mgnipy.collect.MGnetizer</span></code></p></li>
+<li><p><strong>Collect metadata</strong> from BioSamples using <code class="docutils literal notranslate"><span class="pre">mgnipy.collect.BioSampler</span></code></p></li>
+</ul>
+<p>This is especially useful if you already know the list of MGnify items that you would like the detailed metadata for such as a list of study accessions. Additionally, when you already have a MGnify dataset of samples and would like to get more metadata starting from the Run accessions which we will demonstrate below.</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install mgnipy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We’ll pick up from the previous page where we had downloaded the “ERP014435_GO-slim_abundances_v3.0.tsv” dataset from MGnify.</p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># read in GO-slim abundances file</span>
+<span class="n">df_go</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;downloads/ERP014435_GO-slim_abundances_v3.0.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># get run accessions as a list</span>
+<span class="n">run_ids</span> <span class="o">=</span> <span class="n">df_go</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+<span class="c1"># sanity check</span>
+<span class="n">df_go</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GO</th>
+      <th>description</th>
+      <th>category</th>
+      <th>ERR1299314</th>
+      <th>ERR1299315</th>
+      <th>ERR1299316</th>
+      <th>ERR1299317</th>
+      <th>ERR1299319</th>
+      <th>ERR1299320</th>
+      <th>ERR1299321</th>
+      <th>ERR1299323</th>
+      <th>ERR1299324</th>
+      <th>ERR1299325</th>
+      <th>ERR1299326</th>
+      <th>ERR1299330</th>
+      <th>ERR1299331</th>
+      <th>ERR1299333</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>GO:0000015</td>
+      <td>phosphopyruvate hydratase complex</td>
+      <td>cellular component</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>GO:0000150</td>
+      <td>recombinase activity</td>
+      <td>molecular function</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GO:0000160</td>
+      <td>phosphorelay signal transduction system</td>
+      <td>biological process</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>GO:0000166</td>
+      <td>nucleotide binding</td>
+      <td>molecular function</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>GO:0003674</td>
+      <td>molecular function</td>
+      <td>molecular function</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</details>
+</div>
+<section id="the-mgnetizer">
+<h2>The <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code><a class="headerlink" href="#the-mgnetizer" title="Link to this heading">#</a></h2>
+<p>The run accessions/ids can be passed to a <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code> to collect their detailed metadata. MGnetizer’s are a lot like MGnifiers:</p>
+<ul class="simple">
+<li><p>they can be accessed as attributes from MGnipy client, inheriting the configuration</p></li>
+<li><p>they build the set of queries lazily which you can explore via <code class="docutils literal notranslate"><span class="pre">.explain()</span></code> before executing them</p></li>
+</ul>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="c1"># init client</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># init mgnetizer</span>
+<span class="n">mnet</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">mgnetizer</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="n">all_ids</span><span class="o">=</span><span class="n">run_ids</span><span class="p">)</span>
+
+<span class="c1"># check out query set</span>
+<span class="n">mnet</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299314
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299315
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299316
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299317
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299319
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299320
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299321
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299323
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299324
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299325
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299326
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299330
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299331
+https://www.ebi.ac.uk/metagenomics/api/v2/runs/ERR1299333
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>now actually executing the above with <code class="docutils literal notranslate"><span class="pre">.enrich()</span></code> or <code class="docutils literal notranslate"><span class="pre">.aenrich()</span></code></p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mnet</span><span class="p">:</span>
+    <span class="n">mnet</span><span class="o">.</span><span class="n">enrich</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p>again we can access the metadata via <code class="docutils literal notranslate"><span class="pre">.metadata</span></code></p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># as df</span>
+<span class="n">run_md</span> <span class="o">=</span> <span class="n">mnet</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># check it out</span>
+<span class="n">run_md</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>experiment_type</th>
+      <th>instrument_model</th>
+      <th>instrument_platform</th>
+      <th>sample</th>
+      <th>study</th>
+      <th>accession</th>
+      <th>sample_accession</th>
+      <th>study_accession</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>{'accession': 'SAMEA3886583', 'ena_accessions'...</td>
+      <td>{'accession': 'MGYS00001374', 'ena_accessions'...</td>
+      <td>ERR1299314</td>
+      <td>SAMEA3886583</td>
+      <td>MGYS00001374</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>{'accession': 'SAMEA3886584', 'ena_accessions'...</td>
+      <td>{'accession': 'MGYS00001374', 'ena_accessions'...</td>
+      <td>ERR1299315</td>
+      <td>SAMEA3886584</td>
+      <td>MGYS00001374</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>{'accession': 'SAMEA3886585', 'ena_accessions'...</td>
+      <td>{'accession': 'MGYS00001374', 'ena_accessions'...</td>
+      <td>ERR1299316</td>
+      <td>SAMEA3886585</td>
+      <td>MGYS00001374</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>{'accession': 'SAMEA3886586', 'ena_accessions'...</td>
+      <td>{'accession': 'MGYS00001374', 'ena_accessions'...</td>
+      <td>ERR1299317</td>
+      <td>SAMEA3886586</td>
+      <td>MGYS00001374</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>{'accession': 'SAMEA3886588', 'ena_accessions'...</td>
+      <td>{'accession': 'MGYS00001374', 'ena_accessions'...</td>
+      <td>ERR1299319</td>
+      <td>SAMEA3886588</td>
+      <td>MGYS00001374</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</details>
+</div>
+</section>
+<section id="the-biosampler">
+<h2>The <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code><a class="headerlink" href="#the-biosampler" title="Link to this heading">#</a></h2>
+<p>The above sample accessions can be passed to a <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code> to collect even more metadata from the <a class="reference external" href="https://www.ebi.ac.uk/biosamples/" rel="noreferrer" target="_blank">BioSamples <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> database.</p>
+<p>BioSamplers can also be accessed from the MGnipy instance, inheriting config.</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bios</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">biosampler</span><span class="p">(</span><span class="n">sample_ids</span><span class="o">=</span><span class="n">run_md</span><span class="p">[</span><span class="s2">&quot;sample_accession&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bios</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BioSampler with 14 sample_ids. 
+Progress: 0 ids. 
+Cache directory: None
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note: if wanting to pass runs accessions above instead (e.g., <code class="docutils literal notranslate"><span class="pre">MG.biosampler(sample_ids=run_ids)</span></code>) then <code class="docutils literal notranslate"><span class="pre">.enrich(incl_ena=True)</span></code></p>
+<p>now that we have built the queries we can execute them</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">bios</span><span class="p">:</span>
+    <span class="n">bios</span><span class="o">.</span><span class="n">enrich</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bios</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GivenID</th>
+      <th>SampleID</th>
+      <th>RunID</th>
+      <th>SRA accession</th>
+      <th>name</th>
+      <th>taxid</th>
+      <th>ENA-CHECKLIST</th>
+      <th>ENA-FIRST-PUBLIC</th>
+      <th>ENA-LAST-UPDATE</th>
+      <th>External Id</th>
+      <th>...</th>
+      <th>geographic location (latitude)</th>
+      <th>geographic location (longitude)</th>
+      <th>investigation type</th>
+      <th>organism</th>
+      <th>project name</th>
+      <th>scientific_name</th>
+      <th>sequencing method</th>
+      <th>soil environmental package</th>
+      <th>title</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>SAMEA3886583</td>
+      <td>SAMEA3886583</td>
+      <td>None</td>
+      <td>ERS1073717</td>
+      <td>I9</td>
+      <td>256318</td>
+      <td>ERC000022</td>
+      <td>2016-03-06T17:05:13Z</td>
+      <td>2016-10-21T09:34:22Z</td>
+      <td>SAMEA3886583</td>
+      <td>...</td>
+      <td>62.182784</td>
+      <td>50.550976</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SAMEA3886584</td>
+      <td>SAMEA3886584</td>
+      <td>None</td>
+      <td>ERS1073718</td>
+      <td>I10</td>
+      <td>256318</td>
+      <td>ERC000022</td>
+      <td>2016-03-06T17:05:13Z</td>
+      <td>2016-10-21T09:34:22Z</td>
+      <td>SAMEA3886584</td>
+      <td>...</td>
+      <td>62.182784</td>
+      <td>50.550976</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>SAMEA3886585</td>
+      <td>SAMEA3886585</td>
+      <td>None</td>
+      <td>ERS1073719</td>
+      <td>I7</td>
+      <td>256318</td>
+      <td>ERC000022</td>
+      <td>2016-03-06T17:05:13Z</td>
+      <td>2016-10-21T09:34:22Z</td>
+      <td>SAMEA3886585</td>
+      <td>...</td>
+      <td>62.182785</td>
+      <td>50.550977</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SAMEA3886586</td>
+      <td>SAMEA3886586</td>
+      <td>None</td>
+      <td>ERS1073720</td>
+      <td>I8</td>
+      <td>256318</td>
+      <td>ERC000022</td>
+      <td>2016-03-06T17:05:13Z</td>
+      <td>2016-10-21T09:34:22Z</td>
+      <td>SAMEA3886586</td>
+      <td>...</td>
+      <td>62.182785</td>
+      <td>50.550977</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>SAMEA3886588</td>
+      <td>SAMEA3886588</td>
+      <td>None</td>
+      <td>ERS1073722</td>
+      <td>I12</td>
+      <td>256318</td>
+      <td>ERC000022</td>
+      <td>2016-03-06T17:05:13Z</td>
+      <td>2016-10-21T09:34:22Z</td>
+      <td>SAMEA3886588</td>
+      <td>...</td>
+      <td>62.152829</td>
+      <td>50.392303</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 32 columns</p>
+</div></div></div>
+</details>
+</div>
+<p>From here of course you can take over to merge the sets of MGnify metadata and Biosamples metadata.</p>
+<p>However mgnipy has a helper class that combines a MGnify dataset with its metadata:</p>
+</section>
+<hr class="docutils" />
+<section id="mtg-mgic-the-gatherer">
+<h2><code class="docutils literal notranslate"><span class="pre">MTG</span></code> MGic (the) Gatherer<a class="headerlink" href="#mtg-mgic-the-gatherer" title="Link to this heading">#</a></h2>
+<p>The MGic gatherer (MTG) takes a dataset as pandas or polars dataframe and MGnify or BioSamples metadata and combines them into a single object.</p>
+<p>MTG can be used to enrich the dataset with metadata, and to convert the dataset into different formats such as pandas, polars, or anndata.</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MTG</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">mtg</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">df_go</span><span class="p">,</span>
+    <span class="n">var_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">],</span>
+    <span class="n">var_index</span><span class="o">=</span><span class="s2">&quot;GO&quot;</span><span class="p">,</span>
+    <span class="n">obs_index</span><span class="o">=</span><span class="s2">&quot;name_of_your_chosing&quot;</span><span class="p">,</span>
+    <span class="c1"># mgnify_runs=mnet.metadata.to_list() #can pass here or assign the sets later</span>
+<span class="p">)</span>
+
+<span class="c1"># can assign the sets at any time after init</span>
+<span class="n">MTG</span><span class="o">.</span><span class="n">mgnify_runs</span> <span class="o">=</span> <span class="n">mnet</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+<span class="n">MTG</span><span class="o">.</span><span class="n">biosamples_metadata</span> <span class="o">=</span> <span class="n">bios</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+<span class="c1"># info</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MTG</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MTG containing:
+- Dataset type: &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+- var_cols: [&#39;description&#39;, &#39;category&#39;]
+- var_index: &#39;GO&#39;
+- obs_index: &#39;name_of_your_chosing&#39;
+- Nonempty metadata sets: .mgnify_runs, .biosamples_metadata
+</pre></div>
+</div>
+</div>
+</div>
+<section id="example-1-to-polars">
+<h3>Example 1. to <code class="docutils literal notranslate"><span class="pre">polars</span></code><a class="headerlink" href="#example-1-to-polars" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># the original but as a polars df</span>
+<span class="c1"># MTG.to_polars()</span>
+
+<span class="c1"># the feature matrix</span>
+<span class="c1"># MTG.X(df_engine=&quot;polars&quot;) # default is pandas</span>
+
+<span class="c1"># the features metadata</span>
+<span class="c1"># MTG.var_metadata(df_engine=&quot;polars&quot;)</span>
+
+<span class="c1"># the obs (samples) metadata</span>
+<span class="n">MTG</span><span class="o">.</span><span class="n">obs_metadata</span><span class="p">(</span><span class="n">df_engine</span><span class="o">=</span><span class="s2">&quot;polars&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (14, 48)</small><table border="1" class="dataframe"><thead><tr><th>name_of_your_chosing</th><th>experiment_type</th><th>instrument_model</th><th>instrument_platform</th><th>sample_accession</th><th>study_accession</th><th>sample__accession</th><th>sample__ena_accessions</th><th>sample__sample_title</th><th>sample__biome</th><th>sample__updated_at</th><th>study__accession</th><th>study__ena_accessions</th><th>study__title</th><th>study__updated_at</th><th>study__biome.biome_name</th><th>study__biome.lineage</th><th>GivenID</th><th>RunID</th><th>SRA accession</th><th>name</th><th>taxid</th><th>ENA-CHECKLIST</th><th>ENA-FIRST-PUBLIC</th><th>ENA-LAST-UPDATE</th><th>External Id</th><th>INSDC center name</th><th>INSDC first public</th><th>INSDC last update</th><th>INSDC status</th><th>Submitter Id</th><th>collection date</th><th>depth</th><th>environment (biome)</th><th>environment (feature)</th><th>environment (material)</th><th>geographic location (country and/or sea)</th><th>geographic location (elevation)</th><th>geographic location (latitude)</th><th>geographic location (longitude)</th><th>investigation type</th><th>organism</th><th>project name</th><th>scientific_name</th><th>sequencing method</th><th>soil environmental package</th><th>title</th><th>description</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>list[str]</td><td>str</td><td>str</td><td>str</td><td>str</td><td>list[str]</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>i64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;ERR1299314&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886583&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886583&quot;</td><td>[&quot;ERS1073717&quot;, &quot;SAMEA3886583&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:14.026000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886583&quot;</td><td>null</td><td>&quot;ERS1073717&quot;</td><td>&quot;I9&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886583&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I9&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Russia&quot;</td><td>&quot;130&quot;</td><td>&quot;62.182784&quot;</td><td>&quot;50.550976&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>null</td></tr><tr><td>&quot;ERR1299315&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886584&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886584&quot;</td><td>[&quot;SAMEA3886584&quot;, &quot;ERS1073718&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:11.949000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886584&quot;</td><td>null</td><td>&quot;ERS1073718&quot;</td><td>&quot;I10&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886584&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I10&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Russia&quot;</td><td>&quot;130&quot;</td><td>&quot;62.182784&quot;</td><td>&quot;50.550976&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>&quot;Rhizosphere sample&quot;</td></tr><tr><td>&quot;ERR1299316&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886585&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886585&quot;</td><td>[&quot;ERS1073719&quot;, &quot;SAMEA3886585&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:13.206000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886585&quot;</td><td>null</td><td>&quot;ERS1073719&quot;</td><td>&quot;I7&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886585&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I7&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Russia&quot;</td><td>&quot;130&quot;</td><td>&quot;62.182785&quot;</td><td>&quot;50.550977&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>null</td></tr><tr><td>&quot;ERR1299317&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886586&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886586&quot;</td><td>[&quot;SAMEA3886586&quot;, &quot;ERS1073720&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:17.200000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886586&quot;</td><td>null</td><td>&quot;ERS1073720&quot;</td><td>&quot;I8&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886586&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I8&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Russia&quot;</td><td>&quot;130&quot;</td><td>&quot;62.182785&quot;</td><td>&quot;50.550977&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>&quot;Rhizosphere sample&quot;</td></tr><tr><td>&quot;ERR1299319&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886588&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886588&quot;</td><td>[&quot;ERS1073722&quot;, &quot;SAMEA3886588&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:14.818000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886588&quot;</td><td>null</td><td>&quot;ERS1073722&quot;</td><td>&quot;I12&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886588&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I12&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Russia&quot;</td><td>&quot;130&quot;</td><td>&quot;62.152829&quot;</td><td>&quot;50.392303&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>&quot;Rhizosphere sample&quot;</td></tr><tr><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td></tr><tr><td>&quot;ERR1299325&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886594&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886594&quot;</td><td>[&quot;ERS1073728&quot;, &quot;SAMEA3886594&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:11.534000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886594&quot;</td><td>null</td><td>&quot;ERS1073728&quot;</td><td>&quot;I28&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886594&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I28&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Finland&quot;</td><td>&quot;8&quot;</td><td>&quot;61.1359&quot;</td><td>&quot;21.283455&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>&quot;Rhizosphere sample&quot;</td></tr><tr><td>&quot;ERR1299326&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886595&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886595&quot;</td><td>[&quot;ERS1073729&quot;, &quot;SAMEA3886595&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:16.798000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886595&quot;</td><td>null</td><td>&quot;ERS1073729&quot;</td><td>&quot;I17&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886595&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I17&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Estonia&quot;</td><td>&quot;50&quot;</td><td>&quot;58.3342912&quot;</td><td>&quot;27.0532964&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>null</td></tr><tr><td>&quot;ERR1299330&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886599&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886599&quot;</td><td>[&quot;SAMEA3886599&quot;, &quot;ERS1073733&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:11.119000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886599&quot;</td><td>null</td><td>&quot;ERS1073733&quot;</td><td>&quot;I19&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886599&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I19&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Estonia&quot;</td><td>&quot;87&quot;</td><td>&quot;57.582051&quot;</td><td>&quot;26.560674&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>null</td></tr><tr><td>&quot;ERR1299331&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886600&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886600&quot;</td><td>[&quot;ERS1073734&quot;, &quot;SAMEA3886600&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:15.213000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886600&quot;</td><td>null</td><td>&quot;ERS1073734&quot;</td><td>&quot;I20&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886600&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I20&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;Estonia&quot;</td><td>&quot;87&quot;</td><td>&quot;57.582051&quot;</td><td>&quot;26.560674&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>&quot;Rhizosphere sample&quot;</td></tr><tr><td>&quot;ERR1299333&quot;</td><td>&quot;Metatranscriptomic&quot;</td><td>null</td><td>null</td><td>&quot;SAMEA3886602&quot;</td><td>&quot;MGYS00001374&quot;</td><td>&quot;SAMEA3886602&quot;</td><td>[&quot;SAMEA3886602&quot;, &quot;ERS1073736&quot;]</td><td>&quot;Birch&quot;</td><td>null</td><td>&quot;2026-04-28T04:56:12.370000+00:…</td><td>&quot;MGYS00001374&quot;</td><td>[&quot;ERP014435&quot;, &quot;PRJEB12905&quot;]</td><td>&quot;Ectomycorrhizal and fine root …</td><td>&quot;2026-05-28T15:46:51.301000+00:…</td><td>&quot;Forest soil&quot;</td><td>&quot;root:Host-associated:Plants:Rh…</td><td>&quot;SAMEA3886602&quot;</td><td>null</td><td>&quot;ERS1073736&quot;</td><td>&quot;I6&quot;</td><td>256318</td><td>&quot;ERC000022&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;SAMEA3886602&quot;</td><td>&quot;UNIVERSITY OF TARTU&quot;</td><td>&quot;2016-03-06T17:05:13Z&quot;</td><td>&quot;2016-10-21T09:34:22Z&quot;</td><td>&quot;public&quot;</td><td>&quot;I6&quot;</td><td>&quot;2009&quot;</td><td>&quot;0.2&quot;</td><td>&quot;forest&quot;</td><td>&quot;birch stand&quot;</td><td>&quot;soil&quot;</td><td>&quot;United Kingdom&quot;</td><td>&quot;22&quot;</td><td>&quot;53.252619&quot;</td><td>&quot;-2.301752&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;PRJEB12905&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Illumina 2000&quot;</td><td>&quot;soil&quot;</td><td>&quot;Birch&quot;</td><td>&quot;Rhizosphere sample&quot;</td></tr></tbody></table></div></div></div>
+</details>
+</div>
+</section>
+<section id="example-2-to-anndata">
+<h3>Example 2. to <code class="docutils literal notranslate"><span class="pre">anndata</span></code><a class="headerlink" href="#example-2-to-anndata" title="Link to this heading">#</a></h3>
+<p>as an annotated dataframe which keeps data matrices aligned with the corresponding metadata – even when transforming the data so that there are added matrix layers.</p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># to anndata object</span>
+<span class="n">an_df</span> <span class="o">=</span> <span class="n">MTG</span><span class="o">.</span><span class="n">to_anndata</span><span class="p">()</span>
+
+<span class="c1"># the feature matrix</span>
+<span class="c1"># an_df.to_df() # or an_df.X</span>
+
+<span class="c1"># the features metadata</span>
+<span class="c1"># an_df.var</span>
+
+<span class="c1"># the obs (samples) metadata</span>
+<span class="n">an_df</span><span class="o">.</span><span class="n">obs</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>experiment_type</th>
+      <th>instrument_model</th>
+      <th>instrument_platform</th>
+      <th>sample_accession</th>
+      <th>study_accession</th>
+      <th>sample__accession</th>
+      <th>sample__ena_accessions</th>
+      <th>sample__sample_title</th>
+      <th>sample__biome</th>
+      <th>sample__updated_at</th>
+      <th>...</th>
+      <th>geographic location (latitude)</th>
+      <th>geographic location (longitude)</th>
+      <th>investigation type</th>
+      <th>organism</th>
+      <th>project name</th>
+      <th>scientific_name</th>
+      <th>sequencing method</th>
+      <th>soil environmental package</th>
+      <th>title</th>
+      <th>description</th>
+    </tr>
+    <tr>
+      <th>name_of_your_chosing</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ERR1299314</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886583</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886583</td>
+      <td>[ERS1073717, SAMEA3886583]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:14.026000+00:00</td>
+      <td>...</td>
+      <td>62.182784</td>
+      <td>50.550976</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ERR1299315</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886584</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886584</td>
+      <td>[SAMEA3886584, ERS1073718]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:11.949000+00:00</td>
+      <td>...</td>
+      <td>62.182784</td>
+      <td>50.550976</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>ERR1299316</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886585</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886585</td>
+      <td>[ERS1073719, SAMEA3886585]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:13.206000+00:00</td>
+      <td>...</td>
+      <td>62.182785</td>
+      <td>50.550977</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ERR1299317</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886586</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886586</td>
+      <td>[SAMEA3886586, ERS1073720]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:17.200000+00:00</td>
+      <td>...</td>
+      <td>62.182785</td>
+      <td>50.550977</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>ERR1299319</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886588</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886588</td>
+      <td>[ERS1073722, SAMEA3886588]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:14.818000+00:00</td>
+      <td>...</td>
+      <td>62.152829</td>
+      <td>50.392303</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>ERR1299320</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886589</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886589</td>
+      <td>[ERS1073723, SAMEA3886589]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:16.012000+00:00</td>
+      <td>...</td>
+      <td>66.2</td>
+      <td>26.4</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ERR1299321</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886590</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886590</td>
+      <td>[ERS1073724, SAMEA3886590]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:09.828000+00:00</td>
+      <td>...</td>
+      <td>66.2</td>
+      <td>26.4</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>ERR1299323</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886592</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886592</td>
+      <td>[SAMEA3886592, ERS1073726]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:14.425000+00:00</td>
+      <td>...</td>
+      <td>61.49</td>
+      <td>29.19</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>ERR1299324</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886593</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886593</td>
+      <td>[ERS1073727, SAMEA3886593]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:15.602000+00:00</td>
+      <td>...</td>
+      <td>61.1359</td>
+      <td>21.283455</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ERR1299325</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886594</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886594</td>
+      <td>[ERS1073728, SAMEA3886594]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:11.534000+00:00</td>
+      <td>...</td>
+      <td>61.1359</td>
+      <td>21.283455</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>ERR1299326</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886595</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886595</td>
+      <td>[ERS1073729, SAMEA3886595]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:16.798000+00:00</td>
+      <td>...</td>
+      <td>58.3342912</td>
+      <td>27.0532964</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ERR1299330</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886599</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886599</td>
+      <td>[SAMEA3886599, ERS1073733]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:11.119000+00:00</td>
+      <td>...</td>
+      <td>57.582051</td>
+      <td>26.560674</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ERR1299331</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886600</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886600</td>
+      <td>[ERS1073734, SAMEA3886600]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:15.213000+00:00</td>
+      <td>...</td>
+      <td>57.582051</td>
+      <td>26.560674</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+    <tr>
+      <th>ERR1299333</th>
+      <td>Metatranscriptomic</td>
+      <td>None</td>
+      <td>None</td>
+      <td>SAMEA3886602</td>
+      <td>MGYS00001374</td>
+      <td>SAMEA3886602</td>
+      <td>[SAMEA3886602, ERS1073736]</td>
+      <td>Birch</td>
+      <td>None</td>
+      <td>2026-04-28T04:56:12.370000+00:00</td>
+      <td>...</td>
+      <td>53.252619</td>
+      <td>-2.301752</td>
+      <td>metagenome</td>
+      <td>metagenome</td>
+      <td>PRJEB12905</td>
+      <td>metagenome</td>
+      <td>Illumina 2000</td>
+      <td>soil</td>
+      <td>Birch</td>
+      <td>Rhizosphere sample</td>
+    </tr>
+  </tbody>
+</table>
+<p>14 rows × 47 columns</p>
+</div></div></div>
+</details>
+</div>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># exporting to h5ad file</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s2">&quot;example_collectors.h5ad&quot;</span>
+<span class="n">an_df</span><span class="o">.</span><span class="n">obs</span> <span class="o">=</span> <span class="n">an_df</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+    <span class="nb">str</span>
+<span class="p">)</span>  <span class="c1"># workaround for h5ad export issue with mixed types in obs</span>
+<span class="n">an_df</span><span class="o">.</span><span class="n">write_h5ad</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">anndata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ad</span>
+
+<span class="c1"># read in data</span>
+<span class="n">back</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="c1"># check it out</span>
+<span class="n">back</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 14 × 116
+    obs: &#39;experiment_type&#39;, &#39;instrument_model&#39;, &#39;instrument_platform&#39;, &#39;sample_accession&#39;, &#39;study_accession&#39;, &#39;sample__accession&#39;, &#39;sample__ena_accessions&#39;, &#39;sample__sample_title&#39;, &#39;sample__biome&#39;, &#39;sample__updated_at&#39;, &#39;study__accession&#39;, &#39;study__ena_accessions&#39;, &#39;study__title&#39;, &#39;study__updated_at&#39;, &#39;study__biome.biome_name&#39;, &#39;study__biome.lineage&#39;, &#39;GivenID&#39;, &#39;RunID&#39;, &#39;SRA accession&#39;, &#39;name&#39;, &#39;taxid&#39;, &#39;ENA-CHECKLIST&#39;, &#39;ENA-FIRST-PUBLIC&#39;, &#39;ENA-LAST-UPDATE&#39;, &#39;External Id&#39;, &#39;INSDC center name&#39;, &#39;INSDC first public&#39;, &#39;INSDC last update&#39;, &#39;INSDC status&#39;, &#39;Submitter Id&#39;, &#39;collection date&#39;, &#39;depth&#39;, &#39;environment (biome)&#39;, &#39;environment (feature)&#39;, &#39;environment (material)&#39;, &#39;geographic location (country and/or sea)&#39;, &#39;geographic location (elevation)&#39;, &#39;geographic location (latitude)&#39;, &#39;geographic location (longitude)&#39;, &#39;investigation type&#39;, &#39;organism&#39;, &#39;project name&#39;, &#39;scientific_name&#39;, &#39;sequencing method&#39;, &#39;soil environmental package&#39;, &#39;title&#39;, &#39;description&#39;
+    var: &#39;description&#39;, &#39;category&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="wrap-up">
+<h2>Wrap Up:<a class="headerlink" href="#wrap-up" title="Link to this heading">#</a></h2>
+<p>We started with only a MGnify dataset that included a list of run accessions.</p>
+<p>This page was a quick start demonstration of:</p>
+<ol class="arabic simple">
+<li><p>✅ Using <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code>s to collect metadata from MGnify</p></li>
+<li><p>✅ Collecting even more metadata from BioSamples with <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code></p></li>
+<li><p>✅ Merging the dataset with the rich metadata using <code class="docutils literal notranslate"><span class="pre">MTG</span></code></p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/getting-started"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="4_getting_data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Getting MGnify data</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../fundamentals/1_mgnipy_mgnipy.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mgnetizer">The <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-biosampler">The <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mtg-mgic-the-gatherer"><code class="docutils literal notranslate"><span class="pre">MTG</span></code> MGic (the) Gatherer</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-to-polars">Example 1. to <code class="docutils literal notranslate"><span class="pre">polars</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-to-anndata">Example 2. to <code class="docutils literal notranslate"><span class="pre">anndata</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wrap-up">Wrap Up:</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

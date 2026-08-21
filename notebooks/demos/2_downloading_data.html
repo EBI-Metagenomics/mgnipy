@@ -1,0 +1,1766 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting MGnify datasets &#8212; mgnipy 0.1.dev1+gd9719c25a documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9d4b60d7"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/demos/2_downloading_data';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Combining Parkinson’s disease taxonomic analyses" href="3_demo-parkinson.html" />
+    <link rel="prev" title="Get a MGnify List" href="1_mgnify_list_biomes.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/2_mgnifier_proxies.html">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/3_list_vs_detail.html">MGnify List vs. Detail endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/6_access_private_data.html">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_mgnify_list_biomes.html">Get a MGnify List</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting MGnify datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/demos/2_downloading_data.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/demos/2_downloading_data.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/demos/2_downloading_data.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/demos/2_downloading_data.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Getting MGnify datasets</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies">🎯 The Goal: Retrieve taxonomic datasets of tomato rhizosphere studies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-mgazine-of-datasets">3. Accessing the <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wrap-up">Wrap Up:</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="getting-mgnify-datasets">
+<h1>Getting MGnify datasets<a class="headerlink" href="#getting-mgnify-datasets" title="Link to this heading">#</a></h1>
+<p>The <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/" rel="noreferrer" target="_blank">MGnify API <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> provides access to MGnify analyses datasets and important metadata such as biome, sample, study, run, analysis details.</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install mgnipy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies">
+<h2>🎯 The Goal: Retrieve taxonomic datasets of tomato rhizosphere studies<a class="headerlink" href="#the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies" title="Link to this heading">#</a></h2>
+<p>Let’s request tomato rhizosphere datasets and metadata from MGnify API.</p>
+<p>Recall the typical workflow (from <a class="reference external" href="https://mgnipy.mgnify.org/notebooks/getting-started/1_what_is_mgnipy.html" rel="noreferrer" target="_blank">What is MGni.Py? <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>):</p>
+<ol class="arabic simple">
+<li><p>Start up a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client with your desired configuration</p></li>
+<li><p>Search in MGnify resources using a MGnifier glass</p></li>
+<li><p>Receive a MGazine of MGnify datasets</p></li>
+</ol>
+<p>which we will follow in this notebook</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="c1"># 1. init with default config</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span>
+    <span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;downloads&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># 2.a) setup studies mgnifier (build queries)</span>
+<span class="n">tomato_studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">studies</span><span class="p">(</span>
+    <span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Host-associated:Plants:Rhizosphere&quot;</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">MG</span><span class="p">:</span> 
+    <span class="c1"># 2.b) execute the list query (get the study list)</span>
+    <span class="n">tomato_studies</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+
+    <span class="c1"># 2.c) get the study list (execute all detail queries)</span>
+    <span class="n">tomato_studies</span><span class="o">.</span><span class="n">enrich_details</span><span class="p">()</span>
+
+<span class="c1"># take a look at the studies details results as a pandas df</span>
+<span class="n">tomato_studies</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>updated_at</th>
+      <th>downloads</th>
+      <th>first_accession</th>
+      <th>biome__biome_name</th>
+      <th>biome__lineage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00010296</td>
+      <td>[ERP166137, PRJEB82448]</td>
+      <td>Microbiome-mediated tolerance of wild tomato t...</td>
+      <td>2026-05-28T15:46:48.615000+00:00</td>
+      <td>[]</td>
+      <td>ERP166137</td>
+      <td>Rhizosphere</td>
+      <td>root:Host-associated:Plants:Rhizosphere</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00010297</td>
+      <td>[SRP333165, PRJNA755742]</td>
+      <td>Tomato rhizosphere microbiome in the pot exper...</td>
+      <td>2026-05-28T15:46:48.649000+00:00</td>
+      <td>[]</td>
+      <td>SRP333165</td>
+      <td>Rhizosphere</td>
+      <td>root:Host-associated:Plants:Rhizosphere</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00006231</td>
+      <td>[ERP139927, PRJEB55060]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>2026-05-28T15:46:58.486000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP139927</td>
+      <td>Rhizosphere</td>
+      <td>root:Host-associated:Plants:Rhizosphere</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>MGYS00006204</td>
+      <td>[ERP140102, PRJEB55219]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>2026-05-28T15:47:01.715000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP140102</td>
+      <td>Rhizosphere</td>
+      <td>root:Host-associated:Plants:Rhizosphere</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MGYS00006205</td>
+      <td>[ERP140107, PRJEB55224]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>2026-05-28T15:47:01.734000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP140107</td>
+      <td>Rhizosphere</td>
+      <td>root:Host-associated:Plants:Rhizosphere</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>MGYS00006208</td>
+      <td>[ERP140115, PRJEB55232]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>2026-05-28T15:47:01.747000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP140115</td>
+      <td>Rhizosphere</td>
+      <td>root:Host-associated:Plants:Rhizosphere</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>MGYS00006230</td>
+      <td>[ERP139923, PRJEB55057]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>2026-05-28T15:47:01.755000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP139923</td>
+      <td>Rhizosphere</td>
+      <td>root:Host-associated:Plants:Rhizosphere</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>MGYS00010257</td>
+      <td>[SRP456588, PRJNA1004080]</td>
+      <td>Combined effect of microplastics and fungicide...</td>
+      <td>2026-05-28T15:46:48.538000+00:00</td>
+      <td>[]</td>
+      <td>SRP456588</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>MGYS00010264</td>
+      <td>[PRJEB91717]</td>
+      <td>Metagenome assembly of PRJNA1127303 data set (...</td>
+      <td>2026-05-28T15:46:48.743000+00:00</td>
+      <td>[]</td>
+      <td>PRJEB91717</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>MGYS00010251</td>
+      <td>[SRP338795, PRJNA766489]</td>
+      <td>Culture-independent analysis of rhizosphere mi...</td>
+      <td>2026-05-28T15:46:48.756000+00:00</td>
+      <td>[]</td>
+      <td>SRP338795</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>MGYS00010245</td>
+      <td>[PRJEB82447, ERP166136]</td>
+      <td>Unveiling diversity and adaptations of the wil...</td>
+      <td>2026-05-28T15:46:48.558000+00:00</td>
+      <td>[]</td>
+      <td>ERP166136</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>MGYS00010324</td>
+      <td>[PRJEB95772]</td>
+      <td>Metagenome assembly of PRJNA777724 data set (T...</td>
+      <td>2026-05-28T15:46:48.576000+00:00</td>
+      <td>[]</td>
+      <td>PRJEB95772</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>MGYS00010258</td>
+      <td>[SRP517058, PRJNA1127303]</td>
+      <td>Metagenomic data of rhizosphere soil during to...</td>
+      <td>2026-05-28T15:46:48.578000+00:00</td>
+      <td>[]</td>
+      <td>SRP517058</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>MGYS00010298</td>
+      <td>[PRJNA777724, SRP344777]</td>
+      <td>Tomato heritable microbiome</td>
+      <td>2026-05-28T15:46:48.670000+00:00</td>
+      <td>[]</td>
+      <td>SRP344777</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>MGYS00010262</td>
+      <td>[PRJEB91684]</td>
+      <td>Metagenome assembly of PRJNA1004080 data set (...</td>
+      <td>2026-05-28T15:46:48.688000+00:00</td>
+      <td>[]</td>
+      <td>PRJEB91684</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>MGYS00010250</td>
+      <td>[PRJNA755741, SRP333163]</td>
+      <td>Tomato rhizosphere microbiome in the belowgrou...</td>
+      <td>2026-05-28T15:46:48.730000+00:00</td>
+      <td>[]</td>
+      <td>SRP333163</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>MGYS00010253</td>
+      <td>[PRJNA789467, SRP351203]</td>
+      <td>Disentangling the genetic basis of rhizosphere...</td>
+      <td>2026-05-28T15:46:48.818000+00:00</td>
+      <td>[]</td>
+      <td>SRP351203</td>
+      <td>Soil</td>
+      <td>root:Host-associated:Plants:Rhizosphere:Soil</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</details>
+</div>
+</section>
+<section id="accessing-the-mgazine-of-datasets">
+<h2>3. Accessing the <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of datasets<a class="headerlink" href="#accessing-the-mgazine-of-datasets" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>study details have a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGazine</span></code> which allow us to download and interact with study-level datasets outputed from MGnify.</p></li>
+<li><p>We can use <code class="docutils literal notranslate"><span class="pre">mgnipy.MGazine</span></code> to download the datasets onto disk or read them into our notebook.</p></li>
+<li><p>To access the study’s mgazine use <code class="docutils literal notranslate"><span class="pre">.datasets</span></code></p></li>
+<li><p>the <strong>str</strong> representaiton of mgazine gives us a peak into the pipeline versions within, number of downloads and the short_description categories</p></li>
+</ul>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># access study mgazine</span>
+<span class="n">MZ</span> <span class="o">=</span> <span class="n">tomato_studies</span><span class="o">.</span><span class="n">datasets</span>
+
+<span class="c1"># print for more info</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MZ</span><span class="p">)</span>
+
+<span class="c1"># also can view more as df</span>
+<span class="n">MZ</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine containing:
+- MGnify pipeline versions: [&#39;v5&#39;]
+- Number of downloads: 35
+- Short descriptions: [&#39;Complete GO annotation&#39;,
+ &#39;GO slim annotation&#39;,
+ &#39;InterPro matches&#39;,
+ &#39;Phylum level taxonomies LSU&#39;,
+ &#39;Phylum level taxonomies SSU&#39;,
+ &#39;Taxonomic assignments LSU&#39;,
+ &#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_studies
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>file_type</th>
+      <th>download_type</th>
+      <th>short_description</th>
+      <th>long_description</th>
+      <th>alias</th>
+      <th>download_group</th>
+      <th>file_size_bytes</th>
+      <th>index_files</th>
+      <th>url</th>
+      <th>accession</th>
+      <th>pipeline_version</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies SSU</td>
+      <td>Phylum level taxonomies SSU (TSV)</td>
+      <td>ERP139927_phylum_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006231</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments SSU</td>
+      <td>Taxonomic assignments SSU (TSV)</td>
+      <td>ERP139927_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006231</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies LSU</td>
+      <td>Phylum level taxonomies LSU (TSV)</td>
+      <td>ERP139927_phylum_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006231</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments LSU</td>
+      <td>Taxonomic assignments LSU (TSV)</td>
+      <td>ERP139927_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006231</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>InterPro matches</td>
+      <td>InterPro matches (TSV)</td>
+      <td>ERP139927_IPR_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006231</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>GO slim annotation</td>
+      <td>GO slim annotation</td>
+      <td>ERP139927_GO-slim_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006231</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>Complete GO annotation</td>
+      <td>Complete GO annotation</td>
+      <td>ERP139927_GO_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006231</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies SSU</td>
+      <td>Phylum level taxonomies SSU (TSV)</td>
+      <td>ERP140102_phylum_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006204</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments SSU</td>
+      <td>Taxonomic assignments SSU (TSV)</td>
+      <td>ERP140102_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006204</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies LSU</td>
+      <td>Phylum level taxonomies LSU (TSV)</td>
+      <td>ERP140102_phylum_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006204</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments LSU</td>
+      <td>Taxonomic assignments LSU (TSV)</td>
+      <td>ERP140102_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006204</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>InterPro matches</td>
+      <td>InterPro matches (TSV)</td>
+      <td>ERP140102_IPR_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006204</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>GO slim annotation</td>
+      <td>GO slim annotation</td>
+      <td>ERP140102_GO-slim_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006204</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>Complete GO annotation</td>
+      <td>Complete GO annotation</td>
+      <td>ERP140102_GO_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006204</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies SSU</td>
+      <td>Phylum level taxonomies SSU (TSV)</td>
+      <td>ERP140107_phylum_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006205</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments SSU</td>
+      <td>Taxonomic assignments SSU (TSV)</td>
+      <td>ERP140107_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006205</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies LSU</td>
+      <td>Phylum level taxonomies LSU (TSV)</td>
+      <td>ERP140107_phylum_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006205</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments LSU</td>
+      <td>Taxonomic assignments LSU (TSV)</td>
+      <td>ERP140107_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006205</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>InterPro matches</td>
+      <td>InterPro matches (TSV)</td>
+      <td>ERP140107_IPR_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006205</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>GO slim annotation</td>
+      <td>GO slim annotation</td>
+      <td>ERP140107_GO-slim_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006205</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>Complete GO annotation</td>
+      <td>Complete GO annotation</td>
+      <td>ERP140107_GO_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006205</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies SSU</td>
+      <td>Phylum level taxonomies SSU (TSV)</td>
+      <td>ERP140115_phylum_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006208</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments SSU</td>
+      <td>Taxonomic assignments SSU (TSV)</td>
+      <td>ERP140115_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006208</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies LSU</td>
+      <td>Phylum level taxonomies LSU (TSV)</td>
+      <td>ERP140115_phylum_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006208</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments LSU</td>
+      <td>Taxonomic assignments LSU (TSV)</td>
+      <td>ERP140115_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006208</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>InterPro matches</td>
+      <td>InterPro matches (TSV)</td>
+      <td>ERP140115_IPR_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006208</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>GO slim annotation</td>
+      <td>GO slim annotation</td>
+      <td>ERP140115_GO-slim_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006208</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>Complete GO annotation</td>
+      <td>Complete GO annotation</td>
+      <td>ERP140115_GO_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006208</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies SSU</td>
+      <td>Phylum level taxonomies SSU (TSV)</td>
+      <td>ERP139923_phylum_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006230</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments SSU</td>
+      <td>Taxonomic assignments SSU (TSV)</td>
+      <td>ERP139923_taxonomy_abundances_SSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_ssu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006230</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Phylum level taxonomies LSU</td>
+      <td>Phylum level taxonomies LSU (TSV)</td>
+      <td>ERP139923_phylum_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006230</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>tsv</td>
+      <td>Taxonomic analysis</td>
+      <td>Taxonomic assignments LSU</td>
+      <td>Taxonomic assignments LSU (TSV)</td>
+      <td>ERP139923_taxonomy_abundances_LSU_v5.0.tsv</td>
+      <td>study_summary.v5.0.taxonomic_analysis_lsu_rrna</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006230</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>InterPro matches</td>
+      <td>InterPro matches (TSV)</td>
+      <td>ERP139923_IPR_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006230</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>GO slim annotation</td>
+      <td>GO slim annotation</td>
+      <td>ERP139923_GO-slim_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006230</td>
+      <td>v5</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>tsv</td>
+      <td>Functional analysis</td>
+      <td>Complete GO annotation</td>
+      <td>Complete GO annotation</td>
+      <td>ERP139923_GO_abundances_v5.0.tsv</td>
+      <td>study_summary.v5.0.functional_analysis</td>
+      <td>None</td>
+      <td>None</td>
+      <td>https://ftp.ebi.ac.uk/pub/databases/metagenomi...</td>
+      <td>MGYS00006230</td>
+      <td>v5</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</details>
+</div>
+<p>You can read in whole or stream in chunks a dataset by passing its <code class="docutils literal notranslate"><span class="pre">alias</span></code> or <code class="docutils literal notranslate"><span class="pre">url</span></code> to <code class="docutils literal notranslate"><span class="pre">MGazine.stream()</span></code></p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MZ</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span>
+    <span class="n">alias</span> <span class="o">=</span> <span class="n">MZ</span><span class="o">.</span><span class="n">aliases</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+    <span class="n">chunksize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="c1"># default to read in all, set int for chunked reading</span>
+<span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GO</th>
+      <th>description</th>
+      <th>category</th>
+      <th>ERZ12343720</th>
+      <th>ERZ12343730</th>
+      <th>ERZ12343740</th>
+      <th>ERZ12343750</th>
+      <th>ERZ12343760</th>
+      <th>ERZ12343770</th>
+      <th>ERZ12343780</th>
+      <th>...</th>
+      <th>ERZ12590947</th>
+      <th>ERZ12593067</th>
+      <th>ERZ12590878</th>
+      <th>ERZ12590908</th>
+      <th>ERZ12590968</th>
+      <th>ERZ12590988</th>
+      <th>ERZ12590849</th>
+      <th>ERZ12590879</th>
+      <th>ERZ12590889</th>
+      <th>ERZ12590909</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>GO:0000015</td>
+      <td>phosphopyruvate hydratase complex</td>
+      <td>cellular component</td>
+      <td>106</td>
+      <td>77</td>
+      <td>69</td>
+      <td>106</td>
+      <td>96</td>
+      <td>88</td>
+      <td>102</td>
+      <td>...</td>
+      <td>107</td>
+      <td>103</td>
+      <td>57</td>
+      <td>84</td>
+      <td>70</td>
+      <td>76</td>
+      <td>97</td>
+      <td>79</td>
+      <td>148</td>
+      <td>94</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>GO:0000150</td>
+      <td>recombinase activity</td>
+      <td>molecular function</td>
+      <td>152</td>
+      <td>111</td>
+      <td>112</td>
+      <td>126</td>
+      <td>137</td>
+      <td>154</td>
+      <td>178</td>
+      <td>...</td>
+      <td>146</td>
+      <td>165</td>
+      <td>97</td>
+      <td>117</td>
+      <td>123</td>
+      <td>136</td>
+      <td>167</td>
+      <td>123</td>
+      <td>283</td>
+      <td>135</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GO:0000160</td>
+      <td>phosphorelay signal transduction system</td>
+      <td>biological process</td>
+      <td>5337</td>
+      <td>4117</td>
+      <td>4340</td>
+      <td>5774</td>
+      <td>5273</td>
+      <td>5160</td>
+      <td>5794</td>
+      <td>...</td>
+      <td>5912</td>
+      <td>5731</td>
+      <td>2975</td>
+      <td>4728</td>
+      <td>4834</td>
+      <td>4776</td>
+      <td>5820</td>
+      <td>4669</td>
+      <td>8623</td>
+      <td>5539</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>GO:0000166</td>
+      <td>nucleotide binding</td>
+      <td>molecular function</td>
+      <td>27506</td>
+      <td>23975</td>
+      <td>22572</td>
+      <td>28502</td>
+      <td>28606</td>
+      <td>25597</td>
+      <td>30817</td>
+      <td>...</td>
+      <td>28526</td>
+      <td>31371</td>
+      <td>16457</td>
+      <td>25486</td>
+      <td>26749</td>
+      <td>23192</td>
+      <td>28760</td>
+      <td>24531</td>
+      <td>43168</td>
+      <td>29333</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>GO:0003674</td>
+      <td>molecular function</td>
+      <td>molecular function</td>
+      <td>3919</td>
+      <td>3307</td>
+      <td>3217</td>
+      <td>4040</td>
+      <td>3915</td>
+      <td>3621</td>
+      <td>4337</td>
+      <td>...</td>
+      <td>4138</td>
+      <td>4391</td>
+      <td>2305</td>
+      <td>3594</td>
+      <td>3695</td>
+      <td>3329</td>
+      <td>4124</td>
+      <td>3479</td>
+      <td>6271</td>
+      <td>4144</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 117 columns</p>
+</div></div></div>
+</div>
+<p>You can filter by short descriptioins by passing them as you would an index into square brackets i..e, <strong>getitem</strong></p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssu</span> <span class="o">=</span> <span class="n">MZ</span><span class="p">[</span><span class="s1">&#39;Taxonomic assignments SSU&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ssu</span><span class="p">)</span>
+
+<span class="c1"># now with additional taxonomic helpers</span>
+<span class="n">tax</span> <span class="o">=</span> <span class="n">ssu</span><span class="o">.</span><span class="n">taxonomic</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine containing:
+- MGnify pipeline versions: [&#39;v5&#39;]
+- Number of downloads: 5
+- Short descriptions: [&#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_studies
+
+TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v5&#39;]
+- Number of downloads: 5
+- Short descriptions: [&#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_studies
+-----------------------
+Next steps: Use `.load()` to initialize.
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <a class="reference external" href="https://mgnipy.mgnify.org/notebooks/fundamentals/7_mgazine.html" rel="noreferrer" target="_blank">MGazine informtion page <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> also delves into how to download as well as other options for reading in the files</p>
+<p>We will carry on with our filtered TaxaMGazine given <a class="reference internal" href="#-the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies"><span class="xref myst">our goal</span></a> for now.</p>
+<p>for example, we can also combine the taxonomic assignment results into one dataframe e.g. <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code>, <code class="docutils literal notranslate"><span class="pre">.to_polars</span></code>, <code class="docutils literal notranslate"><span class="pre">.X()</span></code></p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># first loading</span>
+<span class="n">tax</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="c1"># accessing the 5 datasets in one df</span>
+<span class="n">tax</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 150)</small><table border="1" class="dataframe"><thead><tr><th>taxonomy</th><th>ERZ12343720</th><th>ERZ12343730</th><th>ERZ12343740</th><th>ERZ12343750</th><th>ERZ12343760</th><th>ERZ12343770</th><th>ERZ12343780</th><th>ERZ12343721</th><th>ERZ12343731</th><th>ERZ12343741</th><th>ERZ12343751</th><th>ERZ12343761</th><th>ERZ12343771</th><th>ERZ12343781</th><th>ERZ12343712</th><th>ERZ12343722</th><th>ERZ12343732</th><th>ERZ12343742</th><th>ERZ12343752</th><th>ERZ12343762</th><th>ERZ12343772</th><th>ERZ12343782</th><th>ERZ12343713</th><th>ERZ12343723</th><th>ERZ12343733</th><th>ERZ12343743</th><th>ERZ12343753</th><th>ERZ12343763</th><th>ERZ12343773</th><th>ERZ12343783</th><th>ERZ12343714</th><th>ERZ12343724</th><th>ERZ12343734</th><th>ERZ12343744</th><th>ERZ12343754</th><th>ERZ12343764</th><th>&hellip;</th><th>ERZ12590889</th><th>ERZ12590909</th><th>ERZ12633490</th><th>ERZ12633491</th><th>ERZ12633492</th><th>ERZ12633493</th><th>ERZ12633494</th><th>ERZ12633495</th><th>ERZ12633496</th><th>ERZ12633497</th><th>ERZ12633488</th><th>ERZ12633498</th><th>ERZ12633489</th><th>ERZ12633499</th><th>ERZ12633510</th><th>ERZ12633501</th><th>ERZ12633502</th><th>ERZ12633503</th><th>ERZ12633504</th><th>ERZ12633505</th><th>ERZ12633506</th><th>ERZ12633507</th><th>ERZ12633517</th><th>ERZ12633508</th><th>ERZ12633518</th><th>ERZ12633509</th><th>ERZ12633580</th><th>ERZ12633581</th><th>ERZ12633572</th><th>ERZ12633582</th><th>ERZ12633573</th><th>ERZ12633574</th><th>ERZ12633594</th><th>ERZ12633576</th><th>ERZ12633579</th><th>ERZ12590661</th><th>ERZ12590669</th></tr><tr><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>&hellip;</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td></tr></thead><tbody><tr><td>&quot;sk__Archaea&quot;</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&hellip;</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0</td><td>2</td><td>3</td><td>0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>3</td><td>0</td><td>1</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>0</td><td>2</td></tr><tr><td>&quot;sk__Archaea;k__;p__Crenarchaeo…</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&hellip;</td><td>0</td><td>0</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr><tr><td>&quot;sk__Archaea;k__;p__Crenarchaeo…</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&hellip;</td><td>0</td><td>0</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr><tr><td>&quot;sk__Archaea;k__;p__Thaumarchae…</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&hellip;</td><td>0</td><td>0</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr><tr><td>&quot;sk__Archaea;k__;p__Thaumarchae…</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>2</td><td>0</td><td>0</td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>&hellip;</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>1</td><td>2</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td><td>2</td><td>4</td><td>1</td><td>2</td><td>4</td><td>3</td><td>2</td><td>5</td><td>3</td><td>2</td><td>3</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>2</td><td>3</td><td>3</td></tr></tbody></table></div></div></div>
+</details>
+</div>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># also as an annotated dataframe (AnnData)</span>
+<span class="n">tax</span><span class="o">.</span><span class="n">to_anndata</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 149 × 558
+    var: &#39;Superkingdom&#39;, &#39;Kingdom&#39;, &#39;Phylum&#39;, &#39;Class&#39;, &#39;Order&#39;, &#39;Family&#39;, &#39;Genus&#39;, &#39;Species&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can see that only the <code class="docutils literal notranslate"><span class="pre">var</span></code> or features (taxonomy) are annotated. The <code class="docutils literal notranslate"><span class="pre">obs</span></code> or observations (runs/samples) are not yet annotated because we did not collect their metadata.</p>
+<p>From here we could use a <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code> to collect all the detailed metadata for the <code class="docutils literal notranslate"><span class="pre">.runs_accession</span></code> in our MGazine. See the following notebooks for more information</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># tidying up cache</span>
+<span class="n">MG</span><span class="o">.</span><span class="n">clear_subcaches</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="wrap-up">
+<h2>Wrap Up:<a class="headerlink" href="#wrap-up" title="Link to this heading">#</a></h2>
+<p>This page was a quick start demonstration of:</p>
+<ol class="arabic simple">
+<li><p>✅ Start up a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client with your desired configuration</p></li>
+<li><p>✅ Search in MGnify resources using a MGnifier glass</p></li>
+<li><p>✅ Receive a MGazine of MGnify datasets</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/demos"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1_mgnify_list_biomes.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Get a MGnify List</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="3_demo-parkinson.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Combining Parkinson’s disease taxonomic analyses</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-retrieve-taxonomic-datasets-of-tomato-rhizosphere-studies">🎯 The Goal: Retrieve taxonomic datasets of tomato rhizosphere studies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-mgazine-of-datasets">3. Accessing the <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wrap-up">Wrap Up:</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

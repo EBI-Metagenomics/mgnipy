@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.V2.mixins module &#8212; mgnipy 0.1.dev1+g579d6b3be documentation</title>
+    <title>mgnipy.V2.mixins module &#8212; mgnipy 0.1.dev1+gd9719c25a documentation</title>
   
   
   
@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=e57d5624" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -40,12 +41,17 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=f2b3c440"></script>
+    <script src="../_static/documentation_options.js?v=9d4b60d7"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/mgnipy.V2.mixins';</script>
@@ -53,8 +59,8 @@
     <link rel="icon" href="../_static/mgnipy.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mgnipy.V2.describe module" href="mgnipy.V2.describe.html" />
-    <link rel="prev" title="mgnipy.V2.query_set module" href="mgnipy.V2.query_set.html" />
+    <link rel="next" title="mgnipy.emgapi_v2_client.client module" href="mgnipy.emgapi_v2_client.client.html" />
+    <link rel="prev" title="mgnipy.V2.proxies.studies module" href="mgnipy.V2.proxies.studies.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -146,8 +152,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g579d6b3be documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g579d6b3be documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -190,15 +196,16 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/2_installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/3_searching_resources.html">Accessing MGnify API Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/4_downloading_data.html">Downloading MGnify Study data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/2_mgnifier_proxies.html"><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/3_mgnify_list_biomes.html">A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> of records</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/2_mgnifier_proxies.html">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/3_list_vs_detail.html">MGnify List vs. Detail endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
@@ -206,24 +213,28 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/2_downloading_data.html">Getting MGnify datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">mgnipy.V2.mixins module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">Docs creation</a></li>
@@ -422,15 +433,6 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples_details()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.details_biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples_details()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin.lineages"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin.lineages</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin.results"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin.results</span></code></a></li>
@@ -438,22 +440,27 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin.tree"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin.tree</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.aload_cache"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.aload_cache()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.awrite_results"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.awrite_results()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.clear_cache"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.clear_cache()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.load_cache()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache_manifest"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.load_cache_manifest()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache_results"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.load_cache_results()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.write_results"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.write_results()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.aload_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.aload_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.awrite_results"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.awrite_results()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.cache_key"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.cache_key</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.cache_path"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.cache_path</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.clear_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.clear_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.load_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache_manifest"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.load_cache_manifest()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache_results"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.load_cache_results()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.manifest_path"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.manifest_path</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.try_load_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.try_load_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.write_results"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.write_results()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler"><code class="docutils literal notranslate"><span class="pre">ResultsHandler</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.data"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.data</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_df"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_df()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_json"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_json()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_list"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_list()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_polars"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_polars()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.aclose"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.aclose()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.async_httpx_client"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.async_httpx_client</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.close"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.close()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.httpx_client"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.httpx_client</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.renew_client"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.renew_client()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.status"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.status()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.StreamMixin"><code class="docutils literal notranslate"><span class="pre">StreamMixin</span></code></a><ul class="visible nav section-nav flex-column">
@@ -485,142 +492,8 @@ document.write(`
   <section id="module-mgnipy.V2.mixins">
 <span id="mgnipy-v2-mixins-module"></span><h1>mgnipy.V2.mixins module<a class="headerlink" href="#module-mgnipy.V2.mixins" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.mixins.</span></span><span class="sig-name descname"><span class="pre">BioSamplesMetadataMixin</span></span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
-<p>Mixin providing properties to access BioSamples metadata for samples in the list.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.aenrich_biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples" title="Link to this definition">#</a></dt>
-<dd><p>Asynchronously fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>abiosamplesdata</cite> property.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>aget_biosample_metadata_from_acc</cite> function, which asynchronously queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
-<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aenrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.aenrich_biosamples_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details" title="Link to this definition">#</a></dt>
-<dd><p>Asynchronously retrieve the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to False.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>This method does not return a value, but it caches the BioSamples metadata for later retrieval.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Relies on the <cite>abiosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which asynchronously retrieves the BioSamples metadata for each sample accession.</p></li>
-<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples">
-<span class="sig-name descname"><span class="pre">biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples" title="Link to this definition">#</a></dt>
-<dd><p>A DataFrame containing the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The DataFrame includes columns such as ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>DataFrame</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples">
-<span class="sig-name descname"><span class="pre">details_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.details_biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples" title="Link to this definition">#</a></dt>
-<dd><p>A DataFrame containing the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame containing the BioSamples metadata for all samples in the list.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
-<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples">
-<span class="sig-name descname"><span class="pre">enrich_biosamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.enrich_biosamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples" title="Link to this definition">#</a></dt>
-<dd><p>Fetch and cache the BioSamples metadata for the sample associated with this <cite>SampleDetail</cite> instance, based on its accession. The metadata is stored in the cache properties for later retrieval by the <cite>biosamplesdata</cite> property.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the fetched metadata. Defaults to False.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached metadata if it already exists. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>This property retrieves the BioSamples metadata for the sample accession using the <cite>get_biosample_metadata_from_acc</cite> function, which queries the BioSamples API and constructs a DataFrame with the relevant metadata fields.</p></li>
-<li><p>The resulting DataFrame will have a single row corresponding to the sample accession, and columns for ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the sample, with missing values filled as ‘NA’.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details">
-<span class="sig-name descname"><span class="pre">enrich_biosamples_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incl_ena</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BioSamplesMetadataMixin.enrich_biosamples_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details" title="Link to this definition">#</a></dt>
-<dd><p>Fetch and cache the concatenated BioSamples metadata for all samples in the list. Each row corresponds to a sample, and columns include ‘SampleID’, ‘SRA accession’, ‘taxid’, and any characteristics available for the samples. The metadata is stored in the cache properties for later retrieval by the <cite>details_biosamplesdata</cite> property.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>incl_ena</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to include ENA-specific metadata fields in the resulting DataFrame. Defaults to True.</p></li>
-<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – Whether to overwrite the cached DataFrame if it already exists. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Relies on the <cite>biosample_metadata</cite> property of each <cite>SampleDetail</cite> instance, which retrieves the BioSamples metadata for each sample accession.</p></li>
-<li><p>The resulting DataFrame is constructed by concatenating the individual DataFrames for each sample, and if each sample has different characteristics, the resulting DataFrame will have columns for all unique characteristics across the samples, with missing values filled as NaN.</p></li>
-</ul>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.BiomesTreeMixin">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.mixins.</span></span><span class="sig-name descname"><span class="pre">BiomesTreeMixin</span></span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BiomesTreeMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BiomesTreeMixin" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">BiomesTreeMixin</span></span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#BiomesTreeMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.BiomesTreeMixin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <dl class="py property">
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.BiomesTreeMixin.lineages">
@@ -660,36 +533,50 @@ document.write(`
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.mixins.</span></span><span class="sig-name descname"><span class="pre">DiskCheckpointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_getter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_requests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">CheckpointMixin</span></span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <p>Checkpoint manager for request-makers.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>params_getter</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>]</em>)</p></li>
-<li><p><strong>resource_str</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
-<li><p><strong>config</strong> (<em>MGnipyConfig</em>)</p></li>
-<li><p><strong>results_store</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>]</em>)</p></li>
-<li><p><strong>count</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>]</em><em>]</em>)</p></li>
-<li><p><strong>num_requests</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>]</em><em>]</em>)</p></li>
-</ul>
-</dd>
-</dl>
+<p>This mixin provides methods to write paginated results to disk as they are retrieved, and to load them back into memory on subsequent runs. It generates a unique cache key based on the query parameters and resource type, and organizes cached pages in a directory structure under a specified cache root.</p>
+<p>The mixin assumes the host class has the following attributes:
+- <cite>self.params</cite>: A dictionary of query parameters for the current request.
+- <cite>self.config</cite>: An instance of <cite>MGnipyConfig</cite> containing configuration settings, including the cache directory.
+- <cite>self.resource</cite>: A string representing the type of resource being queried (e.g., “samples”, “runs”).
+- <cite>self._results</cite>: A dictionary mapping page numbers to lists of dictionaries containing the query results.
+- <cite>self.count</cite>: An integer representing the total number of records for the current query.
+- <cite>self.num_requests</cite>: An integer representing the total number of paginated requests needed for the current query.
+which is the case for: QuerySets, MGnifier, proxies</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.mgnifier.query_set</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuerySet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckpointMixin</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Creating a class that uses mixin</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyQuerySet</span><span class="p">(</span><span class="n">QuerySet</span><span class="p">,</span> <span class="n">CheckpointMixin</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="c1"># Initialize QuerySet (not mixin)</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># init</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qs</span> <span class="o">=</span> <span class="n">MyQuerySet</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;studies&quot;</span><span class="p">)</span> <span class="c1"># default config is w/ cache enabled</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># now can use checkpoint methods, e.g.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qs</span><span class="o">.</span><span class="n">cache_key</span> <span class="c1"># print the unique cache key</span>
+<span class="go">&#39;...&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qs</span><span class="o">.</span><span class="n">load_cache</span><span class="p">()</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer.aload_cache">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aload_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer.aload_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer.aload_cache" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.aload_cache">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aload_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.aload_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.aload_cache" title="Link to this definition">#</a></dt>
 <dd><p>Async wrapper for load_cache.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)">int <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)">list <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)">int <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer.awrite_results">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">awrite_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer.awrite_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer.awrite_results" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.awrite_results">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">awrite_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.awrite_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.awrite_results" title="Link to this definition">#</a></dt>
 <dd><p>Async wrapper for write_results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -704,10 +591,49 @@ document.write(`
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.cache_key">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cache_key</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">str</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></span><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.cache_key" title="Link to this definition">#</a></dt>
+<dd><p>Generate deterministic hash from resource + params.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A unique cache key for the current query parameters and resource.
+For a query to the ‘samples’ resource with parameters {‘biome_lineage’: ‘root:Environmental:Terrestrial’},
+the cache key will be a SHA256 hash of the string representation of the resource and parameters,
+ensuring that identical queries will have the same cache key and thus access the same cached results.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)">str <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckpointMixin</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipyConfig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Prepare parameters and config</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lineage&#39;</span><span class="p">:</span> <span class="s1">&#39;root:Environmental:Terrestrial&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resource</span> <span class="o">=</span> <span class="s1">&#39;biome&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">MGnipyConfig</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;/path/to/cache&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create CheckpointMixin instance and compute cache key</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache_handler</span> <span class="o">=</span> <span class="n">CheckpointMixin</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache_handler</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache_handler</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache_handler</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache_handler</span><span class="o">.</span><span class="n">cache_key</span>
+<span class="go">&#39;1eb56ddf5a2e7d60d8155c8bbe01f032f959a2519d43e99f31f533abffa3166f&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.cache_path">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cache_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">Path</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">None</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></span><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.cache_path" title="Link to this definition">#</a></dt>
+<dd><p>Directory for this query’s cached pages.</p>
+</dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer.clear_cache">
-<span class="sig-name descname"><span class="pre">clear_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer.clear_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer.clear_cache" title="Link to this definition">#</a></dt>
-<dd><p>Remove all cached pages for this query.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.clear_cache">
+<span class="sig-name descname"><span class="pre">clear_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.clear_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.clear_cache" title="Link to this definition">#</a></dt>
+<dd><p>Remove all cached pages for this set of queries.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
@@ -716,45 +642,84 @@ document.write(`
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer.load_cache">
-<span class="sig-name descname"><span class="pre">load_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer.load_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache" title="Link to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)">int <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.load_cache">
+<span class="sig-name descname"><span class="pre">load_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.load_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache" title="Link to this definition">#</a></dt>
+<dd><p>Pick up where you left off. Loads cached results and manifest into memory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of request numbers (page numbers) that were successfully loaded from the cache.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)">list <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)">int <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer.load_cache_manifest">
-<span class="sig-name descname"><span class="pre">load_cache_manifest</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer.load_cache_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache_manifest" title="Link to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)">dict <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.load_cache_manifest">
+<span class="sig-name descname"><span class="pre">load_cache_manifest</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.load_cache_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache_manifest" title="Link to this definition">#</a></dt>
+<dd><p>Load the cache manifest file if present, and update total records and total requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The contents of the manifest file, or an empty dictionary if the manifest is not found or fails to load.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)">dict <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer.load_cache_results">
-<span class="sig-name descname"><span class="pre">load_cache_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer.load_cache_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache_results" title="Link to this definition">#</a></dt>
-<dd><p>Load cached pages into self._results. Returns count loaded.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.load_cache_results">
+<span class="sig-name descname"><span class="pre">load_cache_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.load_cache_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache_results" title="Link to this definition">#</a></dt>
+<dd><p>Load cached pages/request nums into results.</p>
+<p>Loads cached pages from disk into the in-memory results dictionary (self._results), if available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of request numbers (page numbers) that were successfully loaded from the cache.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)">list <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)">int <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.manifest_path">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">manifest_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">Path</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">None</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></span><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.manifest_path" title="Link to this definition">#</a></dt>
+<dd><p>Path to mgnipy_manifest.json storing metadata.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.try_load_cache">
+<span class="sig-name descname"><span class="pre">try_load_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.try_load_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.try_load_cache" title="Link to this definition">#</a></dt>
+<dd><p>Attempt to load cached results and manifest into memory if not already loaded.
+This method checks if the cache has already been loaded to avoid redundant operations.
+If the cache has not been loaded, it will attempt to load it and set the <cite>_cache_loaded</cite> attribute accordingly.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This method is intended to be called internally before accessing cached results.</p></li>
+<li><p>If cache_dir is None then _cache_loaded will be True after initial attempt.</p></li>
+<li><p>If an error occurs during cache loading, it will be logged, and <cite>_cache_loaded</cite> will be set to False.</p></li>
+<li><p>Dependent on <cite>.mixins.CheckpointMixin</cite></p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)">list <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)">int <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>]</p>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.DiskCheckpointer.write_results">
-<span class="sig-name descname"><span class="pre">write_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#DiskCheckpointer.write_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.DiskCheckpointer.write_results" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.CheckpointMixin.write_results">
+<span class="sig-name descname"><span class="pre">write_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_manifest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#CheckpointMixin.write_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.CheckpointMixin.write_results" title="Link to this definition">#</a></dt>
 <dd><p>Auto atomic write to disk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>request_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 <li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Any</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
+<li><p><strong>include_manifest</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -766,137 +731,81 @@ document.write(`
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.ResultsHandler">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.mixins.</span></span><span class="sig-name descname"><span class="pre">ResultsHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ResultsHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ResultsHandler" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.ClientManagerMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ClientManagerMixin</span></span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ClientManagerMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ClientManagerMixin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Optional</em><em>[</em><em>chain</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>)</p>
-</dd>
-</dl>
+<p>Context manager mixin for managing the lifecycle of an HTTP client (synchronous or asynchronous) within a class. This mixin provides methods to enter and exit the context, ensuring that the client is properly initialized and closed, and handles cases where the client may have been closed or is not available.</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><cite>self.client</cite> must be an instance of a class that implements the context manager protocol (i.e., has <cite>__enter__</cite> and <cite>__exit__</cite> methods for synchronous clients, and <cite>__aenter__</cite> and <cite>__aexit__</cite> methods for asynchronous clients).</p></li>
+<li><p><cite>self.config</cite> must be a configuration object or dictionary that can be used to initialize a new HTTP client instance if the existing client is closed or unavailable.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.ClientManagerMixin.aclose">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aclose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ClientManagerMixin.aclose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ClientManagerMixin.aclose" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.ResultsHandler.data">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">data</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chain</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">dict</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">str</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" rel="noreferrer" target="_blank" title="(in Python v3.14)"><span class="pre">Any</span> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#mgnipy.V2.mixins.ResultsHandler.data" title="Link to this definition">#</a></dt>
-<dd><p>results based on the current resource.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.ResultsHandler.to_df">
-<span class="sig-name descname"><span class="pre">to_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand_nested_dicts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ResultsHandler.to_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ResultsHandler.to_df" title="Link to this definition">#</a></dt>
-<dd><p>Convert the current or provided metadata to a pandas DataFrame.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.ClientManagerMixin.async_httpx_client">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_httpx_client</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AsyncClient</span></span><a class="headerlink" href="#mgnipy.V2.mixins.ClientManagerMixin.async_httpx_client" title="Link to this definition">#</a></dt>
+<dd><p>Get the asynchronous httpx client instance from the AuthenticatedClient.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>list</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – List of records to convert. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses <a href="#id1"><span class="problematic" id="id2">:pyattr:`data`</span></a>.</p></li>
-<li><p><strong>expand_nested_dicts</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>list</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – List of keys to expand into separate columns, or <code class="docutils literal notranslate"><span class="pre">True</span></code> to
-expand defaults.</p></li>
-<li><p><strong>rename_columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> of </em><em>str to str</em><em>, </em><em>optional</em>) – A dictionary mapping old column names to new column names.</p></li>
-<li><p><strong>**kwargs</strong> – Additional keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code>.</p></li>
-</ul>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The asynchronous httpx client instance.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame containing the metadata or <code class="docutils literal notranslate"><span class="pre">None</span></code> when no data is
-available.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame or None</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">ResultsHandler</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-<span class="go">[&#39;a&#39;, &#39;b&#39;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
-<span class="go">np.int64(1)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.ResultsHandler.to_json">
-<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'records'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">json_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ResultsHandler.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ResultsHandler.to_json" title="Link to this definition">#</a></dt>
-<dd><p>Convert the current metadata to a JSON string or save it to a file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> of </em><em>int to list</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – The paginated data to convert. If None, uses self.qs._results.</p></li>
-<li><p><strong>**json_kwargs</strong> – Additional keyword arguments passed to the JSON serialization function.</p></li>
-<li><p><strong>orient</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
-<li><p><strong>lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The JSON string representation of the metadata, or None if no data is available.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)">str <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> or None</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" rel="noreferrer" target="_blank" title="(in Python v3.14)"><strong>RuntimeError</strong> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> – If no data is available to convert.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>httpx.AsyncClient</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.ResultsHandler.to_list">
-<span class="sig-name descname"><span class="pre">to_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ResultsHandler.to_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ResultsHandler.to_list" title="Link to this definition">#</a></dt>
-<dd><p>Convert the current or provided metadata to a list of dictionaries.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.ClientManagerMixin.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ClientManagerMixin.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ClientManagerMixin.close" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.ClientManagerMixin.httpx_client">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">httpx_client</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Client</span></span><a class="headerlink" href="#mgnipy.V2.mixins.ClientManagerMixin.httpx_client" title="Link to this definition">#</a></dt>
+<dd><p>Get the synchronous httpx client instance from the AuthenticatedClient.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>optional</em>) – The paginated data to convert. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses <a href="#id3"><span class="problematic" id="id4">:pyattr:`data`</span></a>.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The synchronous httpx client instance.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of metadata records as dictionaries, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if no
-data is available.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)">list <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>httpx.Client</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">ResultsHandler</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
-<span class="go">[{&#39;x&#39;: 10}]</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mgnipy.V2.mixins.ResultsHandler.to_polars">
-<span class="sig-name descname"><span class="pre">to_polars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand_nested_dicts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">polars_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ResultsHandler.to_polars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ResultsHandler.to_polars" title="Link to this definition">#</a></dt>
-<dd><p>Convert the current metadata to a Polars DataFrame.</p>
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.ClientManagerMixin.renew_client">
+<span class="sig-name descname"><span class="pre">renew_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ClientManagerMixin.renew_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ClientManagerMixin.renew_client" title="Link to this definition">#</a></dt>
+<dd><p>Init a new client instance and replace the existing one. This is useful if the current client has been closed or is no longer valid, allowing for a fresh start with a new HTTP client session.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mgnipy.V2.mixins.ClientManagerMixin.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#ClientManagerMixin.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.ClientManagerMixin.status" title="Link to this definition">#</a></dt>
+<dd><p>Print the status of the MGnipy client, including the type of client and whether the synchronous and asynchronous httpx client sessions are open.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> of </em><em>int to list</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><em>optional</em>) – The paginated data to convert. If None, uses self.qs._results.</p></li>
-<li><p><strong>**polars_kwargs</strong> – Additional keyword arguments passed to pl.DataFrame.</p></li>
-<li><p><strong>expand_nested_dicts</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>list</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> | </em><em>None</em>)</p></li>
-<li><p><strong>rename_columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>dict</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>] </em><em>| </em><em>None</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A Polars DataFrame containing the metadata.</p>
-</dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pl.DataFrame</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" rel="noreferrer" target="_blank" title="(in Python v3.14)"><strong>RuntimeError</strong> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> – If no data is available to convert.</p>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
 
+</section>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.StreamMixin">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mgnipy.V2.mixins.</span></span><span class="sig-name descname"><span class="pre">StreamMixin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mgnifier_helper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">StreamMixin</span></span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <p>Mixin providing streaming helpers for downloads.</p>
 <p># TODO remove below dependencies on mgnifier
-This mixin assumes the host class provides the following helpers/properties:
-- <cite>_mgnifier_helper(url, cache_dir=None)</cite> returning an object with</p>
+This mixin assumes the host class provides the following helpers/properties:</p>
 <blockquote>
 <div><p><cite>.exec.httpx_client</cite> and <cite>.exec.httpx_aclient</cite> attributes</p>
 </div></blockquote>
@@ -1045,7 +954,7 @@ otherwise use the download helper for unsupported binary formats.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.StreamMixin.stream_gzipped">
-<span class="sig-name descname"><span class="pre">stream_gzipped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">httpx_client</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'replace'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">httpx_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_gzipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_gzipped" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stream_gzipped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'replace'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">httpx_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_gzipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_gzipped" title="Link to this definition">#</a></dt>
 <dd><p>Stream a gzipped HTTP resource and present a file-like interface.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is None the entire compressed payload is fetched
 and decompressed into memory. When <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is provided a
@@ -1055,7 +964,6 @@ streaming file-like object is returned.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 <li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> | </em><em>None</em>)</p></li>
-<li><p><strong>httpx_client</strong> (<em>Client</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>decode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>bool</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 <li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 <li><p><strong>errors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
@@ -1089,13 +997,12 @@ streaming file-like object is returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.StreamMixin.stream_json">
-<span class="sig-name descname"><span class="pre">stream_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">httpx_client</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">httpx_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_json" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stream_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">httpx_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_json" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 <li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> | </em><em>None</em>)</p></li>
-<li><p><strong>httpx_client</strong> (<em>Client</em><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1106,14 +1013,14 @@ streaming file-like object is returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.StreamMixin.stream_jsonl">
-<span class="sig-name descname"><span class="pre">stream_jsonl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe_engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pandas'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">df_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_jsonl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_jsonl" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stream_jsonl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pandas'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">df_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_jsonl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_jsonl" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>str</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p></li>
 <li><p><strong>orient</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Literal</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><em>'records'</em><em>, </em><em>'split'</em><em>, </em><em>'index'</em><em>, </em><em>'columns'</em><em>, </em><em>'values'</em><em>, </em><em>'table'</em><em>] </em><em>| </em><em>None</em>)</p></li>
 <li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>int</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em> | </em><em>None</em>)</p></li>
-<li><p><strong>dataframe_engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Literal</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><em>'pandas'</em><em>, </em><em>'polars'</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>df_engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" rel="noreferrer" target="_blank" title="(in Python v3.14)"><em>Literal</em> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a><em>[</em><em>'pandas'</em><em>, </em><em>'polars'</em><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1208,7 +1115,7 @@ if <code class="docutils literal notranslate"><span class="pre">chunksize</span>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.V2.mixins.StreamMixin.stream_txt">
-<span class="sig-name descname"><span class="pre">stream_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">httpx_client</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">httpx_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_txt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_txt" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stream_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">httpx_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/V2/mixins.html#StreamMixin.stream_txt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.V2.mixins.StreamMixin.stream_txt" title="Link to this definition">#</a></dt>
 <dd><p>Stream a plain-text resource.
 When <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code> the full text is returned as a string.
 When <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> is an integer the function yields lists of lines.</p>
@@ -1265,20 +1172,20 @@ When <code class="docutils literal notranslate"><span class="pre">chunksize</spa
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mgnipy.V2.query_set.html"
+       href="mgnipy.V2.proxies.studies.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mgnipy.V2.query_set module</p>
+        <p class="prev-next-title">mgnipy.V2.proxies.studies module</p>
       </div>
     </a>
     <a class="right-next"
-       href="mgnipy.V2.describe.html"
+       href="mgnipy.emgapi_v2_client.client.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mgnipy.V2.describe module</p>
+        <p class="prev-next-title">mgnipy.emgapi_v2_client.client module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1298,15 +1205,6 @@ When <code class="docutils literal notranslate"><span class="pre">chunksize</spa
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.aenrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.aenrich_biosamples_details()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.details_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.details_biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BioSamplesMetadataMixin.enrich_biosamples_details"><code class="docutils literal notranslate"><span class="pre">BioSamplesMetadataMixin.enrich_biosamples_details()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin.lineages"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin.lineages</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin.results"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin.results</span></code></a></li>
@@ -1314,22 +1212,27 @@ When <code class="docutils literal notranslate"><span class="pre">chunksize</spa
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.BiomesTreeMixin.tree"><code class="docutils literal notranslate"><span class="pre">BiomesTreeMixin.tree</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.aload_cache"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.aload_cache()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.awrite_results"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.awrite_results()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.clear_cache"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.clear_cache()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.load_cache()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache_manifest"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.load_cache_manifest()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.load_cache_results"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.load_cache_results()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.DiskCheckpointer.write_results"><code class="docutils literal notranslate"><span class="pre">DiskCheckpointer.write_results()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.aload_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.aload_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.awrite_results"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.awrite_results()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.cache_key"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.cache_key</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.cache_path"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.cache_path</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.clear_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.clear_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.load_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache_manifest"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.load_cache_manifest()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.load_cache_results"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.load_cache_results()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.manifest_path"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.manifest_path</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.try_load_cache"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.try_load_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.CheckpointMixin.write_results"><code class="docutils literal notranslate"><span class="pre">CheckpointMixin.write_results()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler"><code class="docutils literal notranslate"><span class="pre">ResultsHandler</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.data"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.data</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_df"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_df()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_json"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_json()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_list"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_list()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ResultsHandler.to_polars"><code class="docutils literal notranslate"><span class="pre">ResultsHandler.to_polars()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.aclose"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.aclose()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.async_httpx_client"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.async_httpx_client</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.close"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.close()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.httpx_client"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.httpx_client</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.renew_client"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.renew_client()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.ClientManagerMixin.status"><code class="docutils literal notranslate"><span class="pre">ClientManagerMixin.status()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mgnipy.V2.mixins.StreamMixin"><code class="docutils literal notranslate"><span class="pre">StreamMixin</span></code></a><ul class="visible nav section-nav flex-column">

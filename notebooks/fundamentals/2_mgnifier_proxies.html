@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.MGnifiers as API Resource proxies &#8212; mgnipy 0.1.dev1+g579d6b3be documentation</title>
+    <title>MGnify API Endpoint ≈ a mgnipy.MGnifier &#8212; mgnipy 0.1.dev1+gd9719c25a documentation</title>
   
   
   
@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -40,12 +41,17 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=f2b3c440"></script>
+    <script src="../../_static/documentation_options.js?v=9d4b60d7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/fundamentals/2_mgnifier_proxies';</script>
@@ -53,7 +59,7 @@
     <link rel="icon" href="../../_static/mgnipy.svg"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="A MGnifyList of records" href="3_mgnify_list_biomes.html" />
+    <link rel="next" title="MGnify List vs. Detail endpoints" href="3_list_vs_detail.html" />
     <link rel="prev" title="The mgnipy.MGnipy() client" href="1_mgnipy_mgnipy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -146,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g579d6b3be documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g579d6b3be documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+gd9719c25a documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -190,15 +196,16 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Accessing MGnify API Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_downloading_data.html">Downloading MGnify Study data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_mgnify_list_biomes.html">A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> of records</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_list_vs_detail.html">MGnify List vs. Detail endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_access_private_data.html">Accessing your private data</a></li>
@@ -206,24 +213,28 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo-parkinson.html">Finding Parkinson’s disease taxonomic analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/2_downloading_data.html">Getting MGnify datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.core.html">mgnipy.V2.core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_executor.html">mgnipy.V2.query_executor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.query_set.html">mgnipy.V2.query_set module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.describe.html">mgnipy.V2.describe module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
@@ -273,6 +284,73 @@
 
 
 
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/fundamentals/2_mgnifier_proxies.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/fundamentals/2_mgnifier_proxies.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
 <div class="dropdown dropdown-source-buttons">
   <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
     <i class="fab fa-github"></i>
@@ -298,7 +376,7 @@
       
       
       
-      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/fundamentals/2_mgnifier_proxies.md" target="_blank"
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/fundamentals/2_mgnifier_proxies.ipynb" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -328,7 +406,7 @@
       
       
       
-      <li><a href="../../_sources/notebooks/fundamentals/2_mgnifier_proxies.md" target="_blank"
+      <li><a href="../../_sources/notebooks/fundamentals/2_mgnifier_proxies.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -338,7 +416,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.md</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
 </li>
       
@@ -412,7 +490,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>mgnipy.MGnifiers as API Resource proxies</h1>
+    <h1>MGnify API Endpoint ≈ a mgnipy.MGnifier</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -422,6 +500,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mgnify-restful-api-a-crash-course">The MGnify RESTful API: A crash course ⏱️</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-resources-vs-endpoints">The “resources” vs. “endpoints”?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#querying-a-resource">Querying a resource</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#where-are-the-results-or-mgnify-datasets">Where are the results or MGnify datasets?</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-mgnifier-glass">A <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> glass</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#builds-query-sets">✅ Builds query sets</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-planning-and-inspection">✅ Query planning and inspection</a></li>
@@ -429,15 +513,28 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parse-responses-into-structured-data">✅ Parse responses into structured data</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-proxies-module">What is the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> module</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-api-endpoints-and-proxies">Available API Endpoints and Proxies</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-mapping-proxy-api">Brief mapping (proxy → API):</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-proxies-subpackage">The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-proxies-in-mgnipy">Available proxies in mgnipy</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-mapping-proxy-endpoint">Brief mapping (proxy → endpoint):</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-to-read-more">Where to read more</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-equivalents">Example equivalents</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-a-mgnifylist">Example 1. A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-mgnipy-client">starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-proxies-subpackage">≈ starting from <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-mgnifier">≈ starting from <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-a-mgnifydetail">Example 2. A <code class="docutils literal notranslate"><span class="pre">MGnifyDetail</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">≈ starting from <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">≈ starting from <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -449,20 +546,59 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="mgnipy-mgnifiers-as-api-resource-proxies">
-<h1><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code><a class="headerlink" href="#mgnipy-mgnifiers-as-api-resource-proxies" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="mgnify-api-endpoint-a-mgnipy-mgnifier">
+<h1>MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code><a class="headerlink" href="#mgnify-api-endpoint-a-mgnipy-mgnifier" title="Link to this heading">#</a></h1>
+<p>In mgnipy, MGnifier’s are <code class="docutils literal notranslate"><span class="pre">proxies</span></code> (i.e., “intermediary”, “act on behalf of”) for the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/" rel="noreferrer" target="_blank">endpoints <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> (i.e., request url + http protocol) in the MGnify API.</p>
 <blockquote>
-<div><p><strong>The main idea 🗝️ :</strong><br />
-<code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy().studies</span></code> is the exact same as <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies.Studies()</span></code>which is just a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier(resource=&quot;studies&quot;)</span></code> with added <code class="docutils literal notranslate"><span class="pre">studies</span></code>-specific functions.</p>
+<div><p><strong>TLDR; <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code>s as API Resource <code class="docutils literal notranslate"><span class="pre">proxies</span></code>🗝️</strong>
+<code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy().studies</span></code> is the exact same as <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.Studies()</span></code> which is just a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier(resource=&quot;studies&quot;)</span></code> with added <code class="docutils literal notranslate"><span class="pre">studies</span></code>-specific functions.</p>
 </div></blockquote>
 <p>And this is the same for all of the resource proxies (analyses, analysis, study, samples, etc.) not just “studies” in the above example.</p>
+<hr class="docutils" />
+<section id="the-mgnify-restful-api-a-crash-course">
+<h2>The MGnify RESTful API: A crash course ⏱️<a class="headerlink" href="#the-mgnify-restful-api-a-crash-course" title="Link to this heading">#</a></h2>
+<section id="the-resources-vs-endpoints">
+<h3>The “resources” vs. “endpoints”?<a class="headerlink" href="#the-resources-vs-endpoints" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>In REST (REpresentational State Transfer) styling, data are modelled as <strong>“resources”</strong> which can either be a singleton (e.g., <code class="docutils literal notranslate"><span class="pre">study</span></code>) or collection (collection of singletons e.g. <code class="docutils literal notranslate"><span class="pre">studies</span></code>) resource. More on RESTful APIs <a class="reference external" href="https://restfulapi.net/resource-naming/" rel="noreferrer" target="_blank">here <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>.</p></li>
+<li><p>As explained in its <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/" rel="noreferrer" target="_blank">docs <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>: In MGnigy API v2, collection resources are accessed via <strong>“list” endpoints</strong> e.g.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">https://www.ebi.ac.uk/metagenomics/api/v2/studies/</span></code> or <code class="docutils literal notranslate"><span class="pre">.../analyses/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.../studies/&lt;studyID&gt;/analyses/</span></code> (a “sub-collection”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.../samples/&lt;sampleID&gt;/runs/</span></code> (another sub-collection)</p></li>
+</ul>
+</li>
+<li><p>and singleton resources via <strong>“detail” endpoints</strong> e.g. <code class="docutils literal notranslate"><span class="pre">https://www.ebi.ac.uk/metagenomics/api/v2/studies/&lt;studyID&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">.../analyses/&lt;analysisId&gt;</span></code></p></li>
+</ul>
+</section>
+<section id="querying-a-resource">
+<h3>Querying a resource<a class="headerlink" href="#querying-a-resource" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Many of the list endpoints can be further queried/filtered :) the acceptable query parameters are clearly documented in the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/" rel="noreferrer" target="_blank">docs <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> again e.g. <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/list_mgnify_studies" rel="noreferrer" target="_blank"><code class="docutils literal notranslate"><span class="pre">/studies/</span></code> example <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p></li>
+<li><p>typically the query parameters will appear in the url after a <code class="docutils literal notranslate"><span class="pre">?</span></code> as key-value pairs combined via <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>s</p></li>
+<li><p>together the resulting http request url would look something like e.g.</p>
+<ul>
+<li><p><a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&amp;amp;page=1" rel="noreferrer" target="_blank"><code class="docutils literal notranslate"><span class="pre">https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&amp;page=1</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p></li>
+<li><p>which requests from the <code class="docutils literal notranslate"><span class="pre">studies</span></code> collection resource, the first page of <code class="docutils literal notranslate"><span class="pre">study</span></code> singleton resources with “tomato” in their title</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="where-are-the-results-or-mgnify-datasets">
+<h3>Where are the results or MGnify datasets?<a class="headerlink" href="#where-are-the-results-or-mgnify-datasets" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>The resulting taxonomic and functional annotation datasets from MGnify pipeline analyses can be downloaded via FTP urls</p></li>
+<li><p>These ftp urls are provided in the <code class="docutils literal notranslate"><span class="pre">downloads</span></code> field of detail endpoints such as <code class="docutils literal notranslate"><span class="pre">/analyses/&lt;analysisId&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">/studies/&lt;studyId&gt;</span></code></p></li>
+</ul>
+</section>
+</section>
 <hr class="docutils" />
 <section id="a-mgnifier-glass">
 <h2>A <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> glass<a class="headerlink" href="#a-mgnifier-glass" title="Link to this heading">#</a></h2>
 <p>Like how a magnifying glass 🔍 is often associated with searching/querying, the <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code> class is the interface for building, executing and then caching MGnify API queries.</p>
 <section id="builds-query-sets">
 <h3>✅ Builds query sets<a class="headerlink" href="#builds-query-sets" title="Link to this heading">#</a></h3>
-<p>Using <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>, users can specify a resource endpoint and parameters, which get translated (built) into a request url or series of request urls (e.g., due to pagination) called a <code class="docutils literal notranslate"><span class="pre">QuerySet</span></code></p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>, users can specify a resource and query parameters, which get translated (built) into an endpoint (request url or series of request urls (e.g., due to pagination) called a <code class="docutils literal notranslate"><span class="pre">QuerySet</span></code></p>
 </section>
 <section id="query-planning-and-inspection">
 <h3>✅ Query planning and inspection<a class="headerlink" href="#query-planning-and-inspection" title="Link to this heading">#</a></h3>
@@ -474,28 +610,29 @@ document.write(`
 There is support for:</p>
 <ul class="simple">
 <li><p>Single-page access e.g. <code class="docutils literal notranslate"><span class="pre">.page(n)</span></code> , <code class="docutils literal notranslate"><span class="pre">.get()</span></code></p></li>
-<li><p>Bulk retrieval e.g. <code class="docutils literal notranslate"><span class="pre">.bulk_fetch()</span></code></p></li>
+<li><p>Bulk retrieval e.g. <code class="docutils literal notranslate"><span class="pre">.get_all()</span></code></p></li>
 </ul>
 </section>
 <section id="parse-responses-into-structured-data">
 <h3>✅ Parse responses into structured data<a class="headerlink" href="#parse-responses-into-structured-data" title="Link to this heading">#</a></h3>
-<p>Also used by MGnifier is <code class="docutils literal notranslate"><span class="pre">mixins.ResultsHandler</span></code> which helps to transform the API list and detail responses into usable metadata in familiar data structures, such as dataframes <code class="docutils literal notranslate"><span class="pre">to_df()</span></code>, lists and dictionaries.</p>
+<p>Also used by MGnifier is <code class="docutils literal notranslate"><span class="pre">mixins.ResultsHandler</span></code> which helps to transform the API list and detail responses into usable metadata in familiar data structures, such as dataframes <code class="docutils literal notranslate"><span class="pre">to_pandas()</span></code>, lists and dictionaries.</p>
 </section>
 </section>
-<section id="what-is-the-proxies-module">
-<h2>What is the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> module<a class="headerlink" href="#what-is-the-proxies-module" title="Link to this heading">#</a></h2>
-<p>Each resource/endpoint proxy is basically an API endpoint-specific <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> instance.</p>
-<p>e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy().studies</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies.Studies()</span></code> which is <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier(resource=&quot;studies&quot;)</span></code> plus added functionality that is specific to the studies endpoint!!</p>
-<section id="available-api-endpoints-and-proxies">
-<h3>Available API Endpoints and Proxies<a class="headerlink" href="#available-api-endpoints-and-proxies" title="Link to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">mgnipy</span></code> exposes a set of “proxy” classes that map directly to MGnify API resources. Each resource typically has two proxy types:</p>
+<hr class="docutils" />
+<section id="the-proxies-subpackage">
+<h2>The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage<a class="headerlink" href="#the-proxies-subpackage" title="Link to this heading">#</a></h2>
+<p>Each of the different proxies (e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.StudyDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.Analyses</span></code>) are basically an API endpoint-specific <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> instance.</p>
+<p>e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy().studies</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.Studies()</span></code> which is <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier(resource=&quot;studies&quot;)</span></code> plus added functionality that is specific to the studies endpoint!!</p>
+<section id="available-proxies-in-mgnipy">
+<h3>Available proxies in mgnipy<a class="headerlink" href="#available-proxies-in-mgnipy" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">mgnipy</span></code> exposes a set of “proxy” classes that map directly to MGnify API endpoints. Like the 2 RESTful resource types described in <a class="reference internal" href="#the-resources-vs-endpoints"><span class="xref myst">The MGnify RESTful API: A crash course ⏱️</span></a>, mgnipy has 2 proxy types:</p>
 <ol class="arabic simple">
-<li><p><strong>List proxies</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">Studies</span></code>, <code class="docutils literal notranslate"><span class="pre">Samples</span></code>, <code class="docutils literal notranslate"><span class="pre">Analyses</span></code>) which represent collection/list endpoints (e.g. <code class="docutils literal notranslate"><span class="pre">/studies</span></code>, <code class="docutils literal notranslate"><span class="pre">/samples</span></code>).</p></li>
-<li><p><strong>Detail proxies</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">StudyDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">SampleDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">AnalysisDetail</span></code>) are used to fetch metadata for a single resource (by accession or id)</p></li>
+<li><p><strong>List proxies</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">Studies</span></code>, <code class="docutils literal notranslate"><span class="pre">Samples</span></code>, <code class="docutils literal notranslate"><span class="pre">Analyses</span></code>) which represent collection resources/list endpoints (e.g. <code class="docutils literal notranslate"><span class="pre">/studies/</span></code>, <code class="docutils literal notranslate"><span class="pre">/samples/</span></code>).</p></li>
+<li><p><strong>Detail proxies</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">StudyDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">SampleDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">AnalysisDetail</span></code>) are used to fetch singleton resources (by accession or id) e.g. <code class="docutils literal notranslate"><span class="pre">/studies/&lt;studyId&gt;</span></code></p></li>
 </ol>
-<p>These proxies live in the <code class="docutils literal notranslate"><span class="pre">mgnipy.V2.proxies</span></code> subpackage and mirror the API surface documented at https://www.ebi.ac.uk/metagenomics/api/v2/.</p>
-<section id="brief-mapping-proxy-api">
-<h4>Brief mapping (proxy → API):<a class="headerlink" href="#brief-mapping-proxy-api" title="Link to this heading">#</a></h4>
+<p>These proxies live in the <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies</span></code> subpackage and mirror the API surface documented at https://www.ebi.ac.uk/metagenomics/api/v2/.</p>
+<section id="brief-mapping-proxy-endpoint">
+<h4>Brief mapping (proxy → endpoint):<a class="headerlink" href="#brief-mapping-proxy-endpoint" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Studies</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/studies</span></code> (list). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_studies</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">StudyDetail</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/studies/{accession}</span></code> (detail). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_study</p></li>
@@ -507,41 +644,172 @@ There is support for:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">Publications</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/publications</span></code> and <code class="docutils literal notranslate"><span class="pre">PublicationDetail</span></code> → <code class="docutils literal notranslate"><span class="pre">/publications/{pubmed_id}</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Genomes</span></code> / <code class="docutils literal notranslate"><span class="pre">Catalogues</span></code> → catalogue and genome endpoints (catalogues list, genomes within catalogues)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Biomes</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/biomes</span></code> and <code class="docutils literal notranslate"><span class="pre">BiomeDetail</span></code> → <code class="docutils literal notranslate"><span class="pre">/biomes/{biome_lineage}</span></code></p></li>
+<li><p>TODO insert table</p></li>
 </ul>
 </section>
 </section>
 </section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Using the high-level <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
-
-<span class="n">mg</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">()</span>
-
-<span class="c1"># list studies matching a query</span>
-<span class="n">studies</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">studies</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">)</span>
-
-<span class="c1"># get a detail for a specific study accession</span>
-<span class="n">study</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">study</span><span class="p">(</span><span class="s2">&quot;MGYS00001234&quot;</span><span class="p">)</span> 
+<section id="example-equivalents">
+<h2>Example equivalents<a class="headerlink" href="#example-equivalents" title="Link to this heading">#</a></h2>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<section id="example-1-a-mgnifylist">
+<h3>Example 1. A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code><a class="headerlink" href="#example-1-a-mgnifylist" title="Link to this heading">#</a></h3>
+<section id="starting-from-mgnipy-client">
+<h4>starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client<a class="headerlink" href="#starting-from-mgnipy-client" title="Link to this heading">#</a></h4>
+<p>✨ Recommended ✨ Using the high-level <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install mgnipy</span>
 </pre></div>
 </div>
-<p>Using proxies directly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.V2.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Studies</span><span class="p">,</span> <span class="n">Study</span>
+</div>
+</div>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
 
-<span class="c1"># MGnifyList</span>
-<span class="n">studies</span> <span class="o">=</span> <span class="n">Studies</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">)</span>
+<span class="c1"># init client w/o caching</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;temp_example&quot;</span><span class="p">)</span>
 
-<span class="c1"># MGnifyDetail</span>
-<span class="n">study</span> <span class="o">=</span> <span class="n">Study</span><span class="p">(</span><span class="s2">&quot;MGYS00001234&quot;</span><span class="p">)</span>
+<span class="c1"># build query set</span>
+<span class="n">studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">studies</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">)</span>
+
+<span class="c1"># preview</span>
+<span class="n">studies</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=1
+https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=2
+</pre></div>
+</div>
+</div>
 </div>
 </section>
-<section id="where-to-read-more">
-<h2>Where to read more<a class="headerlink" href="#where-to-read-more" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Upstream API reference: https://www.ebi.ac.uk/metagenomics/api/v2/</p></li>
-<li><p>Proxy source code: <code class="docutils literal notranslate"><span class="pre">mgnipy/V2/proxies</span></code> (see <code class="docutils literal notranslate"><span class="pre">studies.py</span></code>, <code class="docutils literal notranslate"><span class="pre">samples.py</span></code>, etc.)</p></li>
-</ul>
+<section id="starting-from-proxies-subpackage">
+<h4>≈ starting from <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage<a class="headerlink" href="#starting-from-proxies-subpackage" title="Link to this heading">#</a></h4>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Studies</span>
+
+<span class="c1"># init</span>
+<span class="n">studies2</span> <span class="o">=</span> <span class="n">Studies</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;temp_example&quot;</span><span class="p">),</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">)</span>
+
+<span class="c1"># we can see same query set as above</span>
+<span class="n">studies2</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=1
+https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=2
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="starting-from-mgnifier">
+<h4>≈ starting from <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code><a class="headerlink" href="#starting-from-mgnifier" title="Link to this heading">#</a></h4>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnifier</span>
+
+<span class="c1"># init</span>
+<span class="n">studies3</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span>
+    <span class="n">resource</span><span class="o">=</span><span class="s2">&quot;studies&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;temp_example&quot;</span><span class="p">),</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># we can see same query set as above</span>
+<span class="n">studies3</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=1
+https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=2
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="example-2-a-mgnifydetail">
+<h3>Example 2. A <code class="docutils literal notranslate"><span class="pre">MGnifyDetail</span></code><a class="headerlink" href="#example-2-a-mgnifydetail" title="Link to this heading">#</a></h3>
+<section id="id1">
+<h4>starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
+<p>✨ Recommended ✨ Using the high-level <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> client:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># using the MGnipy inited above</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">study</span><span class="p">(</span><span class="s2">&quot;MGYS00010257&quot;</span><span class="p">)</span>
+<span class="n">study</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00010257
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id2">
+<h4>≈ starting from <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">StudyDetail</span>
+
+<span class="c1"># init</span>
+<span class="n">study2</span> <span class="o">=</span> <span class="n">StudyDetail</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;temp_example&quot;</span><span class="p">),</span> <span class="n">accession</span><span class="o">=</span><span class="s2">&quot;MGYS00010257&quot;</span><span class="p">)</span>
+
+<span class="c1"># we can see same query set as above</span>
+<span class="n">study2</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00010257
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id3">
+<h4>≈ starting from <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code><a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># init</span>
+<span class="n">study3</span> <span class="o">=</span> <span class="n">MGnifier</span><span class="p">(</span>
+    <span class="n">resource</span><span class="o">=</span><span class="s2">&quot;study&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;temp_example&quot;</span><span class="p">),</span> <span class="n">accession</span><span class="o">=</span><span class="s2">&quot;MGYS00010257&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># we can see same query set as above</span>
+<span class="n">study3</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies/MGYS00010257
+</pre></div>
+</div>
+</div>
+</div>
+<p>From the 2 examples above we demonstrated</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy().studies</span></code> is the exact same as <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.Studies()</span></code> which is just a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier(resource=&quot;studies&quot;)</span></code> with added <code class="docutils literal notranslate"><span class="pre">studies</span></code>-specific functions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy().study</span></code> is the exact same as <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.StudyDetail()</span></code> which is just a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier(resource=&quot;study&quot;)</span></code> with added <code class="docutils literal notranslate"><span class="pre">study</span></code>-specific functions.</p></li>
+</ol>
+<p>…</p>
+<p>And this is the same for the other proxies in mgnipy.</p>
+</section>
+</section>
 </section>
 </section>
 
@@ -585,11 +853,11 @@ There is support for:</p>
       </div>
     </a>
     <a class="right-next"
-       href="3_mgnify_list_biomes.html"
+       href="3_list_vs_detail.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code> of records</p>
+        <p class="prev-next-title">MGnify List vs. Detail endpoints</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -609,6 +877,12 @@ There is support for:</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mgnify-restful-api-a-crash-course">The MGnify RESTful API: A crash course ⏱️</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-resources-vs-endpoints">The “resources” vs. “endpoints”?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#querying-a-resource">Querying a resource</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#where-are-the-results-or-mgnify-datasets">Where are the results or MGnify datasets?</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-mgnifier-glass">A <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> glass</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#builds-query-sets">✅ Builds query sets</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-planning-and-inspection">✅ Query planning and inspection</a></li>
@@ -616,15 +890,28 @@ There is support for:</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parse-responses-into-structured-data">✅ Parse responses into structured data</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-proxies-module">What is the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> module</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-api-endpoints-and-proxies">Available API Endpoints and Proxies</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-mapping-proxy-api">Brief mapping (proxy → API):</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-proxies-subpackage">The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-proxies-in-mgnipy">Available proxies in mgnipy</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-mapping-proxy-endpoint">Brief mapping (proxy → endpoint):</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-to-read-more">Where to read more</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-equivalents">Example equivalents</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-a-mgnifylist">Example 1. A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-mgnipy-client">starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-proxies-subpackage">≈ starting from <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-mgnifier">≈ starting from <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-a-mgnifydetail">Example 2. A <code class="docutils literal notranslate"><span class="pre">MGnifyDetail</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">≈ starting from <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">≈ starting from <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

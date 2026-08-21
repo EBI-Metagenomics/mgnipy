@@ -14,6 +14,7 @@ Submodules
    :maxdepth: 1
 
    mgnipy.emgapi_v2_client.api.studies.get_mgnify_study
+   mgnipy.emgapi_v2_client.api.studies.get_mgnify_study_accession_by_insdc_accession
    mgnipy.emgapi_v2_client.api.studies.get_super_study
    mgnipy.emgapi_v2_client.api.studies.list_mgnify_studies
    mgnipy.emgapi_v2_client.api.studies.list_mgnify_study_analyses
