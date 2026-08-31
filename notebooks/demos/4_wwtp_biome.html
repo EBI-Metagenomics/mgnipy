@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting all Wastewater study datasets &#8212; mgnipy 0.2.1 documentation</title>
+    <title>Getting all Wastewater study datasets &#8212; mgnipy 0.1.dev1+g4143c7618 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=f16a97c0"></script>
+    <script src="../../_static/documentation_options.js?v=c3bc2388"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="mgnipy.mgnipy module" href="../../reference/mgnipy.mgnipy.html" />
-    <link rel="prev" title="Combining Parkinson’s disease taxonomic analyses" href="3_demo-parkinson.html" />
+    <link rel="prev" title="Part 2: Integrating Parkinson’s disease cohorts" href="3_demo-parkinson-part2.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.2.1 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.2.1 documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g4143c7618 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g4143c7618 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -217,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="2_downloading_data.html">Getting MGnify datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
 
+<li class="toctree-l1"><a class="reference internal" href="3_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting all Wastewater study datasets</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
@@ -613,39 +614,17 @@ https://www.ebi.ac.uk/metagenomics/api/v2/studies?biome_lineage=root%3AEngineere
   <tbody>
     <tr>
       <th>0</th>
-      <td>MGYS00006558</td>
-      <td>[SRP033648, PRJNA230567]</td>
-      <td>Systems Biology of Lipid Accumulating Organisms</td>
-      <td>2026-05-28T15:47:02.215000+00:00</td>
+      <td>MGYS00004949</td>
+      <td>[ERP112636, PRJEB30205]</td>
+      <td>EMG produced TPA metagenomics assembly of the ...</td>
+      <td>2026-05-28T15:46:59.833000+00:00</td>
       <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
-      <td>SRP033648</td>
-      <td>Wastewater</td>
-      <td>root:Engineered:Wastewater</td>
+      <td>ERP112636</td>
+      <td>Activated Sludge</td>
+      <td>root:Engineered:Wastewater:Activated Sludge</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>MGYS00004898</td>
-      <td>[ERP112583, PRJEB30152]</td>
-      <td>EMG produced TPA metagenomics assembly of the ...</td>
-      <td>2026-05-28T15:46:59.966000+00:00</td>
-      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
-      <td>ERP112583</td>
-      <td>Industrial wastewater</td>
-      <td>root:Engineered:Wastewater:Industrial wastewater</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>MGYS00001566</td>
-      <td>[ERP021742, PRJEB19684]</td>
-      <td>Black Water Project</td>
-      <td>2026-05-28T15:46:51.633000+00:00</td>
-      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
-      <td>ERP021742</td>
-      <td>Wastewater</td>
-      <td>root:Engineered:Wastewater</td>
-    </tr>
-    <tr>
-      <th>3</th>
       <td>MGYS00001670</td>
       <td>[ERP015835, PRJEB14205]</td>
       <td>metagenome of the anaerobic digested sludge be...</td>
@@ -656,15 +635,37 @@ https://www.ebi.ac.uk/metagenomics/api/v2/studies?biome_lineage=root%3AEngineere
       <td>root:Engineered:Wastewater:Water and sludge</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>MGYS00004949</td>
-      <td>[ERP112636, PRJEB30205]</td>
-      <td>EMG produced TPA metagenomics assembly of the ...</td>
-      <td>2026-05-28T15:46:59.833000+00:00</td>
+      <th>2</th>
+      <td>MGYS00006558</td>
+      <td>[SRP033648, PRJNA230567]</td>
+      <td>Systems Biology of Lipid Accumulating Organisms</td>
+      <td>2026-05-28T15:47:02.215000+00:00</td>
       <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
-      <td>ERP112636</td>
-      <td>Activated Sludge</td>
-      <td>root:Engineered:Wastewater:Activated Sludge</td>
+      <td>SRP033648</td>
+      <td>Wastewater</td>
+      <td>root:Engineered:Wastewater</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>MGYS00001566</td>
+      <td>[ERP021742, PRJEB19684]</td>
+      <td>Black Water Project</td>
+      <td>2026-05-28T15:46:51.633000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP021742</td>
+      <td>Wastewater</td>
+      <td>root:Engineered:Wastewater</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MGYS00004898</td>
+      <td>[ERP112583, PRJEB30152]</td>
+      <td>EMG produced TPA metagenomics assembly of the ...</td>
+      <td>2026-05-28T15:46:59.966000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP112583</td>
+      <td>Industrial wastewater</td>
+      <td>root:Engineered:Wastewater:Industrial wastewater</td>
     </tr>
   </tbody>
 </table>
@@ -814,12 +815,12 @@ Next steps: Use `.load()` to initialize.
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="3_demo-parkinson.html"
+       href="3_demo-parkinson-part2.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Combining Parkinson’s disease taxonomic analyses</p>
+        <p class="prev-next-title">Part 2: Integrating Parkinson’s disease cohorts</p>
       </div>
     </a>
     <a class="right-next"
