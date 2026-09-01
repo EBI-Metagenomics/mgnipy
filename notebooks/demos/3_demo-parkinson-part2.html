@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Part 2: Integrating Parkinson’s disease cohorts &#8212; mgnipy 0.1.dev1+g6325eaade documentation</title>
+    <title>Part 2: Integrating Parkinson’s disease cohorts &#8212; mgnipy 0.1.dev1+g40b202e7e documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=a94b5888"></script>
+    <script src="../../_static/documentation_options.js?v=47f10392"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Getting all Wastewater study datasets" href="4_wwtp_biome.html" />
-    <link rel="prev" title="Combining Parkinson’s disease taxonomic analyses" href="3_demo-parkinson.html" />
+    <link rel="prev" title="Part 1: Integrating Parkinson’s disease cohorts" href="3_demo-parkinson.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g6325eaade documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g6325eaade documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g40b202e7e documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g40b202e7e documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -215,8 +215,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_mgnify_list_biomes.html">Get a MGnify List</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_downloading_data.html">Getting MGnify datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="3_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Part 2: Integrating Parkinson’s disease cohorts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
@@ -528,8 +527,11 @@ document.write(`
 <hr class="docutils" />
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment if colab</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
 <span class="c1"># !pip install abaco</span>
+<span class="c1"># !pip install anndata</span>
+<span class="c1"># !pip install scanpy</span>
+<span class="c1"># !pip install skbio</span>
 </pre></div>
 </div>
 </div>
@@ -542,7 +544,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
 
-<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/EBI-Metagenomics/mgnipy/raw/refs/heads/tidyup-demos/docs/notebooks/demos/pd.h5ad&quot;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/EBI-Metagenomics/mgnipy/raw/refs/heads/main/docs/notebooks/demos/pd.h5ad&quot;</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 
@@ -1256,7 +1258,7 @@ Name: count, dtype: int64
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/7e5b6f230eb61ac27ac72da5f813c75c9a49086143e9c45cdf3abba0c04894e0.png" src="../../_images/7e5b6f230eb61ac27ac72da5f813c75c9a49086143e9c45cdf3abba0c04894e0.png" />
+<img alt="../../_images/3f32c8f6c472f6796c482f26ee45c9550546f9b163978e8f7100beb7ccc25585.png" src="../../_images/3f32c8f6c472f6796c482f26ee45c9550546f9b163978e8f7100beb7ccc25585.png" />
 </div>
 </div>
 <div class="cell config_scroll_outputs docutils container">
@@ -1298,16 +1300,16 @@ batch ARI results before batch correction:
 
 
 kBET results after batch correction:
-0.8617683686176837
+0.9414694894146949
 
 iLISI results after batch correction:
-0.6918085502345057
+0.615355740268194
 
 batch ASW results after batch correction:
-1.0169824082404375
+1.0118420831859112
 
 batch ARI results after batch correction:
-1.005102081522553
+1.0001754592357563
 </pre></div>
 </div>
 </div>
@@ -1353,7 +1355,7 @@ batch ARI results after batch correction:
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Combining Parkinson’s disease taxonomic analyses</p>
+        <p class="prev-next-title">Part 1: Integrating Parkinson’s disease cohorts</p>
       </div>
     </a>
     <a class="right-next"

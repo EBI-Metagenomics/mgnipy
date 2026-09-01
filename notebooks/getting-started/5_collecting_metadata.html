@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Collecting more metadata &#8212; mgnipy 0.1.dev1+g6325eaade documentation</title>
+    <title>Collecting more metadata &#8212; mgnipy 0.1.dev1+g40b202e7e documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=a94b5888"></script>
+    <script src="../../_static/documentation_options.js?v=47f10392"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g6325eaade documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g6325eaade documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g40b202e7e documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g40b202e7e documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -215,8 +215,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/2_downloading_data.html">Getting MGnify datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
@@ -539,6 +538,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
 <span class="c1">#!pip install mgnipy</span>
+<span class="c1">#!pip install anndata</span>
 </pre></div>
 </div>
 </div>
@@ -549,7 +549,11 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># read in GO-slim abundances file</span>
-<span class="n">df_go</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;downloads/ERP014435_GO-slim_abundances_v3.0.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">df_go</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="c1">#&quot;downloads/ERP014435_GO-slim_abundances_v3.0.tsv&quot;, </span>
+    <span class="s2">&quot;https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP014/ERP014435/version_3.0/project-summary/GO-slim_abundances_v3.0.tsv&quot;</span><span class="p">,</span>
+    <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+<span class="p">)</span>
 
 <span class="c1"># get run accessions as a list</span>
 <span class="n">run_ids</span> <span class="o">=</span> <span class="n">df_go</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>

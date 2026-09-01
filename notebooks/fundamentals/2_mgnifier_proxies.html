@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>MGnify API Endpoint ≈ a mgnipy.MGnifier &#8212; mgnipy 0.1.dev1+g6325eaade documentation</title>
+    <title>MGnify API Endpoint ≈ a mgnipy.MGnifier &#8212; mgnipy 0.1.dev1+g40b202e7e documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=a94b5888"></script>
+    <script src="../../_static/documentation_options.js?v=47f10392"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g6325eaade documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g6325eaade documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g40b202e7e documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g40b202e7e documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -215,8 +215,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/2_downloading_data.html">Getting MGnify datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Combining Parkinson’s disease taxonomic analyses</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
@@ -501,12 +500,6 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mgnify-restful-api-a-crash-course">The MGnify RESTful API: A crash course ⏱️</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-resources-vs-endpoints">The “resources” vs. “endpoints”?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#querying-a-resource">Querying a resource</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#where-are-the-results-or-mgnify-datasets">Where are the results or MGnify datasets?</a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-mgnifier-glass">A <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> glass</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#builds-query-sets">✅ Builds query sets</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-planning-and-inspection">✅ Query planning and inspection</a></li>
@@ -514,13 +507,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parse-responses-into-structured-data">✅ Parse responses into structured data</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-proxies-subpackage">The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-proxies-in-mgnipy">Available proxies in mgnipy</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-mapping-proxy-endpoint">Brief mapping (proxy → endpoint):</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-proxies-subpackage">The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-equivalents">Example equivalents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-a-mgnifylist">Example 1. A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-mgnipy-client">starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client</a></li>
@@ -556,44 +543,6 @@ document.write(`
 </div></blockquote>
 <p>And this is the same for all of the resource proxies (analyses, analysis, study, samples, etc.) not just “studies” in the above example.</p>
 <hr class="docutils" />
-<section id="the-mgnify-restful-api-a-crash-course">
-<h2>The MGnify RESTful API: A crash course ⏱️<a class="headerlink" href="#the-mgnify-restful-api-a-crash-course" title="Link to this heading">#</a></h2>
-<section id="the-resources-vs-endpoints">
-<h3>The “resources” vs. “endpoints”?<a class="headerlink" href="#the-resources-vs-endpoints" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>In REST (REpresentational State Transfer) styling, data are modelled as <strong>“resources”</strong> which can either be a singleton (e.g., <code class="docutils literal notranslate"><span class="pre">study</span></code>) or collection (collection of singletons e.g. <code class="docutils literal notranslate"><span class="pre">studies</span></code>) resource. More on RESTful APIs <a class="reference external" href="https://restfulapi.net/resource-naming/" rel="noreferrer" target="_blank">here <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>.</p></li>
-<li><p>As explained in its <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/" rel="noreferrer" target="_blank">docs <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>: In MGnigy API v2, collection resources are accessed via <strong>“list” endpoints</strong> e.g.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">https://www.ebi.ac.uk/metagenomics/api/v2/studies/</span></code> or <code class="docutils literal notranslate"><span class="pre">.../analyses/</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.../studies/&lt;studyID&gt;/analyses/</span></code> (a “sub-collection”)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.../samples/&lt;sampleID&gt;/runs/</span></code> (another sub-collection)</p></li>
-</ul>
-</li>
-<li><p>and singleton resources via <strong>“detail” endpoints</strong> e.g. <code class="docutils literal notranslate"><span class="pre">https://www.ebi.ac.uk/metagenomics/api/v2/studies/&lt;studyID&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">.../analyses/&lt;analysisId&gt;</span></code></p></li>
-</ul>
-</section>
-<section id="querying-a-resource">
-<h3>Querying a resource<a class="headerlink" href="#querying-a-resource" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Many of the list endpoints can be further queried/filtered :) the acceptable query parameters are clearly documented in the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/" rel="noreferrer" target="_blank">docs <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> again e.g. <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/list_mgnify_studies" rel="noreferrer" target="_blank"><code class="docutils literal notranslate"><span class="pre">/studies/</span></code> example <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p></li>
-<li><p>typically the query parameters will appear in the url after a <code class="docutils literal notranslate"><span class="pre">?</span></code> as key-value pairs combined via <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>s</p></li>
-<li><p>together the resulting http request url would look something like e.g.</p>
-<ul>
-<li><p><a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&amp;amp;page=1" rel="noreferrer" target="_blank"><code class="docutils literal notranslate"><span class="pre">https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&amp;page=1</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p></li>
-<li><p>which requests from the <code class="docutils literal notranslate"><span class="pre">studies</span></code> collection resource, the first page of <code class="docutils literal notranslate"><span class="pre">study</span></code> singleton resources with “tomato” in their title</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="where-are-the-results-or-mgnify-datasets">
-<h3>Where are the results or MGnify datasets?<a class="headerlink" href="#where-are-the-results-or-mgnify-datasets" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>The resulting taxonomic and functional annotation datasets from MGnify pipeline analyses can be downloaded via FTP urls</p></li>
-<li><p>These ftp urls are provided in the <code class="docutils literal notranslate"><span class="pre">downloads</span></code> field of detail endpoints such as <code class="docutils literal notranslate"><span class="pre">/analyses/&lt;analysisId&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">/studies/&lt;studyId&gt;</span></code></p></li>
-</ul>
-</section>
-</section>
-<hr class="docutils" />
 <section id="a-mgnifier-glass">
 <h2>A <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> glass<a class="headerlink" href="#a-mgnifier-glass" title="Link to this heading">#</a></h2>
 <p>Like how a magnifying glass 🔍 is often associated with searching/querying, the <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code> class is the interface for building, executing and then caching MGnify API queries.</p>
@@ -624,31 +573,6 @@ There is support for:</p>
 <h2>The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage<a class="headerlink" href="#the-proxies-subpackage" title="Link to this heading">#</a></h2>
 <p>Each of the different proxies (e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.StudyDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.Analyses</span></code>) are basically an API endpoint-specific <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> instance.</p>
 <p>e.g., <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy().studies</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies.Studies()</span></code> which is <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier(resource=&quot;studies&quot;)</span></code> plus added functionality that is specific to the studies endpoint!!</p>
-<section id="available-proxies-in-mgnipy">
-<h3>Available proxies in mgnipy<a class="headerlink" href="#available-proxies-in-mgnipy" title="Link to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">mgnipy</span></code> exposes a set of “proxy” classes that map directly to MGnify API endpoints. Like the 2 RESTful resource types described in <a class="reference internal" href="#the-resources-vs-endpoints"><span class="xref myst">The MGnify RESTful API: A crash course ⏱️</span></a>, mgnipy has 2 proxy types:</p>
-<ol class="arabic simple">
-<li><p><strong>List proxies</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">Studies</span></code>, <code class="docutils literal notranslate"><span class="pre">Samples</span></code>, <code class="docutils literal notranslate"><span class="pre">Analyses</span></code>) which represent collection resources/list endpoints (e.g. <code class="docutils literal notranslate"><span class="pre">/studies/</span></code>, <code class="docutils literal notranslate"><span class="pre">/samples/</span></code>).</p></li>
-<li><p><strong>Detail proxies</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">StudyDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">SampleDetail</span></code>, <code class="docutils literal notranslate"><span class="pre">AnalysisDetail</span></code>) are used to fetch singleton resources (by accession or id) e.g. <code class="docutils literal notranslate"><span class="pre">/studies/&lt;studyId&gt;</span></code></p></li>
-</ol>
-<p>These proxies live in the <code class="docutils literal notranslate"><span class="pre">mgnipy.proxies</span></code> subpackage and mirror the API surface documented at https://www.ebi.ac.uk/metagenomics/api/v2/.</p>
-<section id="brief-mapping-proxy-endpoint">
-<h4>Brief mapping (proxy → endpoint):<a class="headerlink" href="#brief-mapping-proxy-endpoint" title="Link to this heading">#</a></h4>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Studies</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/studies</span></code> (list). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_studies</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">StudyDetail</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/studies/{accession}</span></code> (detail). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_study</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Samples</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/samples</span></code> (list). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Samples/get_mgnify_samples</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SampleDetail</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/samples/{accession}</span></code> (detail). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Samples/get_mgnify_sample</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Runs</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/runs</span></code> and <code class="docutils literal notranslate"><span class="pre">RunDetail</span></code> → <code class="docutils literal notranslate"><span class="pre">/runs/{accession}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Assemblies</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/assemblies</span></code> and <code class="docutils literal notranslate"><span class="pre">AssemblyDetail</span></code> → <code class="docutils literal notranslate"><span class="pre">/assemblies/{accession}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Analyses</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/analyses</span></code> and <code class="docutils literal notranslate"><span class="pre">AnalysisDetail</span></code> → <code class="docutils literal notranslate"><span class="pre">/analyses/{accession}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Publications</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/publications</span></code> and <code class="docutils literal notranslate"><span class="pre">PublicationDetail</span></code> → <code class="docutils literal notranslate"><span class="pre">/publications/{pubmed_id}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Genomes</span></code> / <code class="docutils literal notranslate"><span class="pre">Catalogues</span></code> → catalogue and genome endpoints (catalogues list, genomes within catalogues)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Biomes</span></code> → GET <code class="docutils literal notranslate"><span class="pre">/biomes</span></code> and <code class="docutils literal notranslate"><span class="pre">BiomeDetail</span></code> → <code class="docutils literal notranslate"><span class="pre">/biomes/{biome_lineage}</span></code></p></li>
-<li><p>TODO insert table</p></li>
-</ul>
-</section>
-</section>
 </section>
 <section id="example-equivalents">
 <h2>Example equivalents<a class="headerlink" href="#example-equivalents" title="Link to this heading">#</a></h2>
@@ -878,12 +802,6 @@ https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=2
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mgnify-restful-api-a-crash-course">The MGnify RESTful API: A crash course ⏱️</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-resources-vs-endpoints">The “resources” vs. “endpoints”?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#querying-a-resource">Querying a resource</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#where-are-the-results-or-mgnify-datasets">Where are the results or MGnify datasets?</a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-mgnifier-glass">A <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code> glass</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#builds-query-sets">✅ Builds query sets</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-planning-and-inspection">✅ Query planning and inspection</a></li>
@@ -891,13 +809,7 @@ https://www.ebi.ac.uk/metagenomics/api/v2/studies?search=tomato&amp;page=2
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parse-responses-into-structured-data">✅ Parse responses into structured data</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-proxies-subpackage">The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-proxies-in-mgnipy">Available proxies in mgnipy</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-mapping-proxy-endpoint">Brief mapping (proxy → endpoint):</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-proxies-subpackage">The <code class="docutils literal notranslate"><span class="pre">proxies</span></code> subpackage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-equivalents">Example equivalents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-a-mgnifylist">Example 1. A <code class="docutils literal notranslate"><span class="pre">MGnifyList</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-from-mgnipy-client">starting from <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client</a></li>
