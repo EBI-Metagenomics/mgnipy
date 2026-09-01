@@ -66,7 +66,7 @@
 from mgnipy import MGnipy
 
 # 1. init with default config
-MG = MGnipy()
+MG = MGnipy(cache_dir=None)
 
 # 2. search up a study/analysis detail or a list of studies/analyses and get their details
 study = MG.study("MGYS00010442")

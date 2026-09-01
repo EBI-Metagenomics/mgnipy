@@ -33,6 +33,7 @@
 # %%
 # uncomment below if colab
 # #!pip install mgnipy
+# #!pip install anndata
 
 # %% [markdown]
 # We'll pick up from the previous page where we had downloaded the "ERP014435_GO-slim_abundances_v3.0.tsv" dataset from MGnify. 
@@ -41,7 +42,11 @@
 import pandas as pd
 
 # read in GO-slim abundances file
-df_go = pd.read_csv("downloads/ERP014435_GO-slim_abundances_v3.0.tsv", sep="\t")
+df_go = pd.read_csv(
+    #"downloads/ERP014435_GO-slim_abundances_v3.0.tsv", 
+    "https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/ERP014/ERP014435/version_3.0/project-summary/GO-slim_abundances_v3.0.tsv",
+    sep="\t"
+)
 
 # get run accessions as a list
 run_ids = df_go.columns[3:].to_list()

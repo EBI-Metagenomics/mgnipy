@@ -34,6 +34,10 @@
 # ---
 
 # %%
+# uncomment below if colab
+# # !pip install mgnipy
+
+# %%
 from mgnipy import MGnipy
 
 # init client

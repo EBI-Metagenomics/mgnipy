@@ -23,30 +23,6 @@
 # And this is the same for all of the resource proxies (analyses, analysis, study, samples, etc.) not just "studies" in the above example.
 #
 # ---
-# ## The MGnify RESTful API: A crash course ⏱️
-#
-# ### The "resources" vs. "endpoints"?
-# - In REST (REpresentational State Transfer) styling, data are modelled as **"resources"** which can either be a singleton (e.g., `study`) or collection (collection of singletons e.g. `studies`) resource. More on RESTful APIs [here](https://restfulapi.net/resource-naming/).
-#
-# - As explained in its [docs](https://www.ebi.ac.uk/metagenomics/api/v2/): In MGnigy API v2, collection resources are accessed via **"list" endpoints** e.g.
-#     - `https://www.ebi.ac.uk/metagenomics/api/v2/studies/` or `.../analyses/`
-#     - `.../studies/<studyID>/analyses/` (a "sub-collection")
-#     - `.../samples/<sampleID>/runs/` (another sub-collection)
-#
-# - and singleton resources via **"detail" endpoints** e.g. `https://www.ebi.ac.uk/metagenomics/api/v2/studies/<studyID>` or `.../analyses/<analysisId>`
-#
-# ### Querying a resource
-# - Many of the list endpoints can be further queried/filtered :) the acceptable query parameters are clearly documented in the [docs](https://www.ebi.ac.uk/metagenomics/api/v2/) again e.g. [`/studies/` example](https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/list_mgnify_studies)
-# - typically the query parameters will appear in the url after a `?` as key-value pairs combined via `&`s
-# - together the resulting http request url would look something like e.g.
-#     - [`https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1`](https://www.ebi.ac.uk/metagenomics/api/v2/studies/?search=tomato&page=1)
-#     - which requests from the `studies` collection resource, the first page of `study` singleton resources with "tomato" in their title
-#
-# ### Where are the results or MGnify datasets?
-# - The resulting taxonomic and functional annotation datasets from MGnify pipeline analyses can be downloaded via FTP urls
-# - These ftp urls are provided in the `downloads` field of detail endpoints such as `/analyses/<analysisId>` and `/studies/<studyId>`
-#
-# ---
 #
 # ## A `MGnifier` glass
 #
@@ -75,27 +51,6 @@
 #
 # e.g., `mgnipy.MGnipy().studies` is the same as `mgnipy.proxies.Studies()` which is `mgnipy.MGnifier(resource="studies")` plus added functionality that is specific to the studies endpoint!!
 #
-# ### Available proxies in mgnipy
-#
-# `mgnipy` exposes a set of "proxy" classes that map directly to MGnify API endpoints. Like the 2 RESTful resource types described in [The MGnify RESTful API: A crash course ⏱️](#the-resources-vs-endpoints), mgnipy has 2 proxy types:
-#
-# 1. **List proxies** (e.g. `Studies`, `Samples`, `Analyses`) which represent collection resources/list endpoints (e.g. `/studies/`, `/samples/`).
-# 2. **Detail proxies** (e.g. `StudyDetail`, `SampleDetail`, `AnalysisDetail`) are used to fetch singleton resources (by accession or id) e.g. `/studies/<studyId>`
-#
-# These proxies live in the `mgnipy.proxies` subpackage and mirror the API surface documented at https://www.ebi.ac.uk/metagenomics/api/v2/.
-#
-# #### Brief mapping (proxy → endpoint):
-# - `Studies` → GET `/studies` (list). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_studies
-# - `StudyDetail` → GET `/studies/{accession}` (detail). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Studies/get_mgnify_study
-# - `Samples` → GET `/samples` (list). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Samples/get_mgnify_samples
-# - `SampleDetail` → GET `/samples/{accession}` (detail). See API: https://www.ebi.ac.uk/metagenomics/api/v2/#/Samples/get_mgnify_sample
-# - `Runs` → GET `/runs` and `RunDetail` → `/runs/{accession}`
-# - `Assemblies` → GET `/assemblies` and `AssemblyDetail` → `/assemblies/{accession}`
-# - `Analyses` → GET `/analyses` and `AnalysisDetail` → `/analyses/{accession}`
-# - `Publications` → GET `/publications` and `PublicationDetail` → `/publications/{pubmed_id}`
-# - `Genomes` / `Catalogues` → catalogue and genome endpoints (catalogues list, genomes within catalogues)
-# - `Biomes` → GET `/biomes` and `BiomeDetail` → `/biomes/{biome_lineage}`
-# - TODO insert table
 
 # %% [markdown]
 # ## Example equivalents

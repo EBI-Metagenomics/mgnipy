@@ -86,7 +86,6 @@
 # %%
 # uncomment below if colab
 # #!pip install mgnipy
-# #!pip install asyncio
 
 # %%
 # at minimum need

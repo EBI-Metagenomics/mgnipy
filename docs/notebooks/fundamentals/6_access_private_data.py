@@ -56,6 +56,10 @@
 # - The .env file and `MG_USER` and `MG_PASSWORD` variables will auto be detected via pydantic settings and stored safely in `mgnipy.MGnipyConfig`
 
 # %%
+# uncomment below if colab
+# # !pip install mgnipy
+
+# %%
 # if .env files then can just proceed as normal, for example in a notebook:
 from mgnipy import MGnipy
 
