@@ -60,5 +60,4 @@ reference/*
 
 *.ignore
 *.ignoreme
-*.h5ad
 docs/notebooks/**/*.json
