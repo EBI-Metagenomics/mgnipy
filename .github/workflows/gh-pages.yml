@@ -33,6 +33,11 @@ jobs:
         run: |
           uv sync --locked --all-groups
 
+      - name: Convert GitHub alerts to MyST admonitions
+        working-directory: docs
+        run: |
+          uv run python convert_github_alerts.py
+
       - name: Build docs
         working-directory: docs
         run: |
