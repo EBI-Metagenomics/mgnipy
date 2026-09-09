@@ -30,7 +30,8 @@ A [Pydantic-based settings object](https://pydantic.dev/docs/validation/latest/c
 5. Caching the token and stored in `MGnipyConfig.auth_token` for the session and used for authenticated API requests.
 
 ```{note}
-- By default the token is cached on disk under a platform-appropriate cache dir (via `platformdirs`) in a file named auth_<hash>.json. -- unless cache is disabled via `cache_dir=None`
+
+- By default the token is cached on disk under a platform-appropriate cache dir (via `platformdirs`) in a file named auth\_<hash>.json. -- unless cache is disabled via `cache_dir=None`
 - Cached tokens are stored per base URL + username (hashed) to avoid collisions when using multiple endpoints/accounts.
 ```
 

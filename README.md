@@ -12,12 +12,12 @@ MGni.py (🔉[IPA:'mæɡni-paɪ'](https://ipa-reader.com/?text=m%C3%A6%C9%A1ni-p
     <a href="https://mgnipy.mgnify.org/">
         <img src="https://github.com/EBI-Metagenomics/mgnipy/actions/workflows/gh-pages.yml/badge.svg" alt="GitHub Pages docs">
     </a>
-    <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">
-        <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3">
     <br>
-    <img src="https://img.shields.io/badge/python-3.11%20--%203.13-blue" alt="Python 3.11 to 3.13">
+    <img src="https://img.shields.io/badge/python-3.11%20--%203.14-blue" alt="Python 3.11 to 3.14">
     <img src="https://img.shields.io/github/issues/EBI-Metagenomics/mgnipy" alt="GitHub issues">
-    <img src="https://img.shields.io/github/license/EBI-Metagenomics/mgnipy" alt="GitHub license">
+    <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">
+        <img src="https://img.shields.io/github/license/EBI-Metagenomics/mgnipy" alt="GitHub license">
+    </a>
     <img src="https://img.shields.io/github/last-commit/EBI-Metagenomics/mgnipy" alt="GitHub last commit">
     <img src="https://img.shields.io/github/stars/EBI-Metagenomics/mgnipy" alt="GitHub stars">
 </p>
@@ -53,12 +53,13 @@ MGni.py (🔉[IPA:'mæɡni-paɪ'](https://ipa-reader.com/?text=m%C3%A6%C9%A1ni-p
 - **[Analyses](https://www.ebi.ac.uk/metagenomics/api/v2/#/Analyses)**
 - **[Biomes](https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes)** ([GOLD ecosystem classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS))
 
-> [!NOTE] 
-> 
-> **Accessing your private data**
-> - To access your private data in any of these API endpoints you just need your MGnify user and password to obtain a valid sliding auth token via the [MGnify Authentication endpoints](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding).
-> - for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
-> - `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉
+```{note}
+
+**Accessing your private data**
+- To access your private data in any of these API endpoints you just need your MGnify user and password to obtain a valid sliding auth token via the [MGnify Authentication endpoints](https://www.ebi.ac.uk/metagenomics/api/v2/#/Authentication/token_obtain_sliding).
+- for example you can put your login credentials in a `.env` file in your working directory (see [.env.example](https://github.com/EBI-Metagenomics/mgnipy/blob/a9dfdfbb3f669569473e11c7a7c9cf460e6c7d11/.env.example)) and 
+- `mgnipy.MGnipyConfig` takes care of getting and caching the auth token so that you can easily access your private data using MGni.py 🎉
+```
 
 ## Installation
 
@@ -202,6 +203,7 @@ BibTeX:
 }
 ```
 
-> [!IMPORTANT]
-> Also cite MGnify when using MGnify data or analyses: 
-> https://docs.mgnify.org/src/docs/about.html#how-to-cite
+```{important}
+Also cite MGnify when using MGnify data or analyses: 
+https://docs.mgnify.org/src/docs/about.html#how-to-cite
+```
