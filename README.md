@@ -12,12 +12,12 @@ MGni.py (🔉[IPA:'mæɡni-paɪ'](https://ipa-reader.com/?text=m%C3%A6%C9%A1ni-p
     <a href="https://mgnipy.mgnify.org/">
         <img src="https://github.com/EBI-Metagenomics/mgnipy/actions/workflows/gh-pages.yml/badge.svg" alt="GitHub Pages docs">
     </a>
-    <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">
-        <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3">
     <br>
-    <img src="https://img.shields.io/badge/python-3.11%20--%203.13-blue" alt="Python 3.11 to 3.13">
+    <img src="https://img.shields.io/badge/python-3.11%20--%203.14-blue" alt="Python 3.11 to 3.14">
     <img src="https://img.shields.io/github/issues/EBI-Metagenomics/mgnipy" alt="GitHub issues">
-    <img src="https://img.shields.io/github/license/EBI-Metagenomics/mgnipy" alt="GitHub license">
+    <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">
+        <img src="https://img.shields.io/github/license/EBI-Metagenomics/mgnipy" alt="GitHub license">
+    </a>
     <img src="https://img.shields.io/github/last-commit/EBI-Metagenomics/mgnipy" alt="GitHub last commit">
     <img src="https://img.shields.io/github/stars/EBI-Metagenomics/mgnipy" alt="GitHub stars">
 </p>
