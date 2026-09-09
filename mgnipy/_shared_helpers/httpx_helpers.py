@@ -37,16 +37,21 @@ def init_httpx_client(
 
     _url: str = str(config.base_url)
 
+    resolved_kwargs: dict[str, any] = {
+        **{"httpx_args": {"http2": True}},
+        **(httpx_kwargs if httpx_kwargs else {}),
+    }
+
     # MAIN
     if config.auth_token:
         logger.info("Initializing client with provided auth token.")
         return AuthenticatedClient(
             base_url=_url,
             token=config.auth_token,
-            **httpx_kwargs,
+            **resolved_kwargs,
         )
 
     return Client(
         base_url=_url,
-        **httpx_kwargs,
+        **resolved_kwargs,
     )

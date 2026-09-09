@@ -232,7 +232,7 @@ def get_all_biosample_metadata(
     """
     sample_metadata = []
 
-    with httpx.Client(headers=HEADERS) as client:
+    with httpx.Client(headers=HEADERS, http2=True) as client:
         for sample in tqdm_sync(
             samples, desc="Retrieving BioSamples metadata for samples"
         ):
@@ -435,7 +435,7 @@ async def aget_all_biosample_metadata(
 
     # protect api
     async with semaphore:
-        async with httpx.AsyncClient(headers=HEADERS) as client:
+        async with httpx.AsyncClient(headers=HEADERS, http2=True) as client:
             tasks = {
                 asyncio.create_task(
                     aget_biosample_metadata(acc, client=client, incl_ena=incl_ena)

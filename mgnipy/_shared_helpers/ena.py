@@ -349,7 +349,7 @@ def get_all_ena_metadata_from_run_acc(
     results: list[pd.DataFrame] = []
 
     # for safely closing client
-    with httpx.Client(headers=HEADERS) as client:
+    with httpx.Client(headers=HEADERS, http2=True) as client:
         # progress bar
         for run_acc in tqdm_sync(run_accs, desc="Fetching ENA metadata for runs"):
             logger.debug(f"Fetching ENA metadata for run {run_acc}")
@@ -371,7 +371,7 @@ async def aget_all_ena_metadata_from_run_acc(
     semaphore = get_semaphore(10)
 
     async with semaphore:
-        async with httpx.AsyncClient(headers=HEADERS) as client:
+        async with httpx.AsyncClient(headers=HEADERS, http2=True) as client:
             tasks = [
                 asyncio.create_task(
                     aget_ena_metadata_from_run_acc(run_acc, client=client)
