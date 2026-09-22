@@ -1,13 +1,60 @@
-# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
-authors:
-- family-names: "Last"
-  given-names: "First"
-  orcid: "https://orcid.org/0000-0000-0000-0000"
-
-title: "MGniPy: A Python client for the MGnify API"
-version: 0.0.1
-#doi: 10.5281/zenodo.1234
-date-released: 2026-01-23
+title: "MGni.py: Harmonizing access to microbiome data and metadata from public repositories"
+message: "If you use MGni.py, please cite the software."
+type: software
+version: "0.3.0"
 url: "https://github.com/EBI-Metagenomics/mgnipy"
+
+authors:
+  - family-names: Phanthanourak
+    given-names: Angel L.
+    orcid: "https://orcid.org/0009-0008-7421-7508"
+    affiliation: "Technical University of Denmark (DTU); BRIGHT"
+
+  - family-names: Shehu
+    given-names: Mahfouz
+    orcid: "https://orcid.org/0009-0002-9470-0368"
+    affiliation: "European Bioinformatics Institute (EMBL-EBI)"
+
+  - family-names: Atallah
+    given-names: Christian
+    orcid: "https://orcid.org/0000-0002-4853-4189"
+    affiliation: "European Bioinformatics Institute (EMBL-EBI)"
+
+  - family-names: Rogers
+    given-names: Alexander
+    orcid: "https://orcid.org/0000-0002-4283-6135"
+    affiliation: "European Bioinformatics Institute (EMBL-EBI)"
+
+  - family-names: Beracochea
+    given-names: Martin
+    orcid: "https://orcid.org/0000-0003-3472-3736"
+    affiliation: "European Bioinformatics Institute (EMBL-EBI)"
+
+  - family-names: Barranco-Altirriba
+    given-names: Maria
+    orcid: "https://orcid.org/0000-0002-1525-210X"
+    affiliation: "Technical University of Denmark (DTU); BRIGHT"
+
+  - family-names: Ayala Ruano
+    given-names: Sebastian
+    orcid: "https://orcid.org/0000-0001-9756-6745"
+    affiliation: "IRB Barcelona"
+
+  - family-names: Finn
+    given-names: Robert D.
+    orcid: "https://orcid.org/0000-0001-8626-2148"
+    affiliation: "European Bioinformatics Institute (EMBL-EBI)"
+
+  - family-names: Santos
+    given-names: Alberto
+    orcid: "https://orcid.org/0000-0002-9163-7730"
+    affiliation: "Technical University of Denmark (DTU); BRIGHT"
+
+keywords:
+  - MGnify
+  - microbiome
+  - bioinformatics
+  - metagenomics
+  - metadata
+  - data integration
