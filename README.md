@@ -187,21 +187,28 @@ This project is licensed under the GNU General Public License v3.0 or later (GPL
 
 ## Citation
 
-If you use MGni.py in your work, please cite the project:
-
-MGnipy contributors (2026). MGni.py: a lightweight Python client and toolkit for the MGnify API. Version 0.2.1. https://github.com/EBI-Metagenomics/mgnipy
+If you use MGni.py in your work, please cite the software:
 
 BibTeX:
 ```bibtex
-@software{mgnipy2026,
-  author = {MGnipy contributors},
-  title = {MGni.py: a lightweight Python client and toolkit for the MGnify API},
-  year = {2026},
-  version = {0.2.1},
-  url = {https://github.com/EBI-Metagenomics/mgnipy}
+@software{phanthanourak2026mgnipy,
+  author  = {Phanthanourak, Angel L. and
+             Shehu, Mahfouz and
+             Atallah, Christian and
+             Rogers, Alexander and
+             Beracochea, Martin and
+             Barranco-Altirriba, Maria and
+             Ayala Ruano, Sebastian and
+             Finn, Robert D. and
+             Santos, Alberto},
+  title   = {{MGni.py}: Harmonizing access to microbiome data and metadata from public repositories},
+  year    = {2026},
+  version = {0.3.0},
+  url     = {https://github.com/EBI-Metagenomics/mgnipy}
 }
 ```
 
 > [!IMPORTANT]
 > Also cite MGnify when using MGnify data or analyses: 
-> https://docs.mgnify.org/src/docs/about.html#how-to-cite
+> [https://docs.mgnify.org/src/docs/about.html#how-to-cite](https://docs.mgnify.org/src/docs/about.html#how-to-cite)
+
