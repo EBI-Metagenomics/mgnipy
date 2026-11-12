@@ -132,6 +132,7 @@ class DWCTaxaMGazine(MGazine):
         mgnify_runs: Optional[list[dict[str, Any]]] = None,
         mgnify_samples: Optional[list[dict[str, Any]]] = None,
         mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        mgnify_genomes: Optional[list[dict[str, Any]]] = None,
         biosamples_metadata: Optional[list[dict[str, Any]]] = None,
         obs: Optional[list[dict[str, Any]]] = None,
     ):
@@ -147,6 +148,7 @@ class DWCTaxaMGazine(MGazine):
             biosamples_metadata=biosamples_metadata,
             mgnify_analyses=mgnify_analyses,
             mgnify_assemblies=mgnify_assemblies,
+            mgnify_genomes=mgnify_genomes,
             obs=obs,
         )
         # extra dwc check
@@ -271,6 +273,7 @@ class TaxaMGazine(MGazine):
         mgnify_runs: Optional[list[dict[str, Any]]] = None,
         mgnify_samples: Optional[list[dict[str, Any]]] = None,
         mgnify_assemblies: Optional[list[dict[str, Any]]] = None,
+        mgnify_genomes: Optional[list[dict[str, Any]]] = None,
         biosamples_metadata: Optional[list[dict[str, Any]]] = None,
         obs: Optional[list[dict[str, Any]]] = None,
     ):
@@ -293,6 +296,7 @@ class TaxaMGazine(MGazine):
             biosamples_metadata=biosamples_metadata,
             mgnify_analyses=mgnify_analyses,
             mgnify_assemblies=mgnify_assemblies,
+            mgnify_genomes=mgnify_genomes,
             obs=obs,
         )
 
