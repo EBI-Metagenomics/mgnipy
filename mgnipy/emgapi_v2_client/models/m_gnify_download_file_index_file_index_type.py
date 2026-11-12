@@ -1,7 +1,4 @@
-from __future__ import annotations
-
 from enum import Enum
-
 
 class MGnifyDownloadFileIndexFileIndexType(str, Enum):
     CSI = "csi"

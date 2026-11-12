@@ -1,7 +1,4 @@
-from __future__ import annotations
-
 from enum import Enum
-
 
 class OrderByFilterLiteralpublishedYearPublishedYearOrderType0(str, Enum):
     PUBLISHED_YEAR = "published_year"

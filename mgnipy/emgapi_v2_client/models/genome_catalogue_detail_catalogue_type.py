@@ -1,7 +1,4 @@
-from __future__ import annotations
-
 from enum import Enum
-
 
 class GenomeCatalogueDetailCatalogueType(str, Enum):
     EUKARYOTES = "eukaryotes"

@@ -2671,6 +2671,85 @@
         ]
       }
     },
+    "/metagenomics/api/v2/genomes-search/gather/": {
+      "post": {
+        "operationId": "genome_search_gather_submit",
+        "summary": "Submit one or more sourmash gather jobs for uploaded signatures",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourmashGatherSubmissionOut"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Genomes"
+        ]
+      }
+    },
+    "/metagenomics/api/v2/genomes-search/status/{job_id}/": {
+      "get": {
+        "operationId": "genome_search_gather_status",
+        "summary": "Check the status of a submitted sourmash gather group job",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourmashGatherStatusOut"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Genomes"
+        ]
+      }
+    },
+    "/metagenomics/api/v2/genomes-search/results/{job_id}/": {
+      "get": {
+        "operationId": "genome_search_gather_results",
+        "summary": "Download a sourmash gather CSV result or grouped tarball",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "Genomes"
+        ]
+      }
+    },
     "/metagenomics/api/v2/auth/sliding": {
       "post": {
         "operationId": "token_obtain_sliding",
@@ -2982,6 +3061,7 @@
           "Statistics",
           "non-coding RNAs",
           "Genome analysis",
+          "Genome sequence",
           "Analysis RO Crate",
           "Other"
         ],
@@ -3249,28 +3329,6 @@
             ],
             "title": "Parent Identifier"
           },
-          "parent_is_private": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Parent Is Private"
-          },
-          "parent_results_dir": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Parent Results Dir"
-          },
           "index_files": {
             "anyOf": [
               {
@@ -3292,6 +3350,28 @@
               ]
             ],
             "title": "Index Files"
+          },
+          "parent_is_private": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Is Private"
+          },
+          "parent_results_dir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Results Dir"
           },
           "url": {
             "anyOf": [
@@ -3431,7 +3511,8 @@
           "V4.1",
           "V5",
           "V6",
-          "V6.1"
+          "V6.1",
+          "V6.2"
         ],
         "title": "PipelineVersions",
         "type": "string"
@@ -5024,28 +5105,6 @@
             ],
             "title": "Parent Identifier"
           },
-          "parent_is_private": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Parent Is Private"
-          },
-          "parent_results_dir": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Parent Results Dir"
-          },
           "index_files": {
             "anyOf": [
               {
@@ -5067,6 +5126,28 @@
               ]
             ],
             "title": "Index Files"
+          },
+          "parent_is_private": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Is Private"
+          },
+          "parent_results_dir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Results Dir"
           },
           "url": {
             "anyOf": [
@@ -5676,6 +5757,28 @@
               }
             ],
             "title": "Parent Identifier"
+          },
+          "index_files": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/MGnifyDownloadFileIndexFile"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              [
+                {
+                  "index_type": "gzi",
+                  "url": "https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/annotations.tsv.gz.gzi"
+                }
+              ]
+            ],
+            "title": "Index Files"
           },
           "url": {
             "anyOf": [
@@ -6506,6 +6609,28 @@
               }
             ],
             "title": "Parent Identifier"
+          },
+          "index_files": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/MGnifyDownloadFileIndexFile"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              [
+                {
+                  "index_type": "gzi",
+                  "url": "https://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_results/annotations.tsv.gz.gzi"
+                }
+              ]
+            ],
+            "title": "Index Files"
           },
           "url": {
             "anyOf": [
@@ -7613,6 +7738,312 @@
           "results"
         ],
         "title": "GenomeSearchData",
+        "type": "object"
+      },
+      "SourmashGatherSubmissionData": {
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "job_id": {
+            "title": "Job Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "children_ids": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Children Ids",
+            "type": "object"
+          },
+          "signatures_received": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Signatures Received",
+            "type": "array"
+          },
+          "requested_catalogues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Requested Catalogues",
+            "type": "array"
+          },
+          "status_url": {
+            "title": "Status Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "job_id",
+          "status",
+          "children_ids",
+          "signatures_received",
+          "requested_catalogues",
+          "status_url"
+        ],
+        "title": "SourmashGatherSubmissionData",
+        "type": "object"
+      },
+      "SourmashGatherSubmissionOut": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SourmashGatherSubmissionData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "SourmashGatherSubmissionOut",
+        "type": "object"
+      },
+      "SourmashGatherSignatureStatus": {
+        "properties": {
+          "job_id": {
+            "title": "Job Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filename"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SourmashTaskResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "results_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results Url"
+          },
+          "catalogue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catalogue"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "position_in_queue": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position In Queue"
+          }
+        },
+        "required": [
+          "job_id",
+          "status"
+        ],
+        "title": "SourmashGatherSignatureStatus",
+        "type": "object"
+      },
+      "SourmashGatherStatusData": {
+        "properties": {
+          "group_id": {
+            "title": "Group Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "signatures": {
+            "items": {
+              "$ref": "#/components/schemas/SourmashGatherSignatureStatus"
+            },
+            "title": "Signatures",
+            "type": "array"
+          },
+          "results_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results Url"
+          },
+          "worker_status": {
+            "title": "Worker Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_id",
+          "status",
+          "signatures",
+          "worker_status"
+        ],
+        "title": "SourmashGatherStatusData",
+        "type": "object"
+      },
+      "SourmashGatherStatusOut": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SourmashGatherStatusData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "SourmashGatherStatusOut",
+        "type": "object"
+      },
+      "SourmashTaskResult": {
+        "properties": {
+          "overlap": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overlap"
+          },
+          "p_query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P Query"
+          },
+          "p_match": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P Match"
+          },
+          "match": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match"
+          },
+          "catalog": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catalog"
+          },
+          "query_filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Filename"
+          },
+          "md5_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Md5 Name"
+          },
+          "matches": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matches"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "title": "SourmashTaskResult",
         "type": "object"
       },
       "WebinTokenResponse": {

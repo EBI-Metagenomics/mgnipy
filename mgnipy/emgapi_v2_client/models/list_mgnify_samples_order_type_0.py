@@ -1,7 +1,4 @@
-from __future__ import annotations
-
 from enum import Enum
-
 
 class ListMgnifySamplesOrderType0(str, Enum):
     SAMPLE_TITLE = "sample_title"

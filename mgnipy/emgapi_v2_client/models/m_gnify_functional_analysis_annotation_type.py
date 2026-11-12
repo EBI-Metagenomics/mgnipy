@@ -1,7 +1,4 @@
-from __future__ import annotations
-
 from enum import Enum
-
 
 class MGnifyFunctionalAnalysisAnnotationType(str, Enum):
     PFAMS = "pfams"
