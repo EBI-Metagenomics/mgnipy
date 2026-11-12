@@ -7,6 +7,9 @@ from typing import (
     Optional,
 )
 
+import pandas as pd
+
+from mgnipy.V2.datasets import MGazine
 from mgnipy.V2.proxies import MGnifyDetail, MGnifyList
 
 
@@ -22,6 +25,39 @@ class Genomes(MGnifyList):
     ):
 
         super().__init__(params=params, config=config, **kwargs)
+
+    def downloads_df(self, **pd_kwargs) -> pd.DataFrame:
+        return pd.DataFrame(self.downloads, **pd_kwargs)
+
+    @property
+    def downloads(self) -> list[dict[str, Any]] | None:
+        """
+        Get a list of all download links from the detailed metadata.
+
+        Returns
+        -------
+        list[dict[str, Any]] or None
+            A list of dictionaries containing download information, or None if no details are available.
+        """
+        if self.mgnify_details:
+            return super().downloads
+
+        return self.search_results.downloads
+
+    @property
+    def datasets(self):
+        """A property that returns an MGazine instance containing the downloads information for the study."""
+        if self.mgnify_details:
+            return MGazine(
+                downloads=self.downloads,
+                config=self.config,
+                mgnify_genomes=self.metadata.to_list(),
+            )
+        return MGazine(
+            downloads=self.downloads,
+            config=self.config,
+            mgnify_genomes=self.search_results.to_list(),
+        )
 
 
 class GenomeDetail(MGnifyDetail):
@@ -40,4 +76,14 @@ class GenomeDetail(MGnifyDetail):
             id=id or accession,
             config=config,
             **kwargs,
+        )
+
+    @property
+    def datasets(self):
+        """Access the downloads for this analysis as a MGazine object."""
+
+        return MGazine(
+            downloads=self.downloads,
+            config=self.config,
+            mgnify_genomes=self._results.get(1, None),
         )
