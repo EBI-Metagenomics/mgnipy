@@ -22,7 +22,7 @@ MGni.py (🔉[IPA:'mæɡni-paɪ'](https://ipa-reader.com/?text=m%C3%A6%C9%A1ni-p
     <img src="https://img.shields.io/github/stars/EBI-Metagenomics/mgnipy" alt="GitHub stars">
 </p>
 
-![mgnipy schematic](docs/assets/mgnipy_figure.gif)
+[![mgnipy schematic](https://raw.githubusercontent.com/EBI-Metagenomics/mgnipy/main/docs/assets/mgnipy_figure.gif)](https://github.com/EBI-Metagenomics/mgnipy/blob/main/docs/assets/mgnipy_figure.gif)
 
 ## Contents
 
