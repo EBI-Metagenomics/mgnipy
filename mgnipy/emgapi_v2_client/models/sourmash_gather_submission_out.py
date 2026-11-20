@@ -1,68 +1,55 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Any, TypeVar
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
-
-from typing import cast
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
 
 if TYPE_CHECKING:
-  from ..models.sourmash_gather_submission_data import SourmashGatherSubmissionData
-
-
-
+    from ..models.sourmash_gather_submission_data import SourmashGatherSubmissionData
 
 
 T = TypeVar("T", bound="SourmashGatherSubmissionOut")
 
 
-
 @_attrs_define
 class SourmashGatherSubmissionOut:
-    """ 
-        Attributes:
-            data (SourmashGatherSubmissionData):
-     """
+    """
+    Attributes:
+        data (SourmashGatherSubmissionData):
+    """
 
     data: SourmashGatherSubmissionData
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
-        from ..models.sourmash_gather_submission_data import SourmashGatherSubmissionData
         data = self.data.to_dict()
-
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "data": data,
-        })
+        field_dict.update(
+            {
+                "data": data,
+            }
+        )
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.sourmash_gather_submission_data import SourmashGatherSubmissionData
+        from ..models.sourmash_gather_submission_data import (
+            SourmashGatherSubmissionData,
+        )
+
         d = dict(src_dict)
         data = SourmashGatherSubmissionData.from_dict(d.pop("data"))
-
-
-
 
         sourmash_gather_submission_out = cls(
             data=data,
         )
-
 
         sourmash_gather_submission_out.additional_properties = d
         return sourmash_gather_submission_out

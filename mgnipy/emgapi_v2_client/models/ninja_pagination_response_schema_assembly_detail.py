@@ -1,44 +1,33 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Any, TypeVar
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
-
-from typing import cast
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
 
 if TYPE_CHECKING:
-  from ..models.assembly_detail import AssemblyDetail
-
-
-
+    from ..models.assembly_detail import AssemblyDetail
 
 
 T = TypeVar("T", bound="NinjaPaginationResponseSchemaAssemblyDetail")
 
 
-
 @_attrs_define
 class NinjaPaginationResponseSchemaAssemblyDetail:
-    """ 
-        Attributes:
-            count (int):
-            items (list[AssemblyDetail]):
-     """
+    """
+    Attributes:
+        count (int):
+        items (list[AssemblyDetail]):
+    """
 
     count: int
     items: list[AssemblyDetail]
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
-        from ..models.assembly_detail import AssemblyDetail
         count = self.count
 
         items = []
@@ -46,41 +35,35 @@ class NinjaPaginationResponseSchemaAssemblyDetail:
             items_item = items_item_data.to_dict()
             items.append(items_item)
 
-
-
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "count": count,
-            "items": items,
-        })
+        field_dict.update(
+            {
+                "count": count,
+                "items": items,
+            }
+        )
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.assembly_detail import AssemblyDetail
+
         d = dict(src_dict)
         count = d.pop("count")
 
         items = []
         _items = d.pop("items")
-        for items_item_data in (_items):
+        for items_item_data in _items:
             items_item = AssemblyDetail.from_dict(items_item_data)
 
-
-
             items.append(items_item)
-
 
         ninja_pagination_response_schema_assembly_detail = cls(
             count=count,
             items=items,
         )
-
 
         ninja_pagination_response_schema_assembly_detail.additional_properties = d
         return ninja_pagination_response_schema_assembly_detail

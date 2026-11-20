@@ -1,40 +1,35 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
 
 from ..types import UNSET, Unset
-
-from ..types import UNSET, Unset
-from typing import cast
 
 if TYPE_CHECKING:
-  from ..models.sourmash_task_result import SourmashTaskResult
-
-
-
+    from ..models.sourmash_task_result import SourmashTaskResult
 
 
 T = TypeVar("T", bound="SourmashGatherSignatureStatus")
 
 
-
 @_attrs_define
 class SourmashGatherSignatureStatus:
-    """ 
-        Attributes:
-            job_id (str):
-            status (str):
-            filename (None | str | Unset):
-            result (None | SourmashTaskResult | Unset):
-            results_url (None | str | Unset):
-            catalogue (None | str | Unset):
-            reason (None | str | Unset):
-            position_in_queue (int | None | Unset):
-     """
+    """
+    Attributes:
+        job_id (str):
+        status (str):
+        filename (None | str | Unset):
+        result (None | SourmashTaskResult | Unset):
+        results_url (None | str | Unset):
+        catalogue (None | str | Unset):
+        reason (None | str | Unset):
+        position_in_queue (int | None | Unset):
+    """
 
     job_id: str
     status: str
@@ -46,12 +41,9 @@ class SourmashGatherSignatureStatus:
     position_in_queue: int | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
         from ..models.sourmash_task_result import SourmashTaskResult
+
         job_id = self.job_id
 
         status = self.status
@@ -94,13 +86,14 @@ class SourmashGatherSignatureStatus:
         else:
             position_in_queue = self.position_in_queue
 
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "job_id": job_id,
-            "status": status,
-        })
+        field_dict.update(
+            {
+                "job_id": job_id,
+                "status": status,
+            }
+        )
         if filename is not UNSET:
             field_dict["filename"] = filename
         if result is not UNSET:
@@ -116,11 +109,10 @@ class SourmashGatherSignatureStatus:
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.sourmash_task_result import SourmashTaskResult
+
         d = dict(src_dict)
         job_id = d.pop("job_id")
 
@@ -135,7 +127,6 @@ class SourmashGatherSignatureStatus:
 
         filename = _parse_filename(d.pop("filename", UNSET))
 
-
         def _parse_result(data: object) -> None | SourmashTaskResult | Unset:
             if data is None:
                 return data
@@ -146,15 +137,12 @@ class SourmashGatherSignatureStatus:
                     raise TypeError()
                 result_type_0 = SourmashTaskResult.from_dict(data)
 
-
-
                 return result_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | SourmashTaskResult | Unset, data)
 
         result = _parse_result(d.pop("result", UNSET))
-
 
         def _parse_results_url(data: object) -> None | str | Unset:
             if data is None:
@@ -165,7 +153,6 @@ class SourmashGatherSignatureStatus:
 
         results_url = _parse_results_url(d.pop("results_url", UNSET))
 
-
         def _parse_catalogue(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -174,7 +161,6 @@ class SourmashGatherSignatureStatus:
             return cast(None | str | Unset, data)
 
         catalogue = _parse_catalogue(d.pop("catalogue", UNSET))
-
 
         def _parse_reason(data: object) -> None | str | Unset:
             if data is None:
@@ -185,7 +171,6 @@ class SourmashGatherSignatureStatus:
 
         reason = _parse_reason(d.pop("reason", UNSET))
 
-
         def _parse_position_in_queue(data: object) -> int | None | Unset:
             if data is None:
                 return data
@@ -194,7 +179,6 @@ class SourmashGatherSignatureStatus:
             return cast(int | None | Unset, data)
 
         position_in_queue = _parse_position_in_queue(d.pop("position_in_queue", UNSET))
-
 
         sourmash_gather_signature_status = cls(
             job_id=job_id,
@@ -206,7 +190,6 @@ class SourmashGatherSignatureStatus:
             reason=reason,
             position_in_queue=position_in_queue,
         )
-
 
         sourmash_gather_signature_status.additional_properties = d
         return sourmash_gather_signature_status

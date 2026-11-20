@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ExperimentTypes(str, Enum):
     AMPLI = "AMPLI"
     ASSEM = "ASSEM"

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ListMgnifyGenomesOrderType0(str, Enum):
     ACCESSION = "accession"
     COMPLETENESS = "completeness"

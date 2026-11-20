@@ -1,38 +1,34 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from attrs import define as _attrs_define
-from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
-
-from typing import cast
+from attrs import (
+    define as _attrs_define,
+    field as _attrs_field,
+)
 
 if TYPE_CHECKING:
-  from ..models.sourmash_gather_submission_data_children_ids import SourmashGatherSubmissionDataChildrenIds
-
-
-
+    from ..models.sourmash_gather_submission_data_children_ids import (
+        SourmashGatherSubmissionDataChildrenIds,
+    )
 
 
 T = TypeVar("T", bound="SourmashGatherSubmissionData")
 
 
-
 @_attrs_define
 class SourmashGatherSubmissionData:
-    """ 
-        Attributes:
-            message (str):
-            job_id (str):
-            status (str):
-            children_ids (SourmashGatherSubmissionDataChildrenIds):
-            signatures_received (list[str]):
-            requested_catalogues (list[str]):
-            status_url (str):
-     """
+    """
+    Attributes:
+        message (str):
+        job_id (str):
+        status (str):
+        children_ids (SourmashGatherSubmissionDataChildrenIds):
+        signatures_received (list[str]):
+        requested_catalogues (list[str]):
+        status_url (str):
+    """
 
     message: str
     job_id: str
@@ -43,12 +39,7 @@ class SourmashGatherSubmissionData:
     status_url: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
-
-
-
     def to_dict(self) -> dict[str, Any]:
-        from ..models.sourmash_gather_submission_data_children_ids import SourmashGatherSubmissionDataChildrenIds
         message = self.message
 
         job_id = self.job_id
@@ -59,34 +50,32 @@ class SourmashGatherSubmissionData:
 
         signatures_received = self.signatures_received
 
-
-
         requested_catalogues = self.requested_catalogues
-
-
 
         status_url = self.status_url
 
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "message": message,
-            "job_id": job_id,
-            "status": status,
-            "children_ids": children_ids,
-            "signatures_received": signatures_received,
-            "requested_catalogues": requested_catalogues,
-            "status_url": status_url,
-        })
+        field_dict.update(
+            {
+                "message": message,
+                "job_id": job_id,
+                "status": status,
+                "children_ids": children_ids,
+                "signatures_received": signatures_received,
+                "requested_catalogues": requested_catalogues,
+                "status_url": status_url,
+            }
+        )
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.sourmash_gather_submission_data_children_ids import SourmashGatherSubmissionDataChildrenIds
+        from ..models.sourmash_gather_submission_data_children_ids import (
+            SourmashGatherSubmissionDataChildrenIds,
+        )
+
         d = dict(src_dict)
         message = d.pop("message")
 
@@ -94,16 +83,13 @@ class SourmashGatherSubmissionData:
 
         status = d.pop("status")
 
-        children_ids = SourmashGatherSubmissionDataChildrenIds.from_dict(d.pop("children_ids"))
-
-
-
+        children_ids = SourmashGatherSubmissionDataChildrenIds.from_dict(
+            d.pop("children_ids")
+        )
 
         signatures_received = cast(list[str], d.pop("signatures_received"))
 
-
         requested_catalogues = cast(list[str], d.pop("requested_catalogues"))
-
 
         status_url = d.pop("status_url")
 
@@ -116,7 +102,6 @@ class SourmashGatherSubmissionData:
             requested_catalogues=requested_catalogues,
             status_url=status_url,
         )
-
 
         sourmash_gather_submission_data.additional_properties = d
         return sourmash_gather_submission_data

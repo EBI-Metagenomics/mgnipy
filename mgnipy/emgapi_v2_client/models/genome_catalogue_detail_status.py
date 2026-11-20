@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class GenomeCatalogueDetailStatus(str, Enum):
     DRAFT = "draft"
     PUBLISHED = "published"
