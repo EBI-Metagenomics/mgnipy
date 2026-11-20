@@ -7,24 +7,13 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv (3.11.7.final.0)
+#     display_name: mgnipy (3.13.13)
 #     language: python
 #     name: python3
 # ---
 
 # %% [markdown]
-# # Get a MGnify List
-#
-# Here we demonstrate the basic usability of MGni.py to see what records/items (e.g., biomes) are available in a given resource (e.g., the Biomes [endpoint of the MGnify API v2](https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes))
-#
-# ```{margin}
-# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
-# ```
-# <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
-#
-# ---
-#
-# ## 🎯 The Goal: Get a list of MGnify Biomes
+# # Listing biomes
 #
 # The [GOLD ecosystem classifications](https://bioportal.bioontology.org/ontologies/GOLDTERMS) organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like "Engineered" to specific environments like "Plant rhizosphere."
 #
@@ -36,20 +25,23 @@
 # 4. **Monitor progress** — Track your requests and check completion status
 #
 # By the end, we hope you'll be comfortable querying the MGnify resource -- or specifically the biomes resource at least
+#
+# ```{margin}
+# After clicking the "Activate Notebook" button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.
+# ```
+# <button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button>
+#
+# ---
+#
 
 # %%
 # uncomment below if colab
 # #!pip install mgnipy
 
 # %% [markdown]
-# We can initiate using `mgnipy.MGnipy` or `proxies.Biomes`
-
-# %% [markdown]
-# ## 🖍️ The start: Preparing queries
-
-# %% [markdown]
+# ## Initiating the client
 #
-# ### Option 1. `mgnipy.MGnipy`
+# We can initiate using `mgnipy.MGnipy` or `proxies.Biomes`.
 #
 # The `MGnipy` client offers a unified interface to access various MGnify API endpoints, including biomes. This approach is convenient if you want to manage multiple types of queries or resources through a single client object.
 #
@@ -79,16 +71,9 @@ biomes = MG.biomes
 print(biomes)
 
 # %% [markdown]
-# In the `print` we can see that we have not initiated any query parameters.
+# ## Preparing queries
 #
-# If you would like to know what params are supported for the endpoint there is a helper method you can use: `.list_supported_params()`
-
-# %%
-# if not sure what kwargs suupported
-print("Supported kwargs for biomes: ", biomes.list_supported_params())
-
-# %% [markdown]
-# also like [describe_resources()](https://mgnipy.mgnify.org/tutorials/getting-started/available-resources.html) there is a `describe_endpoint()` with even more info about the endpoint based on the [openapi.json spec](https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json)
+# Like [describe_resources()](https://mgnipy.mgnify.org/tutorials/getting-started/available-resources.html) there is a `describe_endpoint()` with even more info about the endpoint based on the [openapi.json spec](https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json)
 
 # %%
 biomes.describe_endpoint()
@@ -98,7 +83,7 @@ biomes.describe_endpoint()
 
 # %%
 biomes = biomes.filter(
-    page_size=5,
+    page_size=50,
     max_depth=6,
 )
 
@@ -106,10 +91,7 @@ biomes = biomes.filter(
 print(biomes)
 
 # %% [markdown]
-# Great we can see that the query string (i.e., after `?`s) has been updated with our given parameters
-
-# %% [markdown]
-# ## 👓 Previewing your requests
+# ## Previewing the query set
 #
 # There is an optional but recommended step to
 # - `.preview()` the first page of results as a `pandas.DataFrame`,  or
@@ -118,16 +100,13 @@ print(biomes)
 #
 # *before* `.get()`ting all the result pages.
 
-# %%
-# checking out first 5 request urls to be made
-biomes.explain(head=5)
-# or
-# biomes.dry_run()
-# or
-biomes.preview()
+# %% tags=["hide-output"]
+# checking out the request urls to be executed
+biomes.explain()
+
 
 # %% [markdown]
-# ## 📨 Carry out requests to list endpoints
+# ## Execute queries
 # If happy with the plan, proceed with the async or sync get requests.
 #
 # There are multiple options:
@@ -136,97 +115,33 @@ biomes.preview()
 # - `page()` or `.apage()` pass specific `page_num`
 # - `.get_all()` or `aget_all()` fetch the pages in bulk sync or asynchronously
 
-# %% [markdown]
-# ### Option 1. `.get()` iteratively
-# For a demo of this we will make the first 5 requests.
-
 # %%
-# getting first 5
-with MG: # or biomes 
-    for _ in range(5):
-        biomes.get()
-
-
-# %% [markdown]
-# For each option there is an async option
-
-# %%
+# and async
 async with MG: 
-    for _ in range(5):
-        await biomes.aget()
+    await biomes.aget_all(limit=2) # limit to running only 2 of the requests for demo purposes
 
 
 # %% [markdown]
-# and you can take a look at the results as you go &#x1f600; :
-
-# %% tags=["hide-output"]
-# by page, e.g. page 5
-biomes.search_results.results[5]
+# ## Checking progress
+#
+# For a concise update on progress you can use `.progress`
 
 # %%
-# or by records, first 2 records
-biomes.search_results.to_list()[:2]
-# or via .records iterator
-#list(biomes.search_results.records)[:2]
+biomes.progress
 
 # %% [markdown]
-# Specific to the biomes, results can also be visualized as a tree "print" "hshow" or "vshow"
+# Can also take a look at results as we go along via `.search_results()`. OR Specific to the biomes, results can also be visualized as a tree "print" "hshow" or "vshow"
 
 # %% tags=["hide-output"]
 biomes.show_tree()
 
 # %% [markdown]
-# ### Option 2. get a specific `page()`
-#
-# - Will make the request and also returns the items/records in a list like above.
-# - When calling page() on an alrady completed request, the api call is not repeated and instead the output is a page from the cache
-
-# %%
-with MG: 
-    biomes.page(3)
-
-# %% [markdown]
-# ### Option 3. `get_all()` of all requests (with safety limits)
-#
-# can handle multiple requests via
-# - specifying a list of pages to `.get_all(pages=<list_of_pages>)`
-# - or by not specifying pages you can continually call on the method which will let the bulk fetch handle the batching whilst considering `limit=<num_items`
-#
-# Especially before fetching in bulk we should take a look at the total number of requests/pages.
-
-# %%
-# let's first checkout num requests
-print("Number of requests:", biomes.num_requests)
-# or better yet do a dry_run
-biomes.dry_run()
-
-# %% [markdown]
-# Now we can get some data sync or async:
-
-# %%
-# synchronously fetch up to 50 pages
-with MG: 
-    biomes.get_all(limit=50)
-
-
-# %%
-# and async
-async with MG: 
-    await biomes.aget_all(limit=50)
-
-
-# %% [markdown]
-# ## ⏳ Checking progress
-#
-# As we saw earlier in the notebook we can take a look at results as we go along. For a concise update on progress you can use `.progress`
-
-# %%
-biomes.progress
+# ## Tidy up
 
 # %%
 # no cache for this isntance but we can clear anywahys
 biomes.clear_cache()
 
 # %%
-# also check clients closed
+# also can check clients closed
 MG.status()
