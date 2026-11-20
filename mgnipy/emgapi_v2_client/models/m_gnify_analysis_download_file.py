@@ -34,9 +34,9 @@ class MGnifyAnalysisDownloadFile:
         file_size_bytes (int | None | Unset):
         index_file (DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset):
         parent_identifier (int | str | Unset):
+        index_files (list[MGnifyDownloadFileIndexFile] | None | Unset):
         parent_is_private (bool | None | Unset):
         parent_results_dir (None | str | Unset):
-        index_files (list[MGnifyDownloadFileIndexFile] | None | Unset):
         url (None | str | Unset):
     """
 
@@ -52,9 +52,9 @@ class MGnifyAnalysisDownloadFile:
         UNSET
     )
     parent_identifier: int | str | Unset = UNSET
+    index_files: list[MGnifyDownloadFileIndexFile] | None | Unset = UNSET
     parent_is_private: bool | None | Unset = UNSET
     parent_results_dir: None | str | Unset = UNSET
-    index_files: list[MGnifyDownloadFileIndexFile] | None | Unset = UNSET
     url: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -105,18 +105,6 @@ class MGnifyAnalysisDownloadFile:
         else:
             parent_identifier = self.parent_identifier
 
-        parent_is_private: bool | None | Unset
-        if isinstance(self.parent_is_private, Unset):
-            parent_is_private = UNSET
-        else:
-            parent_is_private = self.parent_is_private
-
-        parent_results_dir: None | str | Unset
-        if isinstance(self.parent_results_dir, Unset):
-            parent_results_dir = UNSET
-        else:
-            parent_results_dir = self.parent_results_dir
-
         index_files: list[dict[str, Any]] | None | Unset
         if isinstance(self.index_files, Unset):
             index_files = UNSET
@@ -128,6 +116,18 @@ class MGnifyAnalysisDownloadFile:
 
         else:
             index_files = self.index_files
+
+        parent_is_private: bool | None | Unset
+        if isinstance(self.parent_is_private, Unset):
+            parent_is_private = UNSET
+        else:
+            parent_is_private = self.parent_is_private
+
+        parent_results_dir: None | str | Unset
+        if isinstance(self.parent_results_dir, Unset):
+            parent_results_dir = UNSET
+        else:
+            parent_results_dir = self.parent_results_dir
 
         url: None | str | Unset
         if isinstance(self.url, Unset):
@@ -156,12 +156,12 @@ class MGnifyAnalysisDownloadFile:
             field_dict["index_file"] = index_file
         if parent_identifier is not UNSET:
             field_dict["parent_identifier"] = parent_identifier
+        if index_files is not UNSET:
+            field_dict["index_files"] = index_files
         if parent_is_private is not UNSET:
             field_dict["parent_is_private"] = parent_is_private
         if parent_results_dir is not UNSET:
             field_dict["parent_results_dir"] = parent_results_dir
-        if index_files is not UNSET:
-            field_dict["index_files"] = index_files
         if url is not UNSET:
             field_dict["url"] = url
 
@@ -248,26 +248,6 @@ class MGnifyAnalysisDownloadFile:
 
         parent_identifier = _parse_parent_identifier(d.pop("parent_identifier", UNSET))
 
-        def _parse_parent_is_private(data: object) -> bool | None | Unset:
-            if data is None:
-                return data
-            if isinstance(data, Unset):
-                return data
-            return cast(bool | None | Unset, data)
-
-        parent_is_private = _parse_parent_is_private(d.pop("parent_is_private", UNSET))
-
-        def _parse_parent_results_dir(data: object) -> None | str | Unset:
-            if data is None:
-                return data
-            if isinstance(data, Unset):
-                return data
-            return cast(None | str | Unset, data)
-
-        parent_results_dir = _parse_parent_results_dir(
-            d.pop("parent_results_dir", UNSET)
-        )
-
         def _parse_index_files(
             data: object,
         ) -> list[MGnifyDownloadFileIndexFile] | None | Unset:
@@ -294,6 +274,26 @@ class MGnifyAnalysisDownloadFile:
 
         index_files = _parse_index_files(d.pop("index_files", UNSET))
 
+        def _parse_parent_is_private(data: object) -> bool | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(bool | None | Unset, data)
+
+        parent_is_private = _parse_parent_is_private(d.pop("parent_is_private", UNSET))
+
+        def _parse_parent_results_dir(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        parent_results_dir = _parse_parent_results_dir(
+            d.pop("parent_results_dir", UNSET)
+        )
+
         def _parse_url(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -314,9 +314,9 @@ class MGnifyAnalysisDownloadFile:
             file_size_bytes=file_size_bytes,
             index_file=index_file,
             parent_identifier=parent_identifier,
+            index_files=index_files,
             parent_is_private=parent_is_private,
             parent_results_dir=parent_results_dir,
-            index_files=index_files,
             url=url,
         )
 

@@ -7,13 +7,13 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv (3.11.7.final.0)
+#     display_name: mgnipy (3.11.15)
 #     language: python
 #     name: python3
 # ---
 
 # %% [markdown]
-# #  Connecting to the MGnify API
+# #  Available resources
 #
 # The [MGnify API](https://www.ebi.ac.uk/metagenomics/api/v2/) has many endpoints providing access to multiple types of resources such as studies, samples, analyses, genomes, and more. This notebook shows you how to
 #

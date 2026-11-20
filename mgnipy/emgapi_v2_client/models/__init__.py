@@ -1,7 +1,5 @@
 """Contains all the data models used in inputs/outputs"""
 
-from __future__ import annotations
-
 from .additional_contained_genome_schema import AdditionalContainedGenomeSchema
 from .analysed_run import AnalysedRun
 from .analysed_run_detail import AnalysedRunDetail
@@ -180,6 +178,15 @@ from .publication_list_filters import PublicationListFilters
 from .run_list_filters import RunListFilters
 from .sample_list_filters import SampleListFilters
 from .schema import Schema
+from .sourmash_gather_signature_status import SourmashGatherSignatureStatus
+from .sourmash_gather_status_data import SourmashGatherStatusData
+from .sourmash_gather_status_out import SourmashGatherStatusOut
+from .sourmash_gather_submission_data import SourmashGatherSubmissionData
+from .sourmash_gather_submission_data_children_ids import (
+    SourmashGatherSubmissionDataChildrenIds,
+)
+from .sourmash_gather_submission_out import SourmashGatherSubmissionOut
+from .sourmash_task_result import SourmashTaskResult
 from .study_list_filters import StudyListFilters
 from .super_study import SuperStudy
 from .super_study_detail import SuperStudyDetail
@@ -301,6 +308,13 @@ __all__ = (
     "RunListFilters",
     "SampleListFilters",
     "Schema",
+    "SourmashGatherSignatureStatus",
+    "SourmashGatherStatusData",
+    "SourmashGatherStatusOut",
+    "SourmashGatherSubmissionData",
+    "SourmashGatherSubmissionDataChildrenIds",
+    "SourmashGatherSubmissionOut",
+    "SourmashTaskResult",
     "StudyListFilters",
     "SuperStudy",
     "SuperStudyDetail",

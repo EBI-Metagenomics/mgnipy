@@ -7,16 +7,12 @@ The tutorials/demos act as tests - if the notebooks/py don't execute then the do
 1. install project and doc dependencies in a venv
 
    ```bash
-   # uncomment for venv
-   #uv venv
-   #source .venv/bin/activate
-
    uv sync --all-groups
    ```
 
-2. dev the documentation in module docstrings or as markdown or jupyter notebook in docs folder
+2. write the documentation in module docstrings or as markdown or jupyter notebook in docs folder
 
-3. update the [.mgnipy/docs/index.md](index.md) file if needed (e.g. adding tutorial)
+3. update the [.mgnipy/docs/index.md](index.md) file if needed (e.g. adding a new file to "Contributor's Guide")
 
 4. `cd` into _docs_ dir and run the helper [`sphinx_build.sh`](sphinx_build.sh) script OR run the contained steps manually:
 

@@ -11,6 +11,7 @@ from mgnipy._models.constants.CONSTANTS import DetailResourceStr, SupportedEndpo
 from mgnipy._shared_helpers.httpx_helpers import init_httpx_client
 from mgnipy.emgapi_v2_client.client import AuthenticatedClient, Client
 from mgnipy.V2.collect.biosampler import BioSampler
+from mgnipy.V2.collect.enasampler import ENASampler
 from mgnipy.V2.collect.mgnetizer import MGnetizer
 from mgnipy.V2.datasets import MTG, MGazine
 from mgnipy.V2.datasets.taxonomic import DWCTaxaMGazine, TaxaMGazine
@@ -227,6 +228,9 @@ class MGnipy(ClientManagerMixin):
 
         if name == "biosampler":
             return BioSampler(sample_ids=[], config=self.config)
+
+        if name == "enasampler":
+            return ENASampler(sample_ids=[], config=self.config)
 
         if name == "mgazine":
             return MGazine(downloads=[], config=self.config, client=self.client)

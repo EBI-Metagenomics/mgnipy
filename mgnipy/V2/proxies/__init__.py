@@ -761,6 +761,11 @@ class MGnifyDetail(MGnifier):
         return list_endpoint
 
     @property
+    def metadata(self) -> MGnifyMetadata:
+        """Alias for property `search_results`. The retrieved metadata results."""
+        return self.search_results
+
+    @property
     def downloads(self) -> list[dict[str, Any]]:
         """
         Get the list of downloads for this detail.

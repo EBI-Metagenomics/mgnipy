@@ -33,6 +33,7 @@ METADATA_SETS = [
     "mgnify_samples",
     "mgnify_studies",
     "mgnify_analyses",
+    "mgnify_genomes",
     "biosamples_metadata",
     "obs",
 ]
@@ -73,6 +74,7 @@ class MTG(MetadataSettersMixin):
         mgnify_runs: list[dict[str, Any]] | None = None,
         mgnify_samples: list[dict[str, Any]] | None = None,
         mgnify_assemblies: list[dict[str, Any]] | None = None,
+        mgnify_genomes: list[dict[str, Any]] | None = None,
         biosamples_metadata: list[dict[str, Any]] | None = None,
         obs: list[dict[str, Any]] | None = None,
     ):
@@ -93,6 +95,7 @@ class MTG(MetadataSettersMixin):
         self._mgnify_runs: list[dict[str, Any]] | None = mgnify_runs
         self._mgnify_samples: list[dict[str, Any]] | None = mgnify_samples
         self._mgnify_assemblies: list[dict[str, Any]] | None = mgnify_assemblies
+        self._mgnify_genomes: list[dict[str, Any]] | None = mgnify_genomes
         self._biosamples_metadata: list[dict[str, Any]] | None = biosamples_metadata
         self._obs: list[dict[str, Any]] | None = obs
 
@@ -108,6 +111,7 @@ class MTG(MetadataSettersMixin):
         mgnify_runs: list[dict[str, Any]] | None = None,
         mgnify_samples: list[dict[str, Any]] | None = None,
         mgnify_assemblies: list[dict[str, Any]] | None = None,
+        mgnify_genomes: list[dict[str, Any]] | None = None,
         biosamples_metadata: list[dict[str, Any]] | None = None,
         obs: list[dict[str, Any]] | None = None,
     ) -> "MGazine":
@@ -124,6 +128,7 @@ class MTG(MetadataSettersMixin):
             mgnify_runs=mgnify_runs or self._mgnify_runs,
             mgnify_samples=mgnify_samples or self._mgnify_samples,
             mgnify_assemblies=mgnify_assemblies or self._mgnify_assemblies,
+            mgnify_genomes=mgnify_genomes or self._mgnify_genomes,
             biosamples_metadata=biosamples_metadata or self._biosamples_metadata,
             obs=obs or self._obs,
         )
@@ -338,6 +343,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         mgnify_runs: list[dict[str, Any]] | None = None,
         mgnify_samples: list[dict[str, Any]] | None = None,
         mgnify_assemblies: list[dict[str, Any]] | None = None,
+        mgnify_genomes: list[dict[str, Any]] | None = None,
         biosamples_metadata: list[dict[str, Any]] | None = None,
         obs: list[dict[str, Any]] | None = None,
     ):
@@ -351,6 +357,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         self._mgnify_runs: list[dict[str, Any]] | None = mgnify_runs
         self._mgnify_samples: list[dict[str, Any]] | None = mgnify_samples
         self._mgnify_assemblies: list[dict[str, Any]] | None = mgnify_assemblies
+        self._mgnify_genomes: list[dict[str, Any]] | None = mgnify_genomes
         self._biosamples_metadata: list[dict[str, Any]] | None = biosamples_metadata
         self._obs: list[dict[str, Any]] | None = obs
         self._lazy_merged: list[pl.LazyFrame] | None = None
@@ -364,6 +371,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
         mgnify_runs: list[dict[str, Any]] | None = None,
         mgnify_samples: list[dict[str, Any]] | None = None,
         mgnify_assemblies: list[dict[str, Any]] | None = None,
+        mgnify_genomes: list[dict[str, Any]] | None = None,
         biosamples_metadata: list[dict[str, Any]] | None = None,
         obs: list[dict[str, Any]] | None = None,
     ) -> "MGazine":
@@ -378,6 +386,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             mgnify_analyses=mgnify_analyses or self._mgnify_analyses,
             mgnify_runs=mgnify_runs or self._mgnify_runs,
             mgnify_samples=mgnify_samples or self._mgnify_samples,
+            mgnify_genomes=mgnify_genomes or self._mgnify_genomes,
             mgnify_assemblies=mgnify_assemblies or self._mgnify_assemblies,
             biosamples_metadata=biosamples_metadata or self._biosamples_metadata,
             obs=obs or self._obs,
@@ -413,6 +422,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             mgnify_assemblies=(
                 self.mgnify_assemblies + other.mgnify_assemblies
             ).to_list(),
+            mgnify_genomes=(self.mgnify_genomes + other.mgnify_genomes).to_list(),
             biosamples_metadata=(
                 self.biosamples_metadata + other.biosamples_metadata
             ).to_list(),
@@ -471,6 +481,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     mgnify_runs=self._mgnify_runs,
                     mgnify_samples=self._mgnify_samples,
                     mgnify_assemblies=self._mgnify_assemblies,
+                    mgnify_genomes=self._mgnify_genomes,
                     biosamples_metadata=self._biosamples_metadata,
                     obs=self._obs,
                 )
@@ -492,6 +503,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
                     mgnify_runs=self._mgnify_runs,
                     mgnify_samples=self._mgnify_samples,
                     mgnify_assemblies=self._mgnify_assemblies,
+                    mgnify_genomes=self._mgnify_genomes,
                     biosamples_metadata=self._biosamples_metadata,
                     obs=self._obs,
                 )
@@ -529,6 +541,7 @@ class MGazine(StreamMixin, ClientManagerMixin, MetadataSettersMixin):
             mgnify_runs=self._mgnify_runs,
             mgnify_samples=self._mgnify_samples,
             mgnify_assemblies=self._mgnify_assemblies,
+            mgnify_genomes=self._mgnify_genomes,
             biosamples_metadata=self._biosamples_metadata,
             obs=self._obs,
         )

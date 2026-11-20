@@ -81,7 +81,8 @@ html_js_files = [
 
 ## thebe
 thebe_config = {
-    "selector": "div.highlight",
+    "selector": ".cell",
+    "selector_output": ".cell_output",
     # "always_load": True
 }
 
