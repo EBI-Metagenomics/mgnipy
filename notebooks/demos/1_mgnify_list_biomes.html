@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Get a MGnify List &#8212; mgnipy 0.1.dev1+g0b162cb4c documentation</title>
+    <title>Listing biomes &#8212; mgnipy 0.4.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=f28913a0"></script>
+    <script src="../../_static/documentation_options.js?v=9453eeee"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,15 +52,15 @@
     <script src="../../_static/togglebutton.js?v=b8b12719"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".cell_output"</script>
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/demos/1_mgnify_list_biomes';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../_static/mgnipy.svg"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Getting MGnify datasets" href="2_downloading_data.html" />
-    <link rel="prev" title="MGazine of MGnify data" href="../fundamentals/7_mgazine.html" />
+    <link rel="next" title="Finding sample details" href="2_samples.html" />
+    <link rel="prev" title="Collecting more metadata" href="../getting-started/5_collecting_metadata.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0b162cb4c documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0b162cb4c documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.4.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.4.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -197,9 +197,21 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Available resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Listing biomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_samples.html">Finding sample details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_biosampler.html">Add BioSamples metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_download_analyses.html">Download study analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_genomes.html">Downloading genomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_merging_ann.html">Merging datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="98_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="99_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="99_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
 <ul class="nav bd-sidenav">
@@ -210,14 +222,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Get a MGnify List</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_downloading_data.html">Getting MGnify datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -234,9 +238,10 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/1_updating_emgapi.html">Adopting any API changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/2_quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/3_readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
 </ul>
 
@@ -490,7 +495,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Get a MGnify List</h1>
+    <h1>Listing biomes</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -500,19 +505,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-get-a-list-of-mgnify-biomes">🎯 The Goal: Get a list of MGnify Biomes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-start-preparing-queries">🖍️ The start: Preparing queries</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-your-requests">👓 Previewing your requests</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carry-out-requests-to-list-endpoints">📨 Carry out requests to list endpoints</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-get-iteratively">Option 1. <code class="docutils literal notranslate"><span class="pre">.get()</span></code> iteratively</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-get-a-specific-page">Option 2. get a specific <code class="docutils literal notranslate"><span class="pre">page()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-get-all-of-all-requests-with-safety-limits">Option 3. <code class="docutils literal notranslate"><span class="pre">get_all()</span></code> of all requests (with safety limits)</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-progress">⏳ Checking progress</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initiating-the-client">Initiating the client</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-queries">Preparing queries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-the-query-set">Previewing the query set</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#execute-queries">Execute queries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-progress">Checking progress</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tidy-up">Tidy up</a></li>
 </ul>
             </nav>
         </div>
@@ -524,17 +522,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="get-a-mgnify-list">
-<h1>Get a MGnify List<a class="headerlink" href="#get-a-mgnify-list" title="Link to this heading">#</a></h1>
-<p>Here we demonstrate the basic usability of MGni.py to see what records/items (e.g., biomes) are available in a given resource (e.g., the Biomes <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/#/Miscellaneous/list_mgnify_biomes" rel="noreferrer" target="_blank">endpoint of the MGnify API v2 <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>)</p>
-<aside class="margin sidebar">
-<p class="sidebar-title"></p>
-<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
-</aside>
-<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
-<hr class="docutils" />
-<section id="the-goal-get-a-list-of-mgnify-biomes">
-<h2>🎯 The Goal: Get a list of MGnify Biomes<a class="headerlink" href="#the-goal-get-a-list-of-mgnify-biomes" title="Link to this heading">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="listing-biomes">
+<h1>Listing biomes<a class="headerlink" href="#listing-biomes" title="Link to this heading">#</a></h1>
 <p>The <a class="reference external" href="https://bioportal.bioontology.org/ontologies/GOLDTERMS" rel="noreferrer" target="_blank">GOLD ecosystem classifications <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> organize environmental samples into a hierarchical taxonomy of biome types—from broad categories like “Engineered” to specific environments like “Plant rhizosphere.”</p>
 <p>This demo will show you how to:</p>
 <ol class="arabic simple">
@@ -544,6 +533,12 @@ document.write(`
 <li><p><strong>Monitor progress</strong> — Track your requests and check completion status</p></li>
 </ol>
 <p>By the end, we hope you’ll be comfortable querying the MGnify resource – or specifically the biomes resource at least</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
@@ -552,12 +547,9 @@ document.write(`
 </div>
 </div>
 </div>
-<p>We can initiate using <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or <code class="docutils literal notranslate"><span class="pre">proxies.Biomes</span></code></p>
-</section>
-<section id="the-start-preparing-queries">
-<h2>🖍️ The start: Preparing queries<a class="headerlink" href="#the-start-preparing-queries" title="Link to this heading">#</a></h2>
-<section id="option-1-mgnipy-mgnipy">
-<h3>Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code><a class="headerlink" href="#option-1-mgnipy-mgnipy" title="Link to this heading">#</a></h3>
+<section id="initiating-the-client">
+<h2>Initiating the client<a class="headerlink" href="#initiating-the-client" title="Link to this heading">#</a></h2>
+<p>We can initiate using <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code> or <code class="docutils literal notranslate"><span class="pre">proxies.Biomes</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> client offers a unified interface to access various MGnify API endpoints, including biomes. This approach is convenient if you want to manage multiple types of queries or resources through a single client object.</p>
 <ul class="simple">
 <li><p>Instantiate <code class="docutils literal notranslate"><span class="pre">MGnipy</span></code> to configure your API access and manage requests.</p></li>
@@ -597,22 +589,10 @@ document.write(`
 </div>
 </div>
 </div>
-<p>In the <code class="docutils literal notranslate"><span class="pre">print</span></code> we can see that we have not initiated any query parameters.</p>
-<p>If you would like to know what params are supported for the endpoint there is a helper method you can use: <code class="docutils literal notranslate"><span class="pre">.list_supported_params()</span></code></p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if not sure what kwargs suupported</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Supported kwargs for biomes: &quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">list_supported_params</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Supported kwargs for biomes:  [&#39;biome_lineage&#39;, &#39;max_depth&#39;, &#39;page&#39;, &#39;page_size&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<p>also like <a class="reference external" href="https://mgnipy.mgnify.org/tutorials/getting-started/available-resources.html" rel="noreferrer" target="_blank">describe_resources() <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> there is a <code class="docutils literal notranslate"><span class="pre">describe_endpoint()</span></code> with even more info about the endpoint based on the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json" rel="noreferrer" target="_blank">openapi.json spec <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+</section>
+<section id="preparing-queries">
+<h2>Preparing queries<a class="headerlink" href="#preparing-queries" title="Link to this heading">#</a></h2>
+<p>Like <a class="reference external" href="https://mgnipy.mgnify.org/tutorials/getting-started/available-resources.html" rel="noreferrer" target="_blank">describe_resources() <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> there is a <code class="docutils literal notranslate"><span class="pre">describe_endpoint()</span></code> with even more info about the endpoint based on the <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/api/v2/openapi.json" rel="noreferrer" target="_blank">openapi.json spec <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">describe_endpoint</span><span class="p">()</span>
@@ -637,7 +617,7 @@ Supported parameters:
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span> <span class="o">=</span> <span class="n">biomes</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-    <span class="n">page_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">page_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
     <span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -649,17 +629,15 @@ Supported parameters:
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;mgnipy.V2.proxies.biomes.Biomes&#39;&gt; for &#39;biomes&#39; resource
 - Endpoint: &#39;mgnipy.emgapi_v2_client.api.miscellaneous.list_mgnify_biomes&#39;
-- Params: {&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6}
+- Params: {&#39;page_size&#39;: 50, &#39;max_depth&#39;: 6}
 - Child resource: &#39;biome&#39;
 </pre></div>
 </div>
 </div>
 </div>
-<p>Great we can see that the query string (i.e., after <code class="docutils literal notranslate"><span class="pre">?</span></code>s) has been updated with our given parameters</p>
 </section>
-</section>
-<section id="previewing-your-requests">
-<h2>👓 Previewing your requests<a class="headerlink" href="#previewing-your-requests" title="Link to this heading">#</a></h2>
+<section id="previewing-the-query-set">
+<h2>Previewing the query set<a class="headerlink" href="#previewing-the-query-set" title="Link to this heading">#</a></h2>
 <p>There is an optional but recommended step to</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.preview()</span></code> the first page of results as a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>,  or</p></li>
@@ -667,117 +645,10 @@ Supported parameters:
 <li><p><code class="docutils literal notranslate"><span class="pre">.explain()</span></code> to print the planned request urls</p></li>
 </ul>
 <p><em>before</em> <code class="docutils literal notranslate"><span class="pre">.get()</span></code>ting all the result pages.</p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># checking out first 5 request urls to be made</span>
-<span class="n">biomes</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">head</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="c1"># or</span>
-<span class="c1"># biomes.dry_run()</span>
-<span class="c1"># or</span>
-<span class="n">biomes</span><span class="o">.</span><span class="n">preview</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=1&amp;page_size=5
-https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=2&amp;page_size=5
-https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=3&amp;page_size=5
-https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=4&amp;page_size=5
-https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page_size=5
-</pre></div>
-</div>
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>biome_name</th>
-      <th>biome_lineage</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>root</td>
-      <td>root</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Control</td>
-      <td>root:Control</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Engineered</td>
-      <td>root:Engineered</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Biogas plant</td>
-      <td>root:Engineered:Biogas plant</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Wet fermentation</td>
-      <td>root:Engineered:Biogas plant:Wet fermentation</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-</section>
-<section id="carry-out-requests-to-list-endpoints">
-<h2>📨 Carry out requests to list endpoints<a class="headerlink" href="#carry-out-requests-to-list-endpoints" title="Link to this heading">#</a></h2>
-<p>If happy with the plan, proceed with the async or sync get requests.</p>
-<p>There are multiple options:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.get()</span></code> or <code class="docutils literal notranslate"><span class="pre">.aget()</span></code> like next() iteratively carries out one page/request at a time per call. Returning the page dict or <code class="docutils literal notranslate"><span class="pre">None</span></code> when iteration is complete</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">page()</span></code> or <code class="docutils literal notranslate"><span class="pre">.apage()</span></code> pass specific <code class="docutils literal notranslate"><span class="pre">page_num</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.get_all()</span></code> or <code class="docutils literal notranslate"><span class="pre">aget_all()</span></code> fetch the pages in bulk sync or asynchronously</p></li>
-</ul>
-<section id="option-1-get-iteratively">
-<h3>Option 1. <code class="docutils literal notranslate"><span class="pre">.get()</span></code> iteratively<a class="headerlink" href="#option-1-get-iteratively" title="Link to this heading">#</a></h3>
-<p>For a demo of this we will make the first 5 requests.</p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># getting first 5</span>
-<span class="k">with</span> <span class="n">MG</span><span class="p">:</span> <span class="c1"># or biomes </span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-        <span class="n">biomes</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>For each option there is an async option</p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">MG</span><span class="p">:</span> 
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-        <span class="k">await</span> <span class="n">biomes</span><span class="o">.</span><span class="n">aget</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>and you can take a look at the results as you go 😀 :</p>
 <div class="cell tag_hide-output config_scroll_outputs docutils container">
 <div class="cell_input above-output-prompt docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># by page, e.g. page 5</span>
-<span class="n">biomes</span><span class="o">.</span><span class="n">search_results</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># checking out the request urls to be executed</span>
+<span class="n">biomes</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -787,38 +658,59 @@ https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page
 <p class="expanded admonition-title">Hide code cell output</p>
 </summary>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;Activated sludge&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Terephthalate:Wastewater:Activated sludge&#39;},
- {&#39;biome_name&#39;: &#39;Bioreactor&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Terephthalate:Wastewater:Bioreactor&#39;},
- {&#39;biome_name&#39;: &#39;Tetrachloroethylene and derivatives&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Tetrachloroethylene and derivatives&#39;},
- {&#39;biome_name&#39;: &#39;Chloroethene&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Tetrachloroethylene and derivatives:Chloroethene&#39;},
- {&#39;biome_name&#39;: &#39;Bioreactor&#39;,
-  &#39;lineage&#39;: &#39;root:Engineered:Bioremediation:Tetrachloroethylene and derivatives:Chloroethene:Bioreactor&#39;}]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=1&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=2&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=3&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=4&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=6&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=7&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=8&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=9&amp;page_size=50
+https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=10&amp;page_size=50
 </pre></div>
 </div>
 </div>
 </details>
 </div>
+</section>
+<section id="execute-queries">
+<h2>Execute queries<a class="headerlink" href="#execute-queries" title="Link to this heading">#</a></h2>
+<p>If happy with the plan, proceed with the async or sync get requests.</p>
+<p>There are multiple options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.get()</span></code> or <code class="docutils literal notranslate"><span class="pre">.aget()</span></code> like next() iteratively carries out one page/request at a time per call. Returning the page dict or <code class="docutils literal notranslate"><span class="pre">None</span></code> when iteration is complete</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page()</span></code> or <code class="docutils literal notranslate"><span class="pre">.apage()</span></code> pass specific <code class="docutils literal notranslate"><span class="pre">page_num</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.get_all()</span></code> or <code class="docutils literal notranslate"><span class="pre">aget_all()</span></code> fetch the pages in bulk sync or asynchronously</p></li>
+</ul>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># or by records, first 2 records</span>
-<span class="n">biomes</span><span class="o">.</span><span class="n">search_results</span><span class="o">.</span><span class="n">to_list</span><span class="p">()[:</span><span class="mi">2</span><span class="p">]</span>
-<span class="c1"># or via .records iterator</span>
-<span class="c1">#list(biomes.search_results.records)[:2]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># and async</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">MG</span><span class="p">:</span> 
+    <span class="k">await</span> <span class="n">biomes</span><span class="o">.</span><span class="n">aget_all</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># limit to running only 2 of the requests for demo purposes</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[{&#39;biome_name&#39;: &#39;root&#39;, &#39;lineage&#39;: &#39;root&#39;},
- {&#39;biome_name&#39;: &#39;Control&#39;, &#39;lineage&#39;: &#39;root:Control&#39;}]
+</div>
+</div>
+</section>
+<section id="checking-progress">
+<h2>Checking progress<a class="headerlink" href="#checking-progress" title="Link to this heading">#</a></h2>
+<p>For a concise update on progress you can use <code class="docutils literal notranslate"><span class="pre">.progress</span></code></p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">progress</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieved pages: 20%|████░░░░░░░░░░░░░░░░| 2/10
 </pre></div>
 </div>
 </div>
 </div>
-<p>Specific to the biomes, results can also be visualized as a tree “print” “hshow” or “vshow”</p>
+<p>Can also take a look at results as we go along via <code class="docutils literal notranslate"><span class="pre">.search_results()</span></code>. OR Specific to the biomes, results can also be visualized as a tree “print” “hshow” or “vshow”</p>
 <div class="cell tag_hide-output config_scroll_outputs docutils container">
 <div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">show_tree</span><span class="p">()</span>
@@ -833,142 +725,111 @@ https://www.ebi.ac.uk/metagenomics/api/v2/biomes?max_depth=6&amp;page=5&amp;page
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
 ├── Control
-└── Engineered
-    ├── Biogas plant
-    │   └── Wet fermentation
-    ├── Bioreactor
-    │   └── Continuous culture
-    │       ├── Marine intertidal flat sediment inoculum
-    │       │   └── Wadden Sea-Germany
-    │       └── Marine sediment inoculum
-    │           └── Wadden Sea-Germany
-    ├── Bioremediation
-    │   ├── Hydrocarbon
-    │   │   └── Benzene
-    │   │       └── Bioreactor
-    │   ├── Metal
-    │   ├── Persistent organic pollutants (POP)
-    │   ├── Polycyclic aromatic hydrocarbons
-    │   ├── Terephthalate
-    │   │   └── Wastewater
-    │   │       ├── Activated sludge
-    │   │       └── Bioreactor
-    │   └── Tetrachloroethylene and derivatives
-    │       ├── Chloroethene
-    │       │   └── Bioreactor
-    │       └── Tetrachloroethylene
-    │           └── Bioreactor
-    ├── Biotransformation
-    │   ├── Microbial enhanced oil recovery
-    │   ├── Microbial solubilization of coal
-    │   └── Mixed alcohol bioreactor
-    ├── Built environment
-    ├── Food production
-    │   ├── Dairy products
-    │   ├── Fermented beverages
-    │   ├── Fermented seafood
-    │   ├── Fermented vegetables
-    │   └── Silage fermentation
-    ├── Industrial production
-    │   └── Engineered product
-    ├── Lab enrichment
-    │   ├── Defined media
-    │   │   ├── Aerobic media
-    │   │   ├── Anaerobic media
-    │   │   └── Marine media
-    │   │       └── Algoconsortia
-    │   └── Undefined media
-    ├── Lab Synthesis
-    │   └── Genetic cross
-    └── Modeled
+├── Engineered
+│   ├── Biogas plant
+│   │   └── Wet fermentation
+│   ├── Bioreactor
+│   │   └── Continuous culture
+│   │       ├── Marine intertidal flat sediment inoculum
+│   │       │   └── Wadden Sea-Germany
+│   │       └── Marine sediment inoculum
+│   │           └── Wadden Sea-Germany
+│   ├── Bioremediation
+│   │   ├── Hydrocarbon
+│   │   │   └── Benzene
+│   │   │       └── Bioreactor
+│   │   ├── Metal
+│   │   ├── Persistent organic pollutants (POP)
+│   │   ├── Polycyclic aromatic hydrocarbons
+│   │   ├── Terephthalate
+│   │   │   └── Wastewater
+│   │   │       ├── Activated sludge
+│   │   │       └── Bioreactor
+│   │   └── Tetrachloroethylene and derivatives
+│   │       ├── Chloroethene
+│   │       │   └── Bioreactor
+│   │       └── Tetrachloroethylene
+│   │           └── Bioreactor
+│   ├── Biotransformation
+│   │   ├── Microbial enhanced oil recovery
+│   │   ├── Microbial solubilization of coal
+│   │   └── Mixed alcohol bioreactor
+│   ├── Built environment
+│   ├── Food production
+│   │   ├── Dairy products
+│   │   ├── Fermented beverages
+│   │   ├── Fermented seafood
+│   │   ├── Fermented vegetables
+│   │   └── Silage fermentation
+│   ├── Industrial production
+│   │   └── Engineered product
+│   ├── Lab enrichment
+│   │   ├── Defined media
+│   │   │   ├── Aerobic media
+│   │   │   ├── Anaerobic media
+│   │   │   └── Marine media
+│   │   │       └── Algoconsortia
+│   │   └── Undefined media
+│   ├── Lab Synthesis
+│   │   └── Genetic cross
+│   ├── Modeled
+│   │   ├── Simulated communities (DNA mixture)
+│   │   ├── Simulated communities (microbial mixture)
+│   │   ├── Simulated communities (sequence read mixture)
+│   │   └── Sanger
+│   ├── Solid waste
+│   │   ├── Composting
+│   │   │   ├── Bioreactor
+│   │   │   ├── Grass
+│   │   │   │   └── Bioreactor
+│   │   │   └── Wood
+│   │   │       └── Bioreactor
+│   │   ├── Landfill
+│   │   └── Solid animal waste
+│   └── Wastewater
+│       ├── Activated Sludge
+│       ├── Industrial wastewater
+│       │   ├── Agricultural wastewater
+│       │   ├── Landfill leachate
+│       │   ├── Mine water
+│       │   ├── Petrochemical
+│       │   └── Pulp and paper wastewater
+│       ├── Nutrient removal
+│       │   ├── Biological phosphorus removal
+│       │   │   ├── Activated sludge
+│       │   │   └── Bioreactor
+│       │   ├── Dissolved organics (aerobic)
+│       │   ├── Activated sludge
+│       │   ├── Dissolved organics (anaerobic)
+│       │   └── Nitrogen removal
+│       │       └── Anammox
+│       └── Water and sludge
+└── Environmental
+    ├── Air
+    │   ├── Indoor Air
+    │   └── Outdoor Air
+    └── Aquatic
+        ├── Aquaculture
+        ├── Estuary
+        │   └── Sediment
+        └── Freshwater
+            ├── Drinking water
+            │   ├── Chlorinated
+            │   └── Delivery networks
+            └── Groundwater
+                ├── Acid Mine Drainage
+                ├── Biofilm
+                ├── Cave water
+                ├── Coalbed water
+                └── Contaminated
 </pre></div>
 </div>
 </div>
 </details>
 </div>
 </section>
-<section id="option-2-get-a-specific-page">
-<h3>Option 2. get a specific <code class="docutils literal notranslate"><span class="pre">page()</span></code><a class="headerlink" href="#option-2-get-a-specific-page" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Will make the request and also returns the items/records in a list like above.</p></li>
-<li><p>When calling page() on an alrady completed request, the api call is not repeated and instead the output is a page from the cache</p></li>
-</ul>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">MG</span><span class="p">:</span> 
-    <span class="n">biomes</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="option-3-get-all-of-all-requests-with-safety-limits">
-<h3>Option 3. <code class="docutils literal notranslate"><span class="pre">get_all()</span></code> of all requests (with safety limits)<a class="headerlink" href="#option-3-get-all-of-all-requests-with-safety-limits" title="Link to this heading">#</a></h3>
-<p>can handle multiple requests via</p>
-<ul class="simple">
-<li><p>specifying a list of pages to <code class="docutils literal notranslate"><span class="pre">.get_all(pages=&lt;list_of_pages&gt;)</span></code></p></li>
-<li><p>or by not specifying pages you can continually call on the method which will let the bulk fetch handle the batching whilst considering <code class="docutils literal notranslate"><span class="pre">limit=&lt;num_items</span></code></p></li>
-</ul>
-<p>Especially before fetching in bulk we should take a look at the total number of requests/pages.</p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># let&#39;s first checkout num requests</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of requests:&quot;</span><span class="p">,</span> <span class="n">biomes</span><span class="o">.</span><span class="n">num_requests</span><span class="p">)</span>
-<span class="c1"># or better yet do a dry_run</span>
-<span class="n">biomes</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of requests: 99
-Planning the API call with params:
-{&#39;page_size&#39;: 5, &#39;max_depth&#39;: 6}
-Total requests to make: 99
-Total records to retrieve: 492
-</pre></div>
-</div>
-</div>
-</div>
-<p>Now we can get some data sync or async:</p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># synchronously fetch up to 50 pages</span>
-<span class="k">with</span> <span class="n">MG</span><span class="p">:</span> 
-    <span class="n">biomes</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># and async</span>
-<span class="k">async</span> <span class="k">with</span> <span class="n">MG</span><span class="p">:</span> 
-    <span class="k">await</span> <span class="n">biomes</span><span class="o">.</span><span class="n">aget_all</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-</section>
-</section>
-<section id="checking-progress">
-<h2>⏳ Checking progress<a class="headerlink" href="#checking-progress" title="Link to this heading">#</a></h2>
-<p>As we saw earlier in the notebook we can take a look at results as we go along. For a concise update on progress you can use <code class="docutils literal notranslate"><span class="pre">.progress</span></code></p>
-<div class="cell config_scroll_outputs docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomes</span><span class="o">.</span><span class="n">progress</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieved pages: 100%|████████████████████| 99/99
-</pre></div>
-</div>
-</div>
-</div>
+<section id="tidy-up">
+<h2>Tidy up<a class="headerlink" href="#tidy-up" title="Link to this heading">#</a></h2>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># no cache for this isntance but we can clear anywahys</span>
@@ -979,7 +840,7 @@ Total records to retrieve: 492
 </div>
 <div class="cell config_scroll_outputs docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># also check clients closed</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># also can check clients closed</span>
 <span class="n">MG</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1026,20 +887,20 @@ Async client open: False
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../fundamentals/7_mgazine.html"
+       href="../getting-started/5_collecting_metadata.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</p>
+        <p class="prev-next-title">Collecting more metadata</p>
       </div>
     </a>
     <a class="right-next"
-       href="2_downloading_data.html"
+       href="2_samples.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Getting MGnify datasets</p>
+        <p class="prev-next-title">Finding sample details</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1059,19 +920,12 @@ Async client open: False
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-get-a-list-of-mgnify-biomes">🎯 The Goal: Get a list of MGnify Biomes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-start-preparing-queries">🖍️ The start: Preparing queries</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-mgnipy-mgnipy">Option 1. <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-your-requests">👓 Previewing your requests</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carry-out-requests-to-list-endpoints">📨 Carry out requests to list endpoints</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-get-iteratively">Option 1. <code class="docutils literal notranslate"><span class="pre">.get()</span></code> iteratively</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-get-a-specific-page">Option 2. get a specific <code class="docutils literal notranslate"><span class="pre">page()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-get-all-of-all-requests-with-safety-limits">Option 3. <code class="docutils literal notranslate"><span class="pre">get_all()</span></code> of all requests (with safety limits)</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-progress">⏳ Checking progress</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initiating-the-client">Initiating the client</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-queries">Preparing queries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#previewing-the-query-set">Previewing the query set</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#execute-queries">Execute queries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-progress">Checking progress</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tidy-up">Tidy up</a></li>
 </ul>
   </nav></div>
 

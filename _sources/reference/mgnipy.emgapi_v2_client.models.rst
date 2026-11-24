@@ -125,6 +125,13 @@ Submodules
    mgnipy.emgapi_v2_client.models.run_list_filters
    mgnipy.emgapi_v2_client.models.sample_list_filters
    mgnipy.emgapi_v2_client.models.schema
+   mgnipy.emgapi_v2_client.models.sourmash_gather_signature_status
+   mgnipy.emgapi_v2_client.models.sourmash_gather_status_data
+   mgnipy.emgapi_v2_client.models.sourmash_gather_status_out
+   mgnipy.emgapi_v2_client.models.sourmash_gather_submission_data
+   mgnipy.emgapi_v2_client.models.sourmash_gather_submission_data_children_ids
+   mgnipy.emgapi_v2_client.models.sourmash_gather_submission_out
+   mgnipy.emgapi_v2_client.models.sourmash_task_result
    mgnipy.emgapi_v2_client.models.study_list_filters
    mgnipy.emgapi_v2_client.models.super_study
    mgnipy.emgapi_v2_client.models.super_study_detail

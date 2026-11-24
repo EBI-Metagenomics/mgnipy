@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mgnipy.emgapi_v2_client.models.genome_type module &#8212; mgnipy 0.1.dev1+g0b162cb4c documentation</title>
+    <title>mgnipy.emgapi_v2_client.models.genome_type module &#8212; mgnipy 0.4.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=f28913a0"></script>
+    <script src="../_static/documentation_options.js?v=9453eeee"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script src="../_static/togglebutton.js?v=b8b12719"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".cell_output"</script>
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/mgnipy.emgapi_v2_client.models.genome_type';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -150,8 +150,8 @@
       
     
     
-    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0b162cb4c documentation - Home"/>
-    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0b162cb4c documentation - Home"/>`);</script>
+    <img src="../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.4.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.4.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -195,9 +195,21 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/2_installation.html">Installing MGni.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/3_searching_resources.html">Available resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/4_getting_data.html">Getting MGnify data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/1_mgnify_list_biomes.html">Listing biomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/2_samples.html">Finding sample details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/3_biosampler.html">Add BioSamples metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/4_download_analyses.html">Download study analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/5_genomes.html">Downloading genomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/6_merging_ann.html">Merging datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/98_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/99_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/99_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
 <ul class="nav bd-sidenav">
@@ -208,14 +220,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/2_downloading_data.html">Getting MGnify datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/3_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/3_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -232,9 +236,10 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/1_updating_emgapi.html">Adopting any API changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/2_quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/3_readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">Docs creation</a></li>
 </ul>
 
@@ -499,7 +504,7 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">GenomeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mgnipy/emgapi_v2_client/models/genome_type.html#GenomeType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>, <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" rel="noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" rel="noreferrer" target="_blank" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>, <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" rel="noreferrer" target="_blank" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code> <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.ISOLATE">
 <span class="sig-name descname"><span class="pre">ISOLATE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Isolate'</span></span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.ISOLATE" title="Link to this definition">#</a></dt>
@@ -514,8 +519,8 @@ document.write(`
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.capitalize">
 <span class="sig-name descname"><span class="pre">capitalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.capitalize" title="Link to this definition">#</a></dt>
 <dd><p>Return a capitalized version of the string.</p>
-<p>More specifically, make the first character have upper case and the
-rest lower case.</p>
+<p>More specifically, make the first character have upper case and the rest lower
+case.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -528,16 +533,14 @@ rest lower case.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.center">
 <span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillchar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.center" title="Link to this definition">#</a></dt>
 <dd><p>Return a centered string of length width.</p>
-<p>Padding is done using the specified fill character (default is
-a space).</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.count">
 <span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.count" title="Link to this definition">#</a></dt>
 <dd><p>Return the number of non-overlapping occurrences of substring sub in string S[start:end].</p>
-<p>Optional arguments start and end are interpreted as in slice
-notation.</p>
+<p>Optional arguments start and end are interpreted as in slice notation.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -549,8 +552,8 @@ notation.</p>
 </dd>
 <dt>errors</dt><dd><p>The error handling scheme to use for encoding errors.
 The default is ‘strict’ meaning that encoding errors raise a
-UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’
-and ‘xmlcharrefreplace’ as well as any other name registered with
+UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’ and
+‘xmlcharrefreplace’ as well as any other name registered with
 codecs.register_error that can handle UnicodeEncodeErrors.</p>
 </dd>
 </dl>
@@ -581,8 +584,8 @@ codecs.register_error that can handle UnicodeEncodeErrors.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.find">
 <span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.find" title="Link to this definition">#</a></dt>
 <dd><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p>
-<p>Optional arguments start and end are interpreted as in slice
-notation.  Return -1 on failure.</p>
+<p>Optional arguments start and end are interpreted as in slice notation.
+Return -1 on failure.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -603,24 +606,24 @@ The substitutions are identified by braces (‘{’ and ‘}’).</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.index">
 <span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.index" title="Link to this definition">#</a></dt>
 <dd><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p>
-<p>Optional arguments start and end are interpreted as in slice
-notation.  Raises ValueError when the substring is not found.</p>
+<p>Optional arguments start and end are interpreted as in slice notation.
+Raises ValueError when the substring is not found.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isalnum">
 <span class="sig-name descname"><span class="pre">isalnum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isalnum" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is an alpha-numeric string, False otherwise.</p>
-<p>A string is alpha-numeric if all characters in the string are
-alpha-numeric and there is at least one character in the string.</p>
+<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
+there is at least one character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isalpha">
 <span class="sig-name descname"><span class="pre">isalpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isalpha" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is an alphabetic string, False otherwise.</p>
-<p>A string is alphabetic if all characters in the string are
-alphabetic and there is at least one character in the string.</p>
+<p>A string is alphabetic if all characters in the string are alphabetic and there
+is at least one character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -635,40 +638,40 @@ Empty string is ASCII too.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isdecimal">
 <span class="sig-name descname"><span class="pre">isdecimal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isdecimal" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is a decimal string, False otherwise.</p>
-<p>A string is a decimal string if all characters in the string are
-decimal and there is at least one character in the string.</p>
+<p>A string is a decimal string if all characters in the string are decimal and
+there is at least one character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isdigit">
 <span class="sig-name descname"><span class="pre">isdigit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isdigit" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is a digit string, False otherwise.</p>
-<p>A string is a digit string if all characters in the string are
-digits and there is at least one character in the string.</p>
+<p>A string is a digit string if all characters in the string are digits and there
+is at least one character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isidentifier">
 <span class="sig-name descname"><span class="pre">isidentifier</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isidentifier" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is a valid Python identifier, False otherwise.</p>
-<p>Call keyword.iskeyword(s) to test whether string s is a reserved
-identifier, such as “def” or “class”.</p>
+<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
+such as “def” or “class”.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.islower">
 <span class="sig-name descname"><span class="pre">islower</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.islower" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is a lowercase string, False otherwise.</p>
-<p>A string is lowercase if all cased characters in the string are
-lowercase and there is at least one cased character in the string.</p>
+<p>A string is lowercase if all cased characters in the string are lowercase and
+there is at least one cased character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isnumeric">
 <span class="sig-name descname"><span class="pre">isnumeric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isnumeric" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is a numeric string, False otherwise.</p>
-<p>A string is numeric if all characters in the string are numeric and
-there is at least one character in the string.</p>
+<p>A string is numeric if all characters in the string are numeric and there is at
+least one character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -682,8 +685,8 @@ there is at least one character in the string.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isspace">
 <span class="sig-name descname"><span class="pre">isspace</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isspace" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is a whitespace string, False otherwise.</p>
-<p>A string is whitespace if all characters in the string are
-whitespace and there is at least one character in the string.</p>
+<p>A string is whitespace if all characters in the string are whitespace and there
+is at least one character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -698,16 +701,16 @@ follow uncased characters and lowercase characters only cased ones.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isupper">
 <span class="sig-name descname"><span class="pre">isupper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.isupper" title="Link to this definition">#</a></dt>
 <dd><p>Return True if the string is an uppercase string, False otherwise.</p>
-<p>A string is uppercase if all cased characters in the string are
-uppercase and there is at least one cased character in the string.</p>
+<p>A string is uppercase if all cased characters in the string are uppercase and
+there is at least one cased character in the string.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.join">
 <span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.join" title="Link to this definition">#</a></dt>
 <dd><p>Concatenate any number of strings.</p>
-<p>The string whose method is called is inserted in between each given
-string.  The result is returned as a new string.</p>
+<p>The string whose method is called is inserted in between each given string.
+The result is returned as a new string.</p>
 <p>Example: ‘.’.join([‘ab’, ‘pq’, ‘rs’]) -&gt; ‘ab.pq.rs’</p>
 </dd></dl>
 
@@ -715,8 +718,7 @@ string.  The result is returned as a new string.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.ljust">
 <span class="sig-name descname"><span class="pre">ljust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillchar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.ljust" title="Link to this definition">#</a></dt>
 <dd><p>Return a left-justified string of length width.</p>
-<p>Padding is done using the specified fill character (default is
-a space).</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -736,43 +738,41 @@ a space).</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.maketrans">
 <span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">maketrans</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.maketrans" title="Link to this definition">#</a></dt>
 <dd><p>Return a translation table usable for str.translate().</p>
-<p>If there is only one argument, it must be a dictionary mapping
-Unicode ordinals (integers) or characters to Unicode ordinals,
-strings or None.  Character keys will be then converted to ordinals.
-If there are two arguments, they must be strings of equal length,
-and in the resulting dictionary, each character in x will be mapped
-to the character at the same position in y.  If there is a third
-argument, it must be a string, whose characters will be mapped to
-None in the result.</p>
+<p>If there is only one argument, it must be a dictionary mapping Unicode
+ordinals (integers) or characters to Unicode ordinals, strings or None.
+Character keys will be then converted to ordinals.
+If there are two arguments, they must be strings of equal length, and
+in the resulting dictionary, each character in x will be mapped to the
+character at the same position in y. If there is a third argument, it
+must be a string, whose characters will be mapped to None in the result.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.partition">
 <span class="sig-name descname"><span class="pre">partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.partition" title="Link to this definition">#</a></dt>
 <dd><p>Partition the string into three parts using the given separator.</p>
-<p>This will search for the separator in the string.  If the separator
-is found, returns a 3-tuple containing the part before the
-separator, the separator itself, and the part after it.</p>
-<p>If the separator is not found, returns a 3-tuple containing
-the original string and two empty strings.</p>
+<p>This will search for the separator in the string.  If the separator is found,
+returns a 3-tuple containing the part before the separator, the separator
+itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing the original string
+and two empty strings.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.removeprefix">
 <span class="sig-name descname"><span class="pre">removeprefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.removeprefix" title="Link to this definition">#</a></dt>
 <dd><p>Return a str with the given prefix string removed if present.</p>
-<p>If the string starts with the prefix string, return
-string[len(prefix):].  Otherwise, return a copy of the original
-string.</p>
+<p>If the string starts with the prefix string, return string[len(prefix):].
+Otherwise, return a copy of the original string.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.removesuffix">
 <span class="sig-name descname"><span class="pre">removesuffix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.removesuffix" title="Link to this definition">#</a></dt>
 <dd><p>Return a str with the given suffix string removed if present.</p>
-<p>If the string ends with the suffix string and that suffix is not
-empty, return string[:-len(suffix)].  Otherwise, return a copy of
-the original string.</p>
+<p>If the string ends with the suffix string and that suffix is not empty,
+return string[:-len(suffix)]. Otherwise, return a copy of the original
+string.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -794,36 +794,34 @@ replaced.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rfind">
 <span class="sig-name descname"><span class="pre">rfind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rfind" title="Link to this definition">#</a></dt>
 <dd><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p>
-<p>Optional arguments start and end are interpreted as in slice
-notation.  Return -1 on failure.</p>
+<p>Optional arguments start and end are interpreted as in slice notation.
+Return -1 on failure.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rindex">
 <span class="sig-name descname"><span class="pre">rindex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rindex" title="Link to this definition">#</a></dt>
 <dd><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p>
-<p>Optional arguments start and end are interpreted as in slice
-notation.  Raises ValueError when the substring is not found.</p>
+<p>Optional arguments start and end are interpreted as in slice notation.
+Raises ValueError when the substring is not found.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rjust">
 <span class="sig-name descname"><span class="pre">rjust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillchar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rjust" title="Link to this definition">#</a></dt>
 <dd><p>Return a right-justified string of length width.</p>
-<p>Padding is done using the specified fill character (default is
-a space).</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rpartition">
 <span class="sig-name descname"><span class="pre">rpartition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.rpartition" title="Link to this definition">#</a></dt>
 <dd><p>Partition the string into three parts using the given separator.</p>
-<p>This will search for the separator in the string, starting at the
-end.  If the separator is found, returns a 3-tuple containing the
-part before the separator, the separator itself, and the part after
-it.</p>
-<p>If the separator is not found, returns a 3-tuple containing two
-empty strings and the original string.</p>
+<p>This will search for the separator in the string, starting at the end. If
+the separator is found, returns a 3-tuple containing the part before the
+separator, the separator itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing two empty strings
+and the original string.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -833,9 +831,9 @@ empty strings and the original string.</p>
 <blockquote>
 <div><dl>
 <dt>sep</dt><dd><p>The separator used to split the string.</p>
-<p>When set to None (the default value), will split on any
-whitespace character (including n r t f and spaces) and
-will discard empty strings from the result.</p>
+<p>When set to None (the default value), will split on any whitespace
+character (including n r t f and spaces) and will discard
+empty strings from the result.</p>
 </dd>
 <dt>maxsplit</dt><dd><p>Maximum number of splits.
 -1 (the default value) means no limit.</p>
@@ -859,9 +857,9 @@ will discard empty strings from the result.</p>
 <blockquote>
 <div><dl>
 <dt>sep</dt><dd><p>The separator used to split the string.</p>
-<p>When set to None (the default value), will split on any
-whitespace character (including n r t f and spaces) and
-will discard empty strings from the result.</p>
+<p>When set to None (the default value), will split on any whitespace
+character (including n r t f and spaces) and will discard
+empty strings from the result.</p>
 </dd>
 <dt>maxsplit</dt><dd><p>Maximum number of splits.
 -1 (the default value) means no limit.</p>
@@ -869,17 +867,17 @@ will discard empty strings from the result.</p>
 </dl>
 </div></blockquote>
 <p>Splitting starts at the front of the string and works to the end.</p>
-<p>Note, str.split() is mainly useful for data that has been
-intentionally delimited.  With natural text that includes
-punctuation, consider using the regular expression module.</p>
+<p>Note, str.split() is mainly useful for data that has been intentionally
+delimited.  With natural text that includes punctuation, consider using
+the regular expression module.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.splitlines">
 <span class="sig-name descname"><span class="pre">splitlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keepends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.splitlines" title="Link to this definition">#</a></dt>
 <dd><p>Return a list of the lines in the string, breaking at line boundaries.</p>
-<p>Line breaks are not included in the resulting list unless keepends
-is given and true.</p>
+<p>Line breaks are not included in the resulting list unless keepends is given and
+true.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -913,8 +911,8 @@ is given and true.</p>
 <dt class="sig sig-object py" id="mgnipy.emgapi_v2_client.models.genome_type.GenomeType.title">
 <span class="sig-name descname"><span class="pre">title</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mgnipy.emgapi_v2_client.models.genome_type.GenomeType.title" title="Link to this definition">#</a></dt>
 <dd><p>Return a version of the string where each word is titlecased.</p>
-<p>More specifically, words start with uppercased characters and all
-remaining cased characters have lower case.</p>
+<p>More specifically, words start with uppercased characters and all remaining
+cased characters have lower case.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -923,15 +921,14 @@ remaining cased characters have lower case.</p>
 <dd><p>Replace each character in the string using the given translation table.</p>
 <blockquote>
 <div><dl class="simple">
-<dt>table</dt><dd><p>Translation table, which must be a mapping of Unicode ordinals
-to Unicode ordinals, strings, or None.</p>
+<dt>table</dt><dd><p>Translation table, which must be a mapping of Unicode ordinals to
+Unicode ordinals, strings, or None.</p>
 </dd>
 </dl>
 </div></blockquote>
-<p>The table must implement lookup/indexing via __getitem__, for
-instance a dictionary or list.  If this operation raises
-LookupError, the character is left untouched.  Characters mapped to
-None are deleted.</p>
+<p>The table must implement lookup/indexing via __getitem__, for instance a
+dictionary or list.  If this operation raises LookupError, the character is
+left untouched.  Characters mapped to None are deleted.</p>
 </dd></dl>
 
 <dl class="py method">

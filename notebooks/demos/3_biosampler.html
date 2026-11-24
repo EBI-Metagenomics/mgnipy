@@ -1,0 +1,778 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Add BioSamples metadata &#8212; mgnipy 0.4.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9453eeee"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/demos/3_biosampler';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Download study analyses" href="4_download_analyses.html" />
+    <link rel="prev" title="Finding sample details" href="2_samples.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.4.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.4.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Available resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_mgnify_list_biomes.html">Listing biomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_samples.html">Finding sample details</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Add BioSamples metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_download_analyses.html">Download study analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_genomes.html">Downloading genomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_merging_ann.html">Merging datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="98_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="99_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="99_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/2_mgnifier_proxies.html">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/3_list_vs_detail.html">MGnify List vs. Detail endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/6_access_private_data.html">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/1_updating_emgapi.html">Adopting any API changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/2_quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/3_readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/demos/3_biosampler.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/demos/3_biosampler.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/demos/3_biosampler.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/demos/3_biosampler.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Add BioSamples metadata</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-getting-mgnify-samples">First getting MGnify samples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#now-the-biosampler">Now the BioSampler</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#merging-metadata-sets">Merging metadata sets</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="add-biosamples-metadata">
+<h1>Add BioSamples metadata<a class="headerlink" href="#add-biosamples-metadata" title="Link to this heading">#</a></h1>
+<p>Using <code class="docutils literal notranslate"><span class="pre">mgnipy</span></code> we can also retrieve and integrate additional sample metadata from the <a class="reference external" href="https://www.ebi.ac.uk/biosamples/" rel="noreferrer" target="_blank">BioSamples <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> respository with the MGnify samples.
+<br><br></p>
+<p><code class="docutils literal notranslate"><span class="pre">mgnipy.collect.BioSampler()</span></code></p>
+<p>BioSampler can take a list of Run or Sample ENA accessions and retrieve rich metadata from BioSamples for a list of Run or Sample ENA/BioSamples accessions.</p>
+<p>For this example we will get samples from MGnify using a <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>, passing the accessions to a <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code> to get the BioSamples metadata.</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment below if colab</span>
+<span class="c1">#!pip install mgnipy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="first-getting-mgnify-samples">
+<h2>First getting MGnify samples<a class="headerlink" href="#first-getting-mgnify-samples" title="Link to this heading">#</a></h2>
+<p>As done in the previous demo <a class="reference internal" href="2_samples.html"><span class="std std-doc">“Finding sample details”</span></a>, we’ll start with initiating our MGnipy client with a cache, then building and executing our queries to the MGnify API.</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="c1"># init with cache</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;temp_example&quot;</span><span class="p">)</span>
+
+<span class="c1"># point to samples endpoint/get samples mgnifier</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">samples</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s1">&#39;cancer&#39;</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># with search &amp; pg sz params</span>
+
+<span class="c1"># execute asynchronously </span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
+    <span class="c1"># get one page list of samples</span>
+    <span class="k">await</span> <span class="n">samples</span><span class="o">.</span><span class="n">aget</span><span class="p">()</span>
+    <span class="c1"># and if we want to get details for each sample in the list </span>
+    <span class="k">await</span> <span class="n">samples</span><span class="o">.</span><span class="n">aenrich_details</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p>we now have our list of sample accessions to pass to our BioSampler</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check it out</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;SAMEA2247987&#39;, &#39;SAMN03217340&#39;, &#39;SAMEA2247976&#39;, &#39;SAMEA2247961&#39;, &#39;SAMN03217341&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="now-the-biosampler">
+<h2>Now the BioSampler<a class="headerlink" href="#now-the-biosampler" title="Link to this heading">#</a></h2>
+<p>we can access from our MGnipy client instance, which will also pass on our configuration such as the cache directory</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># init biosampler from mgnipy client</span>
+<span class="n">bios</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">biosampler</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span>
+<span class="c1"># check it out</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bios</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BioSampler with 5 sample_ids. 
+Progress: 0 ids. 
+Cache directory: temp_example/d6045f20348a1a934a32bb3442760a023a7f0723b16c7a7c301ae5183d8c8819
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s execute the requests to the BioSamples API</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># execute asynchronously and with context manager</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">bios</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">bios</span><span class="o">.</span><span class="n">aenrich</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+</section>
+<section id="merging-metadata-sets">
+<h2>Merging metadata sets<a class="headerlink" href="#merging-metadata-sets" title="Link to this heading">#</a></h2>
+<p>we can merge the metadata as we would any pandas or polars dataframe</p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_polars</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">bios</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_polars</span><span class="p">(),</span> 
+    <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;accession&quot;</span><span class="p">,</span> 
+    <span class="n">right_on</span><span class="o">=</span><span class="s2">&quot;SampleID&quot;</span><span class="p">,</span>
+    <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 143)</small><table border="1" class="dataframe"><thead><tr><th>accession</th><th>ena_accessions</th><th>sample_title</th><th>biome</th><th>updated_at</th><th>studies</th><th>metadata__ph</th><th>metadata__age</th><th>metadata__lat</th><th>metadata__lon</th><th>metadata__sex</th><th>metadata__tag</th><th>metadata__host</th><th>metadata__depth</th><th>metadata__status</th><th>metadata__strain</th><th>metadata__tax_id</th><th>metadata__country</th><th>metadata__datahub</th><th>metadata__disease</th><th>metadata__ecotype</th><th>metadata__isolate</th><th>metadata__serovar</th><th>metadata__variety</th><th>metadata__altitude</th><th>metadata__cultivar</th><th>metadata__germline</th><th>metadata__host_sex</th><th>metadata__keywords</th><th>metadata__location</th><th>metadata__salinity</th><th>metadata__serotype</th><th>metadata__cell_line</th><th>metadata__cell_type</th><th>metadata__checklist</th><th>metadata__dev_stage</th><th>metadata__elevation</th><th>&hellip;</th><th>metadata__broad_scale_environmental_context</th><th>GivenID</th><th>RunID</th><th>SRA accession</th><th>name</th><th>taxid</th><th>External Id</th><th>INSDC center name</th><th>INSDC first public</th><th>INSDC last update</th><th>INSDC secondary accession</th><th>INSDC status</th><th>NCBI submission model</th><th>NCBI submission package</th><th>collection date</th><th>description</th><th>geo loc name</th><th>host</th><th>isolation source</th><th>lat lon</th><th>organism</th><th>title</th><th>ENA-CHECKLIST</th><th>ENA-FIRST-PUBLIC</th><th>ENA-LAST-UPDATE</th><th>Submitter Id</th><th>environment (biome)</th><th>environment (feature)</th><th>environment (material)</th><th>geographic location (countryand/orsea,region)</th><th>geographic location (latitude)</th><th>geographic location (longitude)</th><th>humam oral environmental package</th><th>investigation type</th><th>project name</th><th>scientific_name</th><th>sequencing method</th></tr><tr><td>str</td><td>list[str]</td><td>str</td><td>str</td><td>str</td><td>list[struct[6]]</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>&hellip;</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>i64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;SAMEA2247987&quot;</td><td>[&quot;SAMEA2247987&quot;, &quot;ERS370397&quot;]</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>null</td><td>&quot;2026-04-28T11:37:24.493000+00:…</td><td>[{&quot;MGYS00002210&quot;,[&quot;ERP004294&quot;, &quot;PRJEB4953&quot;],&quot;This study develops a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,{&quot;Oral&quot;,&quot;root:Host-associated:Human:Digestive system:Oral&quot;},&quot;2026-10-30T14:58:05.984000+00:00&quot;,{&quot;Oral Microbiome for cancer development, progression and recurrence&quot;,&quot;Second Genome Inc.;SECONDGENOME&quot;,&quot;This study develops a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,&quot;PRJEB4953&quot;,&quot;Individual bacteria and shifts in the composition of the microbiome have been associated with human diseases including cancer. To investigate changes in the microbiome associated with oral cancers, we profiled cancers and anatomically matched contralateral normal tissue from the same patient by sequencing 16S rDNA hypervariable region amplicons. In cancer samples from both a discovery and a subsequent confirmation cohort, abundance of Firmicutes (especially Streptococcus) and Actinobacteria (especially Rothia) was significantly decreased relative to contralateral normal samples from the same patient. Significant decreases in abundance of these phyla were observed for pre-cancers, but not when comparing samples from contralateral sites (tongue and floor of mouth) from healthy individuals. Weighted UniFrac principal coordinates analysis based on 12 taxa separated most cancers from other samples with greatest separation of node positive cases. These studies begin to develop a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,&quot;ERP004294&quot;}}]</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;37.8&quot;</td><td>&quot;122.4&quot;</td><td>&quot;&quot;</td><td>&quot;env_geo;env_geo:coastal;env_ge…</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;public&quot;</td><td>&quot;&quot;</td><td>&quot;447426&quot;</td><td>&quot;USA&quot;</td><td>&quot;dcc_metagenome&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;37.8 N 122.4 E&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;ERC000016&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&hellip;</td><td>&quot;Human&quot;</td><td>&quot;SAMEA2247987&quot;</td><td>null</td><td>&quot;ERS370397&quot;</td><td>&quot;PT12_4294&quot;</td><td>447426</td><td>&quot;SAMEA2247987&quot;</td><td>&quot;SECONDGENOME&quot;</td><td>&quot;2014-11-15T17:02:24Z&quot;</td><td>&quot;2016-10-21T09:43:44Z&quot;</td><td>null</td><td>&quot;public&quot;</td><td>null</td><td>null</td><td>&quot;2012-03-01&quot;</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>&quot;ERC000016&quot;</td><td>&quot;2014-11-15T17:02:24Z&quot;</td><td>&quot;2016-10-21T09:43:44Z&quot;</td><td>&quot;PT12_4294&quot;</td><td>&quot;Human&quot;</td><td>&quot;Oral Metagenome&quot;</td><td>&quot;Oral Swab&quot;</td><td>&quot;USA&quot;</td><td>&quot;37.8&quot;</td><td>&quot;122.4&quot;</td><td>&quot;human-oral&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Illumina MiSeq 16S V4&quot;</td></tr><tr><td>&quot;SAMN03217340&quot;</td><td>[&quot;SAMN03217340&quot;, &quot;SRS750276&quot;]</td><td>&quot;Oral cancer bacterial DNA&quot;</td><td>null</td><td>&quot;2026-10-30T14:58:47.551000+00:…</td><td>[{&quot;MGYS00002227&quot;,[&quot;SRP050159&quot;, &quot;PRJNA268255&quot;],&quot;Oral cancer bacteriome - preliminary study Metagenome&quot;,{&quot;Oral&quot;,&quot;root:Host-associated:Human:Digestive system:Oral&quot;},&quot;2026-10-30T14:58:49.339000+00:00&quot;,{&quot;human oral metagenome&quot;,&quot;Jazan University&quot;,&quot;Oral cancer bacteriome - preliminary study Metagenome&quot;,&quot;PRJNA268255&quot;,&quot;Bacterial species present within oral cancer tissue&quot;,&quot;SRP050159&quot;}}]</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;30.0167&quot;</td><td>&quot;31.2167&quot;</td><td>&quot;&quot;</td><td>&quot;env_geo;env_geo:terrestrial&quot;</td><td>&quot;Homo sapiens&quot;</td><td>&quot;&quot;</td><td>&quot;public&quot;</td><td>&quot;&quot;</td><td>&quot;447426&quot;</td><td>&quot;Saudi Arabia: Jazan&quot;</td><td>&quot;dcc_metagenome&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;30.0167 N 31.2167 E&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&hellip;</td><td>&quot;&quot;</td><td>&quot;SAMN03217340&quot;</td><td>null</td><td>&quot;SRS750276&quot;</td><td>&quot;CaPre01&quot;</td><td>447426</td><td>&quot;SAMN03217340&quot;</td><td>&quot;Jazan University&quot;</td><td>&quot;2014-11-23T00:00:00Z&quot;</td><td>&quot;2019-06-20T17:09:25.299Z&quot;</td><td>&quot;SRS750276&quot;</td><td>&quot;live&quot;</td><td>&quot;Metagenome or environmental&quot;</td><td>&quot;Metagenome.environmental.1.0&quot;</td><td>&quot;2011&quot;</td><td>&quot;Oral cancer bacterial DNA&quot;</td><td>&quot;Saudi Arabia: Jazan&quot;</td><td>&quot;Homo sapiens&quot;</td><td>&quot;Oral cancer tissue&quot;</td><td>&quot;30.0167 N 31.2167 E&quot;</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Oral cancer bacterial DNA&quot;</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr><tr><td>&quot;SAMEA2247976&quot;</td><td>[&quot;ERS370386&quot;, &quot;SAMEA2247976&quot;]</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>null</td><td>&quot;2026-10-30T14:58:06.003000+00:…</td><td>[{&quot;MGYS00002210&quot;,[&quot;ERP004294&quot;, &quot;PRJEB4953&quot;],&quot;This study develops a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,{&quot;Oral&quot;,&quot;root:Host-associated:Human:Digestive system:Oral&quot;},&quot;2026-10-30T14:58:05.984000+00:00&quot;,{&quot;Oral Microbiome for cancer development, progression and recurrence&quot;,&quot;Second Genome Inc.;SECONDGENOME&quot;,&quot;This study develops a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,&quot;PRJEB4953&quot;,&quot;Individual bacteria and shifts in the composition of the microbiome have been associated with human diseases including cancer. To investigate changes in the microbiome associated with oral cancers, we profiled cancers and anatomically matched contralateral normal tissue from the same patient by sequencing 16S rDNA hypervariable region amplicons. In cancer samples from both a discovery and a subsequent confirmation cohort, abundance of Firmicutes (especially Streptococcus) and Actinobacteria (especially Rothia) was significantly decreased relative to contralateral normal samples from the same patient. Significant decreases in abundance of these phyla were observed for pre-cancers, but not when comparing samples from contralateral sites (tongue and floor of mouth) from healthy individuals. Weighted UniFrac principal coordinates analysis based on 12 taxa separated most cancers from other samples with greatest separation of node positive cases. These studies begin to develop a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,&quot;ERP004294&quot;}}]</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;37.8&quot;</td><td>&quot;122.4&quot;</td><td>&quot;&quot;</td><td>&quot;env_geo;env_geo:coastal;env_ge…</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;public&quot;</td><td>&quot;&quot;</td><td>&quot;447426&quot;</td><td>&quot;USA&quot;</td><td>&quot;dcc_metagenome&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;37.8 N 122.4 E&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;ERC000016&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&hellip;</td><td>&quot;Human&quot;</td><td>&quot;SAMEA2247976&quot;</td><td>null</td><td>&quot;ERS370386&quot;</td><td>&quot;PT12_4283&quot;</td><td>447426</td><td>&quot;SAMEA2247976&quot;</td><td>&quot;SECONDGENOME&quot;</td><td>&quot;2014-11-15T17:02:24Z&quot;</td><td>&quot;2016-10-21T09:43:44Z&quot;</td><td>null</td><td>&quot;public&quot;</td><td>null</td><td>null</td><td>&quot;2012-03-01&quot;</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>&quot;ERC000016&quot;</td><td>&quot;2014-11-15T17:02:24Z&quot;</td><td>&quot;2016-10-21T09:43:44Z&quot;</td><td>&quot;PT12_4283&quot;</td><td>&quot;Human&quot;</td><td>&quot;Oral Metagenome&quot;</td><td>&quot;Oral Swab&quot;</td><td>&quot;USA&quot;</td><td>&quot;37.8&quot;</td><td>&quot;122.4&quot;</td><td>&quot;human-oral&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Illumina MiSeq 16S V4&quot;</td></tr><tr><td>&quot;SAMEA2247961&quot;</td><td>[&quot;SAMEA2247961&quot;, &quot;ERS370371&quot;]</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>null</td><td>&quot;2026-04-28T11:37:20.658000+00:…</td><td>[{&quot;MGYS00002210&quot;,[&quot;ERP004294&quot;, &quot;PRJEB4953&quot;],&quot;This study develops a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,{&quot;Oral&quot;,&quot;root:Host-associated:Human:Digestive system:Oral&quot;},&quot;2026-10-30T14:58:05.984000+00:00&quot;,{&quot;Oral Microbiome for cancer development, progression and recurrence&quot;,&quot;Second Genome Inc.;SECONDGENOME&quot;,&quot;This study develops a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,&quot;PRJEB4953&quot;,&quot;Individual bacteria and shifts in the composition of the microbiome have been associated with human diseases including cancer. To investigate changes in the microbiome associated with oral cancers, we profiled cancers and anatomically matched contralateral normal tissue from the same patient by sequencing 16S rDNA hypervariable region amplicons. In cancer samples from both a discovery and a subsequent confirmation cohort, abundance of Firmicutes (especially Streptococcus) and Actinobacteria (especially Rothia) was significantly decreased relative to contralateral normal samples from the same patient. Significant decreases in abundance of these phyla were observed for pre-cancers, but not when comparing samples from contralateral sites (tongue and floor of mouth) from healthy individuals. Weighted UniFrac principal coordinates analysis based on 12 taxa separated most cancers from other samples with greatest separation of node positive cases. These studies begin to develop a framework for exploiting the oral microbiome for monitoring oral cancer development, progression and recurrence.&quot;,&quot;ERP004294&quot;}}]</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;37.8&quot;</td><td>&quot;122.4&quot;</td><td>&quot;&quot;</td><td>&quot;env_geo;env_geo:coastal;env_ge…</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;public&quot;</td><td>&quot;&quot;</td><td>&quot;447426&quot;</td><td>&quot;USA&quot;</td><td>&quot;dcc_metagenome&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;37.8 N 122.4 E&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;ERC000016&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&hellip;</td><td>&quot;Human&quot;</td><td>&quot;SAMEA2247961&quot;</td><td>null</td><td>&quot;ERS370371&quot;</td><td>&quot;PT12_4267&quot;</td><td>447426</td><td>&quot;SAMEA2247961&quot;</td><td>&quot;SECONDGENOME&quot;</td><td>&quot;2014-11-15T17:02:24Z&quot;</td><td>&quot;2016-10-21T09:43:43Z&quot;</td><td>null</td><td>&quot;public&quot;</td><td>null</td><td>null</td><td>&quot;2012-03-01&quot;</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>&quot;ERC000016&quot;</td><td>&quot;2014-11-15T17:02:24Z&quot;</td><td>&quot;2016-10-21T09:43:43Z&quot;</td><td>&quot;PT12_4267&quot;</td><td>&quot;Human&quot;</td><td>&quot;Oral Metagenome&quot;</td><td>&quot;Oral Swab&quot;</td><td>&quot;USA&quot;</td><td>&quot;37.8&quot;</td><td>&quot;122.4&quot;</td><td>&quot;human-oral&quot;</td><td>&quot;metagenome&quot;</td><td>&quot;Oral Cancer Microbiome&quot;</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Illumina MiSeq 16S V4&quot;</td></tr><tr><td>&quot;SAMN03217341&quot;</td><td>[&quot;SAMN03217341&quot;, &quot;SRS750277&quot;]</td><td>&quot;Oral cancer bacterial DNA&quot;</td><td>null</td><td>&quot;2026-10-30T14:58:48.605000+00:…</td><td>[{&quot;MGYS00002227&quot;,[&quot;SRP050159&quot;, &quot;PRJNA268255&quot;],&quot;Oral cancer bacteriome - preliminary study Metagenome&quot;,{&quot;Oral&quot;,&quot;root:Host-associated:Human:Digestive system:Oral&quot;},&quot;2026-10-30T14:58:49.339000+00:00&quot;,{&quot;human oral metagenome&quot;,&quot;Jazan University&quot;,&quot;Oral cancer bacteriome - preliminary study Metagenome&quot;,&quot;PRJNA268255&quot;,&quot;Bacterial species present within oral cancer tissue&quot;,&quot;SRP050159&quot;}}]</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;30.0167&quot;</td><td>&quot;31.2167&quot;</td><td>&quot;&quot;</td><td>&quot;env_geo;env_geo:terrestrial&quot;</td><td>&quot;Homo sapiens&quot;</td><td>&quot;&quot;</td><td>&quot;public&quot;</td><td>&quot;&quot;</td><td>&quot;447426&quot;</td><td>&quot;Saudi Arabia: Jazan&quot;</td><td>&quot;dcc_metagenome&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;30.0167 N 31.2167 E&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&quot;&quot;</td><td>&hellip;</td><td>&quot;&quot;</td><td>&quot;SAMN03217341&quot;</td><td>null</td><td>&quot;SRS750277&quot;</td><td>&quot;CaPre02&quot;</td><td>447426</td><td>&quot;SAMN03217341&quot;</td><td>&quot;Jazan University&quot;</td><td>&quot;2014-11-23T00:00:00Z&quot;</td><td>&quot;2019-06-20T17:09:25.325Z&quot;</td><td>&quot;SRS750277&quot;</td><td>&quot;live&quot;</td><td>&quot;Metagenome or environmental&quot;</td><td>&quot;Metagenome.environmental.1.0&quot;</td><td>&quot;2011&quot;</td><td>&quot;Oral cancer bacterial DNA&quot;</td><td>&quot;Saudi Arabia: Jazan&quot;</td><td>&quot;Homo sapiens&quot;</td><td>&quot;Oral cancer tissue&quot;</td><td>&quot;30.0167 N 31.2167 E&quot;</td><td>&quot;human oral metagenome&quot;</td><td>&quot;Oral cancer bacterial DNA&quot;</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr></tbody></table></div></div></div>
+</details>
+</div>
+<p>if wanting to cleanup the “temp_example” cache</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#MG.clear_subcaches()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/demos"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2_samples.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Finding sample details</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4_download_analyses.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Download study analyses</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-getting-mgnify-samples">First getting MGnify samples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#now-the-biosampler">Now the BioSampler</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#merging-metadata-sets">Merging metadata sets</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

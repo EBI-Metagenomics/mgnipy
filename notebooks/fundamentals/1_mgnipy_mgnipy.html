@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The mgnipy.MGnipy() client &#8212; mgnipy 0.1.dev1+g0b162cb4c documentation</title>
+    <title>The mgnipy.MGnipy() client &#8212; mgnipy 0.4.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=f28913a0"></script>
+    <script src="../../_static/documentation_options.js?v=9453eeee"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script src="../../_static/togglebutton.js?v=b8b12719"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = "div.highlight"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".cell_output"</script>
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/fundamentals/1_mgnipy_mgnipy';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -60,7 +60,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="MGnify API Endpoint ≈ a mgnipy.MGnifier" href="2_mgnifier_proxies.html" />
-    <link rel="prev" title="Collecting more metadata" href="../getting-started/5_collecting_metadata.html" />
+    <link rel="prev" title="Part 2: Integrating Parkinson’s disease cohorts" href="../demos/99_demo-parkinson-part2.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -152,8 +152,8 @@
       
     
     
-    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.1.dev1+g0b162cb4c documentation - Home"/>
-    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.1.dev1+g0b162cb4c documentation - Home"/>`);</script>
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.4.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.4.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -197,9 +197,21 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Connecting to the MGnify API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Available resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Listing biomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/2_samples.html">Finding sample details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/3_biosampler.html">Add BioSamples metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/4_download_analyses.html">Download study analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/5_genomes.html">Downloading genomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/6_merging_ann.html">Merging datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/98_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/99_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/99_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
 <ul class="current nav bd-sidenav">
@@ -210,14 +222,6 @@
 <li class="toctree-l1"><a class="reference internal" href="5_cache.html">Understanding the cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_access_private_data.html">Accessing your private data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Demos</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../demos/1_mgnify_list_biomes.html">Get a MGnify List</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/2_downloading_data.html">Getting MGnify datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson.html">Part 1: Integrating Parkinson’s disease cohorts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/3_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/4_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -234,9 +238,10 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/1_updating_emgapi.html">Adopting any API changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/2_quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/3_readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
 </ul>
 
@@ -621,13 +626,204 @@ Supported parameters:
 <span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
     <span class="c1"># within this client context, get 3 pages of samples resource</span>
     <span class="n">modified_search</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># and if we want to get details for each sample in the list </span>
+    <span class="n">modified_search</span><span class="o">.</span><span class="n">enrich_details</span><span class="p">()</span>
 
 <span class="n">modified_search</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>sample_title</th>
+      <th>updated_at</th>
+      <th>studies</th>
+      <th>metadata__ph</th>
+      <th>metadata__age</th>
+      <th>metadata__lat</th>
+      <th>metadata__lon</th>
+      <th>metadata__sex</th>
+      <th>...</th>
+      <th>metadata__host_growth_conditions</th>
+      <th>metadata__ncbi_reporting_standard</th>
+      <th>metadata__related_sample_accession</th>
+      <th>metadata__taxonomic_classification</th>
+      <th>metadata__taxonomic_identity_marker</th>
+      <th>metadata__secondary_sample_accession</th>
+      <th>metadata__local_environmental_context</th>
+      <th>metadata__broad_scale_environmental_context</th>
+      <th>biome__biome_name</th>
+      <th>biome__lineage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>SAMEA113540503</td>
+      <td>[ERS15536924, SAMEA113540503]</td>
+      <td>Study_5277_DNA</td>
+      <td>2026-05-01T07:31:37.685000+00:00</td>
+      <td>[{'accession': 'MGYS00006551', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>50.651137</td>
+      <td>-7.146195</td>
+      <td></td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ERS15536924</td>
+      <td>gut</td>
+      <td>human</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SAMEA113539431</td>
+      <td>[SAMEA113539431, ERS15535852]</td>
+      <td>Study_1322_RNA</td>
+      <td>2026-05-01T07:43:44.718000+00:00</td>
+      <td>[{'accession': 'MGYS00006551', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>50.651137</td>
+      <td>-7.146195</td>
+      <td></td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ERS15535852</td>
+      <td>gut</td>
+      <td>human</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>SAMEA104702626</td>
+      <td>[SAMEA104702626, ERS2304009]</td>
+      <td>10333.Manaus.3428.1313233</td>
+      <td>2026-10-31T11:34:31.707000+00:00</td>
+      <td>[{'accession': 'MGYS00005612', 'ena_accessions...</td>
+      <td></td>
+      <td>77</td>
+      <td>-3.11</td>
+      <td>-60.026</td>
+      <td></td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ERS2304009</td>
+      <td>building</td>
+      <td>urban biome</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SAMEA3313249</td>
+      <td>[SAMEA3313249, ERS689311]</td>
+      <td>GS241 0.1µm</td>
+      <td>2026-10-30T14:13:13.038000+00:00</td>
+      <td>[{'accession': 'MGYS00000974', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>16.045</td>
+      <td>-94.33666667</td>
+      <td></td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ERS689311</td>
+      <td>coastal ocean</td>
+      <td>ocean biome</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>SAMEA3313138</td>
+      <td>[SAMEA3313138, ERS689200]</td>
+      <td>GS068 0.1µm</td>
+      <td>2026-10-30T14:13:08.056000+00:00</td>
+      <td>[{'accession': 'MGYS00000974', 'ena_accessions...</td>
+      <td></td>
+      <td></td>
+      <td>-24.97646667</td>
+      <td>159.0702333</td>
+      <td></td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ERS689200</td>
+      <td>open ocean</td>
+      <td>ocean biome</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>SAMEA113544799</td>
+      <td>[ERS15541220, SAMEA113544799]</td>
+      <td>None</td>
+      <td>2026-09-03T08:59:23.938000+00:00</td>
+      <td>[{'accession': 'MGYS00010541', 'ena_accessions...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>55.605833</td>
+      <td>13.035833</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>6 rows × 108 columns</p>
+</div></div></div>
 </div>
 <p>we can check the status of the client to be sure</p>
 <div class="cell config_scroll_outputs docutils container">
@@ -729,12 +925,12 @@ Supported parameters:
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../getting-started/5_collecting_metadata.html"
+       href="../demos/99_demo-parkinson-part2.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Collecting more metadata</p>
+        <p class="prev-next-title">Part 2: Integrating Parkinson’s disease cohorts</p>
       </div>
     </a>
     <a class="right-next"

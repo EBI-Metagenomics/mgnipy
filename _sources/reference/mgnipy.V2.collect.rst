@@ -14,4 +14,5 @@ Submodules
    :maxdepth: 1
 
    mgnipy.V2.collect.biosampler
+   mgnipy.V2.collect.enasampler
    mgnipy.V2.collect.mgnetizer

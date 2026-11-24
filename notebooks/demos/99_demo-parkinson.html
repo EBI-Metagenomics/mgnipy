@@ -1,0 +1,1676 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Part 1: Integrating Parkinson’s disease cohorts &#8212; mgnipy 0.4.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e57d5624" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9453eeee"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to open. More Info:';</script>
+    <script>let toggleHintHide = 'Click to Hide. More Info:';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/demos/99_demo-parkinson';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/mgnipy.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Part 2: Integrating Parkinson’s disease cohorts" href="99_demo-parkinson-part2.html" />
+    <link rel="prev" title="Getting all Wastewater study datasets" href="98_wwtp_biome.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mgnipy.svg" class="logo__image only-light" alt="mgnipy 0.4.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/mgnipy.svg" class="logo__image only-dark" alt="mgnipy 0.4.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/EBI-Metagenomics/mgnipy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    MGni.py
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/1_what_is_mgnipy.html">What is MGni.py?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/2_installation.html">Installing MGni.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/3_searching_resources.html">Available resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/4_getting_data.html">Getting MGnify data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/5_collecting_metadata.html">Collecting more metadata</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_mgnify_list_biomes.html">Listing biomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_samples.html">Finding sample details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_biosampler.html">Add BioSamples metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_download_analyses.html">Download study analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_genomes.html">Downloading genomes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_merging_ann.html">Merging datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="98_wwtp_biome.html">Getting all Wastewater study datasets</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Part 1: Integrating Parkinson’s disease cohorts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="99_demo-parkinson-part2.html">Part 2: Integrating Parkinson’s disease cohorts</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/1_mgnipy_mgnipy.html">The <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnipy()</span></code> client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/2_mgnifier_proxies.html">MGnify API Endpoint ≈ a <code class="docutils literal notranslate"><span class="pre">mgnipy.MGnifier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/3_list_vs_detail.html">MGnify List vs. Detail endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/4_mgnipy_config.html">Configuring <code class="docutils literal notranslate"><span class="pre">MGnipyConfig</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/5_cache.html">Understanding the cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/6_access_private_data.html">Accessing your private data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/7_mgazine.html"><code class="docutils literal notranslate"><span class="pre">MGazine</span></code> of MGnify data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.mgnipy.html">mgnipy.mgnipy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mgnifier.html">mgnipy.V2.mgnifier package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.datasets.html">mgnipy.V2.datasets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.mgnetizer.html">mgnipy.V2.collect.mgnetizer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.collect.biosampler.html">mgnipy.V2.collect.biosampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.proxies.html">mgnipy.V2.proxies package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.V2.mixins.html">mgnipy.V2.mixins module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.client.html">mgnipy.emgapi_v2_client.client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/mgnipy.emgapi_v2_client.api.html">mgnipy.emgapi_v2_client.api package</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributor's Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/1_updating_emgapi.html">Adopting any API changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/2_quick-emgapi-v2-client.html">The <code class="docutils literal notranslate"><span class="pre">emgapi_v2_client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/3_readme-openapi-python-client.html">What is <code class="docutils literal notranslate"><span class="pre">openapi-python-client</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/proxies_mgnifier.html">Understanding <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code>s</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Docs creation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/EBI-Metagenomics/mgnipy/main?urlpath=lab/tree/docs/notebooks/demos/99_demo-parkinson.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/EBI-Metagenomics/mgnipy/blob/main/docs/notebooks/demos/99_demo-parkinson.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/EBI-Metagenomics/mgnipy/edit/main/docs/notebooks/demos/99_demo-parkinson.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/demos/99_demo-parkinson.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Part 1: Integrating Parkinson’s disease cohorts</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-for-studies-using-mgnifier">Searching for studies using <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-mgazine-to-access-the-study-datasets">Using <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> to access the study datasets</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-the-dataset-list">Filtering the dataset list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-dataset-lists">Combining dataset lists</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lazy-loading-into-one-taxonomic-dataset">(Lazy)loading into one taxonomic dataset</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-mgnetizer-to-collect-more-metadata">Using <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code> to collect more metadata</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collecting-even-more-sample-metadata-using-biosampler">Collecting even more sample metadata using <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-disease-label-in-sample-obs-metadata">Finding disease label in sample (obs) metadata</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="part-1-integrating-parkinson-s-disease-cohorts">
+<h1>Part 1: Integrating Parkinson’s disease cohorts<a class="headerlink" href="#part-1-integrating-parkinson-s-disease-cohorts" title="Link to this heading">#</a></h1>
+<p>In this notebook we demo the utility of <code class="docutils literal notranslate"><span class="pre">mgnipy</span></code> in curating cross-study datasets from MGnify for secondary analysis.</p>
+<p>Specifically, we integrate the gut microbiome profiles of multiple Parkinson’s disease vs. healthy control cohorts from various MGnify studies, relying on the sample metadata available on <a class="reference external" href="https://www.ebi.ac.uk/metagenomics/" rel="noreferrer" target="_blank">MGnify <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a>, <a class="reference external" href="https://www.ebi.ac.uk/ena/browser/home" rel="noreferrer" target="_blank">ENA <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> or <a class="reference external" href="https://www.ebi.ac.uk/biosamples/" rel="noreferrer" target="_blank">BioSamples <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> for the disease status label.</p>
+<p>The mgnipy curated abundance dataset with metadata is then further preprocessed in Part 2.</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>After clicking the “Activate Notebook” button you can run the cells in this browser. Alternatively, you can also click on the 🚀 to launch in colab or binder.</p>
+</aside>
+<p><button title="Make live" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border:0;border-radius:20px;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;cursor:pointer;font-size:1rem;" class="thebe-button" onclick="initThebeSBT()">Activate Notebook</button></p>
+<hr class="docutils" />
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment if colab</span>
+<span class="c1"># !pip install mgnipy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="searching-for-studies-using-mgnifier">
+<h2>Searching for studies using <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code><a class="headerlink" href="#searching-for-studies-using-mgnifier" title="Link to this heading">#</a></h2>
+<p>To start we configure our MGnipy client and access the MGnify API Studies resource.</p>
+<p>We will filter our query to studies of the gut microbiome that mention “parkinson”s disease.</p>
+<p>We can preview the resulting query urls via <code class="docutils literal notranslate"><span class="pre">.explain()</span></code></p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mgnipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MGnipy</span>
+
+<span class="c1"># Initialize MGnipy with a cache directory</span>
+<span class="n">MG</span> <span class="o">=</span> <span class="n">MGnipy</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="s2">&quot;downloads&quot;</span><span class="p">)</span>
+
+<span class="c1"># Search for studies related to Parkinson&#39;s disease in the human gut microbiome</span>
+<span class="n">pd_studies</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">studies</span><span class="p">(</span>
+    <span class="n">search</span><span class="o">=</span><span class="s2">&quot;parkinson&quot;</span><span class="p">,</span>
+    <span class="n">biome_lineage</span><span class="o">=</span><span class="s2">&quot;root:Host-associated:Human:Digestive system:Large intestine:Fecal&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Show all of the request urls for the search i.e., the query set</span>
+<span class="n">pd_studies</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>https://www.ebi.ac.uk/metagenomics/api/v2/studies?biome_lineage=root%3AHost-associated%3AHuman%3ADigestive+system%3ALarge+intestine%3AFecal&amp;search=parkinson&amp;page=1
+</pre></div>
+</div>
+</div>
+</div>
+<p>looks good. we can proceed with actually executing the list query/queries via .get(). To enrich our list of studies with metadata details we can do this in bulk using <code class="docutils literal notranslate"><span class="pre">.enrich_details()</span></code> or asynchronously via <code class="docutils literal notranslate"><span class="pre">.aenrich_details()</span></code></p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># as http client manager</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
+    <span class="c1"># populate study list</span>
+    <span class="k">await</span> <span class="n">pd_studies</span><span class="o">.</span><span class="n">aget</span><span class="p">()</span>
+    <span class="c1"># enrich study list with metadta</span>
+    <span class="k">await</span> <span class="n">pd_studies</span><span class="o">.</span><span class="n">aenrich_details</span><span class="p">()</span>
+
+<span class="c1"># can view as pandas or even save to file if you prefer</span>
+<span class="n">study_meta</span> <span class="o">=</span> <span class="n">pd_studies</span><span class="o">.</span><span class="n">metadata</span>
+<span class="c1"># taking a look</span>
+<span class="n">study_meta</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_nested_dicts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>accession</th>
+      <th>ena_accessions</th>
+      <th>title</th>
+      <th>updated_at</th>
+      <th>downloads</th>
+      <th>first_accession</th>
+      <th>metadata__study_name</th>
+      <th>metadata__center_name</th>
+      <th>metadata__study_title</th>
+      <th>metadata__study_accession</th>
+      <th>metadata__study_description</th>
+      <th>metadata__secondary_study_accession</th>
+      <th>biome__biome_name</th>
+      <th>biome__lineage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MGYS00005601</td>
+      <td>[ERP113090, PRJEB30615]</td>
+      <td>Identification of Intestinal Bacterial Taxa wi...</td>
+      <td>2026-10-31T11:16:22.523000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP113090</td>
+      <td>Intestinal Bacterial Taxa in Parkinson’s Disease</td>
+      <td>Furtwangen University</td>
+      <td>Identification of Intestinal Bacterial Taxa wi...</td>
+      <td>PRJEB30615</td>
+      <td>Parkinson’s disease (PD) is one of the most co...</td>
+      <td>ERP113090</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MGYS00005129</td>
+      <td>[ERP109659, PRJEB27564]</td>
+      <td>Gut microbiota in Parkinson's disease: tempora...</td>
+      <td>2026-10-31T01:27:42.249000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP109659</td>
+      <td>Parkinson's disease gut microbiota follow-up</td>
+      <td>Institute of Biotechnology;University of Helsi...</td>
+      <td>Gut microbiota in Parkinson's disease: tempora...</td>
+      <td>PRJEB27564</td>
+      <td>Aiming to explore the temporal stability of gu...</td>
+      <td>ERP109659</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MGYS00006760</td>
+      <td>[ERP148661, PRJEB63522]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>2026-10-31T21:05:18.663000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP148661</td>
+      <td></td>
+      <td>EMG</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>PRJEB63522</td>
+      <td>The Third Party Annotation (TPA) assembly was ...</td>
+      <td>ERP148661</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>MGYS00006759</td>
+      <td>[ERP146353, PRJEB61255]</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>2026-10-31T21:05:18.152000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP146353</td>
+      <td></td>
+      <td>EMG</td>
+      <td>EMG produced TPA metagenomics assembly of PRJN...</td>
+      <td>PRJEB61255</td>
+      <td>The Third Party Annotation (TPA) assembly was ...</td>
+      <td>ERP146353</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MGYS00005755</td>
+      <td>[PRJNA510730, SRP173877]</td>
+      <td>Microbiota composition of Parkinson's disease ...</td>
+      <td>2026-10-31T13:07:37.644000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>SRP173877</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>MGYS00006121</td>
+      <td>[ERP142200, PRJEB57228]</td>
+      <td>Dietary intervention of people with Parkinson'...</td>
+      <td>2026-10-31T17:32:41.702000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP142200</td>
+      <td>Parkinson's Disease Dietary intervention study</td>
+      <td>Quadram Institute Bioscience</td>
+      <td>Dietary intervention of people with Parkinson'...</td>
+      <td>PRJEB57228</td>
+      <td>Placeholder</td>
+      <td>ERP142200</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>MGYS00005130</td>
+      <td>[ERP112853, PRJEB30401]</td>
+      <td>Gut Microbiome Alterations Drive Distinct Meta...</td>
+      <td>2026-10-31T01:27:42.524000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP112853</td>
+      <td>Gut Microbiome and Parkinson's Disease</td>
+      <td>University of Cagliari</td>
+      <td>Gut Microbiome Alterations Drive Distinct Meta...</td>
+      <td>PRJEB30401</td>
+      <td>Parkinson's disease is a neurodegenerative dis...</td>
+      <td>ERP112853</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>MGYS00001650</td>
+      <td>[ERP004264, PRJEB4927]</td>
+      <td>Alterations of the Fecal Microbiome in Parkins...</td>
+      <td>2026-10-30T14:51:53.953000+00:00</td>
+      <td>[{'file_type': 'tsv', 'download_type': 'Taxono...</td>
+      <td>ERP004264</td>
+      <td>Fecal Microbiome in Parkinson's Disease</td>
+      <td>Institute of Biotechnology;University of Helsi...</td>
+      <td>Alterations of the Fecal Microbiome in Parkins...</td>
+      <td>PRJEB4927</td>
+      <td>In the course of Parkinson’s disease (PD), the...</td>
+      <td>ERP004264</td>
+      <td>Fecal</td>
+      <td>root:Host-associated:Human:Digestive system:La...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</details>
+</div>
+<p>Now that we found some studies that match our sesarch criteria, we can take a look at their datasets.</p>
+</section>
+<hr class="docutils" />
+<section id="using-mgazine-to-access-the-study-datasets">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> to access the study datasets<a class="headerlink" href="#using-mgazine-to-access-the-study-datasets" title="Link to this heading">#</a></h2>
+<p>we can access the mgazine of datasets (kinda like a list of available datasets) via <code class="docutils literal notranslate"><span class="pre">.datasets</span></code> attribute. The study details we retrieved above will also be passed on to the mgazine</p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># access mgazine</span>
+<span class="n">MZ</span> <span class="o">=</span> <span class="n">pd_studies</span><span class="o">.</span><span class="n">datasets</span>
+
+<span class="c1"># take a look</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MZ</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;, &#39;v4_1&#39;, &#39;v5&#39;, &#39;v6&#39;]
+- Number of downloads: 52
+- Short descriptions: [&#39;Complete GO annotation&#39;,
+ &#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -PR2 as ref DB&#39;,
+ &#39;DwC-Ready summary of 16S-V3-V4 ASV taxonomies using -SILVA as ref DB&#39;,
+ &#39;DwC-Ready summary of closed-ref taxonomies using ITSoneDB as ref DB&#39;,
+ &#39;DwC-Ready summary of closed-ref taxonomies using PR2 as ref DB&#39;,
+ &#39;DwC-Ready summary of closed-ref taxonomies using SILVA-LSU as ref DB&#39;,
+ &#39;DwC-Ready summary of closed-ref taxonomies using SILVA-SSU as ref DB&#39;,
+ &#39;GO slim annotation&#39;,
+ &#39;InterPro matches&#39;,
+ &#39;Phylum level taxonomies&#39;,
+ &#39;Phylum level taxonomies LSU&#39;,
+ &#39;Phylum level taxonomies SSU&#39;,
+ &#39;Summary of DADA2-PR2 taxonomies&#39;,
+ &#39;Summary of DADA2-SILVA taxonomies&#39;,
+ &#39;Summary of ITSoneDB taxonomies&#39;,
+ &#39;Summary of PR2 taxonomies&#39;,
+ &#39;Summary of SILVA-LSU taxonomies&#39;,
+ &#39;Summary of SILVA-SSU taxonomies&#39;,
+ &#39;Taxonomic assignments&#39;,
+ &#39;Taxonomic assignments LSU&#39;,
+ &#39;Taxonomic assignments SSU&#39;,
+ &#39;Taxonomic diversity metrics&#39;]
+- Nonempty metadata sets: .mgnify_studies
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>Notice in “Nonempty metadata sets” we can see that the study details we collected <a class="reference internal" href="#searching-for-studies-using-mgnifier"><span class="xref myst">above</span></a> are preserved in the mgazine.</p>
+<div class="toggle docutils container">
+<p>The <code class="docutils literal notranslate"><span class="pre">mgnify_studies</span></code> attribute is a <code class="docutils literal notranslate"><span class="pre">MGnifyMetadata</span></code> object so contains all the same methods for viewing e.g.:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MZ_SSU.mgnify_studies.to_pandas(expand_nested_dicts=True)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">.to_list()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">.to_polars()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">.records()</span></code></p></li>
+<li><p>etc.</p></li>
+</ul>
+<p>Later on in <a class="reference internal" href="#using-mgnetizer-to-collect-more-metadata"><span class="xref myst">Using MGnetizer to colllect more metadata</span></a> we will assign additional sets of metadata to <code class="docutils literal notranslate"><span class="pre">.mgnify_runs</span></code> and <code class="docutils literal notranslate"><span class="pre">.biosamples_metadata</span></code> which will also convert the lists of records into a MGnifyMetadata object</p>
+</div>
+<section id="filtering-the-dataset-list">
+<h3>Filtering the dataset list<a class="headerlink" href="#filtering-the-dataset-list" title="Link to this heading">#</a></h3>
+<p>We can filter by the pipeline version and short descriptions of the datasets.</p>
+<p>For the ABaCo demo we will use the taxonomic analyses and we will use v4 onwards due to differences in pipeline versions and specifically SILVA databases that were used for the taxonomic analysis</p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># we can filter by passing as index</span>
+<span class="n">V3</span> <span class="o">=</span> <span class="n">MZ</span><span class="p">[</span><span class="s2">&quot;Taxonomic assignments&quot;</span><span class="p">]</span>
+<span class="n">V4_5</span> <span class="o">=</span> <span class="n">MZ</span><span class="p">[</span><span class="s2">&quot;Taxonomic assignments SSU&quot;</span><span class="p">]</span>
+<span class="n">V6</span> <span class="o">=</span> <span class="n">MZ</span><span class="p">[</span><span class="s2">&quot;Summary of SILVA-SSU taxonomies&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">V3</span><span class="p">,</span> <span class="n">V4_5</span><span class="p">,</span> <span class="n">V6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;]
+- Number of downloads: 1
+- Short descriptions: [&#39;Taxonomic assignments&#39;]
+- Nonempty metadata sets: .mgnify_studies
+ MGazine containing:
+- MGnify pipeline versions: [&#39;v4_1&#39;, &#39;v5&#39;]
+- Number of downloads: 7
+- Short descriptions: [&#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_studies
+ MGazine containing:
+- MGnify pipeline versions: [&#39;v6&#39;]
+- Number of downloads: 1
+- Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;]
+- Nonempty metadata sets: .mgnify_studies
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="combining-dataset-lists">
+<h3>Combining dataset lists<a class="headerlink" href="#combining-dataset-lists" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># can add magazines</span>
+<span class="n">MZ_SSU</span> <span class="o">=</span> <span class="n">V3</span> <span class="o">+</span> <span class="n">V4_5</span> <span class="o">+</span> <span class="n">V6</span>
+
+<span class="c1"># keeping latest pipeline version if multiple output files </span>
+<span class="n">dedupe_downloads</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">MZ_SSU</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;pipeline_version&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;accession&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+
+<span class="n">MZ_SSU</span><span class="o">.</span><span class="n">downloads</span> <span class="o">=</span> <span class="n">dedupe_downloads</span>
+<span class="c1"># print still works</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MZ_SSU</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;, &#39;v4_1&#39;, &#39;v5&#39;, &#39;v6&#39;]
+- Number of downloads: 8
+- Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;,
+ &#39;Taxonomic assignments&#39;,
+ &#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_studies
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>Now that we have filtered our list of datasets a bit, let’s actually get and merge the taxonomic datasets.</p>
+</section>
+<hr class="docutils" />
+<section id="lazy-loading-into-one-taxonomic-dataset">
+<h3>(Lazy)loading into one taxonomic dataset<a class="headerlink" href="#lazy-loading-into-one-taxonomic-dataset" title="Link to this heading">#</a></h3>
+<p>Currently availble in mgnipy are special MGazines for handling taxonomic assignment datasets in the classic taxa x sample/run format <code class="docutils literal notranslate"><span class="pre">TaxaMGazine</span></code> or in Darwin core-ready format <code class="docutils literal notranslate"><span class="pre">DWCTaxaMGazine</span></code></p>
+<p>we can also access these from an existing MGazine instance via <code class="docutils literal notranslate"><span class="pre">.taxonomic</span></code> or <code class="docutils literal notranslate"><span class="pre">.taxonomic_dwc_ready</span></code></p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">taxo</span> <span class="o">=</span> <span class="n">MZ_SSU</span><span class="o">.</span><span class="n">taxonomic</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;, &#39;v4_1&#39;, &#39;v5&#39;, &#39;v6&#39;]
+- Number of downloads: 8
+- Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;,
+ &#39;Taxonomic assignments&#39;,
+ &#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_studies
+-----------------------
+Next steps: Use `.load()` to initialize.
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>now <code class="docutils literal notranslate"><span class="pre">load</span></code> where the datasets will be merged as <code class="docutils literal notranslate"><span class="pre">polars.LazyFrame</span></code></p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lazyload the mgnify taxanomic assignments datasets</span>
+<span class="n">taxo</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="c1"># calling to_pandas or to_polars will collect the data and return a dataframe</span>
+<span class="n">taxo</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>taxonomy</th>
+      <th>ERR3005944</th>
+      <th>ERR3005945</th>
+      <th>ERR3005946</th>
+      <th>ERR3005947</th>
+      <th>ERR3005948</th>
+      <th>ERR3005949</th>
+      <th>ERR3005950</th>
+      <th>ERR3005951</th>
+      <th>ERR3005952</th>
+      <th>...</th>
+      <th>ERR365973</th>
+      <th>ERR365974</th>
+      <th>ERR365975</th>
+      <th>ERR365976</th>
+      <th>ERR365977</th>
+      <th>ERR365978</th>
+      <th>ERR365979</th>
+      <th>ERR365980</th>
+      <th>ERR365981</th>
+      <th>ERR365982</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>sk__Archaea</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>sk__Archaea;k__;p__Candidatus_Thermoplasmatota...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>sk__Archaea;k__;p__Candidatus_Thermoplasmatota...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>sk__Archaea;k__;p__Candidatus_Thermoplasmatota...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>sk__Archaea;k__;p__Euryarchaeota;c__Methanobac...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 1976 columns</p>
+</div></div></div>
+</details>
+</div>
+<p>additionally there is a method <code class="docutils literal notranslate"><span class="pre">.taxonomic_metadata()</span></code> that parses “taxonomy” into the taxonomic ranks, returning as pandas or polars dataframe which is configured via arg <code class="docutils literal notranslate"><span class="pre">df_engine=</span></code>. The default is pandas.</p>
+<p>also any run and sample metadata relevant to the observations (i.e., by run accessions) can be merged and viewed using <code class="docutils literal notranslate"><span class="pre">.obs_metadata()</span></code> again as polars or pandas dataframes. As we know metadata() for the observations in the taxonomic mgazine is not available:</p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># see first 5 sample&#39;s metadata</span>
+<span class="n">display</span><span class="p">(</span><span class="n">taxo</span><span class="o">.</span><span class="n">obs_metadata</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># recall the &quot;Nonempty metadata set:&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">taxo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+    </tr>
+    <tr>
+      <th>_mgnipy_runs_accs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ERR2730148</th>
+    </tr>
+    <tr>
+      <th>ERR2730149</th>
+    </tr>
+    <tr>
+      <th>ERR2730150</th>
+    </tr>
+    <tr>
+      <th>ERR2730151</th>
+    </tr>
+    <tr>
+      <th>ERR2730152</th>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;, &#39;v4_1&#39;, &#39;v5&#39;, &#39;v6&#39;]
+- Number of downloads: 8
+- Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;,
+ &#39;Taxonomic assignments&#39;,
+ &#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_studies
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>if we recall <a class="reference internal" href="#using-mgazine-to-access-the-study-datasets"><span class="xref myst">from earlier</span></a> and again in the print statement, we only had <code class="docutils literal notranslate"><span class="pre">.mgnify_studies</span></code> enriched.</p>
+<p>We still need to enrich with run and/or sample metadata, which we will do next :)</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="using-mgnetizer-to-collect-more-metadata">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code> to collect more metadata<a class="headerlink" href="#using-mgnetizer-to-collect-more-metadata" title="Link to this heading">#</a></h2>
+<p>MGnetizer is designed to retrieve the rich metadata from MGnify for a given list of MGnify accessions/ids.</p>
+<p>First we get the ids to pass on</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># separate run and assembly ids</span>
+<span class="n">runs_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">taxo</span><span class="o">.</span><span class="n">runs_accessions</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ERZ&#39;</span><span class="p">)]</span>
+<span class="n">assembly_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">taxo</span><span class="o">.</span><span class="n">runs_accessions</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ERZ&#39;</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Runs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">runs_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Assemblies: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">assembly_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Runs: 1023
+Assemblies: 952
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we will instantiate the MGnetizers and pass the accessions/ids.</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize mgnetizer for runs and assemblies</span>
+<span class="n">mnet_run</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">mgnetizer</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="n">all_ids</span><span class="o">=</span><span class="n">runs_ids</span><span class="p">)</span>
+<span class="n">mnet_acc</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">mgnetizer</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s2">&quot;assembly&quot;</span><span class="p">,</span> <span class="n">all_ids</span><span class="o">=</span><span class="n">assembly_ids</span><span class="p">)</span>
+
+<span class="c1"># now making the API calls with context manager</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">MG</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">mnet_run</span><span class="o">.</span><span class="n">aenrich</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">mnet_acc</span><span class="o">.</span><span class="n">aenrich</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">.metadata</span></code> attribute of MGnetizer returns a <code class="docutils literal notranslate"><span class="pre">MGnifyMetadata</span></code> object just like with the MGnifiers. the MGnifyMetadata’s can be combined:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># we can combine the metadata from both runs and assemblies into one MGnifyMetadata</span>
+<span class="n">run_metadata</span> <span class="o">=</span> <span class="n">mnet_run</span><span class="o">.</span><span class="n">metadata</span> <span class="o">+</span> <span class="n">mnet_acc</span><span class="o">.</span><span class="n">metadata</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>if wanting to do some cleaning, do so (which below I do as a pandas df) and then convert back to list of dicts for the MGazine <code class="docutils literal notranslate"><span class="pre">.mgnify_run</span></code> property.</p>
+<div class="cell tag_hide-input config_scroll_outputs docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># cleaning up metadata</span>
+<span class="n">df_run</span> <span class="o">=</span> <span class="n">run_metadata</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="c1"># fill in missing study_accession</span>
+<span class="n">df_run</span><span class="p">[</span><span class="s2">&quot;study_accession&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_run</span><span class="p">[</span><span class="s2">&quot;study_accession&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+    <span class="n">df_run</span><span class="p">[</span><span class="s2">&quot;assembly_study_accession&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="c1"># keep pipeline_version</span>
+<span class="n">df_run</span> <span class="o">=</span> <span class="n">df_run</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="p">(</span>
+        <span class="n">taxo</span><span class="o">.</span><span class="n">downloads_df</span><span class="p">()[[</span><span class="s1">&#39;accession&#39;</span><span class="p">,</span> <span class="s1">&#39;pipeline_version&#39;</span><span class="p">]]</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accession&quot;</span><span class="p">:</span> <span class="s2">&quot;study_accession_temp&quot;</span><span class="p">})</span>
+    <span class="p">),</span>
+    <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+    <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;study_accession&#39;</span><span class="p">,</span>
+    <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;study_accession_temp&#39;</span>
+<span class="p">)</span>
+<span class="c1"># drop assembly_study_accession column and any columns that are all NaN</span>
+<span class="n">df_run</span> <span class="o">=</span> <span class="n">df_run</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;assembly_study_accession&quot;</span><span class="p">,</span> <span class="s2">&quot;study_accession_temp&quot;</span><span class="p">])</span>
+<span class="n">df_run</span> <span class="o">=</span> <span class="n">df_run</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>Now can pass tidied metadata back to our MGazine of taxonomic data:</p>
+<div class="cell tag_hide-output config_scroll_outputs docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># now back to TaxaMGazine instance as list of records</span>
+<span class="n">taxo</span><span class="o">.</span><span class="n">mgnify_runs</span> <span class="o">=</span> <span class="n">df_run</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+
+<span class="c1"># and now</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">taxo</span><span class="p">)</span>
+
+<span class="c1"># also the metadata is updated</span>
+<span class="n">taxo</span><span class="o">.</span><span class="n">obs_metadata</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<details class="admonition hide below-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;, &#39;v4_1&#39;, &#39;v5&#39;, &#39;v6&#39;]
+- Number of downloads: 8
+- Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;,
+ &#39;Taxonomic assignments&#39;,
+ &#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_runs, .mgnify_studies
+&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+Index: 1975 entries, ERR2730148 to SRR8352125
+Data columns (total 26 columns):
+ #   Column                                     Non-Null Count  Dtype  
+---  ------                                     --------------  -----  
+ 0   experiment_type                            1023 non-null   object 
+ 1   instrument_model                           1023 non-null   object 
+ 2   instrument_platform                        1023 non-null   object 
+ 3   sample_accession                           1975 non-null   object 
+ 4   study_accession                            1975 non-null   object 
+ 5   updated_at                                 952 non-null    object 
+ 6   run_accession                              952 non-null    object 
+ 7   status                                     952 non-null    object 
+ 8   pipeline_version                           1975 non-null   object 
+ 9   sample__accession                          1023 non-null   object 
+ 10  sample__ena_accessions                     1023 non-null   object 
+ 11  sample__sample_title                       1014 non-null   object 
+ 12  sample__biome                              0 non-null      float64
+ 13  sample__updated_at                         1023 non-null   object 
+ 14  study__accession                           1023 non-null   object 
+ 15  study__ena_accessions                      1023 non-null   object 
+ 16  study__title                               1023 non-null   object 
+ 17  study__updated_at                          1023 non-null   object 
+ 18  study__biome.biome_name                    1023 non-null   object 
+ 19  study__biome.lineage                       1023 non-null   object 
+ 20  study__metadata.study_name                 821 non-null    object 
+ 21  study__metadata.center_name                821 non-null    object 
+ 22  study__metadata.study_title                821 non-null    object 
+ 23  study__metadata.study_accession            821 non-null    object 
+ 24  study__metadata.study_description          821 non-null    object 
+ 25  study__metadata.secondary_study_accession  821 non-null    object 
+dtypes: float64(1), object(25)
+memory usage: 416.6+ KB
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>However, the available run/sample metadata is not consistent for all e.g. sample__sample_title which has lots missing. We can try to get additional sample metadata from the BioSamples database.</p>
+</section>
+<hr class="docutils" />
+<section id="collecting-even-more-sample-metadata-using-biosampler">
+<h2>Collecting even more sample metadata using <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code><a class="headerlink" href="#collecting-even-more-sample-metadata-using-biosampler" title="Link to this heading">#</a></h2>
+<p>BioSampler is designed to retrieve the rich sample metadata from BioSamples for a list of Run or Sample ENA accessions.</p>
+<p>we again start from the mgnipy instance to automatically pass on the configuration</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># getting list of sample ids to go to BioSamples</span>
+<span class="n">sample_ids</span> <span class="o">=</span> <span class="n">taxo</span><span class="o">.</span><span class="n">mgnify_runs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()[</span><span class="s2">&quot;sample_accession&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+<span class="c1"># init biosampler</span>
+<span class="n">bios</span> <span class="o">=</span> <span class="n">MG</span><span class="o">.</span><span class="n">biosampler</span><span class="p">(</span><span class="n">sample_ids</span><span class="o">=</span><span class="n">sample_ids</span><span class="p">)</span>
+
+<span class="c1"># now making the API calls with context manager</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">bios</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">bios</span><span class="o">.</span><span class="n">aenrich</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">incl_ena</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p>again we can pass this metadata as list of records to the MGazine instance to <code class="docutils literal notranslate"><span class="pre">.biosamples_metadata</span></code> for merging:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># assign the biosamples metadata to the taxo object</span>
+<span class="n">taxo</span><span class="o">.</span><span class="n">biosamples_metadata</span> <span class="o">=</span> <span class="n">bios</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">drop_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># now can see the additional metadata set</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">taxo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;, &#39;v4_1&#39;, &#39;v5&#39;, &#39;v6&#39;]
+- Number of downloads: 8
+- Short descriptions: [&#39;Summary of SILVA-SSU taxonomies&#39;,
+ &#39;Taxonomic assignments&#39;,
+ &#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_runs, .mgnify_studies, .biosamples_metadata
+</pre></div>
+</div>
+</div>
+</div>
+<p>and now if we were to look at the observations metadata <code class="docutils literal notranslate"><span class="pre">.obs_metadata()</span></code> there is even more info.</p>
+</section>
+<hr class="docutils" />
+<section id="finding-disease-label-in-sample-obs-metadata">
+<h2>Finding disease label in sample (obs) metadata<a class="headerlink" href="#finding-disease-label-in-sample-obs-metadata" title="Link to this heading">#</a></h2>
+<p>inspecting the metadata we found disease status distrbuted between the following columns, which we normalise into a new label column <code class="docutils literal notranslate"><span class="pre">has_parkinsons_disease</span></code> with <code class="docutils literal notranslate"><span class="pre">Y</span></code> and <code class="docutils literal notranslate"><span class="pre">N</span></code></p>
+<p>samples for which disease status could not be identified from the metadata are then excluded.</p>
+<div class="cell tag_hide-input config_scroll_outputs docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">disease_status_columns</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;host_phenotype&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Parkinson&#39;s Disease&quot;</span><span class="p">],</span> 
+        <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Healthy Control&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;host disease status&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Parkinson&#39;s disease&quot;</span><span class="p">,</span> <span class="s2">&quot;Parkinson&#39;s Disease [DOID:14330]&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;healthy control&quot;</span><span class="p">,</span> <span class="s2">&quot;Healthy [NCIT:C115935]&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;parkinson&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;yes&quot;</span><span class="p">],</span> 
+        <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;no&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;Case_status&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;PD&quot;</span><span class="p">],</span> 
+        <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Control&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;disease status&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Parkinson&#39;s disease&quot;</span><span class="p">],</span> 
+        <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Not&quot;</span><span class="p">]</span>
+    <span class="p">},</span><span class="c1">#MGYS00001650</span>
+<span class="p">}</span>
+
+<span class="c1"># copy the metadata to a new dataframe to work with</span>
+<span class="n">df_obs</span> <span class="o">=</span> <span class="n">taxo</span><span class="o">.</span><span class="n">obs_metadata</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1">#for MGYS00001650</span>
+<span class="n">df_obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+    <span class="p">(</span>
+        <span class="p">(</span><span class="n">df_obs</span><span class="p">[</span><span class="s1">&#39;study_accession&#39;</span><span class="p">]</span><span class="o">==</span> <span class="s1">&#39;MGYS00001650&#39;</span><span class="p">)</span> <span class="o">&amp;</span> 
+        <span class="p">(</span><span class="n">df_obs</span><span class="p">[</span><span class="s1">&#39;disease status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
+    <span class="p">),</span> 
+    <span class="s1">&#39;disease status&#39;</span>
+<span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Not&quot;</span>
+
+<span class="c1"># filter out samples with no disease status metadata</span>
+<span class="n">df_obs_filt</span> <span class="o">=</span> <span class="n">df_obs</span><span class="p">[</span><span class="n">df_obs</span><span class="p">[</span><span class="n">disease_status_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtered down to </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_obs_filt</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples with disease status metadata.&quot;</span><span class="p">)</span>
+
+<span class="c1"># create a new column to indicate if the sample has Parkinson&#39;s disease or not</span>
+<span class="n">df_obs_filt</span><span class="p">[</span><span class="s2">&quot;has_parkinsons_disease&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">disease_status_columns</span><span class="p">:</span>
+    <span class="n">df_obs_filt</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_obs_filt</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;Y&quot;</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">disease_status_columns</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">]</span>
+            <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;N&quot;</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">disease_status_columns</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="s2">&quot;N&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c1"># new col</span>
+<span class="n">df_obs_filt</span><span class="p">[</span><span class="s2">&quot;has_parkinsons_disease&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_obs_filt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+    <span class="p">:,</span> <span class="n">disease_status_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span> <span class="k">if</span> <span class="s2">&quot;Y&quot;</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">values</span> <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;N&quot;</span> <span class="k">if</span> <span class="s2">&quot;N&quot;</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">values</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;PD samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_obs_filt</span><span class="p">[</span><span class="n">df_obs_filt</span><span class="p">[</span><span class="s1">&#39;has_parkinsons_disease&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;Y&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">, Non-PD samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_obs_filt</span><span class="p">[</span><span class="n">df_obs_filt</span><span class="p">[</span><span class="s1">&#39;has_parkinsons_disease&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;N&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># list of studies</span>
+<span class="n">filt_studies</span> <span class="o">=</span> <span class="n">df_obs_filt</span><span class="p">[</span><span class="s2">&quot;study_accession&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Studies: </span><span class="si">{</span><span class="n">filt_studies</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Filtered down to 1604 samples with disease status metadata.
+PD samples: 973, Non-PD samples: 631
+Studies: [&#39;MGYS00005129&#39; &#39;MGYS00005601&#39; &#39;MGYS00001650&#39; &#39;MGYS00006121&#39;
+ &#39;MGYS00006759&#39; &#39;MGYS00005755&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We will only include the studies with samples with disease status metadata and will move on with this demonstration.</p>
+<p>Also using <code class="docutils literal notranslate"><span class="pre">.obs</span></code> we can assign our cleaned metadata set which will be given priority over the other sets:</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># filter datasets in mgazine to the filtered studies</span>
+<span class="n">taxo</span><span class="o">.</span><span class="n">downloads</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">taxo</span><span class="o">.</span><span class="n">downloads</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;accession&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">filt_studies</span><span class="p">]</span>
+<span class="c1"># also add on the observation metadata that we had prepared just before</span>
+<span class="n">taxo</span><span class="o">.</span><span class="n">obs</span> <span class="o">=</span> <span class="n">df_obs_filt</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">taxo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TaxaMGazine containing:
+- MGnify pipeline versions: [&#39;v3&#39;, &#39;v4_1&#39;, &#39;v5&#39;]
+- Number of downloads: 6
+- Short descriptions: [&#39;Taxonomic assignments&#39;, &#39;Taxonomic assignments SSU&#39;]
+- Nonempty metadata sets: .mgnify_runs, .mgnify_studies, .biosamples_metadata, .obs
+</pre></div>
+</div>
+</div>
+</div>
+<p>then the TaxaMGazine can handle the rest and we can export <code class="docutils literal notranslate"><span class="pre">to_anndata()</span></code> if we want</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ad_tax</span> <span class="o">=</span> <span class="n">taxo</span><span class="o">.</span><span class="n">to_anndata</span><span class="p">()</span>
+<span class="n">ad_tax</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 1604 × 3429
+    obs: &#39;experiment_type&#39;, &#39;instrument_model&#39;, &#39;instrument_platform&#39;, &#39;sample_accession&#39;, &#39;study_accession&#39;, &#39;updated_at&#39;, &#39;run_accession&#39;, &#39;status&#39;, &#39;pipeline_version&#39;, &#39;sample__accession&#39;, &#39;sample__ena_accessions&#39;, &#39;sample__sample_title&#39;, &#39;sample__biome&#39;, &#39;sample__updated_at&#39;, &#39;study__accession&#39;, &#39;study__ena_accessions&#39;, &#39;study__title&#39;, &#39;study__updated_at&#39;, &#39;study__biome.biome_name&#39;, &#39;study__biome.lineage&#39;, &#39;study__metadata.study_name&#39;, &#39;study__metadata.center_name&#39;, &#39;study__metadata.study_title&#39;, &#39;study__metadata.study_accession&#39;, &#39;study__metadata.study_description&#39;, &#39;study__metadata.secondary_study_accession&#39;, &#39;GivenID&#39;, &#39;RunID&#39;, &#39;SRA accession&#39;, &#39;name&#39;, &#39;taxid&#39;, &#39;ENA first public&#39;, &#39;ENA-CHECKLIST&#39;, &#39;External Id&#39;, &#39;INSDC center name&#39;, &#39;INSDC last update&#39;, &#39;INSDC status&#39;, &#39;Submitter Id&#39;, &#39;broad-scale environmental context&#39;, &#39;collection date&#39;, &#39;description&#39;, &#39;environmental medium&#39;, &#39;geographic location (country and/or sea)&#39;, &#39;geographic location (latitude)&#39;, &#39;geographic location (longitude)&#39;, &#39;host age&#39;, &#39;host diet&#39;, &#39;host disease status&#39;, &#39;host family relationship&#39;, &#39;host sex&#39;, &#39;host subject id&#39;, &#39;local environmental context&#39;, &#39;organism&#39;, &#39;project name&#39;, &#39;scientific_name&#39;, &#39;sequencing method&#39;, &#39;title&#39;, &#39;ENA-FIRST-PUBLIC&#39;, &#39;ENA-LAST-UPDATE&#39;, &#39;INSDC first public&#39;, &#39;age&#39;, &#39;body product&#39;, &#39;disease status&#39;, &#39;environment (biome)&#39;, &#39;environment (feature)&#39;, &#39;environment (material)&#39;, &#39;geographic location (countryand/orsea,region)&#39;, &#39;human gut environmental package&#39;, &#39;investigation type&#39;, &#39;medical history performed&#39;, &#39;miscellaneous parameter&#39;, &#39;multiplex identifiers&#39;, &#39;pcr primers&#39;, &#39;sex&#39;, &#39;target gene&#39;, &#39;target subfragment&#39;, &#39;host body product&#39;, &#39;parkinson&#39;, &#39;timepoint&#39;, &#39;gastrointestinal tract disorder&#39;, &#39;sample collection device or method&#39;, &#39;sample storage duration&#39;, &#39;sample storage temperature&#39;, &#39;INSDC secondary accession&#39;, &#39;NCBI submission model&#39;, &#39;NCBI submission package&#39;, &#39;env_broad_scale&#39;, &#39;env_local_scale&#39;, &#39;env_medium&#39;, &#39;geo loc name&#39;, &#39;host&#39;, &#39;host_phenotype&#39;, &#39;isolate&#39;, &#39;status__biosamples_metadata&#39;, &#39;isolation source&#39;, &#39;lat lon&#39;, &#39;collection_date&#39;, &#39;descrip&#39;, &#39;geo_loc_name&#39;, &#39;isolation_source&#39;, &#39;lat_lon&#39;, &#39;Age_at_collection&#39;, &#39;Anti_inflammatory_drugs&#39;, &#39;Antibiotics_current&#39;, &#39;Antibiotics_past_3_months&#39;, &#39;Antihistamines&#39;, &#39;Asthma_or_COPD_med&#39;, &#39;BMI&#39;, &#39;BioSampleModel&#39;, &#39;Birth_control_or_estrogen&#39;, &#39;Blood_pressure_med&#39;, &#39;Blood_thinners&#39;, &#39;Bristol_stool_chart&#39;, &#39;Case_status&#39;, &#39;Celiac_disease&#39;, &#39;Cholesterol_med&#39;, &#39;Co_Q_10&#39;, &#39;Colitis&#39;, &#39;Constipation&#39;, &#39;Crohns_disease&#39;, &#39;Day_of_stool_collection_abdominal_pain&#39;, &#39;Day_of_stool_collection_bloating&#39;, &#39;Day_of_stool_collection_constipation&#39;, &#39;Day_of_stool_collection_diarrhea&#39;, &#39;Day_of_stool_collection_digestion_issue&#39;, &#39;Day_of_stool_collection_excess_gas&#39;, &#39;Depression_anxiety_mood_med&#39;, &#39;Diabetes_med&#39;, &#39;Diarrhea&#39;, &#39;Do_you_drink_alcohol&#39;, &#39;Do_you_drink_caffeinated_beverages&#39;, &#39;Do_you_smoke&#39;, &#39;GI_cancer_past_3_months&#39;, &#39;Gained_10lbs_in_last_year&#39;, &#39;Hispanic_or_Latino&#39;, &#39;How_often_do_you_eat_FRUITS_or_VEGETABLES&#39;, &#39;How_often_do_you_eat_GRAINS&#39;, &#39;How_often_do_you_eat_NUTS&#39;, &#39;How_often_do_you_eat_POULTRY_BEEF_PORK_SEAFOOD_EGGS&#39;, &#39;How_often_do_you_eat_YOGURT&#39;, &#39;IBD&#39;, &#39;IBS&#39;, &#39;INSDC center alias&#39;, &#39;Indigestion_drugs&#39;, &#39;Intestinal_disease&#39;, &#39;Jewish_ancestry&#39;, &#39;Laxatives&#39;, &#39;Loss_10lbs_in_last_year&#39;, &#39;Pain_med&#39;, &#39;Probiotic&#39;, &#39;Race&#39;, &#39;Radiation_Chemo&#39;, &#39;SIBO&#39;, &#39;Sex&#39;, &#39;Sleep_aid&#39;, &#39;Thyroid_med&#39;, &#39;Ulcer_past_3_months&#39;, &#39;broker name&#39;, &#39;collection_method&#39;, &#39;has_parkinsons_disease&#39;
+    var: &#39;Superkingdom&#39;, &#39;Kingdom&#39;, &#39;Phylum&#39;, &#39;Class&#39;, &#39;Order&#39;, &#39;Family&#39;, &#39;Genus&#39;, &#39;Species&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Using MGni.py we could find Parkinson’s disease cohorts and integrate their abundance tables along with sample metadata from MGnify and BioSamples.</p>
+<p>In Part 2 we further pre-process the data including cleaning and normalising the taxonomic matrix, followed by <a class="reference external" href="https://mona-abaco.readthedocs.io/en/latest/tutorial/demo-parkinson.html" rel="noreferrer" target="_blank">ABaCo <svg version="1.1" width="1.0em" height="1.0em" viewBox="0 0 16 16" aria-hidden="true" style="display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a> for batch correction between the studies.</p>
+<div class="cell config_scroll_outputs docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># exporting to h5ad file </span>
+<span class="n">ad_tax</span><span class="o">.</span><span class="n">obs</span> <span class="o">=</span> <span class="n">ad_tax</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="c1">#workaround for h5ad export issue with mixed types in obs</span>
+<span class="n">ad_tax</span><span class="o">.</span><span class="n">write_h5ad</span><span class="p">(</span><span class="s1">&#39;pd.h5ad&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "EBI-Metagenomics/mgnipy",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/demos"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="98_wwtp_biome.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Getting all Wastewater study datasets</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="99_demo-parkinson-part2.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Part 2: Integrating Parkinson’s disease cohorts</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-for-studies-using-mgnifier">Searching for studies using <code class="docutils literal notranslate"><span class="pre">MGnifier</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-mgazine-to-access-the-study-datasets">Using <code class="docutils literal notranslate"><span class="pre">MGazine</span></code> to access the study datasets</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-the-dataset-list">Filtering the dataset list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-dataset-lists">Combining dataset lists</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lazy-loading-into-one-taxonomic-dataset">(Lazy)loading into one taxonomic dataset</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-mgnetizer-to-collect-more-metadata">Using <code class="docutils literal notranslate"><span class="pre">MGnetizer</span></code> to collect more metadata</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collecting-even-more-sample-metadata-using-biosampler">Collecting even more sample metadata using <code class="docutils literal notranslate"><span class="pre">BioSampler</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-disease-label-in-sample-obs-metadata">Finding disease label in sample (obs) metadata</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By MGnify
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, MGnify.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
