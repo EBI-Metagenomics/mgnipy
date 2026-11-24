@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: mgnipy (3.13.13)
 #     language: python
 #     name: python3
 # ---
@@ -86,6 +86,8 @@ modified_search = samples.filter(page_size=3)
 with MG:
     # within this client context, get 3 pages of samples resource
     modified_search.get_all(limit=2)
+    # and if we want to get details for each sample in the list 
+    modified_search.enrich_details()
 
 modified_search.metadata.to_pandas(expand_nested_dicts=True)
 

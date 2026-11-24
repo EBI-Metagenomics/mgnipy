@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from enum import Enum
 
 
@@ -12,6 +10,7 @@ class PipelineVersions(str, Enum):
     V5 = "V5"
     V6 = "V6"
     V6_1 = "V6.1"
+    V6_2 = "V6.2"
 
     def __str__(self) -> str:
         return str(self.value)

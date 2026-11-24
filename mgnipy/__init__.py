@@ -6,6 +6,7 @@ import logging
 from mgnipy._models.config import MGnipyConfig as MGnipyConfig
 from mgnipy.mgnipy import MGnipy as MGnipy
 from mgnipy.V2.collect.biosampler import BioSampler as BioSampler
+from mgnipy.V2.collect.enasampler import ENASampler as ENASampler
 from mgnipy.V2.collect.mgnetizer import MGnetizer as MGnetizer
 from mgnipy.V2.datasets import (
     MTG as MTG,
@@ -27,4 +28,5 @@ __all__ = [
     "MTG",
     "MGnetizer",
     "BioSampler",
+    "ENASampler",
 ]

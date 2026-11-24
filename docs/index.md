@@ -14,17 +14,17 @@ notebooks/getting-started/*
 ```
 
 ```{toctree}
+:caption: "Tutorials"
+:glob:
+:hidden:
+notebooks/demos/*
+```
+
+```{toctree}
 :caption: "Fundamentals and usage"
 :glob:
 :hidden:
 notebooks/fundamentals/*
-```
-
-```{toctree}
-:caption: "Demos"
-:glob:
-:hidden:
-notebooks/demos/*
 ```
 
 ```{toctree}

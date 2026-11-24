@@ -14,6 +14,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.download_file_index_file import DownloadFileIndexFile
+    from ..models.m_gnify_download_file_index_file import MGnifyDownloadFileIndexFile
 
 
 T = TypeVar("T", bound="MGnifyGenomeDownloadFile")
@@ -33,6 +34,7 @@ class MGnifyGenomeDownloadFile:
         file_size_bytes (int | None | Unset):
         index_file (DownloadFileIndexFile | list[DownloadFileIndexFile] | None | Unset):
         parent_identifier (int | str | Unset):
+        index_files (list[MGnifyDownloadFileIndexFile] | None | Unset):
         url (None | str | Unset):
     """
 
@@ -48,6 +50,7 @@ class MGnifyGenomeDownloadFile:
         UNSET
     )
     parent_identifier: int | str | Unset = UNSET
+    index_files: list[MGnifyDownloadFileIndexFile] | None | Unset = UNSET
     url: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -98,6 +101,18 @@ class MGnifyGenomeDownloadFile:
         else:
             parent_identifier = self.parent_identifier
 
+        index_files: list[dict[str, Any]] | None | Unset
+        if isinstance(self.index_files, Unset):
+            index_files = UNSET
+        elif isinstance(self.index_files, list):
+            index_files = []
+            for index_files_type_0_item_data in self.index_files:
+                index_files_type_0_item = index_files_type_0_item_data.to_dict()
+                index_files.append(index_files_type_0_item)
+
+        else:
+            index_files = self.index_files
+
         url: None | str | Unset
         if isinstance(self.url, Unset):
             url = UNSET
@@ -125,6 +140,8 @@ class MGnifyGenomeDownloadFile:
             field_dict["index_file"] = index_file
         if parent_identifier is not UNSET:
             field_dict["parent_identifier"] = parent_identifier
+        if index_files is not UNSET:
+            field_dict["index_files"] = index_files
         if url is not UNSET:
             field_dict["url"] = url
 
@@ -133,6 +150,9 @@ class MGnifyGenomeDownloadFile:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.download_file_index_file import DownloadFileIndexFile
+        from ..models.m_gnify_download_file_index_file import (
+            MGnifyDownloadFileIndexFile,
+        )
 
         d = dict(src_dict)
         file_type = DownloadFileType(d.pop("file_type"))
@@ -208,6 +228,32 @@ class MGnifyGenomeDownloadFile:
 
         parent_identifier = _parse_parent_identifier(d.pop("parent_identifier", UNSET))
 
+        def _parse_index_files(
+            data: object,
+        ) -> list[MGnifyDownloadFileIndexFile] | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, list):
+                    raise TypeError()
+                index_files_type_0 = []
+                _index_files_type_0 = data
+                for index_files_type_0_item_data in _index_files_type_0:
+                    index_files_type_0_item = MGnifyDownloadFileIndexFile.from_dict(
+                        index_files_type_0_item_data
+                    )
+
+                    index_files_type_0.append(index_files_type_0_item)
+
+                return index_files_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(list[MGnifyDownloadFileIndexFile] | None | Unset, data)
+
+        index_files = _parse_index_files(d.pop("index_files", UNSET))
+
         def _parse_url(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -228,6 +274,7 @@ class MGnifyGenomeDownloadFile:
             file_size_bytes=file_size_bytes,
             index_file=index_file,
             parent_identifier=parent_identifier,
+            index_files=index_files,
             url=url,
         )
 

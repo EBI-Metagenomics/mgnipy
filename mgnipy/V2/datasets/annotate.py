@@ -90,6 +90,17 @@ class MetadataSettersMixin:
         self._append_cached_item("mgnify_assemblies", value)
 
     @property
+    def mgnify_genomes(self) -> MGnifyMetadata:
+        return MGnifyMetadata(self._mgnify_genomes)
+
+    @mgnify_genomes.setter
+    def mgnify_genomes(self, value: list[dict[str, Any]]):
+        self._set_cached_list("mgnify_genomes", value)
+
+    def append_mgnify_genomes(self, value: dict[str, Any]):
+        self._append_cached_item("mgnify_genomes", value)
+
+    @property
     def biosamples_metadata(self) -> ResultsHandler:
         return ResultsHandler(self._biosamples_metadata or None)
 

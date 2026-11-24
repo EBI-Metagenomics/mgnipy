@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv (3.11.7.final.0)
+#     display_name: mgnipy (3.13.13)
 #     language: python
 #     name: python3
 # ---
@@ -52,7 +52,7 @@ studies_resource.describe_endpoint()
 #
 # now using mgnifier to build and then execute the query set
 
-# %%
+# %% tags=["hide-output"]
 # preparing query set
 wwtp_studies = studies_resource(biome_lineage='root:Engineered:Wastewater')
 # helper to preview the query set prior to fetch
@@ -101,7 +101,7 @@ taxo_mz = filtered_MZ.taxonomic
 taxo_mz.load()
 
 # %% [markdown]
-# ## `MGnetizer`: Collecting metadata from MGnify
+# ### (Optional) `MGnetizer`: Collecting metadata from MGnify
 #
 # optionally we use MGnetizers to collect additional information from MGnify given accessions
 
@@ -120,7 +120,7 @@ async with MG:
     await mnet_assembly.aenrich(limit=None)
 
 
-# %%
+# %% tags=["hide-output"]
 studies_as_dict = {x['accession']: x for x in wwtp_studies.search_results.to_list()}
 
 # passing the additional metadata to the Mgazine of taxonomic datasets
@@ -136,25 +136,7 @@ taxo_mz.mgnify_runs = mnet_run.metadata.to_list() + (
 taxo_mz.mgnify_runs.to_pandas(expand_nested_dicts=True).head()
 
 # %% [markdown]
-# ## `BioSampler`: Collecting metadata from BioSamples
-#
-# optionally can also use BioSampler helper to collect additional sample metadata from BioSamples
-
-# %% tags=["hide-input"]
-# # the sample accessions to use
-# sample_ids = taxo_mz.mgnify_runs.to_pandas()['sample_accession'].unique()
-# # init biosampler to collect
-# bios = MG.biosampler(sample_ids)
-# # actually executing the requests
-# async with MG: 
-#     await bios.aenrich(limit=None)
-# # passing the matadata back to MGazine
-# taxo_mz.biosamples_metadata = bios.metadata.to_list(drop_duplicates=True)
-# # taking a look 
-# print(taxo_mz)
-
-# %% [markdown]
-# ## `MGazine.to_anndata()`: Saving taxa count matrix with metadata
+# ### `MGazine.to_anndata()`: Saving taxa count matrix with metadata
 #
 # from the TaxaMGazine we can get an annotated dataframe with the observation metadata and taxonomic metadata (i.e., taxonomic ranks)
 
@@ -209,7 +191,7 @@ print("Number of studies with species level information: ", has_species_level_in
 # %% [markdown]
 # ### Adding more obs metadata columns
 
-# %% tags=["hide-input"]
+# %% tags=["hide-input", "hide-output"]
 # demo adding an obs col with total counts
 has_species_level_info.obs['total_counts'] = has_species_level_info.layers['filled_zeros'].sum(axis=1)
 

@@ -60,10 +60,11 @@ SAMPLE_FIELDS_LIST = [
 ]
 SAMPLE_QUERY_ARGS = {
     "result": "sample",
+    "dataPortal": "ena",
     "fields": ",".join(SAMPLE_FIELDS_LIST),
     "limit": 10,
     "format": "json",
-    "download": "false",
+    #    "download": "false",
 }
 
 
@@ -170,7 +171,9 @@ def _fetch_sample(
     - connection clean up is not handled in this function! If a client is passed, it is the caller's responsibility to manage its lifecycle (e.g., closing it after use).
     """
     sample_query_args = SAMPLE_QUERY_ARGS.copy()
-    sample_query_args["includeAccessions"] = sample_acc
+    sample_query_args["query"] = (
+        f'accession="{sample_acc}" OR secondary_sample_accession="{sample_acc}"'
+    )
 
     if client:
         results = client.get(URL, headers=HEADERS, params=sample_query_args)
